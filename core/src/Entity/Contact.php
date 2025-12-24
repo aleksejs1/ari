@@ -2,15 +2,31 @@
 
 namespace App\Entity;
 
-use App\Security\OwnershipAwareInterface;
-use App\Repository\ContactRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\ContactRepository;
+use ApiPlatform\Metadata\GetCollection;
+use App\Security\OwnershipAwareInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
+#[ApiResource(
+    security: "is_granted('ROLE_USER')",
+    normalizationContext: ['groups' => ['contact:read']],
+    denormalizationContext: ['groups' => ['contact:create']],
+)]
+#[Get(security: "is_granted('CONTACT_VIEW', object)")]
+#[Put(security: "is_granted('CONTACT_EDIT', object)")]
+#[Delete(security: "is_granted('CONTACT_EDIT', object)")]
+#[Post(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 class Contact implements OwnershipAwareInterface
 {
+    #[Groups(['contact:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -19,6 +35,7 @@ class Contact implements OwnershipAwareInterface
     /**
      * @var Collection<int, ContactName>
      */
+    #[Groups(['contact:read'])]
     #[ORM\OneToMany(targetEntity: ContactName::class, mappedBy: 'contact', orphanRemoval: true)]
     private Collection $contactNames;
 
@@ -29,6 +46,7 @@ class Contact implements OwnershipAwareInterface
     /**
      * @var Collection<int, ContactDate>
      */
+    #[Groups(['contact:read'])]
     #[ORM\OneToMany(targetEntity: ContactDate::class, mappedBy: 'contact', orphanRemoval: true)]
     private Collection $contactDates;
 
