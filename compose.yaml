@@ -1,10 +1,23 @@
 services:
-  ###> doctrine/doctrine-bundle ###
+  app:
+    build:
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    environment:
+      DATABASE_URL: "mysql://${MARIADB_USER:-app}:${MARIADB_PASSWORD:-!ChangeMe!}@database:3306/${MARIADB_DB:-app}?serverVersion=${MARIADB_VERSION:-11.4}"
+    depends_on:
+      database:
+        condition: service_healthy
+
   database:
     image: mariadb:${MARIADB_VERSION:-11.4}
     environment:
       MARIADB_DATABASE: ${MARIADB_DB:-app}
-      # You should definitely change the password in production
       MARIADB_PASSWORD: ${MARIADB_PASSWORD:-!ChangeMe!}
       MARIADB_USER: ${MARIADB_USER:-app}
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-!ChangeMe!}
@@ -14,11 +27,7 @@ services:
       retries: 5
       start_period: 60s
     volumes:
-      - database_data:/var/lib/mysql:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/mysql:rw
-      ###< doctrine/doctrine-bundle ###
+      - database_data:/var/lib/mysql
 
 volumes:
-  ###> doctrine/doctrine-bundle ###
-  database_data: ###< doctrine/doctrine-bundle ###
+  database_data:
