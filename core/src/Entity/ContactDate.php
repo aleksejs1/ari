@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Security\OwnershipAwareInterface;
 use App\Repository\ContactDateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactDateRepository::class)]
-class ContactDate
+class ContactDate implements OwnershipAwareInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -68,5 +69,10 @@ class ContactDate
         $this->text = $text;
 
         return $this;
+    }
+    
+    public function getOwner(): User
+    {
+        return $this->contact->getOwner();
     }
 }

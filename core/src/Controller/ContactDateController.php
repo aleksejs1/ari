@@ -2,15 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Contact;
 use App\Entity\ContactDate;
 use App\Form\ContactDateType;
-use App\Repository\ContactDateRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ContactDateRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/contact/date')]
 final class ContactDateController extends AbstractController
@@ -18,8 +20,14 @@ final class ContactDateController extends AbstractController
     #[Route(name: 'app_contact_date_index', methods: ['GET'])]
     public function index(ContactDateRepository $contactDateRepository): Response
     {
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $contactDates = $contactDateRepository->findByUser($user);
+        } else {
+            $contactDates = [];
+        }
         return $this->render('contact_date/index.html.twig', [
-            'contact_dates' => $contactDateRepository->findAll(),
+            'contact_dates' => $contactDates,
         ]);
     }
 
@@ -44,6 +52,7 @@ final class ContactDateController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contact_date_show', methods: ['GET'])]
+    #[IsGranted('CONTACT_VIEW', 'contact')]
     public function show(ContactDate $contactDate): Response
     {
         return $this->render('contact_date/show.html.twig', [
@@ -52,6 +61,7 @@ final class ContactDateController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_contact_date_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('CONTACT_EDIT', 'contact')]
     public function edit(Request $request, ContactDate $contactDate, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ContactDateType::class, $contactDate);
@@ -70,6 +80,7 @@ final class ContactDateController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contact_date_delete', methods: ['POST'])]
+    #[IsGranted('CONTACT_EDIT', 'contact')]
     public function delete(Request $request, ContactDate $contactDate, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contactDate->getId(), $request->getPayload()->getString('_token'))) {

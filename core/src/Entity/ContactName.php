@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use App\Security\OwnershipAwareInterface;
 use App\Repository\ContactNameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactNameRepository::class)]
-class ContactName
+class ContactName implements OwnershipAwareInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -67,5 +68,10 @@ class ContactName
         $this->contact = $contact;
 
         return $this;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->contact->getOwner();
     }
 }

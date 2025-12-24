@@ -16,6 +16,16 @@ class ContactNameRepository extends ServiceEntityRepository
         parent::__construct($registry, ContactName::class);
     }
 
+    public function findByUser($user): array
+    {
+        return $this->createQueryBuilder('cn')
+            ->join('cn.contact', 'c')
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return ContactName[] Returns an array of ContactName objects
     //     */

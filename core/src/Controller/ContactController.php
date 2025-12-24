@@ -6,10 +6,11 @@ use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Repository\ContactRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/contact')]
 final class ContactController extends AbstractController
@@ -43,6 +44,7 @@ final class ContactController extends AbstractController
     }
 
     #[Route('/{id<\d+>}', name: 'app_contact_show', methods: ['GET'])]
+    #[IsGranted('CONTACT_VIEW', 'contact')]
     public function show(Contact $contact): Response
     {
         return $this->render('contact/show.html.twig', [
@@ -51,6 +53,7 @@ final class ContactController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_contact_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('CONTACT_EDIT', 'contact')]
     public function edit(Request $request, Contact $contact, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ContactType::class, $contact);
@@ -69,6 +72,7 @@ final class ContactController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contact_delete', methods: ['POST'])]
+    #[IsGranted('CONTACT_EDIT', 'contact')]
     public function delete(Request $request, Contact $contact, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contact->getId(), $request->getPayload()->getString('_token'))) {
