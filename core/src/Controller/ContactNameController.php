@@ -52,7 +52,7 @@ final class ContactNameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contact_name_show', methods: ['GET'])]
-    #[IsGranted('CONTACT_VIEW', 'contact')]
+    #[IsGranted('CONTACT_VIEW', 'contactName')]
     public function show(ContactName $contactName): Response
     {
         return $this->render('contact_name/show.html.twig', [
@@ -61,7 +61,7 @@ final class ContactNameController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_contact_name_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('CONTACT_EDIT', 'contact')]
+    #[IsGranted('CONTACT_EDIT', 'contactName')]
     public function edit(Request $request, ContactName $contactName, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ContactNameType::class, $contactName);
@@ -80,7 +80,7 @@ final class ContactNameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contact_name_delete', methods: ['POST'])]
-    #[IsGranted('CONTACT_EDIT', 'contact')]
+    #[IsGranted('CONTACT_EDIT', 'contactName')]
     public function delete(Request $request, ContactName $contactName, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contactName->getId(), $request->getPayload()->getString('_token'))) {

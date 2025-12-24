@@ -26,7 +26,7 @@
                     {% endfor %}
                 </td>
                 <td>{% for contact_date in contact.contactDates %}
-                        <a href="{{ path('app_contact_date_edit', {'id': contact_date.id}) }}">{{ contact_date.date|date('Y-m-d') }}</a>    
+                        <a href="{{ path('app_contact_date_edit', {'id': contact_date.id}) }}" title="{{ contact_date.text }}">{{ contact_date.date|date('Y-m-d') }}</a>    
                     {% else %}
                         <a href="{{ path('app_contact_date_new', {'contact': contact.id}) }}">Add date</a>
                     {% endfor %}</td>

@@ -2,7 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Core\Security\OwnershipAwareInterface;
+use App\Security\OwnershipAwareInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,13 +28,13 @@ final class ContactVoter extends Voter
 
         switch ($attribute) {
             case self::EDIT:
-                if ($subject->getUser() === $user) {
+                if ($subject->getOwner() === $user) {
                     return true;
                 }
                 break;
 
             case self::VIEW:
-                if ($subject->getUser() === $user) {
+                if ($subject->getOwner() === $user) {
                     return true;
                 }
                 break;
