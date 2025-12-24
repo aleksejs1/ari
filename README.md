@@ -23,25 +23,21 @@ docker run -it --rm \
     ari-dev
 ```
 
-## 3. Create a New Symfony 7.4 Project
+## 3. Setup Project
 
-Inside the container (after running step 2), run:
+Inside the container (after running step 2), navigate to the project directory and install dependencies:
 
 ```bash
-# Configure Git (required for Symfony CLI)
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-
-# Create new Symfony project
-symfony new . --version="7.4.*" --webapp
+cd core
+composer install
 ```
-
-> **Note**: Using `.` creates the project in the current directory (`/app`), which is mounted to your WSL host folder.
 
 ## 4. Run the Application
 
+Start the Symfony server, ensuring it allows external connections (so you can access it from your browser):
+
 ```bash
-symfony serve --port=8000 --no-tls
+symfony server:start --port=8000 --no-tls --allow-all-ip
 ```
 
 Access the app at `http://localhost:8000`.
