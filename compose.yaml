@@ -9,7 +9,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      DATABASE_URL: "mysql://${MARIADB_USER:-app}:${MARIADB_PASSWORD:-!ChangeMe!}@database:3306/${MARIADB_DB:-app}?serverVersion=${MARIADB_VERSION:-11.4}"
+      DATABASE_URL: "mysql://${MARIADB_USER:-app}:${MARIADB_PASSWORD:-!ChangeMe!}@database:3306/${MARIADB_DB:-app}?serverVersion=mariadb-11.4.9&charset=utf8mb4"
     depends_on:
       database:
         condition: service_healthy
