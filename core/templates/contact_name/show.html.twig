@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ContactName{% endblock %}
+
+{% block body %}
+    <h1>ContactName</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ contact_name.id }}</td>
+            </tr>
+            <tr>
+                <th>Family</th>
+                <td>{{ contact_name.family }}</td>
+            </tr>
+            <tr>
+                <th>Given</th>
+                <td>{{ contact_name.given }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_contact_name_index') }}">back to list</a>
+
+    <a href="{{ path('app_contact_name_edit', {'id': contact_name.id}) }}">edit</a>
+
+    {{ include('contact_name/_delete_form.html.twig') }}
+{% endblock %}

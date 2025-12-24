@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ContactName index{% endblock %}
+
+{% block body %}
+    <h1>ContactName index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Family</th>
+                <th>Given</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for contact_name in contact_names %}
+            <tr>
+                <td>{{ contact_name.id }}</td>
+                <td>{{ contact_name.family }}</td>
+                <td>{{ contact_name.given }}</td>
+                <td>
+                    <a href="{{ path('app_contact_name_show', {'id': contact_name.id}) }}">show</a>
+                    <a href="{{ path('app_contact_name_edit', {'id': contact_name.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {# <a href="{{ path('app_contact_name_new') }}">Create new</a> #}
+{% endblock %}

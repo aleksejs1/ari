@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ContactDate{% endblock %}
+
+{% block body %}
+    <h1>Create new ContactDate</h1>
+
+    {{ include('contact_date/_form.html.twig') }}
+
+    <a href="{{ path('app_contact_date_index') }}">back to list</a>
+{% endblock %}
