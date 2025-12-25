@@ -34,11 +34,11 @@ class ContactName implements OwnershipAwareInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['contact:read', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[Groups(['contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $family = null;
 
-    #[Groups(['contact:read', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[Groups(['contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
 
@@ -47,9 +47,11 @@ class ContactName implements OwnershipAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Contact $contact = null;
 
-    public function __construct(Contact $contact)
+    public function __construct(?Contact $contact = null)
     {
-        $this->contact = $contact;
+        if (null !== $contact) {
+            $this->contact = $contact;
+        }
     }
 
     public function getId(): ?int

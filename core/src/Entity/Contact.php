@@ -20,16 +20,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['contact:read']],
-    denormalizationContext: ['groups' => ['contact:create']],
+    denormalizationContext: ['groups' => ['contact:create']]
 )]
 #[Get(security: "is_granted('CONTACT_VIEW', object)")]
 #[GetCollection]
-#[Put(security: "is_granted('CONTACT_EDIT', object)")]
-#[Patch(security: "is_granted('CONTACT_EDIT', object)")]
+#[Put(
+    security: "is_granted('CONTACT_EDIT', object)",
+    processor: 'App\State\ContactProcessor'
+)]
+#[Patch(
+    security: "is_granted('CONTACT_EDIT', object)",
+    processor: 'App\State\ContactProcessor'
+)]
 #[Delete(security: "is_granted('CONTACT_EDIT', object)")]
 #[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
-    processor: 'App\State\UserOwnerProcessor'
+    processor: 'App\State\ContactProcessor'
 )]
 class Contact implements OwnershipAwareInterface
 {
@@ -42,8 +48,13 @@ class Contact implements OwnershipAwareInterface
     /**
      * @var Collection<int, ContactName>
      */
-    #[Groups(['contact:read'])]
-    #[ORM\OneToMany(targetEntity: ContactName::class, mappedBy: 'contact', orphanRemoval: true)]
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactName::class,
+        mappedBy: 'contact',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private Collection $contactNames;
 
     #[ORM\ManyToOne(inversedBy: 'contacts')]
@@ -53,8 +64,13 @@ class Contact implements OwnershipAwareInterface
     /**
      * @var Collection<int, ContactDate>
      */
-    #[Groups(['contact:read'])]
-    #[ORM\OneToMany(targetEntity: ContactDate::class, mappedBy: 'contact', orphanRemoval: true)]
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactDate::class,
+        mappedBy: 'contact',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private Collection $contactDates;
 
     public function __construct()
