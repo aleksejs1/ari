@@ -1,0 +1,71 @@
+deptrac:
+  paths:
+    - src
+  layers:
+    - name: Controller
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Controller\\.*#'
+    - name: Entity
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Entity\\.*#'
+    - name: Repository
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Repository\\.*#'
+    - name: Form
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Form\\.*#'
+    - name: Security
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Security\\.*#'
+    - name: State
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\State\\.*#'
+    - name: Doctrine
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Doctrine\\.*#'
+    - name: OpenApi
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\OpenApi\\.*#'
+    - name: Vendor
+      collectors:
+        - type: bool
+          must:
+            - type: classNameRegex
+              value: '#^(Symfony|Doctrine|ApiPlatform)\\.*#'
+  ruleset:
+    Controller:
+      - Entity
+      - Form
+      - Repository
+      - Security
+      - Vendor
+    Entity:
+      - Repository
+      - Security
+      - Vendor
+    Repository:
+      - Entity
+      - Vendor
+    Form:
+      - Entity
+      - Vendor
+    Security:
+      - Entity
+      - Vendor
+    State:
+      - Entity
+      - Security
+      - Vendor
+    Doctrine:
+      - Entity
+      - Vendor
+    OpenApi:
+      - Vendor

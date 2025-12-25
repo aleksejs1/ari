@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ContactRepository;
 use ApiPlatform\Metadata\GetCollection;
-use App\State\UserOwnerProcessor;
+
 use App\Security\OwnershipAwareInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Delete(security: "is_granted('CONTACT_EDIT', object)")]
 #[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
-    processor: UserOwnerProcessor::class
+    processor: 'App\State\UserOwnerProcessor'
 )]
 class Contact implements OwnershipAwareInterface
 {

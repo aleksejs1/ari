@@ -67,3 +67,9 @@ To run PHPStan (static analysis), execute the following command:
 ```bash
 docker exec -it -w /app/core ari-app-1 vendor/bin/phpstan analyse
 ```
+
+To run Deptrac (architectural analysis), execute:
+
+```bash
+docker exec -it -w /app/core ari-app-1 vendor/bin/deptrac
+```

@@ -101,6 +101,7 @@
         }
     },
     "require-dev": {
+        "deptrac/deptrac": "^4.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
