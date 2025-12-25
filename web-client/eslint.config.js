@@ -11,7 +11,7 @@ import boundaries from 'eslint-plugin-boundaries'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules', 'public', 'src/types/schema.d.ts']),
+  globalIgnores(['dist', 'node_modules', 'public', 'src/types/schema.d.ts', 'coverage']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
