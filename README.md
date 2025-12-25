@@ -41,3 +41,21 @@ symfony server:start --port=8000 --no-tls --allow-all-ip
 ```
 
 Access the app at `http://localhost:8000`.
+
+## 5. Running Commands
+
+Since the project uses Docker, you generally need to run commands inside the container.
+
+To run a single command (e.g., clearing the cache):
+
+```bash
+docker exec -it ari-app-1 php /app/core/bin/console cache:clear
+```
+
+Or open a shell inside the container:
+
+```bash
+docker exec -it ari-app-1 sh
+# Then navigate to the project root
+cd /app/core
+```

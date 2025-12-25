@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Security\OwnershipAwareInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ApiResource(
@@ -21,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
     denormalizationContext: ['groups' => ['contact:create']],
 )]
 #[Get(security: "is_granted('CONTACT_VIEW', object)")]
+#[GetCollection]
 #[Put(security: "is_granted('CONTACT_EDIT', object)")]
 #[Delete(security: "is_granted('CONTACT_EDIT', object)")]
 #[Post(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]

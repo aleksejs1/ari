@@ -6,10 +6,12 @@ use App\Security\OwnershipAwareInterface;
 use App\Repository\ContactDateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ContactDateRepository::class)]
 class ContactDate implements OwnershipAwareInterface
 {
+    #[Groups(['contact:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -19,9 +21,11 @@ class ContactDate implements OwnershipAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Contact $contact = null;
 
+    #[Groups(['contact:read'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $date = null;
 
+    #[Groups(['contact:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $text = null;
 

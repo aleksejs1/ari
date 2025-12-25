@@ -5,18 +5,22 @@ namespace App\Entity;
 use App\Security\OwnershipAwareInterface;
 use App\Repository\ContactNameRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ContactNameRepository::class)]
 class ContactName implements OwnershipAwareInterface
 {
+    #[Groups(['contact:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['contact:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $family = null;
 
+    #[Groups(['contact:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
 
