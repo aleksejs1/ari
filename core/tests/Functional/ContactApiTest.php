@@ -211,4 +211,55 @@ class ContactApiTest extends ApiTestCase
         self::assertCount(1, $response->toArray()['member']);
         self::assertJsonContains(['member' => [['@id' => $contactIri]]]);
     }
+
+    public function testCascadeDeletion(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // 2. Add Name and Date
+        $response = $client->request('POST', '/api/contact_names', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'family' => 'Doe',
+                'given' => 'Jane',
+                'contact' => $contactIri,
+            ],
+        ]);
+        $nameIri = $response->toArray()['@id'];
+
+        $response = $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => '2025-01-01',
+                'text' => 'New Year',
+                'contact' => $contactIri,
+            ],
+        ]);
+        $dateIri = $response->toArray()['@id'];
+
+        // 3. Delete Contact
+        $client->request('DELETE', $contactIri, [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseStatusCodeSame(204);
+
+        // 4. Verify Name is gone
+        $client->request('GET', $nameIri, [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseStatusCodeSame(404);
+
+        // 5. Verify Date is gone
+        $client->request('GET', $dateIri, [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseStatusCodeSame(404);
+    }
 }

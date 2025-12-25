@@ -147,6 +147,33 @@ class ContactDateApiTest extends ApiTestCase
         ]);
         self::assertResponseStatusCodeSame(403);
 
+        // Security: Other user cannot update (PUT)
+        $client->request('PUT', $dateIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => [
+                'date' => '2023-01-03',
+                'text' => 'Hacked Date',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        // Security: Other user cannot update (PATCH)
+        $client->request('PATCH', $dateIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => [
+                'text' => 'Hacked Anniversary',
+            ],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        // Security: Other user cannot delete
+        $client->request('DELETE', $dateIri, [
+            'auth_bearer' => $this->otherToken,
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
         // 7. Security: Other user cannot list this item
         $response = $client->request('GET', '/api/contact_dates', [
             'auth_bearer' => $this->otherToken,

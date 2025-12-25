@@ -150,6 +150,33 @@ class ContactNameApiTest extends ApiTestCase
         ]);
         self::assertResponseStatusCodeSame(403);
 
+        // Security: Other user cannot update (PUT)
+        $client->request('PUT', $nameIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => [
+                'given' => 'Hacked',
+                'family' => 'Name',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        // Security: Other user cannot update (PATCH)
+        $client->request('PATCH', $nameIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => [
+                'given' => 'Hacked',
+            ],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        // Security: Other user cannot delete
+        $client->request('DELETE', $nameIri, [
+            'auth_bearer' => $this->otherToken,
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
         // 7. Security: Other user cannot list this item
         $response = $client->request('GET', '/api/contact_names', [
             'auth_bearer' => $this->otherToken,
