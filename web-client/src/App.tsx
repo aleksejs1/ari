@@ -1,11 +1,11 @@
-import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 
-import DashboardLayout from "./components/layout/DashboardLayout"
-import ContactsPage from "./features/contacts/ContactsPage"
-import LoginPage from "./pages/auth/LoginPage"
-import RegisterPage from "./pages/auth/RegisterPage"
+import DashboardLayout from './components/layout/DashboardLayout'
+import ContactsPage from './features/contacts/ContactsPage'
+import LoginPage from './pages/auth/LoginPage'
+import RegisterPage from './pages/auth/RegisterPage'
 
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from '@/hooks/useAuth'
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -25,11 +25,11 @@ export default function App() {
       element: <ProtectedRoute />,
       children: [
         {
-          path: "/",
+          path: '/',
           element: <DashboardLayout />,
           children: [
             {
-              path: "/",
+              path: '/',
               element: <ContactsPage />,
             },
           ],
@@ -40,19 +40,19 @@ export default function App() {
       element: <PublicRoute />,
       children: [
         {
-          path: "/login",
+          path: '/login',
           element: <LoginPage />,
         },
         {
-          path: "/register",
+          path: '/register',
           element: <RegisterPage />,
         },
       ],
     },
     {
-      path: "*",
-      element: <div>404 Not Found</div>
-    }
+      path: '*',
+      element: <div>404 Not Found</div>,
+    },
   ])
 
   return <RouterProvider router={router} />

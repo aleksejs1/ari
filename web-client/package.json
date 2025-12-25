@@ -7,8 +7,32 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:ui": "vitest",
+    "lint:deps": "depcruise src",
+    "lint:deps:graph": "depcruise src --output-type dot | dot -Tsvg > dependency-graph.svg",
+    "lint:unused": "ts-prune -p tsconfig.app.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "quality": "npm run format:check && npm run lint && npm run lint:css && npm run typecheck && npm run test && npm run lint:deps && npm run lint:unused",
     "preview": "vite preview",
-    "gen:types": "npx openapi-typescript http://localhost:8000/api/docs.jsonopenapi -o src/types/schema.d.ts"
+    "gen:types": "npx openapi-typescript http://localhost:8000/api/docs.jsonopenapi -o src/types/schema.d.ts",
+    "prepare": "cd .. && npx husky web-client/.husky"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -32,24 +56,39 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.23",
+    "dependency-cruiser": "^17.3.5",
     "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-boundaries": "^5.3.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "jsdom": "^27.3.0",
+    "lint-staged": "^16.2.7",
     "openapi-typescript": "^7.10.1",
     "postcss": "^8.5.6",
+    "prettier": "^3.7.4",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^39.0.1",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
+    "ts-prune": "^0.10.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vitest": "^4.0.16"
   }
 }

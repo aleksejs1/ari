@@ -1,14 +1,14 @@
-import type { components } from "./schema";
+import type { components } from './schema'
 
-export type User = components["schemas"]["User-user.read"];
+export type User = components['schemas']['User-user.read']
 
 export interface AuthState {
-    user: User | null;
-    token: string | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
+  user: User | null
+  token: string | null
+  isAuthenticated: boolean
+  isLoading: boolean
 }
 
 export interface LoginResponse {
-    token: string;
+  token: string
 }

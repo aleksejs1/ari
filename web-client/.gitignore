@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated artifacts
+dependency-graph.svg
+coverage
+.eslintcache
+.stylelintcache
+.husky/_

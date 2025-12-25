@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+# Ari CRM Web Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Modern, fast, and secure frontend for the Ari CRM, built with React, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Prerequisites
+Ensure you have **Node.js 18+** installed.
 
-## React Compiler
+### 2. Installation
+Navigate to the `web-client` directory and install dependencies:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 3. Development Server
+Start the development server with Hot Module Replacement (HMR):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+The application will be available at `http://localhost:5173`.
+
+## Quality Control
+
+This project adheres to a strict "Zero Warning" policy. We use a comprehensive suite of tools to ensure code quality, maintainability, and architectural integrity.
+
+### The Quality Suite
+Run the full quality check (all tools combined):
+
+```bash
+npm run quality
+```
+*This command runs formatting, linting, type-checking, tests, architectural validation, and unused code detection.*
+
+### Individual Tools
+
+- **Formatting (Prettier)**:
+  - Check: `npm run format:check`
+  - Fix: `npm run format`
+- **Logic & Style (ESLint)**:
+  - Lint: `npm run lint`
+  - *Includes Complexity limits (cyclomatic < 10) and Import sorting.*
+- **Architecture (ESLint Boundaries & Depcruise)**:
+  - Boundaires: Checked via standard lint.
+  - Dependency Map: `npm run lint:deps`
+  - Visualize Graph: `npm run lint:deps:graph`
+- **Type Checking**:
+  - `npm run typecheck`
+- **Testing (Vitest)**:
+  - Run: `npm run test`
+  - UI Mode: `npm run test:ui`
+- **Unused Exports (ts-prune)**:
+  - `npm run lint:unused`
+- **CSS Quality (Stylelint)**:
+  - `npm run lint:css`
+
+## Automated Safeguards
+
+### Git Hooks (Husky)
+The project uses **Husky** and **lint-staged** to ensure that only high-quality code is committed.
+- Formatting and linting are automatically triggered on `git commit`.
+- Architectural violations or failing tests will block the commit.
+
+## Building for Production
+
+To create a production-ready build in the `dist/` directory:
+
+```bash
+npm run build
+```
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+> [!NOTE]
+> This client is part of the Ari CRM ecosystem. For backend setup, please refer to the `core` directory README.
