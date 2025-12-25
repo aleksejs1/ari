@@ -9,6 +9,9 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
+        '@PSR12' => true,
+        'concat_space' => ['spacing' => 'one'],
+        'single_line_throw' => false,
     ])
     ->setFinder($finder)
 ;

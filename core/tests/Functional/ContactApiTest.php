@@ -87,7 +87,18 @@ class ContactApiTest extends ApiTestCase
         ]);
         self::assertResponseStatusCodeSame(201);
 
-        // 3. Read Contact and verify names
+        // 3. Add ContactDate
+        $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => '2023-01-01',
+                'text' => 'Birthday',
+                'contact' => $contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+
+        // 4. Read Contact and verify names and dates
         $client->request('GET', $contactIri, [
             'auth_bearer' => $this->token,
         ]);
@@ -97,6 +108,12 @@ class ContactApiTest extends ApiTestCase
                 [
                     'family' => 'Doe',
                     'given' => 'John',
+                ],
+            ],
+            'contactDates' => [
+                [
+                    'date' => '2023-01-01T00:00:00+00:00',
+                    'text' => 'Birthday',
                 ],
             ],
         ]);

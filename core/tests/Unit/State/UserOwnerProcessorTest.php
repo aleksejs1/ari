@@ -66,7 +66,7 @@ class UserOwnerProcessorTest extends TestCase
     public function testProcessSetsUserIfOwnershipAwareAndNoOwner(): void
     {
         $user = self::createStub(User::class);
-        $data = new class implements OwnershipAwareInterface {
+        $data = new class () implements OwnershipAwareInterface {
             private ?User $user = null;
 
             #[\Override]
@@ -96,7 +96,7 @@ class UserOwnerProcessorTest extends TestCase
 
     public function testProcessDoesNotSetUserIfNoAuthenticatedUser(): void
     {
-        $data = new class implements OwnershipAwareInterface {
+        $data = new class () implements OwnershipAwareInterface {
             private ?User $user = null;
 
             #[\Override]
