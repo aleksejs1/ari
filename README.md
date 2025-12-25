@@ -86,3 +86,9 @@ To run Psalm (static analysis), execute:
 ```bash
 docker exec -it -w /app/core ari-app-1 vendor/bin/psalm
 ```
+
+To run PHPUnit tests (unit/functional), execute:
+
+```bash
+docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
+```
