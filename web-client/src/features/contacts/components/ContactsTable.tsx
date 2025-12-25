@@ -4,7 +4,9 @@ import {
     getCoreRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { type Contact } from "@/types/models"
+import { Edit, Trash2 } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -13,8 +15,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Edit, Trash2 } from "lucide-react"
+import { type Contact } from "@/types/models"
+
 
 interface ContactsTableProps {
     data: Contact[]

@@ -1,10 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useNavigate, Link } from "react-router-dom"
 import * as z from "zod"
-import { useAuth } from "@/contexts/AuthContext"
-import { api } from "@/lib/axios"
+
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Form,
     FormControl,
@@ -14,8 +15,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useNavigate, Link } from "react-router-dom"
+import { useAuth } from "@/hooks/useAuth"
+import { api } from "@/lib/axios"
 import { type LoginResponse } from "@/types/auth"
 
 const formSchema = z.object({
@@ -44,7 +45,7 @@ export default function LoginPage() {
             })
             login(response.data.token)
             navigate("/")
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err)
             setError("Invalid credentials")
         }
@@ -93,7 +94,7 @@ export default function LoginPage() {
                 </CardContent>
                 <CardFooter className="flex justify-center">
                     <p className="text-sm text-gray-500">
-                        Don't have an account? <Link to="/register" className="text-blue-500 hover:underline">Register</Link>
+                        Don&apos;t have an account? <Link to="/register" className="text-blue-500 hover:underline">Register</Link>
                     </p>
                 </CardFooter>
             </Card>

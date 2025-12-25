@@ -1,6 +1,7 @@
-import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { contactSchema, type ContactFormValues } from "@/types/models"
+import { Plus, Trash2 } from "lucide-react"
+import { useForm, useFieldArray } from "react-hook-form"
+
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -11,7 +12,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Plus, Trash2 } from "lucide-react"
+import { contactSchema, type ContactFormValues } from "@/types/models"
+
 
 interface ContactFormProps {
     defaultValues?: ContactFormValues
@@ -21,6 +23,7 @@ interface ContactFormProps {
 
 export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
     const form = useForm<ContactFormValues>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(contactSchema) as any, // Cast to any to avoid strict type mismatch with field arrays/dates
         defaultValues: defaultValues || {
             contactNames: [{ given: "", family: "" }],

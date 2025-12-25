@@ -1,5 +1,6 @@
-import type { components } from "./schema";
 import { z } from "zod";
+
+import type { components } from "./schema";
 
 export type Contact = components["schemas"]["Contact.jsonld-contact.read"];
 export type ContactName = components["schemas"]["ContactName.jsonld-contact.read"];

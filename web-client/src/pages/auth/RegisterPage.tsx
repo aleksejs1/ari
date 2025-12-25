@@ -1,10 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useNavigate, Link } from "react-router-dom"
 import * as z from "zod"
-import { useAuth } from "@/contexts/AuthContext"
-import { api } from "@/lib/axios"
+
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Form,
     FormControl,
@@ -14,8 +15,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useNavigate, Link } from "react-router-dom"
+import { useAuth } from "@/hooks/useAuth"
+import { api } from "@/lib/axios"
 import { type LoginResponse } from "@/types/auth"
 
 const formSchema = z.object({
@@ -57,7 +58,7 @@ export default function RegisterPage() {
             })
             login(response.data.token)
             navigate("/")
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err)
             setError("Registration failed. Please try again.")
         }

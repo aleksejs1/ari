@@ -1,45 +1,36 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import type { AuthState, User } from '@/types/auth';
+import { useState, type ReactNode } from 'react';
 
-interface AuthContextType extends AuthState {
-    login: (token: string) => void;
-    logout: () => void;
-}
+import { AuthContext } from './AuthContextInstance';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import type { User, AuthState } from '@/types/auth';
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [state, setState] = useState<AuthState>({
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: true,
-    });
-
-    useEffect(() => {
+export function AuthProvider({ children }: { children: ReactNode }) {
+    const [state, setState] = useState<AuthState>(() => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const decoded: any = jwtDecode(token);
-                // Map 'username' claim to 'uuid' property as strict User type requires it
+                const decoded = jwtDecode<{ username: string }>(token);
                 const user: User = {
                     uuid: decoded.username,
-                }; // Type assertion might be needed if User is strictly generated
-                setState({ user, token, isAuthenticated: true, isLoading: false });
-            } catch (error) {
+                };
+                return { user, token, isAuthenticated: true, isLoading: false };
+            } catch {
                 localStorage.removeItem('token');
-                setState(prev => ({ ...prev, isLoading: false, user: null, token: null, isAuthenticated: false }));
             }
-        } else {
-            setState(prev => ({ ...prev, isLoading: false }));
         }
-    }, []);
+        return {
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+        };
+    });
 
     const login = (token: string) => {
         localStorage.setItem('token', token);
         try {
-            const decoded: any = jwtDecode(token);
+            const decoded = jwtDecode<{ username: string }>(token);
             const user: User = {
                 uuid: decoded.username
             };
@@ -64,12 +55,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             {children}
         </AuthContext.Provider>
     );
-}
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
 }

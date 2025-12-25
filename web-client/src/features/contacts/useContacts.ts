@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { api } from "@/lib/axios";
 import { type Contact, type ContactFormValues } from "@/types/models";
 
@@ -12,8 +13,8 @@ interface HydraCollection<T> {
         "hydra:previous"?: string;
     };
     member?: T[]; // Fallback for pure JSON response from OpenAPI schema
-    view?: any;
-    [key: string]: any;
+    view?: unknown;
+    [key: string]: unknown;
 }
 
 export function useContacts(page = 1) {

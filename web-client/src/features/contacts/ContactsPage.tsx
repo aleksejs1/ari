@@ -1,10 +1,12 @@
-import { useState } from "react"
-import { useContacts, useDeleteContact } from "./useContacts"
-import { ContactsTable } from "./components/ContactsTable"
-import { ContactSheet } from "./components/ContactSheet"
-import { type Contact } from "@/types/models"
-import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
+import { useState } from "react"
+
+import { ContactSheet } from "./components/ContactSheet"
+import { ContactsTable } from "./components/ContactsTable"
+import { useContacts, useDeleteContact } from "./useContacts"
+
+import { Button } from "@/components/ui/button"
+import { type Contact } from "@/types/models"
 
 export default function ContactsPage() {
     const [page, setPage] = useState(1)

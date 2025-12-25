@@ -1,7 +1,8 @@
-import { Outlet, Link } from "react-router-dom"
-import { useAuth } from "@/contexts/AuthContext"
-import { Button } from "@/components/ui/button"
 import { Users, LogOut } from "lucide-react"
+import { Outlet, Link } from "react-router-dom"
+
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function DashboardLayout() {
     const { logout, user } = useAuth()

@@ -1,9 +1,11 @@
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "./contexts/AuthContext"
-import LoginPage from "./pages/auth/LoginPage"
-import RegisterPage from "./pages/auth/RegisterPage"
+
 import DashboardLayout from "./components/layout/DashboardLayout"
 import ContactsPage from "./features/contacts/ContactsPage"
+import LoginPage from "./pages/auth/LoginPage"
+import RegisterPage from "./pages/auth/RegisterPage"
+
+import { useAuth } from "@/hooks/useAuth"
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
