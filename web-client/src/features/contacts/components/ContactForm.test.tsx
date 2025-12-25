@@ -7,19 +7,19 @@ describe('ContactForm', () => {
   it('renders correctly with default values', () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    expect(screen.getByText('Names')).toBeInTheDocument()
-    expect(screen.getByText('Important Dates')).toBeInTheDocument()
+    expect(screen.getByText('contacts.names')).toBeInTheDocument()
+    expect(screen.getByText('contacts.dates')).toBeInTheDocument()
     // Check initial fields (one empty name, no dates)
-    expect(screen.getAllByPlaceholderText('Given Name')).toHaveLength(1)
+    expect(screen.getAllByPlaceholderText('contacts.givenName')).toHaveLength(1)
   })
 
   it('adds and removes name fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    fireEvent.click(screen.getByText('Add Name'))
+    fireEvent.click(screen.getByText('contacts.addName'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('Given Name')).toHaveLength(2)
+      expect(screen.getAllByPlaceholderText('contacts.givenName')).toHaveLength(2)
     })
 
     // Verifying removal would require more setup, skipping for now
@@ -29,10 +29,14 @@ describe('ContactForm', () => {
     const onSubmit = vi.fn()
     render(<ContactForm onSubmit={onSubmit} />)
 
-    fireEvent.change(screen.getByPlaceholderText('Given Name'), { target: { value: 'John' } })
-    fireEvent.change(screen.getByPlaceholderText('Family Name'), { target: { value: 'Doe' } })
+    fireEvent.change(screen.getByPlaceholderText('contacts.givenName'), {
+      target: { value: 'John' },
+    })
+    fireEvent.change(screen.getByPlaceholderText('contacts.familyName'), {
+      target: { value: 'Doe' },
+    })
 
-    fireEvent.click(screen.getByText('Save Contact'))
+    fireEvent.click(screen.getByText('common.save'))
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalled()

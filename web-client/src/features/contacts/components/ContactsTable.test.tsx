@@ -10,20 +10,24 @@ describe('ContactsTable', () => {
     {
       '@id': '/api/contacts/1',
       '@type': 'Contact',
-      contactNames: [{ given: 'Alice', family: 'Smith' }],
-      contactDates: [{ date: '2023-01-01', text: 'Birthday' }],
+      contactNames: [
+        { '@id': '/api/cn/1', '@type': 'ContactName', given: 'Alice', family: 'Smith' },
+      ],
+      contactDates: [
+        { '@id': '/api/cd/1', '@type': 'ContactDate', date: '2023-01-01', text: 'Birthday' },
+      ],
     },
     {
       '@id': '/api/contacts/2',
       '@type': 'Contact',
-      contactNames: [{ given: 'Bob' }], // No family name
+      contactNames: [{ '@id': '/api/cn/2', '@type': 'ContactName', given: 'Bob' }], // No family name
       contactDates: [],
     },
   ]
 
   it('renders empty state', () => {
     render(<ContactsTable data={[]} onEdit={vi.fn()} onDelete={vi.fn()} />)
-    expect(screen.getByText('No results.')).toBeInTheDocument()
+    expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
   })
 
   it('renders data correctly', () => {

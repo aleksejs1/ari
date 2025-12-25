@@ -97,9 +97,6 @@ docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
 
 ### 🗺️ Planned Features
 
-- [ ] **Multi-language Support in Client**  
-  Add internationalization (i18n) support for multiple languages in the web-client
-
 - [ ] **Audit Logs for All Changes**  
   Implement audit system to track all entity changes (who, when, and what was changed)
 

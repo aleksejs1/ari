@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, Link } from 'react-router-dom'
 import * as z from 'zod'
 
@@ -22,6 +23,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { useAuth } from '@/hooks/useAuth'
 import { api } from '@/lib/axios'
 import { type LoginResponse } from '@/types/auth'
@@ -41,6 +43,7 @@ export default function RegisterPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
+  const { t } = useTranslation()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,10 +77,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
+          <CardTitle>{t('auth.register')}</CardTitle>
           <CardDescription>Create a new account to get started.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -101,7 +107,7 @@ export default function RegisterPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t('auth.password')}</FormLabel>
                     <FormControl>
                       <Input type="password" {...field} />
                     </FormControl>
@@ -114,7 +120,7 @@ export default function RegisterPage() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t('auth.confirmPassword')}</FormLabel>
                     <FormControl>
                       <Input type="password" {...field} />
                     </FormControl>
@@ -124,16 +130,16 @@ export default function RegisterPage() {
               />
               {error && <div className="text-red-500 text-sm">{error}</div>}
               <Button type="submit" className="w-full">
-                Register
+                {t('auth.signUp')}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-500">
-            Already have an account?{' '}
+            {t('auth.haveAccount')}{' '}
             <Link to="/login" className="text-blue-500 hover:underline">
-              Login
+              {t('auth.signIn')}
             </Link>
           </p>
         </CardFooter>

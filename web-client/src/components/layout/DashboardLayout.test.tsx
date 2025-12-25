@@ -27,9 +27,9 @@ describe('DashboardLayout', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Contacts App')).toBeInTheDocument()
+    expect(screen.getByText('app.title')).toBeInTheDocument()
     expect(screen.getByText('test-user')).toBeInTheDocument()
-    expect(screen.getByText('Logout')).toBeInTheDocument()
+    expect(screen.getByText('auth.logout')).toBeInTheDocument()
   })
 
   it('navigates when links are clicked', () => {
@@ -72,7 +72,7 @@ describe('DashboardLayout', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByText('Logout'))
+    fireEvent.click(screen.getByText('auth.logout'))
     expect(logout).toHaveBeenCalled()
   })
 })

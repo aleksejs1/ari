@@ -24,6 +24,6 @@ describe('App Smoke Test', () => {
     )
 
     // Check for Login button
-    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'auth.signIn' })).toBeInTheDocument()
   })
 })

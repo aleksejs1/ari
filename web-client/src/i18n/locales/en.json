@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Contacts App",
+    "loading": "Loading...",
+    "notFound": "404 Not Found"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "loading": "Loading contacts...",
+    "error": "Error loading contacts.",
+    "create": "Create Contact",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this contact?",
+    "noContacts": "No contacts found",
+    "names": "Names",
+    "addName": "Add Name",
+    "givenName": "Given Name",
+    "familyName": "Family Name",
+    "dates": "Important Dates",
+    "addDate": "Add Date",
+    "dateLabelPlaceholder": "Label (e.g. Birthday)",
+    "noDates": "No dates added."
+  },
+  "common": {
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "actions": "Actions"
+  }
+}

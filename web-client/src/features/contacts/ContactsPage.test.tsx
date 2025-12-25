@@ -77,7 +77,7 @@ describe('ContactsPage', () => {
     } as unknown as ReturnType<typeof useContacts>)
 
     render(<ContactsPage />)
-    expect(screen.getByText('Loading contacts...')).toBeInTheDocument()
+    expect(screen.getByText('contacts.loading')).toBeInTheDocument()
   })
 
   it('renders error state', () => {
@@ -88,7 +88,7 @@ describe('ContactsPage', () => {
     } as unknown as ReturnType<typeof useContacts>)
 
     render(<ContactsPage />)
-    expect(screen.getByText('Error loading contacts.')).toBeInTheDocument()
+    expect(screen.getByText('contacts.error')).toBeInTheDocument()
   })
 
   it('renders contacts and handles interactions', async () => {

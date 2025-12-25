@@ -1,5 +1,6 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Edit, Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -19,10 +20,12 @@ interface ContactsTableProps {
 }
 
 export function ContactsTable({ data, onEdit, onDelete }: ContactsTableProps) {
+  const { t } = useTranslation()
+
   const columns: ColumnDef<Contact>[] = [
     {
       accessorKey: 'contactNames',
-      header: 'Name',
+      header: t('contacts.name', 'Name'),
       cell: ({ row }) => {
         const names = row.original.contactNames || []
         return (
@@ -38,7 +41,7 @@ export function ContactsTable({ data, onEdit, onDelete }: ContactsTableProps) {
     },
     {
       accessorKey: 'contactDates',
-      header: 'Important Dates',
+      header: t('contacts.dates', 'Important Dates'),
       cell: ({ row }) => {
         const dates = row.original.contactDates || []
         return (
@@ -55,6 +58,7 @@ export function ContactsTable({ data, onEdit, onDelete }: ContactsTableProps) {
     },
     {
       id: 'actions',
+      header: t('common.actions', 'Actions'),
       cell: ({ row }) => {
         return (
           <div className="flex justify-end gap-2">
@@ -113,7 +117,7 @@ export function ContactsTable({ data, onEdit, onDelete }: ContactsTableProps) {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                {t('contacts.noContacts')}
               </TableCell>
             </TableRow>
           )}

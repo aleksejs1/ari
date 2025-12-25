@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { ContactsHeader } from './components/ContactsHeader'
 import { ContactSheet } from './components/ContactSheet'
@@ -12,6 +13,7 @@ export default function ContactsPage() {
   const [page, setPage] = useState(1)
   const { data, isLoading, isError } = useContacts(page)
   const deleteMutation = useDeleteContact()
+  const { t } = useTranslation()
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
@@ -27,15 +29,15 @@ export default function ContactsPage() {
   }
 
   const handleDelete = async (contact: Contact) => {
-    if (confirm('Are you sure you want to delete this contact?')) {
+    if (confirm(t('contacts.deleteConfirm'))) {
       if (contact['@id']) {
         await deleteMutation.mutateAsync(contact['@id'])
       }
     }
   }
 
-  if (isLoading) return <div>Loading contacts...</div>
-  if (isError) return <div>Error loading contacts.</div>
+  if (isLoading) return <div>{t('contacts.loading')}</div>
+  if (isError) return <div>{t('contacts.error')}</div>
 
   const response = data as HydraCollection<Contact>
   const contacts = response['hydra:member'] ?? response.member ?? []

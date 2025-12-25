@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2 } from 'lucide-react'
 import { useForm, useFieldArray } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +22,7 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
+  const { t } = useTranslation()
   const form = useForm<ContactFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(contactSchema) as any, // Cast to any to avoid strict type mismatch with field arrays/dates
@@ -56,14 +58,14 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         {/* Names Section */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium">Names</h3>
+            <h3 className="text-sm font-medium">{t('contacts.names')}</h3>
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => appendName({ given: '', family: '' })}
             >
-              <Plus className="w-4 h-4 mr-1" /> Add Name
+              <Plus className="w-4 h-4 mr-1" /> {t('contacts.addName')}
             </Button>
           </div>
           <div className="space-y-2">
@@ -75,7 +77,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormControl>
-                        <Input placeholder="Given Name" {...field} />
+                        <Input placeholder={t('contacts.givenName')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -87,7 +89,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormControl>
-                        <Input placeholder="Family Name" {...field} />
+                        <Input placeholder={t('contacts.familyName')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -110,14 +112,14 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         {/* Dates Section */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium">Important Dates</h3>
+            <h3 className="text-sm font-medium">{t('contacts.dates')}</h3>
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => appendDate({ text: 'Birthday', date: new Date().toISOString() })}
             >
-              <Plus className="w-4 h-4 mr-1" /> Add Date
+              <Plus className="w-4 h-4 mr-1" /> {t('contacts.addDate')}
             </Button>
           </div>
           <div className="space-y-2">
@@ -129,7 +131,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormControl>
-                        <Input placeholder="Label (e.g. Birthday)" {...field} />
+                        <Input placeholder={t('contacts.dateLabelPlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -158,13 +160,13 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               </div>
             ))}
             {dateFields.length === 0 && (
-              <p className="text-sm text-gray-500 italic">No dates added.</p>
+              <p className="text-sm text-gray-500 italic">{t('contacts.noDates')}</p>
             )}
           </div>
         </div>
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? 'Saving...' : 'Save Contact'}
+          {isSubmitting ? t('common.saving') : t('common.save')}
         </Button>
       </form>
     </Form>

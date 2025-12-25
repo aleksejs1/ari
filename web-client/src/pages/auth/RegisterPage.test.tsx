@@ -47,10 +47,10 @@ describe('RegisterPage', () => {
         <RegisterPage />
       </MemoryRouter>,
     )
-    expect(screen.getAllByText('Register')).toHaveLength(2)
+    expect(screen.getByText('auth.register')).toBeInTheDocument()
     expect(screen.getByLabelText('UUID / Username')).toBeInTheDocument()
-    expect(screen.getByLabelText('Password')).toBeInTheDocument()
-    expect(screen.getByLabelText('Confirm Password')).toBeInTheDocument()
+    expect(screen.getByLabelText('auth.password')).toBeInTheDocument()
+    expect(screen.getByLabelText('auth.confirmPassword')).toBeInTheDocument()
   })
 
   it('shows error when passwords do not match', async () => {
@@ -61,12 +61,12 @@ describe('RegisterPage', () => {
     )
 
     fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } })
-    fireEvent.change(screen.getByLabelText('Confirm Password'), {
+    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
       target: { value: 'password456' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Register' }))
+    fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
 
     expect(await screen.findByText("Passwords don't match")).toBeInTheDocument()
   })
@@ -82,12 +82,12 @@ describe('RegisterPage', () => {
     )
 
     fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } })
-    fireEvent.change(screen.getByLabelText('Confirm Password'), {
+    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
       target: { value: 'password123' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Register' }))
+    fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith('/users', {
@@ -113,12 +113,12 @@ describe('RegisterPage', () => {
     )
 
     fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } })
-    fireEvent.change(screen.getByLabelText('Confirm Password'), {
+    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
       target: { value: 'password123' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Register' }))
+    fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
 
     expect(await screen.findByText('Registration failed. Please try again.')).toBeInTheDocument()
   })

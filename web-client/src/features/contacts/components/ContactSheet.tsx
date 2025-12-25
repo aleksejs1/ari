@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 import { useCreateContact, useUpdateContact } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
@@ -22,6 +24,7 @@ interface ContactSheetProps {
 export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
   const createMutation = useCreateContact()
   const updateMutation = useUpdateContact()
+  const { t } = useTranslation()
 
   // Transform Contact to FormValues if editing
   const defaultValues: ContactFormValues | undefined = contact
@@ -56,9 +59,11 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="overflow-y-auto sm:max-w-xl">
         <SheetHeader>
-          <SheetTitle>{contact ? 'Edit Contact' : 'Create New Contact'}</SheetTitle>
+          <SheetTitle>{contact ? t('contacts.edit') : t('contacts.create')}</SheetTitle>
           <SheetDescription>
-            {contact ? 'Make changes to your contact here.' : 'Add a new contact to your list.'}
+            {contact
+              ? t('contacts.description', 'Make changes to your contact here.')
+              : t('contacts.description', 'Add a new contact to your list.')}
           </SheetDescription>
         </SheetHeader>
         <div className="py-4">

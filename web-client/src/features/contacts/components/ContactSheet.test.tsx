@@ -20,7 +20,7 @@ vi.mock('./ContactForm', () => ({
       data-testid="contact-form"
       onSubmit={(e) => {
         e.preventDefault()
-        onSubmit({ contactNames: [{ given: 'New' }] }) // Mock submission data
+        onSubmit({ contactNames: [{ '@id': '/api/cn/new', '@type': 'ContactName', given: 'New' }] }) // Mock submission data
       }}
     >
       <button type="submit">Submit</button>
@@ -51,7 +51,7 @@ describe('ContactSheet', () => {
 
   it('renders create mode correctly', () => {
     render(<ContactSheet isOpen={true} onClose={vi.fn()} />)
-    expect(screen.getByText('Create New Contact')).toBeInTheDocument()
+    expect(screen.getByText('contacts.create')).toBeInTheDocument()
     expect(screen.getByTestId('contact-form')).toBeInTheDocument()
   })
 
@@ -59,11 +59,11 @@ describe('ContactSheet', () => {
     const contact: Contact = {
       '@id': '/api/contacts/1',
       '@type': 'Contact',
-      contactNames: [{ given: 'John' }],
+      contactNames: [{ '@id': '/api/cn/1', '@type': 'ContactName', given: 'John' }],
       contactDates: [],
     }
     render(<ContactSheet isOpen={true} onClose={vi.fn()} contact={contact} />)
-    expect(screen.getByText('Edit Contact')).toBeInTheDocument()
+    expect(screen.getByText('contacts.edit')).toBeInTheDocument()
   })
 
   it('handles create submission', async () => {
@@ -83,7 +83,7 @@ describe('ContactSheet', () => {
     const contact: Contact = {
       '@id': '/api/contacts/1',
       '@type': 'Contact',
-      contactNames: [{ given: 'John' }],
+      contactNames: [{ '@id': '/api/cn/1', '@type': 'ContactName', given: 'John' }],
       contactDates: [],
     }
     render(<ContactSheet isOpen={true} onClose={onClose} contact={contact} />)
