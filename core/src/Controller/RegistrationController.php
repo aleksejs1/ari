@@ -33,7 +33,13 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
-            return $security->login($user, 'form_login', 'main');
+            $response = $security->login($user, 'form_login', 'main');
+            
+            if (null === $response) {
+                throw new \LogicException('Login failed.');
+            }
+
+            return $response;
         }
 
         return $this->render('registration/register.html.twig', [

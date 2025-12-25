@@ -18,7 +18,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
     {
         $openApi = ($this->decorated)($context);
         $components = $openApi->getComponents();
-        $securitySchemes = $components->getSecuritySchemes() ?? [];
+        $securitySchemes = $components->getSecuritySchemes() ?? new \ArrayObject();
 
         // Add Bearer (JWT) security scheme
         $securitySchemes['bearerAuth'] = new \ArrayObject([
@@ -32,7 +32,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         );
 
         // Apply the security scheme globally
-        $security = $openApi->getSecurity() ?? [];
+        $security = $openApi->getSecurity();
         $security[] = ['bearerAuth' => []];
         $openApi = $openApi->withSecurity($security);
 

@@ -7,6 +7,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @extends Voter<string, OwnershipAwareInterface>
+ */
 final class ContactVoter extends Voter
 {
     public const EDIT = 'CONTACT_EDIT';
@@ -15,7 +18,7 @@ final class ContactVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::VIEW, self::ADD])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::ADD], true)
             && $subject instanceof OwnershipAwareInterface;
     }
 
@@ -42,7 +45,6 @@ final class ContactVoter extends Voter
 
             case self::ADD:
                 return true;
-                break;
         }
 
         return false;

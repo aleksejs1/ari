@@ -94,6 +94,10 @@ class ContactDate implements OwnershipAwareInterface
     
     public function getOwner(): ?User
     {
+        if (null === $this->contact) {
+            throw new \LogicException('ContactDate must belong to a Contact.');
+        }
+
         return $this->contact->getOwner();
     }
 }

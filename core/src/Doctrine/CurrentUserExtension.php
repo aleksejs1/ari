@@ -34,7 +34,7 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface
         if (Contact::class === $resourceClass) {
             $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
             $queryBuilder->setParameter('current_user', $user);
-        } elseif (ContactName::class === $resourceClass || ContactDate::class === $resourceClass) {
+        } else {
             $queryBuilder->join(sprintf('%s.contact', $rootAlias), 'c');
             $queryBuilder->andWhere('c.user = :current_user');
             $queryBuilder->setParameter('current_user', $user);

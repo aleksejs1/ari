@@ -93,6 +93,10 @@ class ContactName implements OwnershipAwareInterface
 
     public function getOwner(): ?User
     {
+        if (null === $this->contact) {
+            throw new \LogicException('ContactName must belong to a Contact.');
+        }
+
         return $this->contact->getOwner();
     }
 }

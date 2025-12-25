@@ -9,8 +9,14 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+/**
+ * @implements ProcessorInterface<mixed, mixed>
+ */
 class UserOwnerProcessor implements ProcessorInterface
 {
+    /**
+     * @param ProcessorInterface<mixed, mixed> $persistProcessor
+     */
     public function __construct(
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private ProcessorInterface $persistProcessor,
@@ -22,7 +28,7 @@ class UserOwnerProcessor implements ProcessorInterface
     {
         if ($data instanceof OwnershipAwareInterface && null === $data->getOwner()) {
             $user = $this->security->getUser();
-            if ($user && method_exists($data, 'setUser')) {
+            if (null !== $user && method_exists($data, 'setUser')) {
                 $data->setUser($user);
             }
         }

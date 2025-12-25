@@ -107,6 +107,10 @@ class Contact implements OwnershipAwareInterface
 
     public function getUser(): User
     {
+        if (null === $this->user) {
+            throw new \LogicException('Contact must have a user.');
+        }
+
         return $this->user;
     }
 

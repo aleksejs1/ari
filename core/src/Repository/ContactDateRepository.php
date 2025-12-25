@@ -17,6 +17,9 @@ class ContactDateRepository extends ServiceEntityRepository
         parent::__construct($registry, ContactDate::class);
     }
 
+    /**
+     * @return ContactDate[]
+     */
     public function findByUser(User $user): array
     {
         return $this->createQueryBuilder('cd')

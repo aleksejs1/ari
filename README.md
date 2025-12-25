@@ -59,3 +59,11 @@ docker exec -it ari-app-1 sh
 # Then navigate to the project root
 cd /app/core
 ```
+
+## 6. Code Quality
+
+To run PHPStan (static analysis), execute the following command:
+
+```bash
+docker exec -it -w /app/core ari-app-1 vendor/bin/phpstan analyse
+```

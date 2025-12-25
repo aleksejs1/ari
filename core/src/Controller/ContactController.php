@@ -26,7 +26,10 @@ final class ContactController extends AbstractController
     #[Route('/new', name: 'app_contact_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $contact = new Contact($this->getUser());
+        $contact = new Contact();
+        $user = $this->getUser();
+        assert($user instanceof \App\Entity\User || null === $user);
+        $contact->setUser($user);
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
 

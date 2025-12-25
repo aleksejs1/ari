@@ -70,7 +70,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->uuid;
+        $uuid = (string) $this->uuid;
+        if ('' === $uuid) {
+            throw new \LogicException('User uuid cannot be empty.');
+        }
+
+        return $uuid;
     }
 
     /**
@@ -116,7 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0".self::class."\0password"] = hash('crc32c', (string) $this->password);
 
         return $data;
     }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ContactName;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,12 @@ class ContactNameRepository extends ServiceEntityRepository
         parent::__construct($registry, ContactName::class);
     }
 
-    public function findByUser($user): array
+
+
+    /**
+     * @return ContactName[]
+     */
+    public function findByUser(User $user): array
     {
         return $this->createQueryBuilder('cn')
             ->join('cn.contact', 'c')
