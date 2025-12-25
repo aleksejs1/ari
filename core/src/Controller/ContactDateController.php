@@ -84,7 +84,7 @@ final class ContactDateController extends AbstractController
     #[IsGranted('CONTACT_EDIT', 'contactDate')]
     public function delete(Request $request, ContactDate $contactDate, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$contactDate->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.(string) $contactDate->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($contactDate);
             $entityManager->flush();
         }

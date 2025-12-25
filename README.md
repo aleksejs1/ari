@@ -80,3 +80,9 @@ To run PHP-CS-Fixer (code style fixer), execute:
 docker exec -it -w /app/core ari-app-1 vendor/bin/php-cs-fixer check
 docker exec -it -w /app/core ari-app-1 vendor/bin/php-cs-fixer fix
 ```
+
+To run Psalm (static analysis), execute:
+
+```bash
+docker exec -it -w /app/core ari-app-1 vendor/bin/psalm
+```

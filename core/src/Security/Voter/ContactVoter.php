@@ -16,12 +16,14 @@ final class ContactVoter extends Voter
     public const VIEW = 'CONTACT_VIEW';
     public const ADD = 'CONTACT_ADD';
 
+    #[\Override]
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::EDIT, self::VIEW, self::ADD], true)
             && $subject instanceof OwnershipAwareInterface;
     }
 
+    #[\Override]
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();

@@ -142,6 +142,7 @@ class Contact implements OwnershipAwareInterface
         return $this;
     }
 
+    #[\Override]
     public function getOwner(): ?User
     {
         return $this->user;

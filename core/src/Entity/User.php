@@ -68,6 +68,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
+    #[\Override]
     public function getUserIdentifier(): string
     {
         $uuid = (string) $this->uuid;
@@ -81,6 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
+    #[\Override]
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -103,6 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
+    #[\Override]
     public function getPassword(): ?string
     {
         return $this->password;
@@ -126,6 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
+    #[\Override]
     #[\Deprecated]
     public function eraseCredentials(): void
     {

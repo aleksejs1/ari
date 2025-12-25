@@ -23,6 +23,7 @@ class UserOwnerProcessor implements ProcessorInterface
     ) {
     }
 
+    #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
         if ($data instanceof OwnershipAwareInterface && null === $data->getOwner()) {

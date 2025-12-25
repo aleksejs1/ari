@@ -91,6 +91,7 @@ class ContactName implements OwnershipAwareInterface
         return $this;
     }
 
+    #[\Override]
     public function getOwner(): ?User
     {
         if (null === $this->contact) {

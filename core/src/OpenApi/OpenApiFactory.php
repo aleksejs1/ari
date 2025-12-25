@@ -14,6 +14,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
     {
     }
 
+    #[\Override]
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = ($this->decorated)($context);
@@ -37,7 +38,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi = $openApi->withSecurity($security);
 
         // Add schemas for Login
-        $schemas = $components->getSchemas();
+        $schemas = $components->getSchemas() ?? new \ArrayObject();
         $schemas['Token'] = new \ArrayObject([
             'type' => 'object',
             'properties' => [
