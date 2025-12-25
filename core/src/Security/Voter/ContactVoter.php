@@ -11,10 +11,11 @@ final class ContactVoter extends Voter
 {
     public const EDIT = 'CONTACT_EDIT';
     public const VIEW = 'CONTACT_VIEW';
+    public const ADD = 'CONTACT_ADD';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::VIEW])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::ADD])
             && $subject instanceof OwnershipAwareInterface;
     }
 
@@ -37,6 +38,10 @@ final class ContactVoter extends Voter
                 if ($subject->getOwner() === $user) {
                     return true;
                 }
+                break;
+
+            case self::ADD:
+                return true;
                 break;
         }
 

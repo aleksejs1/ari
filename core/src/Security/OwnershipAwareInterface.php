@@ -6,5 +6,5 @@ use App\Entity\User;
 
 interface OwnershipAwareInterface
 {
-    public function getOwner(): User;
+    public function getOwner(): ?User;
 }

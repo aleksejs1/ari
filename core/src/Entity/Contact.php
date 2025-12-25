@@ -10,10 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ContactRepository;
 use ApiPlatform\Metadata\GetCollection;
+use App\State\UserOwnerProcessor;
 use App\Security\OwnershipAwareInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ApiResource(
@@ -25,7 +27,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[GetCollection]
 #[Put(security: "is_granted('CONTACT_EDIT', object)")]
 #[Delete(security: "is_granted('CONTACT_EDIT', object)")]
-#[Post(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
+#[Post(
+    securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
+    processor: UserOwnerProcessor::class
+)]
 class Contact implements OwnershipAwareInterface
 {
     #[Groups(['contact:read'])]
@@ -52,11 +57,17 @@ class Contact implements OwnershipAwareInterface
     #[ORM\OneToMany(targetEntity: ContactDate::class, mappedBy: 'contact', orphanRemoval: true)]
     private Collection $contactDates;
 
-    public function __construct(User $user)
+    public function __construct()
     {
         $this->contactNames = new ArrayCollection();
-        $this->user = $user;
         $this->contactDates = new ArrayCollection();
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+        
+        return $this;
     }
 
     public function getId(): ?int
@@ -129,7 +140,7 @@ class Contact implements OwnershipAwareInterface
         return $this;
     }
 
-    public function getOwner(): User
+    public function getOwner(): ?User
     {
         return $this->user;
     }

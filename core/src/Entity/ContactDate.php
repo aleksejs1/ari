@@ -75,7 +75,7 @@ class ContactDate implements OwnershipAwareInterface
         return $this;
     }
     
-    public function getOwner(): User
+    public function getOwner(): ?User
     {
         return $this->contact->getOwner();
     }
