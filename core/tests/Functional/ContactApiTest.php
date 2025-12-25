@@ -31,14 +31,14 @@ class ContactApiTest extends ApiTestCase
         $hasher = $testContainer->get('security.user_password_hasher');
 
         // Create User 1
-        $this->userUuid = 'user1-'.bin2hex(random_bytes(4));
+        $this->userUuid = 'user1-' . bin2hex(random_bytes(4));
         $user1 = new User();
         $user1->setUuid($this->userUuid);
         $user1->setPassword($hasher->hashPassword($user1, 'pass'));
         $em->persist($user1);
 
         // Create User 2
-        $this->otherUserUuid = 'user2-'.bin2hex(random_bytes(4));
+        $this->otherUserUuid = 'user2-' . bin2hex(random_bytes(4));
         $user2 = new User();
         $user2->setUuid($this->otherUserUuid);
         $user2->setPassword($hasher->hashPassword($user2, 'pass'));

@@ -19,9 +19,18 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface
     }
 
     #[\Override]
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
-    {
-        if (Contact::class !== $resourceClass && ContactName::class !== $resourceClass && ContactDate::class !== $resourceClass) {
+    public function applyToCollection(
+        QueryBuilder $queryBuilder,
+        QueryNameGeneratorInterface $queryNameGenerator,
+        string $resourceClass,
+        ?Operation $operation = null,
+        array $context = []
+    ): void {
+        if (
+            Contact::class !== $resourceClass
+            && ContactName::class !== $resourceClass
+            && ContactDate::class !== $resourceClass
+        ) {
             return;
         }
 

@@ -39,6 +39,17 @@ This project uses a set of tools to ensure code quality and stability. All comma
   ```bash
   composer cs-fix
   ```
+- **PHP_CodeSniffer**: PSR12 linting check.
+  ```bash
+  composer lint
+  ```
+
+### Security
+
+- **Symfony Security Check**: Check for known vulnerabilities in dependencies.
+  ```bash
+  composer security:check
+  ```
 
 ## Development
 

@@ -101,8 +101,12 @@
             "@phpstan",
             "@psalm",
             "@deptrac",
-            "@test"
-        ]
+            "@lint",
+            "@test",
+            "@security:check"
+        ],
+        "lint": "vendor/bin/phpcs --standard=PSR12 src tests",
+        "security:check": "symfony security:check"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -117,6 +121,7 @@
         "deptrac/deptrac": "^4.4",
         "friendsofphp/php-cs-fixer": "^3.92.3",
         "infection/infection": "^0.31.9",
+        "phpcsstandards/php_codesniffer": "^4.0.1",
         "phpstan/phpstan": "^2.1.33",
         "phpstan/phpstan-doctrine": "^2.0.12",
         "phpstan/phpstan-phpunit": "^2.0",
@@ -124,6 +129,7 @@
         "phpstan/phpstan-symfony": "^2.0.9",
         "phpunit/phpunit": "^12.5.4",
         "psalm/plugin-symfony": "^5.2",
+        "squizlabs/php_codesniffer": "^4.0",
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*",
         "symfony/debug-bundle": "7.4.*",

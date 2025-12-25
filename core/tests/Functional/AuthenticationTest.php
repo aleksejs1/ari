@@ -19,7 +19,7 @@ class AuthenticationTest extends ApiTestCase
         /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
-        $uuid = 'test-user-'.bin2hex(random_bytes(4));
+        $uuid = 'test-user-' . bin2hex(random_bytes(4));
         $user = new User();
         $user->setUuid($uuid);
         $user->setPassword($hasher->hashPassword($user, '$3cr3t'));
@@ -56,7 +56,7 @@ class AuthenticationTest extends ApiTestCase
     {
         $client = self::createClient();
 
-        $uuid = 'new-user-'.bin2hex(random_bytes(4));
+        $uuid = 'new-user-' . bin2hex(random_bytes(4));
         $client->request('POST', '/api/users', [
             'json' => [
                 'uuid' => $uuid,
