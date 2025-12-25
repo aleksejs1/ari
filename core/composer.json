@@ -53,7 +53,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "infection/extension-installer": true
         },
         "bump-after-update": true,
         "sort-packages": true
@@ -89,6 +90,18 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "psalm": "vendor/bin/psalm --memory-limit=1G",
+        "deptrac": "vendor/bin/deptrac analyse",
+        "test": "vendor/bin/phpunit",
+        "cs-fix": "vendor/bin/php-cs-fixer fix",
+        "infection": "vendor/bin/infection --threads=max",
+        "qa": [
+            "@phpstan",
+            "@psalm",
+            "@deptrac",
+            "@test"
         ]
     },
     "conflict": {
@@ -103,6 +116,7 @@
     "require-dev": {
         "deptrac/deptrac": "^4.4",
         "friendsofphp/php-cs-fixer": "^3.92.3",
+        "infection/infection": "^0.31.9",
         "phpstan/phpstan": "^2.1.33",
         "phpstan/phpstan-doctrine": "^2.0.12",
         "phpstan/phpstan-phpunit": "^2.0",

@@ -30,3 +30,8 @@
 
 .deptrac.cache
 
+###> infection/infection ###
+/infection.log
+/infection-report.html
+/.infection/
+###< infection/infection ###
