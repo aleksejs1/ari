@@ -92,3 +92,22 @@ To run PHPUnit tests (unit/functional), execute:
 ```bash
 docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
 ```
+
+## 7. Roadmap
+
+### 🗺️ Planned Features
+
+- [ ] **Multi-language Support in Client**  
+  Add internationalization (i18n) support for multiple languages in the web-client
+
+- [ ] **Audit Logs for All Changes**  
+  Implement audit system to track all entity changes (who, when, and what was changed)
+
+- [ ] **Google Contacts Import Service**  
+  Integration with Google Contacts API for importing and synchronizing contacts
+
+- [ ] **Analytics**  
+  Add analytics system to track application usage
+
+- [ ] **User Statistics**  
+  Implement statistics for contact views and user interactions with contacts
