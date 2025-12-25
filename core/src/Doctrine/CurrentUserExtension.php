@@ -6,6 +6,8 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Contact;
+use App\Entity\ContactName;
+use App\Entity\ContactDate;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -18,7 +20,7 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        if (Contact::class !== $resourceClass) {
+        if (Contact::class !== $resourceClass && ContactName::class !== $resourceClass && ContactDate::class !== $resourceClass) {
             return;
         }
 
@@ -28,7 +30,14 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
-        $queryBuilder->setParameter('current_user', $user);
+
+        if (Contact::class === $resourceClass) {
+            $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
+            $queryBuilder->setParameter('current_user', $user);
+        } elseif (ContactName::class === $resourceClass || ContactDate::class === $resourceClass) {
+            $queryBuilder->join(sprintf('%s.contact', $rootAlias), 'c');
+            $queryBuilder->andWhere('c.user = :current_user');
+            $queryBuilder->setParameter('current_user', $user);
+        }
     }
 }

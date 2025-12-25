@@ -66,7 +66,7 @@ class Contact implements OwnershipAwareInterface
     public function setUser(?User $user): static
     {
         $this->user = $user;
-        
+
         return $this;
     }
 

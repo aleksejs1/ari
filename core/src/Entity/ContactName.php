@@ -6,24 +6,41 @@ use App\Security\OwnershipAwareInterface;
 use App\Repository\ContactNameRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 
 #[ORM\Entity(repositoryClass: ContactNameRepository::class)]
+#[ApiResource(
+    security: "is_granted('ROLE_USER')",
+    normalizationContext: ['groups' => ['contact_name:read']],
+    denormalizationContext: ['groups' => ['contact_name:create', 'contact_name:update']],
+)]
+#[Get(security: "is_granted('CONTACT_VIEW', object)")]
+#[GetCollection]
+#[Post(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
+#[Put(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
+#[Delete(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 class ContactName implements OwnershipAwareInterface
 {
-    #[Groups(['contact:read'])]
+    #[Groups(['contact:read', 'contact_name:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['contact:read'])]
+    #[Groups(['contact:read', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $family = null;
 
-    #[Groups(['contact:read'])]
+    #[Groups(['contact:read', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
 
+    #[Groups(['contact_name:read', 'contact_name:create'])]
     #[ORM\ManyToOne(inversedBy: 'contactNames')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Contact $contact = null;
