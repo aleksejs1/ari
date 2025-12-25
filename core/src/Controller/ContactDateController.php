@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Contact;
 use App\Entity\ContactDate;
+use App\Entity\User;
 use App\Form\ContactDateType;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ContactDateRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/contact/date')]
 final class ContactDateController extends AbstractController
@@ -26,6 +26,7 @@ final class ContactDateController extends AbstractController
         } else {
             $contactDates = [];
         }
+
         return $this->render('contact_date/index.html.twig', [
             'contact_dates' => $contactDates,
         ]);

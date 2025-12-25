@@ -17,8 +17,6 @@ class ContactNameRepository extends ServiceEntityRepository
         parent::__construct($registry, ContactName::class);
     }
 
-
-
     /**
      * @return ContactName[]
      */

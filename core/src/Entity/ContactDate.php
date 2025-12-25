@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use App\Security\OwnershipAwareInterface;
-use App\Repository\ContactDateRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
+use App\Repository\ContactDateRepository;
+use App\Security\OwnershipAwareInterface;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ContactDateRepository::class)]
 #[ApiResource(
@@ -91,7 +91,7 @@ class ContactDate implements OwnershipAwareInterface
 
         return $this;
     }
-    
+
     public function getOwner(): ?User
     {
         if (null === $this->contact) {

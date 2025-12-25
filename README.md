@@ -65,11 +65,18 @@ cd /app/core
 To run PHPStan (static analysis), execute the following command:
 
 ```bash
-docker exec -it -w /app/core ari-app-1 vendor/bin/phpstan analyse
+docker exec -it -w /app/core ari-app-1 vendor/bin/phpstan analyse --memory-limit=1G
 ```
 
 To run Deptrac (architectural analysis), execute:
 
 ```bash
 docker exec -it -w /app/core ari-app-1 vendor/bin/deptrac
+```
+
+To run PHP-CS-Fixer (code style fixer), execute:
+
+```bash
+docker exec -it -w /app/core ari-app-1 vendor/bin/php-cs-fixer check
+docker exec -it -w /app/core ari-app-1 vendor/bin/php-cs-fixer fix
 ```

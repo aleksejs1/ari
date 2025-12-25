@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Contact;
 use App\Entity\ContactName;
+use App\Entity\User;
 use App\Form\ContactNameType;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ContactNameRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/contact/name')]
 final class ContactNameController extends AbstractController
@@ -26,6 +26,7 @@ final class ContactNameController extends AbstractController
         } else {
             $contactNames = [];
         }
+
         return $this->render('contact_name/index.html.twig', [
             'contact_names' => $contactNames,
         ]);

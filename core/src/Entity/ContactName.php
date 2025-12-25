@@ -2,16 +2,16 @@
 
 namespace App\Entity;
 
-use App\Security\OwnershipAwareInterface;
-use App\Repository\ContactNameRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
+use App\Repository\ContactNameRepository;
+use App\Security\OwnershipAwareInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ContactNameRepository::class)]
 #[ApiResource(

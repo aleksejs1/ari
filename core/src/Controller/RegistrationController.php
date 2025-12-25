@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
             // do anything else you need here, like send an email
 
             $response = $security->login($user, 'form_login', 'main');
-            
+
             if (null === $response) {
                 throw new \LogicException('Login failed.');
             }
