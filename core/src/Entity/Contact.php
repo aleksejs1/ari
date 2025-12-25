@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ContactRepository;
@@ -24,6 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get(security: "is_granted('CONTACT_VIEW', object)")]
 #[GetCollection]
 #[Put(security: "is_granted('CONTACT_EDIT', object)")]
+#[Patch(security: "is_granted('CONTACT_EDIT', object)")]
 #[Delete(security: "is_granted('CONTACT_EDIT', object)")]
 #[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",

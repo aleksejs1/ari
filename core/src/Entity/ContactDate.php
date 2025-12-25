@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ContactDateRepository;
@@ -24,6 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[GetCollection]
 #[Post(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 #[Put(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
+#[Patch(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 #[Delete(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 class ContactDate implements OwnershipAwareInterface
 {

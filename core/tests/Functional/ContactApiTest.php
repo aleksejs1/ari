@@ -119,6 +119,64 @@ class ContactApiTest extends ApiTestCase
         ]);
     }
 
+    public function testUpdateContact(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // 2. Update Contact (we use PATCH for partial update/merge)
+        $client->request('PATCH', $contactIri, [
+            'auth_bearer' => $this->token,
+            'json' => [],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseIsSuccessful();
+
+        // 3. Verify security: other user cannot update
+        $client->request('PATCH', $contactIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => [],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testDeleteContact(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // 2. Verify security: other user cannot delete
+        $client->request('DELETE', $contactIri, [
+            'auth_bearer' => $this->otherToken,
+        ]);
+        self::assertResponseStatusCodeSame(403);
+
+        // 3. Delete Contact
+        $client->request('DELETE', $contactIri, [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseStatusCodeSame(204);
+
+        // 4. Verify it's gone
+        $client->request('GET', $contactIri, [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseStatusCodeSame(404);
+    }
+
     public function testContactOwnership(): void
     {
         $client = static::createClient();
@@ -143,5 +201,14 @@ class ContactApiTest extends ApiTestCase
         ]);
         self::assertResponseIsSuccessful();
         self::assertCount(0, $response->toArray()['member']);
+
+        // User 1 tries to list contacts (should see their contact)
+        $response = $client->request('GET', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Accept' => 'application/ld+json'],
+        ]);
+        self::assertResponseIsSuccessful();
+        self::assertCount(1, $response->toArray()['member']);
+        self::assertJsonContains(['member' => [['@id' => $contactIri]]]);
     }
 }
