@@ -21,7 +21,8 @@ RUN install-php-extensions \
     pdo_mysql \
     zip \
     opcache \
-    apcu
+    apcu \
+    pcov
 
 
 
