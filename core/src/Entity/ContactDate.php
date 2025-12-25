@@ -40,17 +40,19 @@ class ContactDate implements OwnershipAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Contact $contact = null;
 
-    #[Groups(['contact:read', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
+    #[Groups(['contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $date = null;
 
-    #[Groups(['contact:read', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
+    #[Groups(['contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $text = null;
 
-    public function __construct(Contact $contact)
+    public function __construct(?Contact $contact = null)
     {
-        $this->contact = $contact;
+        if (null !== $contact) {
+            $this->contact = $contact;
+        }
     }
 
     public function getId(): ?int
