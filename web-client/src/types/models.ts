@@ -7,6 +7,8 @@ export type ContactName = components['schemas']['ContactName.jsonld-contact.read
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
 export type NotificationChannel =
   components['schemas']['NotificationChannel.jsonld-notification_channel.read']
+export type NotificationSubscription =
+  components['schemas']['NotificationSubscription.jsonld-notification_subscription.read']
 
 // Zod Schemas for Forms
 // These need to match the API requirements for creation/update

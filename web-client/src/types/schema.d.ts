@@ -2708,6 +2708,10 @@ export interface operations {
             query?: {
                 /** @description The collection page number */
                 page?: number;
+                entityType?: string;
+                "entityType[]"?: string[];
+                entityId?: number;
+                "entityId[]"?: number[];
             };
             header?: never;
             path?: never;

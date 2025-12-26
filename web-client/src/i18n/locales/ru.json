@@ -32,7 +32,10 @@
     "dates": "Важные даты",
     "addDate": "Добавить дату",
     "dateLabelPlaceholder": "Название (например, День рождения)",
-    "noDates": "Даты не добавлены"
+    "noDates": "Даты не добавлены",
+    "subscriptions": "Подписки",
+    "addSubscription": "Добавить подписку",
+    "noSubscriptions": "Нет подписок"
   },
   "common": {
     "save": "Сохранить",

@@ -115,7 +115,6 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
 const LogList = ({
   logs,
   isPlaceholderData,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t,
 }: {
   logs: TimelineEvent[]
