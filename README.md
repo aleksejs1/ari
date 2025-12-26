@@ -1,110 +1,89 @@
-# Docker Development Environment for "ari" CRM
+# Ari
 
-This environment provides a PHP 8.5 developement container optimized for Symfony and WSL 2.
+**Ari** is an open-source personal CRM focused on **data reliability**, **reliable notifications**, and **long-term trust**.  
+It is designed for people who want full control over their personal data, complete change history, and the ability to self-host with 100% privacy.
 
-## 1. Build the Docker Image
+Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency, auditability, and longevity.
 
-Run this command from the project root:
+---
+## Why this exists
 
-```bash
-docker build -t ari-dev .
-```
+This project started from a very practical frustration.
 
-## 2. Start the Container
+I used **MonicaHQ** for a long time. One of my favorite features was email notifications for important dates, like birthdays. Over time, the project felt stagnant, but it still worked well enough — until one day it didn’t.
 
-This starts the container in interactive mode with your current directory mounted. 
-Ports 8000 (Symfony) and 9000 (Xdebug if needed) can be exposed.
+On my self-hosted Monica instance, something went wrong. Part of the notification data disappeared from the database. Fixing it meant digging into internals and re-configuring everything from scratch. I didn’t. I simply stopped using the product.
 
-```bash
-docker run -it --rm \
-    -v $(pwd):/app \
-    -p 8000:8000 \
-    --name ari-container \
-    ari-dev
-```
+Later, I experimented with managing contacts in **Obsidian**, treating them as notes. I even built my own plugin to sync Google Contacts. This worked well for data ownership and flexibility, but it still lacked one crucial thing: **reliable, cross-platform notifications**.
 
-## 3. Setup Project
+At that point, it became clear that I wanted something different:
+- a system where **data history is never silently lost**
+- a system where **notifications are treated as first-class, reliable features**
+- a system I can **fully trust**, inspect, and self-host
 
-Inside the container (after running step 2), navigate to the project directory and install dependencies:
+That is how Ari started.
 
-```bash
-cd core
-composer install
-```
+---
+## Core principles
 
-## 4. Run the Application
+- **History-first**  
+    All meaningful changes are recorded. Losing context or history is not acceptable.
+- **Reliable notifications**  
+    Notifications are not a “nice to have” feature. They are part of the core value.
+- **Data ownership**  
+    You can self-host Ari and keep full control over your data.
+- **Open source by default**  
+    Transparency builds trust. All core logic is open and auditable.
+- **Privacy by design**  
+    No tracking, no dark patterns, no data extraction incentives.
+- **Monolith first, clean architecture**  
+    Simple, understandable systems age better than over-engineered ones.
 
-Start the Symfony server, ensuring it allows external connections (so you can access it from your browser):
+---
+## What exists today (early stage)
 
-```bash
-symfony server:start --port=8000 --no-tls --allow-all-ip
-```
+Ari is still in an early phase, but it already includes:
 
-Access the app at `http://localhost:8000`.
+- Dockerized development environment
+- Backend API built with **PHP 8.5**, **Symfony 7.4**, **API Platform**, and **MariaDB**
+- Web client built with **React**, including multi-language support
+- Authentication
+- Contact domain model:
+    - Contacts
+    - Names (a contact can have multiple names)
+    - Dates (birthdays, anniversaries, custom dates)
+- Strong focus on code quality:
+    - extensive automated tests
+    - static analysis
+    - linters and format checkers
 
-## 5. Running Commands
+This is a foundation, not a finished product.
 
-Since the project uses Docker, you generally need to run commands inside the container.
+---
+## Architecture at a glance
 
-To run a single command (e.g., clearing the cache):
+- **Backend**
+    - PHP 8.5
+    - Symfony 7.4
+    - API Platform
+    - MariaDB
+- **Frontend**
+    - React
+    - Multilingual UI
+- **Infrastructure**
+    - Docker-based local development
+    - Self-hosted by design
 
-```bash
-docker exec -it ari-app-1 php /app/core/bin/console cache:clear
-```
+The architecture favors clarity and maintainability over early optimization.
 
-Or open a shell inside the container:
+---
+## Project status & expectations
 
-```bash
-docker exec -it ari-app-1 sh
-# Then navigate to the project root
-cd /app/core
-```
+- This is a **solo-developed** project.
+- Development happens at a sustainable pace.
+- There are **no fixed deadlines**.
+- Breaking changes are possible.
+- The project is developed publicly, with a strong focus on correctness and trust rather than speed.
 
-## 6. Code Quality
-
-To run PHPStan (static analysis), execute the following command:
-
-```bash
-docker exec -it -w /app/core ari-app-1 vendor/bin/phpstan analyse --memory-limit=1G
-```
-
-To run Deptrac (architectural analysis), execute:
-
-```bash
-docker exec -it -w /app/core ari-app-1 vendor/bin/deptrac
-```
-
-To run PHP-CS-Fixer (code style fixer), execute:
-
-```bash
-docker exec -it -w /app/core ari-app-1 vendor/bin/php-cs-fixer check
-docker exec -it -w /app/core ari-app-1 vendor/bin/php-cs-fixer fix
-```
-
-To run Psalm (static analysis), execute:
-
-```bash
-docker exec -it -w /app/core ari-app-1 vendor/bin/psalm
-```
-
-To run PHPUnit tests (unit/functional), execute:
-
-```bash
-docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
-```
-
-## 7. Roadmap
-
-### 🗺️ Planned Features
-
-- [ ] **Audit Logs for All Changes**  
-  Implement audit system to track all entity changes (who, when, and what was changed)
-
-- [ ] **Google Contacts Import Service**  
-  Integration with Google Contacts API for importing and synchronizing contacts
-
-- [ ] **Analytics**  
-  Add analytics system to track application usage
-
-- [ ] **User Statistics**  
-  Implement statistics for contact views and user interactions with contacts
+If you are looking for a polished, feature-complete CRM today, Ari is probably not for you.  
+If you care about long-term data reliability, transparency, and a thoughtful approach to personal data — you might want to follow along.
