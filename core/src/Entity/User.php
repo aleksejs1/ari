@@ -77,10 +77,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: AuditLog::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $auditLogs;
 
+    /**
+     * @var Collection<int, NotificationChannel>
+     */
+    #[ORM\OneToMany(targetEntity: NotificationChannel::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $notificationChannels;
+
+    /**
+     * @var Collection<int, NotificationSubscription>
+     */
+    #[ORM\OneToMany(targetEntity: NotificationSubscription::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $notificationSubscriptions;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->auditLogs = new ArrayCollection();
+        $this->notificationChannels = new ArrayCollection();
+        $this->notificationSubscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,6 +241,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($auditLog->getUser() === $this) {
                 $auditLog->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NotificationChannel>
+     */
+    public function getNotificationChannels(): Collection
+    {
+        return $this->notificationChannels;
+    }
+
+    public function addNotificationChannel(NotificationChannel $notificationChannel): static
+    {
+        if (!$this->notificationChannels->contains($notificationChannel)) {
+            $this->notificationChannels->add($notificationChannel);
+            $notificationChannel->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationChannel(NotificationChannel $notificationChannel): static
+    {
+        if ($this->notificationChannels->removeElement($notificationChannel)) {
+            // set the owning side to null (unless already changed)
+            if ($notificationChannel->getUser() === $this) {
+                $notificationChannel->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NotificationSubscription>
+     */
+    public function getNotificationSubscriptions(): Collection
+    {
+        return $this->notificationSubscriptions;
+    }
+
+    public function addNotificationSubscription(NotificationSubscription $notificationSubscription): static
+    {
+        if (!$this->notificationSubscriptions->contains($notificationSubscription)) {
+            $this->notificationSubscriptions->add($notificationSubscription);
+            $notificationSubscription->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationSubscription(NotificationSubscription $notificationSubscription): static
+    {
+        if ($this->notificationSubscriptions->removeElement($notificationSubscription)) {
+            // set the owning side to null (unless already changed)
+            if ($notificationSubscription->getUser() === $this) {
+                $notificationSubscription->setUser(null);
             }
         }
 

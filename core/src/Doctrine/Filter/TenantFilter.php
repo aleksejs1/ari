@@ -22,6 +22,8 @@ final class TenantFilter extends SQLFilter
             return '0';
         }
 
-        return sprintf('%s.tenant_id = %s', $targetTableAlias, $this->getParameter('currentTenant'));
+        $constraint = sprintf('%s.tenant_id = %s', $targetTableAlias, $this->getParameter('currentTenant'));
+        // file_put_contents('php://stderr', "FILTER: " . $targetEntity->getName() . " -> " . $constraint . "\n");
+        return $constraint;
     }
 }
