@@ -169,4 +169,67 @@ class AuditLogTest extends ApiTestCase
         self::assertArrayHasKey('id', $snapshotBefore);
         self::assertEquals($contactId, $snapshotBefore['id']);
     }
+
+    public function testFilterAuditLogs(): void
+    {
+        $client = static::createClient();
+
+        // Create a contact to generate an audit log
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $contactId = $response->toArray()['id'];
+
+        // Get all logs for this user
+        $response = $client->request('GET', '/api/audit_logs', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $allLogsData = $response->toArray();
+        self::assertGreaterThan(0, $allLogsData['totalItems'] ?? count($allLogsData['member'] ?? []));
+
+        // Filter by entityType
+        $entityType = 'App\Entity\Contact';
+        $response = $client->request('GET', '/api/audit_logs', [
+            'auth_bearer' => $this->token,
+            'query' => [
+                'entityType' => $entityType,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        $count = $data['totalItems'] ?? count($data['member'] ?? []);
+        self::assertGreaterThan(0, $count);
+        foreach ($data['member'] as $log) {
+            self::assertEquals($entityType, $log['entityType']);
+        }
+
+        // Filter by entityId
+        $response = $client->request('GET', '/api/audit_logs', [
+            'auth_bearer' => $this->token,
+            'query' => [
+                'entityId' => $contactId,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        $count = $data['totalItems'] ?? count($data['member'] ?? []);
+        self::assertGreaterThan(0, $count);
+        foreach ($data['member'] as $log) {
+            self::assertEquals($contactId, $log['entityId']);
+        }
+
+        // Filter by non-existent combinations
+        $response = $client->request('GET', '/api/audit_logs', [
+            'auth_bearer' => $this->token,
+            'query' => [
+                'entityId' => 999999,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $count = $response->toArray()['hydra:totalItems'] ?? count($response->toArray()['hydra:member'] ?? []);
+        self::assertEquals(0, $count);
+    }
 }

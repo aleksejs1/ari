@@ -2,55 +2,71 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AuditLogRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['audit:read']],
+    security: "is_granted('ROLE_USER')"
+)]
+#[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
 class AuditLog implements TenantAwareInterface
 {
     use TenantAwareTrait;
 
+    #[Groups(['audit:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['audit:read'])]
     #[ORM\ManyToOne(inversedBy: 'auditLogs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[Groups(['audit:read'])]
     #[ORM\Column(length: 255)]
     private ?string $entityType = null;
 
+    #[Groups(['audit:read'])]
     #[ORM\Column(nullable: true)]
     private ?int $entityId = null;
 
+    #[Groups(['audit:read'])]
     #[ORM\Column(length: 255)]
     private ?string $action = null;
 
     /**
      * @var array<string, mixed>|null
      */
+    #[Groups(['audit:read'])]
     #[ORM\Column(nullable: true)]
     private ?array $changes = null;
 
     /**
      * @var array<string, mixed>|null
      */
+    #[Groups(['audit:read'])]
     #[ORM\Column(nullable: true)]
     private ?array $snapshotBefore = null;
 
     /**
      * @var array<string, mixed>|null
      */
+    #[Groups(['audit:read'])]
     #[ORM\Column(nullable: true)]
     private ?array $snapshotAfter = null;
 
+    #[Groups(['audit:read'])]
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTime $createdAt = null;
 
