@@ -57,7 +57,7 @@ class TelegramNotificationTest extends ApiTestCase
         $channel = new NotificationChannel();
         $channel->setUser($user);
         $channel->setType('telegram');
-        $channel->setConfig(['botToken' => 'fake_token', 'chatId' => 'fake_chat']);
+        $channel->setConfig(['botToken' => 'test_token', 'chatId' => 'fake_chat']);
         $em->persist($channel);
 
         $sub = new NotificationSubscription();

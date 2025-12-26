@@ -8,15 +8,19 @@ use App\Entity\User;
 use App\Security\TenantAwareInterface;
 use App\State\UserOwnerProcessor;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class UserOwnerProcessorTest extends TestCase
+final class UserOwnerProcessorTest extends TestCase
 {
     /** @var ProcessorInterface<mixed, mixed>&\PHPUnit\Framework\MockObject\MockObject */
     private ProcessorInterface $persistProcessor;
 
-    /** @var Security&\PHPUnit\Framework\MockObject\MockObject */
-    private Security $security;
+    /** @var ProcessorInterface<mixed, mixed>&\PHPUnit\Framework\MockObject\MockObject */
+    private ProcessorInterface $removeProcessor;
+
+    /** @var TokenStorageInterface&\PHPUnit\Framework\MockObject\MockObject */
+    private TokenStorageInterface $tokenStorage;
 
     private UserOwnerProcessor $processor;
 
@@ -24,21 +28,38 @@ class UserOwnerProcessorTest extends TestCase
     protected function setUp(): void
     {
         $this->persistProcessor = self::createMock(ProcessorInterface::class);
-        $this->security = self::createMock(Security::class);
-        $this->processor = new UserOwnerProcessor($this->persistProcessor, $this->security);
+        $this->removeProcessor = self::createMock(ProcessorInterface::class);
+        $this->tokenStorage = self::createMock(TokenStorageInterface::class);
+        $this->processor = new UserOwnerProcessor($this->persistProcessor, $this->removeProcessor, $this->tokenStorage);
     }
 
     public function testProcessDoesNothingIfNotTenantAware(): void
     {
         $data = new \stdClass();
-        $operation = self::createStub(Operation::class);
+        $operation = new \ApiPlatform\Metadata\Get();
 
         $this->persistProcessor->expects(self::once())
             ->method('process')
             ->with($data, $operation, [], [])
             ->willReturn($data);
 
-        $this->security->expects(self::never())->method('getUser');
+        $this->tokenStorage->expects(self::never())->method('getToken');
+
+        $result = $this->processor->process($data, $operation);
+        self::assertSame($data, $result);
+    }
+
+    public function testProcessDelegatesToDeleteProcessor(): void
+    {
+        $data = new \stdClass();
+        $operation = new \ApiPlatform\Metadata\Delete();
+
+        $this->removeProcessor->expects(self::once())
+            ->method('process')
+            ->with($data, $operation, [], [])
+            ->willReturn($data);
+
+        $this->persistProcessor->expects(self::never())->method('process');
 
         $result = $this->processor->process($data, $operation);
         self::assertSame($data, $result);
@@ -50,14 +71,14 @@ class UserOwnerProcessorTest extends TestCase
         $data = self::createStub(TenantAwareInterface::class);
         $data->method('getTenant')->willReturn($user);
 
-        $operation = self::createStub(Operation::class);
+        $operation = new \ApiPlatform\Metadata\Get();
 
         $this->persistProcessor->expects(self::once())
             ->method('process')
             ->with($data, $operation, [], [])
             ->willReturn($data);
 
-        $this->security->expects(self::never())->method('getUser');
+        $this->tokenStorage->expects(self::never())->method('getToken');
 
         $result = $this->processor->process($data, $operation);
         self::assertSame($data, $result);
@@ -66,6 +87,9 @@ class UserOwnerProcessorTest extends TestCase
     public function testProcessSetsTenantIfTenantAwareAndNoTenant(): void
     {
         $user = self::createStub(User::class);
+        $token = self::createStub(TokenInterface::class);
+        $token->method('getUser')->willReturn($user);
+
         $data = new class () implements TenantAwareInterface {
             private ?User $tenant = null;
 
@@ -81,8 +105,8 @@ class UserOwnerProcessorTest extends TestCase
             }
         };
 
-        $operation = self::createStub(Operation::class);
-        $this->security->expects(self::once())->method('getUser')->willReturn($user);
+        $operation = new \ApiPlatform\Metadata\Get();
+        $this->tokenStorage->expects(self::once())->method('getToken')->willReturn($token);
 
         $this->persistProcessor->expects(self::once())
             ->method('process')
@@ -111,8 +135,8 @@ class UserOwnerProcessorTest extends TestCase
             }
         };
 
-        $operation = self::createStub(Operation::class);
-        $this->security->expects(self::once())->method('getUser')->willReturn(null);
+        $operation = new \ApiPlatform\Metadata\Get();
+        $this->tokenStorage->expects(self::once())->method('getToken')->willReturn(null);
 
         $this->persistProcessor->expects(self::once())
             ->method('process')
