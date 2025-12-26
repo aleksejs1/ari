@@ -264,6 +264,158 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notification_channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of NotificationChannel resources.
+         * @description Retrieves the collection of NotificationChannel resources.
+         */
+        get: operations["api_notification_channels_get_collection"];
+        put?: never;
+        /**
+         * Creates a NotificationChannel resource.
+         * @description Creates a NotificationChannel resource.
+         */
+        post: operations["api_notification_channels_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notification_channels/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a NotificationChannel resource.
+         * @description Retrieves a NotificationChannel resource.
+         */
+        get: operations["api_notification_channels_id_get"];
+        /**
+         * Replaces the NotificationChannel resource.
+         * @description Replaces the NotificationChannel resource.
+         */
+        put: operations["api_notification_channels_id_put"];
+        post?: never;
+        /**
+         * Removes the NotificationChannel resource.
+         * @description Removes the NotificationChannel resource.
+         */
+        delete: operations["api_notification_channels_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the NotificationChannel resource.
+         * @description Updates the NotificationChannel resource.
+         */
+        patch: operations["api_notification_channels_id_patch"];
+        trace?: never;
+    };
+    "/api/notification_intents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of NotificationIntent resources.
+         * @description Retrieves the collection of NotificationIntent resources.
+         */
+        get: operations["api_notification_intents_get_collection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notification_intents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a NotificationIntent resource.
+         * @description Retrieves a NotificationIntent resource.
+         */
+        get: operations["api_notification_intents_id_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notification_subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of NotificationSubscription resources.
+         * @description Retrieves the collection of NotificationSubscription resources.
+         */
+        get: operations["api_notification_subscriptions_get_collection"];
+        put?: never;
+        /**
+         * Creates a NotificationSubscription resource.
+         * @description Creates a NotificationSubscription resource.
+         */
+        post: operations["api_notification_subscriptions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notification_subscriptions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a NotificationSubscription resource.
+         * @description Retrieves a NotificationSubscription resource.
+         */
+        get: operations["api_notification_subscriptions_id_get"];
+        /**
+         * Replaces the NotificationSubscription resource.
+         * @description Replaces the NotificationSubscription resource.
+         */
+        put: operations["api_notification_subscriptions_id_put"];
+        post?: never;
+        /**
+         * Removes the NotificationSubscription resource.
+         * @description Removes the NotificationSubscription resource.
+         */
+        delete: operations["api_notification_subscriptions_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the NotificationSubscription resource.
+         * @description Updates the NotificationSubscription resource.
+         */
+        patch: operations["api_notification_subscriptions_id_patch"];
+        trace?: never;
+    };
     "/api/users": {
         parameters: {
             query?: never;
@@ -675,6 +827,108 @@ export interface components {
             "@id": string;
             "@type": string;
         };
+        "NotificationChannel-notification_channel.read": {
+            readonly id?: number;
+            type?: string;
+            config?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        "NotificationChannel-notification_channel.write": {
+            type?: string;
+            config?: {
+                [key: string]: string | null;
+            } | null;
+        };
+        "NotificationChannel-notification_channel.write.jsonMergePatch": {
+            type?: string;
+            config?: {
+                [key: string]: string | null;
+            } | null;
+        };
+        "NotificationChannel.jsonld-notification_channel.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            type?: string;
+            config?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        "NotificationIntent-notification_intent.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string;
+            payload?: {
+                [key: string]: string | null;
+            } | null;
+        };
+        "NotificationIntent.jsonld-notification_intent.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string;
+            payload?: {
+                [key: string]: string | null;
+            } | null;
+        };
+        "NotificationSubscription-notification_subscription.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string | null;
+            entityType?: string;
+            entityId?: number;
+            /** @default 1 */
+            enabled: number;
+        };
+        "NotificationSubscription-notification_subscription.write": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string | null;
+            entityType?: string;
+            entityId?: number;
+            /** @default 1 */
+            enabled: number;
+        };
+        "NotificationSubscription-notification_subscription.write.jsonMergePatch": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string | null;
+            entityType?: string;
+            entityId?: number;
+            /** @default 1 */
+            enabled: number;
+        };
+        "NotificationSubscription.jsonld-notification_subscription.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string | null;
+            entityType?: string;
+            entityId?: number;
+            /** @default 1 */
+            enabled: number;
+        };
         "User-user.create": {
             uuid?: string;
             plainPassword?: string | null;
@@ -714,6 +968,7 @@ export interface operations {
                 "entityType[]"?: string[];
                 entityId?: number;
                 "entityId[]"?: number[];
+                "order[createdAt]"?: "asc" | "desc";
             };
             header?: never;
             path?: never;
@@ -2028,6 +2283,733 @@ export interface operations {
                     "application/json": {
                         readonly token: string;
                     };
+                };
+            };
+        };
+    };
+    api_notification_channels_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationChannel collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["NotificationChannel.jsonld-notification_channel.read"][];
+                    };
+                    "application/json": components["schemas"]["NotificationChannel-notification_channel.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_channels_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new NotificationChannel resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationChannel-notification_channel.write"];
+                "application/json": components["schemas"]["NotificationChannel-notification_channel.write"];
+            };
+        };
+        responses: {
+            /** @description NotificationChannel resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationChannel.jsonld-notification_channel.read"];
+                    "application/json": components["schemas"]["NotificationChannel-notification_channel.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_notification_channels_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationChannel identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationChannel resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationChannel.jsonld-notification_channel.read"];
+                    "application/json": components["schemas"]["NotificationChannel-notification_channel.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_channels_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationChannel identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated NotificationChannel resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationChannel-notification_channel.write"];
+                "application/json": components["schemas"]["NotificationChannel-notification_channel.write"];
+            };
+        };
+        responses: {
+            /** @description NotificationChannel resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationChannel.jsonld-notification_channel.read"];
+                    "application/json": components["schemas"]["NotificationChannel-notification_channel.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_notification_channels_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationChannel identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationChannel resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_channels_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationChannel identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated NotificationChannel resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["NotificationChannel-notification_channel.write.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description NotificationChannel resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationChannel.jsonld-notification_channel.read"];
+                    "application/json": components["schemas"]["NotificationChannel-notification_channel.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_notification_intents_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationIntent collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["NotificationIntent.jsonld-notification_intent.read"][];
+                    };
+                    "application/json": components["schemas"]["NotificationIntent-notification_intent.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_intents_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationIntent identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationIntent resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationIntent.jsonld-notification_intent.read"];
+                    "application/json": components["schemas"]["NotificationIntent-notification_intent.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_subscriptions_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationSubscription collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["NotificationSubscription.jsonld-notification_subscription.read"][];
+                    };
+                    "application/json": components["schemas"]["NotificationSubscription-notification_subscription.read"][];
+                };
+            };
+        };
+    };
+    api_notification_subscriptions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new NotificationSubscription resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationSubscription-notification_subscription.write"];
+                "application/json": components["schemas"]["NotificationSubscription-notification_subscription.write"];
+            };
+        };
+        responses: {
+            /** @description NotificationSubscription resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationSubscription.jsonld-notification_subscription.read"];
+                    "application/json": components["schemas"]["NotificationSubscription-notification_subscription.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_notification_subscriptions_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationSubscription identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationSubscription resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationSubscription.jsonld-notification_subscription.read"];
+                    "application/json": components["schemas"]["NotificationSubscription-notification_subscription.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_subscriptions_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationSubscription identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated NotificationSubscription resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationSubscription-notification_subscription.write"];
+                "application/json": components["schemas"]["NotificationSubscription-notification_subscription.write"];
+            };
+        };
+        responses: {
+            /** @description NotificationSubscription resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationSubscription.jsonld-notification_subscription.read"];
+                    "application/json": components["schemas"]["NotificationSubscription-notification_subscription.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_notification_subscriptions_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationSubscription identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationSubscription resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_notification_subscriptions_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationSubscription identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated NotificationSubscription resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["NotificationSubscription-notification_subscription.write.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description NotificationSubscription resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationSubscription.jsonld-notification_subscription.read"];
+                    "application/json": components["schemas"]["NotificationSubscription-notification_subscription.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };

@@ -5,6 +5,8 @@ import type { components } from './schema'
 export type Contact = components['schemas']['Contact.jsonld-contact.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
+export type NotificationChannel =
+  components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 
 // Zod Schemas for Forms
 // These need to match the API requirements for creation/update
@@ -52,3 +54,14 @@ export interface TimelineEvent {
   createdAt: string
   user?: string
 }
+
+export const notificationChannelSchema = z.object({
+  id: z.number().optional(),
+  type: z.literal('telegram'),
+  config: z.object({
+    botToken: z.string().min(1, 'Bot Token is required'),
+    chatId: z.string().min(1, 'Chat ID is required'),
+  }),
+})
+
+export type NotificationChannelFormValues = z.infer<typeof notificationChannelSchema>

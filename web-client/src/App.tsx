@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-rou
 import DashboardLayout from './components/layout/DashboardLayout'
 import AuditLogsPage from './features/audit-logs/AuditLogsPage'
 import ContactsPage from './features/contacts/ContactsPage'
+import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 
@@ -24,8 +25,7 @@ const PublicRoute = () => {
 }
 
 export default function App() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t } = useTranslation()
+  useTranslation()
 
   const router = createBrowserRouter([
     {
@@ -42,6 +42,10 @@ export default function App() {
             {
               path: '/audit-logs',
               element: <AuditLogsPage />,
+            },
+            {
+              path: '/notification-channels',
+              element: <NotificationChannelsPage />,
             },
           ],
         },

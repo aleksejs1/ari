@@ -115,11 +115,13 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
 const LogList = ({
   logs,
   isPlaceholderData,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t,
 }: {
   logs: TimelineEvent[]
   isPlaceholderData: boolean
-  t: (key: string, defaultValue?: string) => string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any
 }) => {
   if (logs.length === 0) {
     return (
@@ -199,7 +201,7 @@ export default function AuditLogsPage() {
 
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden flex flex-col min-h-[400px]">
         <div className="flex-1">
-          <LogList logs={logs} isPlaceholderData={isPlaceholderData} t={t as any} />
+          <LogList logs={logs} isPlaceholderData={isPlaceholderData} t={t} />
         </div>
 
         {totalPages > 1 && (

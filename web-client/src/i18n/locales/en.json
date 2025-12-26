@@ -34,6 +34,24 @@
     "dateLabelPlaceholder": "Label (e.g. Birthday)",
     "noDates": "No dates added."
   },
+  "notificationChannels": {
+    "title": "Notification Channels",
+    "description": "Manage how you receive notifications.",
+    "add": "Add Channel",
+    "edit": "Edit Channel",
+    "delete": "Delete Channel",
+    "deleteConfirm": "Are you sure you want to delete this notification channel?",
+    "noChannels": "No notification channels found.",
+    "type": "Type",
+    "selectType": "Select a type",
+    "config": "Configuration",
+    "botToken": "Bot Token",
+    "chatId": "Chat ID",
+    "verified": "Verified",
+    "notVerified": "Not Verified",
+    "formDescription": "Fill in the details below to configure your notification channel.",
+    "error": "Error loading notification channels."
+  },
   "common": {
     "save": "Save",
     "saving": "Saving...",
