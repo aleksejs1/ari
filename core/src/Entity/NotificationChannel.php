@@ -16,6 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: NotificationChannelRepository::class)]
 #[ApiResource(
@@ -214,5 +216,23 @@ class NotificationChannel implements TenantAwareInterface
         }
 
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateConfig(ExecutionContextInterface $context): void
+    {
+        if ($this->type === 'telegram') {
+            $config = $this->config ?? [];
+            if (!isset($config['botToken']) || '' === $config['botToken']) {
+                $context->buildViolation('Telegram channel requires a botToken.')
+                    ->atPath('config')
+                    ->addViolation();
+            }
+            if (!isset($config['chatId']) || '' === $config['chatId']) {
+                $context->buildViolation('Telegram channel requires a chatId.')
+                    ->atPath('config')
+                    ->addViolation();
+            }
+        }
     }
 }
