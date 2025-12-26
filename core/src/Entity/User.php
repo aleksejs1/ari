@@ -71,9 +71,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Contact::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $contacts;
 
+    /**
+     * @var Collection<int, AuditLog>
+     */
+    #[ORM\OneToMany(targetEntity: AuditLog::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $auditLogs;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
+        $this->auditLogs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -190,6 +197,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($contact->getUser() === $this) {
                 $contact->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AuditLog>
+     */
+    public function getAuditLogs(): Collection
+    {
+        return $this->auditLogs;
+    }
+
+    public function addAuditLog(AuditLog $auditLog): static
+    {
+        if (!$this->auditLogs->contains($auditLog)) {
+            $this->auditLogs->add($auditLog);
+            $auditLog->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditLog(AuditLog $auditLog): static
+    {
+        if ($this->auditLogs->removeElement($auditLog)) {
+            // set the owning side to null (unless already changed)
+            if ($auditLog->getUser() === $this) {
+                $auditLog->setUser(null);
             }
         }
 
