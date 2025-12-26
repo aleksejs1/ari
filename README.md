@@ -87,3 +87,11 @@ The architecture favors clarity and maintainability over early optimization.
 
 If you are looking for a polished, feature-complete CRM today, Ari is probably not for you.  
 If you care about long-term data reliability, transparency, and a thoughtful approach to personal data — you might want to follow along.
+
+---
+## Screenshots
+
+Here are some screenshots of the project as it currently looks:
+
+![Audit Log](assets/ari_audit.png)
+![Contact List](assets/ari_list.png)
