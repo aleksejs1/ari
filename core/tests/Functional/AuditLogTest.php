@@ -90,6 +90,12 @@ class AuditLogTest extends ApiTestCase
         if (null !== $log->getEntityId()) {
             self::assertEquals($contactId, $log->getEntityId());
         }
+
+        // Verify snapshots
+        $snapshotAfter = $log->getSnapshotAfter();
+        self::assertNotNull($snapshotAfter, 'snapshotAfter should not be null for INSERT');
+        self::assertArrayHasKey('id', $snapshotAfter);
+        self::assertEquals($contactId, $snapshotAfter['id']);
     }
 
     public function testUpdateContactLogsAudit(): void
@@ -156,5 +162,11 @@ class AuditLogTest extends ApiTestCase
         ]);
 
         self::assertNotNull($log, 'AuditLog for REMOVE not found');
+
+        // Verify snapshots
+        $snapshotBefore = $log->getSnapshotBefore();
+        self::assertNotNull($snapshotBefore, 'snapshotBefore should not be null for REMOVE');
+        self::assertArrayHasKey('id', $snapshotBefore);
+        self::assertEquals($contactId, $snapshotBefore['id']);
     }
 }
