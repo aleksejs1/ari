@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Entity\ContactDate;
-use App\Entity\User;
 use App\Form\ContactDateType;
 use App\Repository\ContactDateRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,15 +19,8 @@ final class ContactDateController extends AbstractController
     #[Route(name: 'app_contact_date_index', methods: ['GET'])]
     public function index(ContactDateRepository $contactDateRepository): Response
     {
-        $user = $this->getUser();
-        if ($user instanceof User) {
-            $contactDates = $contactDateRepository->findByUser($user);
-        } else {
-            $contactDates = [];
-        }
-
         return $this->render('contact_date/index.html.twig', [
-            'contact_dates' => $contactDates,
+            'contact_dates' => $contactDateRepository->findAll(),
         ]);
     }
 

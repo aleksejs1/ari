@@ -34,7 +34,7 @@ class ContactDateTest extends TestCase
         self::assertSame($newContact, $contactDate->getContact());
     }
 
-    public function testGetOwner(): void
+    public function testGetTenant(): void
     {
         $contact = new Contact();
         $user = new User();
@@ -42,6 +42,6 @@ class ContactDateTest extends TestCase
 
         $contactDate = new ContactDate($contact);
 
-        self::assertSame($user, $contactDate->getOwner());
+        self::assertSame($user, $contactDate->getTenant());
     }
 }

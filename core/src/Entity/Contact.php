@@ -10,7 +10,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ContactRepository;
-use App\Security\OwnershipAwareInterface;
+use App\Security\TenantAwareInterface;
+use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,8 +38,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
     processor: 'App\State\ContactProcessor'
 )]
-class Contact implements OwnershipAwareInterface
+class Contact implements TenantAwareInterface
 {
+    use TenantAwareTrait;
+
     #[Groups(['contact:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -82,6 +85,7 @@ class Contact implements OwnershipAwareInterface
     public function setUser(?User $user): static
     {
         $this->user = $user;
+        $this->setTenant($user);
 
         return $this;
     }
@@ -104,6 +108,7 @@ class Contact implements OwnershipAwareInterface
         if (!$this->contactNames->contains($contactName)) {
             $this->contactNames->add($contactName);
             $contactName->setContact($this);
+            $contactName->setTenant($this->getTenant());
         }
 
         return $this;
@@ -143,6 +148,7 @@ class Contact implements OwnershipAwareInterface
         if (!$this->contactDates->contains($contactDate)) {
             $this->contactDates->add($contactDate);
             $contactDate->setContact($this);
+            $contactDate->setTenant($this->getTenant());
         }
 
         return $this;
@@ -158,11 +164,5 @@ class Contact implements OwnershipAwareInterface
         }
 
         return $this;
-    }
-
-    #[\Override]
-    public function getOwner(): ?User
-    {
-        return $this->user;
     }
 }

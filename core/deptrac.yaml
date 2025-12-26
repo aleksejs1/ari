@@ -66,6 +66,7 @@ deptrac:
       - Vendor
     Doctrine:
       - Entity
+      - Security
       - Vendor
     OpenApi:
       - Vendor

@@ -2,13 +2,13 @@
 
 namespace App\Security\Voter;
 
-use App\Security\OwnershipAwareInterface;
+use App\Security\TenantAwareInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @extends Voter<string, OwnershipAwareInterface>
+ * @extends Voter<string, TenantAwareInterface>
  */
 final class ContactVoter extends Voter
 {
@@ -20,7 +20,7 @@ final class ContactVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::EDIT, self::VIEW, self::ADD], true)
-            && $subject instanceof OwnershipAwareInterface;
+            && $subject instanceof TenantAwareInterface;
     }
 
     #[\Override]
@@ -34,13 +34,13 @@ final class ContactVoter extends Voter
 
         switch ($attribute) {
             case self::EDIT:
-                if ($subject->getOwner() === $user) {
+                if ($subject->getTenant() === $user) {
                     return true;
                 }
                 break;
 
             case self::VIEW:
-                if ($subject->getOwner() === $user) {
+                if ($subject->getTenant() === $user) {
                     return true;
                 }
                 break;

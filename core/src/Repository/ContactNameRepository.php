@@ -16,42 +16,4 @@ class ContactNameRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ContactName::class);
     }
-
-    /**
-     * @return ContactName[]
-     */
-    public function findByUser(User $user): array
-    {
-        return $this->createQueryBuilder('cn')
-            ->join('cn.contact', 'c')
-            ->andWhere('c.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
-    }
-
-    //    /**
-    //     * @return ContactName[] Returns an array of ContactName objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ContactName
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

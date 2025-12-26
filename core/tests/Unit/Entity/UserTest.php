@@ -39,6 +39,6 @@ class UserTest extends TestCase
 
         $user->removeContact($contact);
         self::assertFalse($user->getContacts()->contains($contact));
-        self::assertNull($contact->getOwner());
+        self::assertNull($contact->getTenant());
     }
 }

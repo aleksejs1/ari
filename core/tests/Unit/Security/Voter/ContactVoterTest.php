@@ -3,7 +3,7 @@
 namespace App\Tests\Unit\Security\Voter;
 
 use App\Entity\User;
-use App\Security\OwnershipAwareInterface;
+use App\Security\TenantAwareInterface;
 use App\Security\Voter\ContactVoter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ class ContactVoterTest extends TestCase
     #[DataProvider('provideAttributes')]
     public function testSupports(string $attribute, bool $expected): void
     {
-        $subject = self::createStub(OwnershipAwareInterface::class);
+        $subject = self::createStub(TenantAwareInterface::class);
         $method = new \ReflectionMethod(ContactVoter::class, 'supports');
 
         self::assertSame($expected, $method->invoke($this->voter, $attribute, $subject));
@@ -42,7 +42,7 @@ class ContactVoterTest extends TestCase
         ];
     }
 
-    public function testSupportsOnlyOwnershipAwareInterface(): void
+    public function testSupportsOnlyTenantAwareInterface(): void
     {
         $subject = new \stdClass();
         $method = new \ReflectionMethod(ContactVoter::class, 'supports');
@@ -50,11 +50,11 @@ class ContactVoterTest extends TestCase
         self::assertFalse($method->invoke($this->voter, ContactVoter::VIEW, $subject));
     }
 
-    public function testVoteAccessGrantedForOwnerOnView(): void
+    public function testVoteAccessGrantedForTenantOnView(): void
     {
         $user = self::createStub(User::class);
-        $subject = self::createStub(OwnershipAwareInterface::class);
-        $subject->method('getOwner')->willReturn($user);
+        $subject = self::createStub(TenantAwareInterface::class);
+        $subject->method('getTenant')->willReturn($user);
 
         $token = self::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
@@ -65,12 +65,12 @@ class ContactVoterTest extends TestCase
         );
     }
 
-    public function testVoteAccessDeniedForNonOwnerOnView(): void
+    public function testVoteAccessDeniedForNonTenantOnView(): void
     {
         $user = self::createStub(User::class);
-        $owner = self::createStub(User::class);
-        $subject = self::createStub(OwnershipAwareInterface::class);
-        $subject->method('getOwner')->willReturn($owner);
+        $tenant = self::createStub(User::class);
+        $subject = self::createStub(TenantAwareInterface::class);
+        $subject->method('getTenant')->willReturn($tenant);
 
         $token = self::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
@@ -81,11 +81,11 @@ class ContactVoterTest extends TestCase
         );
     }
 
-    public function testVoteAccessGrantedForOwnerOnEdit(): void
+    public function testVoteAccessGrantedForTenantOnEdit(): void
     {
         $user = self::createStub(User::class);
-        $subject = self::createStub(OwnershipAwareInterface::class);
-        $subject->method('getOwner')->willReturn($user);
+        $subject = self::createStub(TenantAwareInterface::class);
+        $subject->method('getTenant')->willReturn($user);
 
         $token = self::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
@@ -96,12 +96,12 @@ class ContactVoterTest extends TestCase
         );
     }
 
-    public function testVoteAccessDeniedForNonOwnerOnEdit(): void
+    public function testVoteAccessDeniedForNonTenantOnEdit(): void
     {
         $user = self::createStub(User::class);
-        $owner = self::createStub(User::class);
-        $subject = self::createStub(OwnershipAwareInterface::class);
-        $subject->method('getOwner')->willReturn($owner);
+        $tenant = self::createStub(User::class);
+        $subject = self::createStub(TenantAwareInterface::class);
+        $subject->method('getTenant')->willReturn($tenant);
 
         $token = self::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
@@ -115,7 +115,7 @@ class ContactVoterTest extends TestCase
     public function testVoteAccessGrantedForAdd(): void
     {
         $user = self::createStub(User::class);
-        $subject = self::createStub(OwnershipAwareInterface::class);
+        $subject = self::createStub(TenantAwareInterface::class);
 
         $token = self::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
@@ -128,7 +128,7 @@ class ContactVoterTest extends TestCase
 
     public function testVoteAccessDeniedForNoUser(): void
     {
-        $subject = self::createStub(OwnershipAwareInterface::class);
+        $subject = self::createStub(TenantAwareInterface::class);
         $token = self::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn(null);
 

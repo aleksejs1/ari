@@ -4,7 +4,7 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Security\OwnershipAwareInterface;
+use App\Security\TenantAwareInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -26,10 +26,15 @@ class UserOwnerProcessor implements ProcessorInterface
     #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
-        if ($data instanceof OwnershipAwareInterface && null === $data->getOwner()) {
+        if ($data instanceof TenantAwareInterface && null === $data->getTenant()) {
             $user = $this->security->getUser();
-            if (null !== $user && method_exists($data, 'setUser')) {
-                $data->setUser($user);
+            if ($user instanceof \App\Entity\User) {
+                if (method_exists($data, 'setTenant')) {
+                    $data->setTenant($user);
+                }
+                if (method_exists($data, 'setUser')) {
+                    $data->setUser($user);
+                }
             }
         }
 

@@ -33,7 +33,7 @@ class ContactNameTest extends TestCase
         self::assertSame($newContact, $contactName->getContact());
     }
 
-    public function testGetOwner(): void
+    public function testGetTenant(): void
     {
         $contact = new Contact();
         $user = new User();
@@ -41,6 +41,6 @@ class ContactNameTest extends TestCase
 
         $contactName = new ContactName($contact);
 
-        self::assertSame($user, $contactName->getOwner());
+        self::assertSame($user, $contactName->getTenant());
     }
 }

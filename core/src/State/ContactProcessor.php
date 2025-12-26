@@ -6,7 +6,9 @@ use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Contact;
+use App\Security\TenantAwareInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
@@ -23,6 +25,7 @@ class ContactProcessor implements ProcessorInterface
         #[Autowire(service: UserOwnerProcessor::class)]
         private ProcessorInterface $userOwnerProcessor,
         private EntityManagerInterface $entityManager,
+        private Security $security,
     ) {
     }
 
@@ -33,6 +36,14 @@ class ContactProcessor implements ProcessorInterface
     #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
+        if (null === $data->getTenant()) {
+            $user = $this->security->getUser();
+            if ($user instanceof \App\Entity\User) {
+                $data->setTenant($user);
+                $data->setUser($user);
+            }
+        }
+
         $isPut = $operation instanceof \ApiPlatform\Metadata\Put;
 
         // For PUT operations on existing entities, we need to handle replacement semantics
@@ -48,11 +59,13 @@ class ContactProcessor implements ProcessorInterface
                 // Add new nested entities from the deserialized data
                 foreach ($data->getContactNames() as $contactName) {
                     $contactName->setContact($existing);
+                    $contactName->setTenant($existing->getTenant());
                     $existing->addContactName($contactName);
                 }
 
                 foreach ($data->getContactDates() as $contactDate) {
                     $contactDate->setContact($existing);
+                    $contactDate->setTenant($existing->getTenant());
                     $existing->addContactDate($contactDate);
                 }
 
@@ -66,11 +79,17 @@ class ContactProcessor implements ProcessorInterface
                 if (null === $contactName->getContact()) {
                     $contactName->setContact($data);
                 }
+                if (null === $contactName->getTenant()) {
+                    $contactName->setTenant($data->getTenant());
+                }
             }
 
             foreach ($data->getContactDates() as $contactDate) {
                 if (null === $contactDate->getContact()) {
                     $contactDate->setContact($data);
+                }
+                if (null === $contactDate->getTenant()) {
+                    $contactDate->setTenant($data->getTenant());
                 }
             }
         }

@@ -17,7 +17,7 @@ class ContactTest extends TestCase
 
         $contact->setUser($user);
         self::assertSame($user, $contact->getUser());
-        self::assertSame($user, $contact->getOwner());
+        self::assertSame($user, $contact->getTenant());
     }
 
     public function testContactNamesAssociation(): void

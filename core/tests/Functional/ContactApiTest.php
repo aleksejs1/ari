@@ -138,13 +138,13 @@ class ContactApiTest extends ApiTestCase
         ]);
         self::assertResponseIsSuccessful();
 
-        // 3. Verify security: other user cannot update
+        // 3. Verify security: other user cannot update (filtered out -> 404)
         $client->request('PATCH', $contactIri, [
             'auth_bearer' => $this->otherToken,
             'json' => [],
             'headers' => ['Content-Type' => 'application/merge-patch+json'],
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testDeleteContact(): void
@@ -158,11 +158,11 @@ class ContactApiTest extends ApiTestCase
         ]);
         $contactIri = $response->toArray()['@id'];
 
-        // 2. Verify security: other user cannot delete
+        // 2. Verify security: other user cannot delete (filtered out -> 404)
         $client->request('DELETE', $contactIri, [
             'auth_bearer' => $this->otherToken,
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
 
         // 3. Delete Contact
         $client->request('DELETE', $contactIri, [
@@ -188,11 +188,32 @@ class ContactApiTest extends ApiTestCase
         ]);
         $contactIri = $response->toArray()['@id'];
 
-        // User 2 tries to read User 1's contact
+        // Other user cannot see this contact (filtered out -> 404)
         $client->request('GET', $contactIri, [
             'auth_bearer' => $this->otherToken,
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
+
+        // Other user cannot update (filtered out -> 404)
+        $client->request('PUT', $contactIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => ['some' => 'data'],
+        ]);
+        self::assertResponseStatusCodeSame(404);
+
+        // Other user cannot patch (filtered out -> 404)
+        $client->request('PATCH', $contactIri, [
+            'auth_bearer' => $this->otherToken,
+            'json' => ['some' => 'data'],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(404);
+
+        // Other user cannot delete (filtered out -> 404)
+        $client->request('DELETE', $contactIri, [
+            'auth_bearer' => $this->otherToken,
+        ]);
+        self::assertResponseStatusCodeSame(404);
 
         // User 2 tries to list contacts (should not see User 1's contact)
         $response = $client->request('GET', '/api/contacts', [

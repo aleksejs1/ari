@@ -19,7 +19,7 @@ final class ContactController extends AbstractController
     public function index(ContactRepository $contactRepository): Response
     {
         return $this->render('contact/index.html.twig', [
-            'contacts' => $contactRepository->findBy(['user' => $this->getUser()]),
+            'contacts' => $contactRepository->findAll(),
         ]);
     }
 
@@ -30,6 +30,7 @@ final class ContactController extends AbstractController
         $user = $this->getUser();
         assert($user instanceof \App\Entity\User || null === $user);
         $contact->setUser($user);
+        $contact->setTenant($user);
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
 

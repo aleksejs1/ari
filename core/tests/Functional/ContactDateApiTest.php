@@ -141,13 +141,13 @@ class ContactDateApiTest extends ApiTestCase
         self::assertResponseIsSuccessful();
         self::assertCount(1, $response->toArray()['member']);
 
-        // 6. Security: Other user cannot see this item
+        // 6. Security: Other user cannot see this item (filtered out -> 404)
         $client->request('GET', $dateIri, [
             'auth_bearer' => $this->otherToken,
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
 
-        // Security: Other user cannot update (PUT)
+        // Security: Other user cannot update (PUT) (filtered out -> 404)
         $client->request('PUT', $dateIri, [
             'auth_bearer' => $this->otherToken,
             'json' => [
@@ -156,9 +156,9 @@ class ContactDateApiTest extends ApiTestCase
                 'contact' => $this->contactIri,
             ],
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
 
-        // Security: Other user cannot update (PATCH)
+        // Security: Other user cannot update (PATCH) (filtered out -> 404)
         $client->request('PATCH', $dateIri, [
             'auth_bearer' => $this->otherToken,
             'json' => [
@@ -166,13 +166,13 @@ class ContactDateApiTest extends ApiTestCase
             ],
             'headers' => ['Content-Type' => 'application/merge-patch+json'],
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
 
-        // Security: Other user cannot delete
+        // Security: Other user cannot delete (filtered out -> 404)
         $client->request('DELETE', $dateIri, [
             'auth_bearer' => $this->otherToken,
         ]);
-        self::assertResponseStatusCodeSame(403);
+        self::assertResponseStatusCodeSame(404);
 
         // 7. Security: Other user cannot list this item
         $response = $client->request('GET', '/api/contact_dates', [
@@ -208,6 +208,8 @@ class ContactDateApiTest extends ApiTestCase
             ],
         ]);
 
-        self::assertResponseStatusCodeSame(403);
+        // When trying to use another user's contact, the contact is not found due to filter
+        // -> 400 Bad Request (denormalization error) or 404
+        self::assertResponseStatusCodeSame(400);
     }
 }

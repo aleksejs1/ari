@@ -10,7 +10,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ContactDateRepository;
-use App\Security\OwnershipAwareInterface;
+use App\Security\TenantAwareInterface;
+use App\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -27,8 +28,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Put(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 #[Patch(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
 #[Delete(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]
-class ContactDate implements OwnershipAwareInterface
+class ContactDate implements TenantAwareInterface
 {
+    use TenantAwareTrait;
+
     #[Groups(['contact:read', 'contact_date:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -52,6 +55,7 @@ class ContactDate implements OwnershipAwareInterface
     {
         if (null !== $contact) {
             $this->contact = $contact;
+            $this->setTenant($contact->getTenant());
         }
     }
 
@@ -94,15 +98,5 @@ class ContactDate implements OwnershipAwareInterface
         $this->text = $text;
 
         return $this;
-    }
-
-    #[\Override]
-    public function getOwner(): ?User
-    {
-        if (null === $this->contact) {
-            throw new \LogicException('ContactDate must belong to a Contact.');
-        }
-
-        return $this->contact->getOwner();
     }
 }

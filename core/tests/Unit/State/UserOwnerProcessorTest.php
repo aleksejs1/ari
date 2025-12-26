@@ -5,7 +5,7 @@ namespace App\Tests\Unit\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
-use App\Security\OwnershipAwareInterface;
+use App\Security\TenantAwareInterface;
 use App\State\UserOwnerProcessor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -28,7 +28,7 @@ class UserOwnerProcessorTest extends TestCase
         $this->processor = new UserOwnerProcessor($this->persistProcessor, $this->security);
     }
 
-    public function testProcessDoesNothingIfNotOwnershipAware(): void
+    public function testProcessDoesNothingIfNotTenantAware(): void
     {
         $data = new \stdClass();
         $operation = self::createStub(Operation::class);
@@ -44,11 +44,11 @@ class UserOwnerProcessorTest extends TestCase
         self::assertSame($data, $result);
     }
 
-    public function testProcessDoesNothingIfOwnerAlreadySet(): void
+    public function testProcessDoesNothingIfTenantAlreadySet(): void
     {
         $user = self::createStub(User::class);
-        $data = self::createStub(OwnershipAwareInterface::class);
-        $data->method('getOwner')->willReturn($user);
+        $data = self::createStub(TenantAwareInterface::class);
+        $data->method('getTenant')->willReturn($user);
 
         $operation = self::createStub(Operation::class);
 
@@ -63,21 +63,21 @@ class UserOwnerProcessorTest extends TestCase
         self::assertSame($data, $result);
     }
 
-    public function testProcessSetsUserIfOwnershipAwareAndNoOwner(): void
+    public function testProcessSetsTenantIfTenantAwareAndNoTenant(): void
     {
         $user = self::createStub(User::class);
-        $data = new class () implements OwnershipAwareInterface {
-            private ?User $user = null;
+        $data = new class () implements TenantAwareInterface {
+            private ?User $tenant = null;
 
             #[\Override]
-            public function getOwner(): ?User
+            public function getTenant(): ?User
             {
-                return $this->user;
+                return $this->tenant;
             }
 
-            public function setUser(User $user): void
+            public function setTenant(User $tenant): void
             {
-                $this->user = $user;
+                $this->tenant = $tenant;
             }
         };
 
@@ -91,23 +91,23 @@ class UserOwnerProcessorTest extends TestCase
 
         $result = $this->processor->process($data, $operation);
         self::assertSame($data, $result);
-        self::assertSame($user, $data->getOwner());
+        self::assertSame($user, $data->getTenant());
     }
 
-    public function testProcessDoesNotSetUserIfNoAuthenticatedUser(): void
+    public function testProcessDoesNotSetTenantIfNoAuthenticatedUser(): void
     {
-        $data = new class () implements OwnershipAwareInterface {
-            private ?User $user = null;
+        $data = new class () implements TenantAwareInterface {
+            private ?User $tenant = null;
 
             #[\Override]
-            public function getOwner(): ?User
+            public function getTenant(): ?User
             {
-                return $this->user;
+                return $this->tenant;
             }
 
-            public function setUser(User $user): void
+            public function setTenant(User $tenant): void
             {
-                $this->user = $user;
+                $this->tenant = $tenant;
             }
         };
 
@@ -121,6 +121,6 @@ class UserOwnerProcessorTest extends TestCase
 
         $result = $this->processor->process($data, $operation);
         self::assertSame($data, $result);
-        self::assertNull($data->getOwner());
+        self::assertNull($data->getTenant());
     }
 }

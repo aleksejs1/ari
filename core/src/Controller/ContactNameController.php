@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Entity\ContactName;
-use App\Entity\User;
 use App\Form\ContactNameType;
 use App\Repository\ContactNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,15 +19,8 @@ final class ContactNameController extends AbstractController
     #[Route(name: 'app_contact_name_index', methods: ['GET'])]
     public function index(ContactNameRepository $contactNameRepository): Response
     {
-        $user = $this->getUser();
-        if ($user instanceof User) {
-            $contactNames = $contactNameRepository->findByUser($user);
-        } else {
-            $contactNames = [];
-        }
-
         return $this->render('contact_name/index.html.twig', [
-            'contact_names' => $contactNames,
+            'contact_names' => $contactNameRepository->findAll(),
         ]);
     }
 
