@@ -97,9 +97,6 @@ docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
 
 ### 🗺️ Planned Features
 
-- [ ] **Audit Logs for All Changes**  
-  Implement audit system to track all entity changes (who, when, and what was changed)
-
 - [ ] **Google Contacts Import Service**  
   Integration with Google Contacts API for importing and synchronizing contacts
 
@@ -108,3 +105,6 @@ docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
 
 - [ ] **User Statistics**  
   Implement statistics for contact views and user interactions with contacts
+
+- [ ] **Notifications**  
+  Implement notifications for dates
