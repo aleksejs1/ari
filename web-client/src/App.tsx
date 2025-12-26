@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 
 import DashboardLayout from './components/layout/DashboardLayout'
+import AuditLogsPage from './features/audit-logs/AuditLogsPage'
 import ContactsPage from './features/contacts/ContactsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
@@ -37,6 +38,10 @@ export default function App() {
             {
               path: '/',
               element: <ContactsPage />,
+            },
+            {
+              path: '/audit-logs',
+              element: <AuditLogsPage />,
             },
           ],
         },

@@ -4,6 +4,58 @@
  */
 
 export interface paths {
+    "/api/audit_logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of AuditLog resources.
+         * @description Retrieves the collection of AuditLog resources.
+         */
+        get: operations["api_audit_logs_get_collection"];
+        put?: never;
+        /**
+         * Creates a AuditLog resource.
+         * @description Creates a AuditLog resource.
+         */
+        post: operations["api_audit_logs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/audit_logs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a AuditLog resource.
+         * @description Retrieves a AuditLog resource.
+         */
+        get: operations["api_audit_logs_id_get"];
+        put?: never;
+        post?: never;
+        /**
+         * Removes the AuditLog resource.
+         * @description Removes the AuditLog resource.
+         */
+        delete: operations["api_audit_logs_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the AuditLog resource.
+         * @description Updates the AuditLog resource.
+         */
+        patch: operations["api_audit_logs_id_patch"];
+        trace?: never;
+    };
     "/api/contacts": {
         parameters: {
             query?: never;
@@ -172,6 +224,26 @@ export interface paths {
         patch: operations["api_contact_names_id_patch"];
         trace?: never;
     };
+    "/api/contacts/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactTimeline resource.
+         * @description Retrieves a ContactTimeline resource.
+         */
+        get: operations["get_contact_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/login_check": {
         parameters: {
             query?: never;
@@ -236,6 +308,122 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AuditLog: {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            user?: string;
+            entityType?: string;
+            entityId?: number | null;
+            action?: string;
+            changes?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotBefore?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotAfter?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            tenant?: string;
+        };
+        "AuditLog-audit.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            user?: string;
+            entityType?: string;
+            entityId?: number | null;
+            action?: string;
+            changes?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotBefore?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotAfter?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        "AuditLog.jsonMergePatch": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            user?: string;
+            entityType?: string;
+            entityId?: number | null;
+            action?: string;
+            changes?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotBefore?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotAfter?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            tenant?: string;
+        };
+        "AuditLog.jsonld-audit.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            user?: string;
+            entityType?: string;
+            entityId?: number | null;
+            action?: string;
+            changes?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotBefore?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotAfter?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        Collection: {
+            /** @description Checks whether the collection is empty (contains no elements). */
+            readonly empty?: boolean;
+            /** @description Gets all keys/indices of the collection. */
+            readonly keys?: number[] | string[];
+            /** @description Gets all values of the collection. */
+            readonly values?: (string | null)[];
+            readonly iterator?: unknown;
+        };
+        "Collection.jsonld": {
+            /** @description Checks whether the collection is empty (contains no elements). */
+            readonly empty?: boolean;
+            /** @description Gets all keys/indices of the collection. */
+            readonly keys?: number[] | string[];
+            /** @description Gets all values of the collection. */
+            readonly values?: (string | null)[];
+            readonly iterator?: unknown;
+        };
         /** @description Unprocessable entity */
         ConstraintViolation: {
             /** @default 422 */
@@ -267,8 +455,14 @@ export interface components {
             readonly title?: string | null;
             readonly instance?: string | null;
         };
-        "Contact-contact.create": Record<string, never>;
-        "Contact-contact.create.jsonMergePatch": Record<string, never>;
+        "Contact-contact.create": {
+            contactNames?: components["schemas"]["ContactName-contact.create"][];
+            contactDates?: components["schemas"]["ContactDate-contact.create"][];
+        };
+        "Contact-contact.create.jsonMergePatch": {
+            contactNames?: components["schemas"]["ContactName-contact.create"][];
+            contactDates?: components["schemas"]["ContactDate-contact.create"][];
+        };
         "Contact-contact.read": {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName-contact.read"][];
@@ -278,6 +472,11 @@ export interface components {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName.jsonld-contact.read"][];
             contactDates?: components["schemas"]["ContactDate.jsonld-contact.read"][];
+        };
+        "ContactDate-contact.create": {
+            /** Format: date-time */
+            date?: string | null;
+            text?: string | null;
         };
         "ContactDate-contact.read": {
             readonly id?: number;
@@ -290,7 +489,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
@@ -300,7 +499,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
@@ -311,7 +510,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
@@ -328,10 +527,14 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+        };
+        "ContactName-contact.create": {
+            family?: string | null;
+            given?: string | null;
         };
         "ContactName-contact.read": {
             readonly id?: number;
@@ -345,7 +548,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
         };
         "ContactName-contact_name.create_contact_name.update.jsonMergePatch": {
             family?: string | null;
@@ -354,7 +557,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
         };
         "ContactName-contact_name.read": {
             readonly id?: number;
@@ -364,7 +567,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
         };
         "ContactName.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -379,7 +582,15 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            contact?: string;
+            contact?: string | null;
+        };
+        ContactTimeline: {
+            id?: number;
+            logs?: components["schemas"]["Collection"];
+        };
+        "ContactTimeline.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: number;
+            logs?: components["schemas"]["Collection.jsonld"];
         };
         /** @description A representation of common errors. */
         Error: {
@@ -494,6 +705,269 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    api_audit_logs_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+                entityType?: string;
+                "entityType[]"?: string[];
+                entityId?: number;
+                "entityId[]"?: number[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AuditLog collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["AuditLog.jsonld-audit.read"][];
+                    };
+                    "application/json": components["schemas"]["AuditLog-audit.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_audit_logs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new AuditLog resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["AuditLog"];
+                "application/json": components["schemas"]["AuditLog"];
+            };
+        };
+        responses: {
+            /** @description AuditLog resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["AuditLog.jsonld-audit.read"];
+                    "application/json": components["schemas"]["AuditLog-audit.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_audit_logs_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description AuditLog identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AuditLog resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["AuditLog.jsonld-audit.read"];
+                    "application/json": components["schemas"]["AuditLog-audit.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_audit_logs_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description AuditLog identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AuditLog resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_audit_logs_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description AuditLog identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated AuditLog resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["AuditLog.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description AuditLog resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["AuditLog.jsonld-audit.read"];
+                    "application/json": components["schemas"]["AuditLog-audit.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
     api_contacts_get_collection: {
         parameters: {
             query?: {
@@ -1489,6 +1963,41 @@ export interface operations {
                     "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
                     "application/problem+json": components["schemas"]["ConstraintViolation"];
                     "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    get_contact_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactTimeline identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactTimeline resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactTimeline.jsonld"];
+                    "application/json": components["schemas"]["ContactTimeline"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useCreateContact, useUpdateContact } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
+import { ContactTimeline } from './ContactTimeline'
 
 import {
   Sheet,
@@ -76,6 +77,7 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
             onSubmit={handleSubmit}
             isSubmitting={createMutation.isPending || updateMutation.isPending}
           />
+          {contact && contact.id && <ContactTimeline contactId={contact.id.toString()} />}
         </div>
       </SheetContent>
     </Sheet>

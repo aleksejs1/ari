@@ -1,4 +1,4 @@
-import { Users, LogOut } from 'lucide-react'
+import { Users, LogOut, History } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
 
@@ -26,6 +26,13 @@ export default function DashboardLayout() {
           >
             <Users className="w-5 h-5" />
             <span>{t('contacts.title')}</span>
+          </Link>
+          <Link
+            to="/audit-logs"
+            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
+            <History className="w-5 h-5" />
+            <span>{t('auditLogs.title', 'Audit Logs')}</span>
           </Link>
         </nav>
         <div className="absolute bottom-4 left-4 right-4 space-y-2">

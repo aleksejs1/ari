@@ -35,3 +35,20 @@ export const contactSchema = z.object({
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>
+
+export interface ContactTimeline {
+  id: number
+  logs: TimelineEvent[]
+}
+
+export interface TimelineEvent {
+  id: number
+  action: string
+  entityType: string
+  entityId?: number
+  changes?: Record<string, unknown> | null
+  snapshotBefore?: Record<string, unknown> | null
+  snapshotAfter?: Record<string, unknown> | null
+  createdAt: string
+  user?: string
+}
