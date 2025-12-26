@@ -11,16 +11,17 @@ export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read
 // Contact-contact.create usually implies nested creation
 
 export const contactNameSchema = z.object({
-  id: z.string().optional(), // For updates, if managing individually?
-  // Actually, usually in API Platform nested writes, we just send the object.
-  // ID might be needed if updating an existing child relation, but for new Contacts
-  // it's just given/family.
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
   given: z.string().min(1, 'First name is required'),
   family: z.string().optional(),
 })
 
 export const contactDateSchema = z.object({
   id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
   date: z
     .string()
     .or(z.date())

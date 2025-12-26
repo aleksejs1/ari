@@ -31,11 +31,15 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
     ? {
         contactNames: (contact.contactNames ?? []).map((n) => ({
           id: n.id?.toString(),
+          '@id': n['@id'],
+          '@type': 'ContactName',
           given: n.given ?? '',
           family: n.family ?? '',
         })),
         contactDates: (contact.contactDates ?? []).map((d) => ({
           id: d.id?.toString(),
+          '@id': d['@id'],
+          '@type': 'ContactDate',
           date: d.date ?? new Date().toISOString(), // Fallback if null, though backend should validate
           text: d.text ?? '',
         })),
