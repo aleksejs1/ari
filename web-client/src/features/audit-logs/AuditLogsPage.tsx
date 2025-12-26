@@ -56,12 +56,56 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
     {log.changes && Object.keys(log.changes).length > 0 && (
       <div className="mt-4 bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {Object.entries(log.changes as Record<string, unknown>).map(([key, val]) => (
-            <div key={key} className="break-all">
-              <span className="font-semibold text-gray-700 dark:text-gray-300">{key}:</span>{' '}
-              <span className="text-gray-600 dark:text-gray-400">{formatChangeValue(val)}</span>
-            </div>
-          ))}
+          {Object.entries(log.changes as Record<string, unknown>)
+            .filter(([key]) => key !== 'user' && key !== 'tenant')
+            .map(([key, val]) => (
+              <div key={key} className="break-all">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">{key}:</span>{' '}
+                <span className="text-gray-600 dark:text-gray-400">{formatChangeValue(val)}</span>
+              </div>
+            ))}
+        </div>
+      </div>
+    )}
+
+    {log.action === 'REMOVE' && log.snapshotBefore && (
+      <div className="mt-4">
+        <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">
+          Snapshot Before Removal
+        </div>
+        <div className="bg-red-50 dark:bg-red-900/20 rounded-md p-4 text-sm border border-red-100 dark:border-red-900/30">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+            {Object.entries(log.snapshotBefore)
+              .filter(([key]) => key !== 'user' && key !== 'tenant')
+              .map(([key, val]) => (
+                <div key={key} className="break-all">
+                  <span className="font-semibold text-red-800 dark:text-red-300">{key}:</span>{' '}
+                  <span className="text-red-700 dark:text-red-400">{formatChangeValue(val)}</span>
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {log.action === 'INSERT' && log.snapshotAfter && (
+      <div className="mt-4">
+        <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">
+          Snapshot After Insertion
+        </div>
+        <div className="bg-green-50 dark:bg-green-900/20 rounded-md p-4 text-sm border border-green-100 dark:border-green-900/30">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+            {Object.entries(log.snapshotAfter)
+              .filter(([key]) => key !== 'user' && key !== 'tenant')
+              .map(([key, val]) => (
+                <div key={key} className="break-all">
+                  <span className="font-semibold text-green-800 dark:text-green-300">{key}:</span>{' '}
+                  <span className="text-green-700 dark:text-green-400">
+                    {formatChangeValue(val)}
+                  </span>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     )}
@@ -110,7 +154,9 @@ export default function AuditLogsPage() {
   } = useQuery({
     queryKey: ['audit-logs', page],
     queryFn: async () => {
-      const res = await api.get<AuditLogCollection>(`/audit_logs?page=${page}`)
+      const res = await api.get<AuditLogCollection>(
+        `/audit_logs?page=${page}&order%5BcreatedAt%5D=desc`,
+      )
       return res.data
     },
     placeholderData: (previousData) => previousData,

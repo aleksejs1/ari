@@ -13,7 +13,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-white dark:bg-gray-800 border-r hidden md:block">
+      <aside className="w-64 bg-white dark:bg-gray-800 border-r hidden md:block flex flex-col h-screen sticky top-0">
         <div className="p-6">
           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
             {t('app.title')}
@@ -35,17 +35,15 @@ export default function DashboardLayout() {
             <span>{t('auditLogs.title', 'Audit Logs')}</span>
           </Link>
         </nav>
-        <div className="absolute bottom-4 left-4 right-4 space-y-2">
-          <div className="p-4 border-t dark:border-gray-700 space-y-2">
-            <div className="mb-2 text-sm font-medium truncate" title={user?.uuid}>
-              {user?.uuid}
-            </div>
-            <LanguageSwitcher />
-            <Button variant="outline" className="w-full justify-start gap-2" onClick={logout}>
-              <LogOut className="w-4 h-4" />
-              {t('auth.logout')}
-            </Button>
+        <div className="mt-auto p-4 border-t dark:border-gray-700 space-y-2">
+          <div className="mb-2 text-sm font-medium truncate" title={user?.uuid}>
+            {user?.uuid}
           </div>
+          <LanguageSwitcher />
+          <Button variant="outline" className="w-full justify-start gap-2" onClick={logout}>
+            <LogOut className="w-4 h-4" />
+            {t('auth.logout')}
+          </Button>
         </div>
       </aside>
 
