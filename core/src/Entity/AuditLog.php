@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -18,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     security: "is_granted('ROLE_USER')"
 )]
 #[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt' => 'DESC'])]
 class AuditLog implements TenantAwareInterface
 {
     use TenantAwareTrait;
