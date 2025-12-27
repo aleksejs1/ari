@@ -89,12 +89,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: NotificationSubscription::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notificationSubscriptions;
 
+    /**
+     * @var Collection<int, TokenStorage>
+     */
+    #[ORM\OneToMany(targetEntity: TokenStorage::class, mappedBy: 'user')]
+    private Collection $tokenStorages;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->auditLogs = new ArrayCollection();
         $this->notificationChannels = new ArrayCollection();
         $this->notificationSubscriptions = new ArrayCollection();
+        $this->tokenStorages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -301,6 +308,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($notificationSubscription->getUser() === $this) {
                 $notificationSubscription->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TokenStorage>
+     */
+    public function getTokenStorages(): Collection
+    {
+        return $this->tokenStorages;
+    }
+
+    public function addTokenStorage(TokenStorage $tokenStorage): static
+    {
+        if (!$this->tokenStorages->contains($tokenStorage)) {
+            $this->tokenStorages->add($tokenStorage);
+            $tokenStorage->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTokenStorage(TokenStorage $tokenStorage): static
+    {
+        if ($this->tokenStorages->removeElement($tokenStorage)) {
+            // set the owning side to null (unless already changed)
+            if ($tokenStorage->getUser() === $this) {
+                $tokenStorage->setUser(null);
             }
         }
 

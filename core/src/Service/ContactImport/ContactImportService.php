@@ -8,7 +8,7 @@ use App\Entity\ContactDate;
 use App\Entity\ContactName;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 class ContactImportService
 {
@@ -16,7 +16,7 @@ class ContactImportService
      * @param iterable<ContactDuplicateCheckerInterface> $checkers
      */
     public function __construct(
-        #[TaggedIterator('app.contact_duplicate_checker')]
+        #[AutowireIterator('app.contact_duplicate_checker')]
         private readonly iterable $checkers,
         private readonly EntityManagerInterface $entityManager,
     ) {
