@@ -21,7 +21,7 @@ class GoogleOAuthService
     ) {
     }
 
-    public function getAuthorizationUrl(): string
+    public function getAuthorizationUrl(?string $state = null): string
     {
         $params = [
             'client_id' => $this->clientId,
@@ -31,6 +31,10 @@ class GoogleOAuthService
             'access_type' => 'offline',
             'prompt' => 'consent',
         ];
+
+        if ($state !== null) {
+            $params['state'] = $state;
+        }
 
         return self::AUTH_URL . '?' . http_build_query($params);
     }

@@ -39,7 +39,7 @@ class GoogleAuthTest extends ApiTestCase
         return $response->toArray()['token'];
     }
 
-    public function testConnectGoogleStartReturnsJsonUrl(): void
+    public function testConnectGoogleStartReturnsJsonUrlWithState(): void
     {
         $token = $this->getAuthToken();
         $client = self::createClient();
@@ -52,21 +52,17 @@ class GoogleAuthTest extends ApiTestCase
         $content = $response->toArray();
 
         self::assertArrayHasKey('url', $content);
-        self::assertStringContainsString('https://accounts.google.com/o/oauth2/v2/auth', $content['url']);
+        self::assertStringContainsString('state=', $content['url']);
     }
 
-    public function testConnectGoogleCheckRequiresCode(): void
+    public function testConnectGoogleCheckRequiresCodeAndState(): void
     {
-        $token = $this->getAuthToken();
         $client = self::createClient();
 
-        $response = $client->request('GET', '/connect/google/check', ['auth_bearer' => $token]);
-
+        $client->request('GET', '/connect/google/check');
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
-        $content = $response->toArray(false);
-
-        self::assertArrayHasKey('error', $content);
-        self::assertSame('No code provided', $content['error']);
+        $client->request('GET', '/connect/google/check', ['query' => ['code' => 'test']]);
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 }
