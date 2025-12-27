@@ -1,6 +1,7 @@
 # Ari
 
-**Ari** is an open-source personal CRM focused on **data reliability**, **reliable notifications**, and **long-term trust**.  
+**Ari** is a self-hosted personal CRM built around **immutable history and reliable notifications**.
+  
 It is designed for people who want full control over their personal data, complete change history, and the ability to self-host with 100% privacy.
 
 Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency, auditability, and longevity.
@@ -37,56 +38,96 @@ That is how Ari started.
 - **Privacy by design**  
     No tracking, no dark patterns, no data extraction incentives.
 - **Monolith first, clean architecture**  
-    Simple, understandable systems age better than over-engineered ones.
+    Start simple. Optimize and split only when the system proves it needs it.
 
 ---
-## What exists today (early stage)
+## What exists today
 
-Ari is still in an early phase, but it already includes:
+Ari is still an early-stage project, but it already provides **real, working functionality**.
+
+### Core features
+
+- User authentication and strict data ownership
+- Contact management with a structured domain model:
+    - Contacts
+    - Multiple names per contact
+    - Multiple dates per contact (birthdays, anniversaries, custom dates)
+- **Audit log**:
+    - full history of contact lifecycle
+    - visibility into create, update, and delete operations
+- **Notification system**:
+    - configurable notification channels
+    - date-based notification subscriptions
+    - delivery log for sent notifications
+    - first implemented channel: **Telegram**
+
+### Integrations
+
+- **Google Contacts import** (basic, early version)
+
+### Web client
+
+- React-based UI with multi-language support
+- Contact list with create, edit, and delete flows
+- Audit log UI with pagination and filtering
+- Notification configuration via the UI
+
+### Platform & quality
 
 - Dockerized development environment
-- Backend API built with **PHP 8.5**, **Symfony 7.4**, **API Platform**, and **MariaDB**
-- Web client built with **React**, including multi-language support
-- Authentication
-- Contact domain model:
-    - Contacts
-    - Names (a contact can have multiple names)
-    - Dates (birthdays, anniversaries, custom dates)
-- Strong focus on code quality:
-    - extensive automated tests
-    - static analysis
-    - linters and format checkers
+- Fully documented API (OpenAPI)
+- Extensive automated tests (backend and frontend)
+- Strict static analysis, linters, and format checks
 
-This is a foundation, not a finished product.
+This is no longer just a technical foundation.  
+It is an **early but usable system**, still evolving and not yet production-ready.
+
+Some workflows are still rough, and parts of the system are intentionally over-engineered for correctness rather than UX polish.
 
 ---
 ## Architecture at a glance
 
-- **Backend**
-    - PHP 8.5
-    - Symfony 7.4
-    - API Platform
-    - MariaDB
-- **Frontend**
-    - React
-    - Multilingual UI
-- **Infrastructure**
-    - Docker-based local development
-    - Self-hosted by design
+### Backend
 
-The architecture favors clarity and maintainability over early optimization.
+- **PHP 8.5**
+- **Symfony 7.4**
+- **API Platform** (OpenAPI-first)
+- **MariaDB**
+- Token-based authentication
+- Strict user data isolation at the Doctrine level (no accidental data leaks)
+- Audit logging via Doctrine event subscribers (history by default)
+
+### Frontend
+
+- **React**
+- Multilingual UI
+- Typed API client generated from OpenAPI
+- Strict linting, static analysis, and automated tests
+
+### Infrastructure
+
+- Docker-based development environment
+- Cron-based background jobs (notifications)
+- Designed for self-hosting from day one
+
+The architecture favors **clarity, correctness, and long-term maintainability** over early optimization or premature distribution.
 
 ---
 ## Project status & expectations
 
+Ari is an **early but functional project**.
+
 - This is a **solo-developed** project.
-- Development happens at a sustainable pace.
-- There are **no fixed deadlines**.
-- Breaking changes are possible.
-- The project is developed publicly, with a strong focus on correctness and trust rather than speed.
+- Development is active and happens at a sustainable pace.
+- The core architecture and data model are in place.
+- Key features such as contacts, audit logs, and notifications already exist and are working.
+- There are **no fixed deadlines**, and breaking changes are still possible.
+
+Ari is **not production-ready yet**, and some areas require further work (performance, imports, self-hosting polish).  
+However, the project already delivers real value and is actively evolving.
 
 If you are looking for a polished, feature-complete CRM today, Ari is probably not for you.  
-If you care about long-term data reliability, transparency, and a thoughtful approach to personal data — you might want to follow along.
+If you care about **data reliability, transparent history, and trustworthy notifications**, and are comfortable with an evolving system — Ari may be worth following or experimenting with early.
 
 ---
 ## Screenshots
