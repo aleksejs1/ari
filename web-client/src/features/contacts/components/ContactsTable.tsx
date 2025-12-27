@@ -2,6 +2,8 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tan
 import { Edit, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { ContactNameInlineEdit } from './ContactNameInlineEdit'
+
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -11,15 +13,23 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { type Contact } from '@/types/models'
+import { type Contact, type ContactName } from '@/types/models'
 
 interface ContactsTableProps {
   data: Contact[]
   onEdit: (contact: Contact) => void
   onDelete: (contact: Contact) => void
+  onUpdateName: (contact: Contact, name: ContactName) => void
+  onDeleteName: (contact: Contact, name: ContactName) => void
 }
 
-export function ContactsTable({ data, onEdit, onDelete }: ContactsTableProps) {
+export function ContactsTable({
+  data,
+  onEdit,
+  onDelete,
+  onUpdateName,
+  onDeleteName,
+}: ContactsTableProps) {
   const { t } = useTranslation()
 
   const columns: ColumnDef<Contact>[] = [
@@ -27,13 +37,19 @@ export function ContactsTable({ data, onEdit, onDelete }: ContactsTableProps) {
       accessorKey: 'contactNames',
       header: t('contacts.name', 'Name'),
       cell: ({ row }) => {
-        const names = row.original.contactNames || []
+        const names = row.original.contactNames?.length
+          ? row.original.contactNames
+          : [{ given: '', family: '' } as ContactName]
+
         return (
           <div className="flex flex-col">
             {names.map((name, i) => (
-              <span key={i} className="font-medium">
-                {name.given} {name.family}
-              </span>
+              <ContactNameInlineEdit
+                key={i}
+                name={name}
+                onUpdate={(updatedName) => onUpdateName(row.original, updatedName)}
+                onDelete={() => onDeleteName(row.original, name)}
+              />
             ))}
           </div>
         )

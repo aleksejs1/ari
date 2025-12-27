@@ -2,7 +2,16 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import ContactsPage from './ContactsPage'
-import { useContacts, useDeleteContact, type HydraCollection } from './useContacts'
+import {
+  useContacts,
+  useDeleteContact,
+  useUpdateContactName,
+  useCreateContactName,
+  useDeleteContactName,
+  type HydraCollection,
+} from './useContacts'
+
+// ... existing code ...
 
 vi.mock('./useContacts', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>
@@ -10,6 +19,9 @@ vi.mock('./useContacts', async (importOriginal) => {
     ...actual,
     useContacts: vi.fn(),
     useDeleteContact: vi.fn(),
+    useUpdateContactName: vi.fn(),
+    useCreateContactName: vi.fn(),
+    useDeleteContactName: vi.fn(),
   }
 })
 
@@ -71,6 +83,18 @@ describe('ContactsPage', () => {
       mutateAsync: mockMutateAsync,
       reset: vi.fn(),
     } as unknown as ReturnType<typeof useDeleteContact>)
+
+    vi.mocked(useUpdateContactName).mockReturnValue({
+      mutateAsync: vi.fn(),
+    } as unknown as ReturnType<typeof useUpdateContactName>)
+
+    vi.mocked(useCreateContactName).mockReturnValue({
+      mutateAsync: vi.fn(),
+    } as unknown as ReturnType<typeof useCreateContactName>)
+
+    vi.mocked(useDeleteContactName).mockReturnValue({
+      mutateAsync: vi.fn(),
+    } as unknown as ReturnType<typeof useDeleteContactName>)
   })
 
   it('renders loading state', () => {
