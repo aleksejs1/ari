@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
-#[Route('/api/connect/google')]
+#[Route('/connect/google')]
 class GoogleAuthController extends AbstractController
 {
     public function __construct(

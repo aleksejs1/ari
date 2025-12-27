@@ -168,9 +168,9 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 description: 'Returns the URL to redirect the user to for Google authentication.'
             )
         );
-        $openApi->getPaths()->addPath('/api/connect/google', $connectGooglePath);
+        $openApi->getPaths()->addPath('/connect/google', $connectGooglePath);
 
-        // Add /api/connect/google/check path
+        // Add /connect/google/check path
         $connectGoogleCheckPath = new Model\PathItem(
             ref: 'Google Auth Check',
             get: new Model\Operation(
@@ -222,7 +222,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 description: 'Exchanges the authorization code for an access token and stores it.'
             )
         );
-        $openApi->getPaths()->addPath('/api/connect/google/check', $connectGoogleCheckPath);
+        $openApi->getPaths()->addPath('/connect/google/check', $connectGoogleCheckPath);
 
         return $openApi;
     }
