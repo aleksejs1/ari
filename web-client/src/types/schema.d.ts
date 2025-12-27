@@ -244,7 +244,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/connect/google": {
+    "/api/google/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import contacts from Google People API.
+         * @description Triggers an import of contacts using the stored Google OAuth token for the current user.
+         */
+        post: operations["importGoogleContacts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connect/google": {
         parameters: {
             query?: never;
             header?: never;
@@ -264,7 +284,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/connect/google/check": {
+    "/connect/google/check": {
         parameters: {
             query?: never;
             header?: never;
@@ -278,26 +298,6 @@ export interface paths {
         get: operations["connectGoogleCheck"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/google/import": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Import contacts from Google People API.
-         * @description Triggers an import of contacts using the stored Google OAuth token for the current user.
-         */
-        post: operations["importGoogleContacts"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2317,6 +2317,40 @@ export interface operations {
             };
         };
     };
+    importGoogleContacts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contacts imported successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example 10 */
+                        imported?: number;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
     connectGoogleStart: {
         parameters: {
             query?: never;
@@ -2361,40 +2395,6 @@ export interface operations {
                     "application/json": {
                         /** @example true */
                         success?: boolean;
-                    };
-                };
-            };
-            /** @description Bad Request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        error?: string;
-                    };
-                };
-            };
-        };
-    };
-    importGoogleContacts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Contacts imported successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example 10 */
-                        imported?: number;
                     };
                 };
             };

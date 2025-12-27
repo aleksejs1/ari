@@ -22,7 +22,7 @@ describe('axios api', () => {
   })
 
   it('has correct base URL and headers', () => {
-    expect(api.defaults.baseURL).toBe('/api')
+    expect(api.defaults.baseURL).toBe('http://localhost:8000/api')
     expect(api.defaults.headers['Content-Type']).toBe('application/ld+json')
     expect(api.defaults.headers['Accept']).toBe('application/ld+json')
   })
@@ -33,7 +33,6 @@ describe('axios api', () => {
     // @ts-expect-error - accessing internal interceptors for testing
     const interceptor = api.interceptors.request.handlers[0].fulfilled
     const config = { headers: {} }
-    // @ts-expect-error - mock config structure
     const result = interceptor(config)
 
     expect(result.headers.Authorization).toBe('Bearer fake-token')
@@ -45,7 +44,6 @@ describe('axios api', () => {
     // @ts-expect-error - accessing internal interceptors for testing
     const interceptor = api.interceptors.request.handlers[0].fulfilled
     const config = { headers: {} }
-    // @ts-expect-error - mock config structure
     const result = interceptor(config)
 
     expect(result.headers.Authorization).toBeUndefined()

@@ -23,7 +23,7 @@ export default function GoogleImportPage() {
       setIsAuthenticating(true)
       setError(null)
       try {
-        await api.get('/connect/google/check', {
+        await api.get('../connect/google', {
           params: { code: authCode },
           headers: {
             Accept: 'application/json',
@@ -49,14 +49,14 @@ export default function GoogleImportPage() {
   const handleAuthorize = async () => {
     setError(null)
     try {
-      const response = await api.get('/connect/google', {
+      const response = await api.get('../connect/google', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       })
       if (response.data.url) {
-        window.location.href = response.data.url
+        window.open(response.data.url, '_blank')
       }
     } catch (err) {
       console.error('Failed to get auth URL', err)
@@ -121,7 +121,7 @@ export default function GoogleImportPage() {
               {t('googleImport.authorize')}
             </Button>
 
-            <Button onClick={handleImport} disabled={!authSuccess || isImporting} variant="default">
+            <Button onClick={handleImport} disabled={isImporting} variant="default">
               {isImporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               {t('googleImport.import')}
             </Button>
