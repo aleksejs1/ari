@@ -42,7 +42,7 @@ export function NotificationSubscriptions({
 
   useEffect(() => {
     fetchData()
-  }, [entityType, entityId])
+  }, [fetchData])
 
   const handleAdd = async (channelId: string) => {
     try {

@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-rou
 import DashboardLayout from './components/layout/DashboardLayout'
 import AuditLogsPage from './features/audit-logs/AuditLogsPage'
 import ContactsPage from './features/contacts/ContactsPage'
+import GoogleImportPage from './features/google-import/GoogleImportPage'
 import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
@@ -46,6 +47,10 @@ export default function App() {
             {
               path: '/notification-channels',
               element: <NotificationChannelsPage />,
+            },
+            {
+              path: '/google-import',
+              element: <GoogleImportPage />,
             },
           ],
         },

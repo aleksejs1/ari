@@ -27,7 +27,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
   const { t } = useTranslation()
   const form = useForm<ContactFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(contactSchema) as any, // Cast to any to avoid strict type mismatch with field arrays/dates
+    resolver: zodResolver(contactSchema) as any,
     defaultValues: defaultValues || {
       contactNames: [{ given: '', family: '' }],
       contactDates: [],
@@ -167,6 +167,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                   </Button>
                 </div>
                 {(() => {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const atId = (field as any)['@id']
                   const realId = atId ? Number(atId.split('/').pop()) : null
                   return realId ? (

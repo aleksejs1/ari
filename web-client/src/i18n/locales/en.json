@@ -57,5 +57,13 @@
     "saving": "Saving...",
     "cancel": "Cancel",
     "actions": "Actions"
+  },
+  "googleImport": {
+    "title": "Google Import",
+    "authorize": "Authorize in Google",
+    "import": "Import Contacts",
+    "success": "Contacts imported successfully: {{count}}",
+    "error": "An error occurred during import.",
+    "authSuccess": "Authorization successful!"
   }
 }
