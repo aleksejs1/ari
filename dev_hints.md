@@ -106,5 +106,3 @@ docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
 - [ ] **User Statistics**  
   Implement statistics for contact views and user interactions with contacts
 
-- [ ] **Notifications**  
-  Implement notifications for dates
