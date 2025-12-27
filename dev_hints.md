@@ -97,9 +97,6 @@ docker exec -it -w /app/core ari-app-1 vendor/bin/phpunit
 
 ### 🗺️ Planned Features
 
-- [ ] **Google Contacts Import Service**  
-  Integration with Google Contacts API for importing and synchronizing contacts
-
 - [ ] **Analytics**  
   Add analytics system to track application usage
 

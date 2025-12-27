@@ -95,3 +95,6 @@ Here are some screenshots of the project as it currently looks:
 
 ![Audit Log](assets/ari_audit.png)
 ![Contact List](assets/ari_list.png)
+![Contact Edit](assets/ari_edit_contact.png)
+![Notification Channels confoguration](assets/ari_notifications.png)
+![Google Import page](assets/ari_google_import.png)
