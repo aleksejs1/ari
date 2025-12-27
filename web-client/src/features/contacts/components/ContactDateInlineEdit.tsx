@@ -1,4 +1,4 @@
-import { Check, Trash2, X } from 'lucide-react'
+import { Check, X, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -14,32 +14,34 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { type ContactName } from '@/types/models'
+import { type ContactDate } from '@/types/models'
 
-interface ContactNameInlineEditProps {
-  name: ContactName
-  onUpdate: (name: ContactName) => void
+interface ContactDateInlineEditProps {
+  date: ContactDate
+  onUpdate: (date: ContactDate) => void
   onDelete: () => void
 }
 
-export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameInlineEditProps) {
+export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateInlineEditProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
-  const [given, setGiven] = useState(name.given ?? '')
-  const [family, setFamily] = useState(name.family ?? '')
+
+  const initialDate = date.date ? new Date(date.date).toISOString().split('T')[0] : ''
+  const [dateValue, setDateValue] = useState(initialDate)
+  const [text, setText] = useState(date.text ?? '')
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-  // Reset state when opening
   const handleOpenChange = (isOpen: boolean) => {
     if (isOpen) {
-      setGiven(name.given ?? '')
-      setFamily(name.family ?? '')
+      const d = date.date ? new Date(date.date).toISOString().split('T')[0] : ''
+      setDateValue(d)
+      setText(date.text ?? '')
     }
     setOpen(isOpen)
   }
 
   const handleSave = () => {
-    onUpdate({ ...name, given, family })
+    onUpdate({ ...date, date: dateValue, text })
     setOpen(false)
   }
 
@@ -48,28 +50,28 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
     setIsDeleteDialogOpen(false)
   }
 
-  const hasName = !!(name.given || name.family)
+  const hasDate = !!date.date
 
   const formContent = (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <Input
-          value={given}
-          onChange={(e) => setGiven(e.target.value)}
-          placeholder={t('contacts.givenName')}
+          type="date"
+          value={dateValue}
+          onChange={(e) => setDateValue(e.target.value)}
           className="h-8 flex-1"
-          aria-label={t('contacts.givenName')}
+          aria-label={t('contacts.date')}
         />
         <Input
-          value={family}
-          onChange={(e) => setFamily(e.target.value)}
-          placeholder={t('contacts.familyName')}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={t('contacts.dateLabel')}
           className="h-8 flex-1"
-          aria-label={t('contacts.familyName')}
+          aria-label={t('contacts.dateLabel')}
         />
       </div>
       <div className="flex justify-end gap-2">
-        {hasName && (
+        {hasDate && (
           <Button
             size="icon"
             variant="ghost"
@@ -120,15 +122,16 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
 
   return (
     <InlineEditTrigger
-      isExistent={hasName}
-      label={t('contacts.name')}
+      isExistent={hasDate}
+      label={t('contacts.date')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}
     >
-      <span className="font-medium">
-        {name.given} {name.family}
-      </span>
+      <>
+        <span className="font-medium">{new Date(date.date).toLocaleDateString()}</span>
+        <span className="text-gray-500">({date.text ?? t('contacts.noLabel')})</span>
+      </>
     </InlineEditTrigger>
   )
 }

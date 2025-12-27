@@ -11,11 +11,14 @@ import {
   useUpdateContactName,
   useCreateContactName,
   useDeleteContactName,
+  useUpdateContactDate,
+  useCreateContactDate,
+  useDeleteContactDate,
   getHydraMember,
   getHydraPagination,
 } from './useContacts'
 
-import { type Contact, type ContactName } from '@/types/models'
+import { type Contact, type ContactName, type ContactDate } from '@/types/models'
 
 export default function ContactsPage() {
   const [page, setPage] = useState(1)
@@ -63,6 +66,27 @@ export default function ContactsPage() {
     await handleDeleteNameMutation.mutateAsync(name['@id'])
   }
 
+  const handleUpdateDateMutation = useUpdateContactDate()
+  const handleCreateDateMutation = useCreateContactDate()
+  const handleDeleteDateMutation = useDeleteContactDate()
+
+  const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
+    if (date['@id']) {
+      await handleUpdateDateMutation.mutateAsync({ id: date['@id'], data: date })
+    } else if (contact['@id']) {
+      // Create new date
+      await handleCreateDateMutation.mutateAsync({
+        ...date,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteDate = async (_contact: Contact, date: ContactDate) => {
+    if (!date['@id']) return
+    await handleDeleteDateMutation.mutateAsync(date['@id'])
+  }
+
   if (isLoading && !isPlaceholderData) return <div>{t('contacts.loading')}</div>
   if (isError) return <div>{t('contacts.error')}</div>
 
@@ -79,6 +103,8 @@ export default function ContactsPage() {
         onDelete={handleDelete}
         onUpdateName={handleUpdateName}
         onDeleteName={handleDeleteName}
+        onUpdateDate={handleUpdateDate}
+        onDeleteDate={handleDeleteDate}
       />
 
       {totalPages > 1 && (

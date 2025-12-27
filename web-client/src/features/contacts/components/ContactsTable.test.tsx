@@ -26,12 +26,32 @@ describe('ContactsTable', () => {
   ]
 
   it('renders empty state', () => {
-    render(<ContactsTable data={[]} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    render(
+      <ContactsTable
+        data={[]}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onUpdateName={vi.fn()}
+        onDeleteName={vi.fn()}
+        onUpdateDate={vi.fn()}
+        onDeleteDate={vi.fn()}
+      />,
+    )
     expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
   })
 
   it('renders data correctly', () => {
-    render(<ContactsTable data={mockData} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    render(
+      <ContactsTable
+        data={mockData}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onUpdateName={vi.fn()}
+        onDeleteName={vi.fn()}
+        onUpdateDate={vi.fn()}
+        onDeleteDate={vi.fn()}
+      />,
+    )
 
     expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     expect(screen.getByText('Bob')).toBeInTheDocument()
@@ -43,18 +63,28 @@ describe('ContactsTable', () => {
     const onEdit = vi.fn()
     const onDelete = vi.fn()
 
-    render(<ContactsTable data={mockData} onEdit={onEdit} onDelete={onDelete} />)
+    render(
+      <ContactsTable
+        data={mockData}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onUpdateName={vi.fn()}
+        onDeleteName={vi.fn()}
+        onUpdateDate={vi.fn()}
+        onDeleteDate={vi.fn()}
+      />,
+    )
 
     // Select buttons using container query selectors to be specific about icons if needed,
     // or just getAllByRole('button') and know the order: Edit, Delete, Edit, Delete...
-    const buttons = screen.getAllByRole('button')
-
     // 1st row Edit (index 0)
-    fireEvent.click(buttons[0])
+    const editButtons = screen.getAllByLabelText('Edit Contact')
+    fireEvent.click(editButtons[0])
     expect(onEdit).toHaveBeenCalledWith(mockData[0])
 
-    // 1st row Delete (index 1)
-    fireEvent.click(buttons[1])
+    // 1st row Delete (index 0)
+    const deleteButtons = screen.getAllByLabelText('Delete Contact')
+    fireEvent.click(deleteButtons[0])
     expect(onDelete).toHaveBeenCalledWith(mockData[0])
   })
 })

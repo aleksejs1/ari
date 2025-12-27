@@ -1,7 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
-import { type Contact, type ContactFormValues, type ContactName } from '@/types/models'
+import {
+  type Contact,
+  type ContactFormValues,
+  type ContactName,
+  type ContactDate,
+} from '@/types/models'
 
 export interface HydraCollection<T> {
   member: T[]
@@ -129,6 +134,46 @@ export function useCreateContactName() {
 }
 
 export function useDeleteContactName() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      await api.delete(url)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] })
+    },
+  })
+}
+
+export function useUpdateContactDate() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<ContactDate> }) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      const response = await api.put(url, data)
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] })
+    },
+  })
+}
+
+export function useCreateContactDate() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: Partial<ContactDate> & { contact: string }) => {
+      const response = await api.post('/contact_dates', data)
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] })
+    },
+  })
+}
+
+export function useDeleteContactDate() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (id: string) => {
