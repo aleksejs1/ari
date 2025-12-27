@@ -97,7 +97,7 @@ class GoogleContactsService
             );
 
             if (null !== $this->contactImportService->import($dto, $user)) {
-                $importedCount++;
+                ++$importedCount;
             }
         }
 
@@ -112,7 +112,7 @@ class GoogleContactsService
 
         $refreshToken = $tokenStorage->getRefreshToken();
         if (null === $refreshToken) {
-             throw new \RuntimeException('Access token expired and no refresh token available.');
+            throw new \RuntimeException('Access token expired and no refresh token available.');
         }
 
         $newTokens = $this->oauthService->refreshAccessToken($refreshToken);

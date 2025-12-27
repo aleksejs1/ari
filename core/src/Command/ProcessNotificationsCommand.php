@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Contact;
 use App\Entity\ContactDate;
 use App\Entity\ContactName;
 use App\Entity\NotificationChannel;
@@ -23,7 +22,7 @@ class ProcessNotificationsCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly TelegramService $telegramService
+        private readonly TelegramService $telegramService,
     ) {
         parent::__construct();
     }
@@ -44,7 +43,7 @@ class ProcessNotificationsCommand extends Command
         foreach ($channels as $channel) {
             $subs = $channel->getNotificationSubscriptions();
             foreach ($subs as $subscription) {
-                if ($subscription->getEnabled() !== 1) {
+                if (1 !== $subscription->getEnabled()) {
                     continue;
                 }
 
@@ -92,7 +91,7 @@ class ProcessNotificationsCommand extends Command
                         $intent->setPayload([
                             'type' => 'telegram',
                             'message' => $message,
-                            'sent_at' => date('c')
+                            'sent_at' => date('c'),
                         ]);
                         $intent->setTenant($channel->getUser()); // Use user as tenant
                         $this->entityManager->persist($intent);

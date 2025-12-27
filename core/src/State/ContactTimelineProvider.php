@@ -9,13 +9,9 @@ use App\Entity\AuditLog;
 use App\Entity\Contact;
 use App\Entity\ContactDate;
 use App\Entity\ContactName;
-use App\Repository\AuditLogRepository;
-use App\Repository\ContactRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @implements ProviderInterface<ContactTimeline>
@@ -23,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class ContactTimelineProvider implements ProviderInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -31,13 +27,13 @@ class ContactTimelineProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $id = $uriVariables['id'] ?? null;
-        if ($id === null) {
+        if (null === $id) {
             throw new NotFoundHttpException('Contact not found');
         }
 
         $contact = $this->entityManager->getRepository(Contact::class)->find($id);
 
-        if ($contact === null) {
+        if (null === $contact) {
             throw new NotFoundHttpException('Contact not found');
         }
 
@@ -67,7 +63,7 @@ class ContactTimelineProvider implements ProviderInterface
         foreach ($relatedEntities as $entityInfo) {
             $logs = $auditRepo->findBy([
                 'entityType' => $entityInfo['type'],
-                'entityId' => $entityInfo['id']
+                'entityId' => $entityInfo['id'],
             ]);
             foreach ($logs as $log) {
                 $allLogs[] = $log;
@@ -79,7 +75,8 @@ class ContactTimelineProvider implements ProviderInterface
             return $b->getCreatedAt() <=> $a->getCreatedAt();
         });
 
-        /** @var array<int, AuditLog> $allLogs */
+        /* @var array<int, AuditLog> $allLogs */
+        /** @psalm-suppress InvalidArgument */
         return new ContactTimeline(
             (int) $id,
             new ArrayCollection($allLogs)

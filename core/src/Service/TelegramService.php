@@ -7,13 +7,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class TelegramService
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient
+        private readonly HttpClientInterface $httpClient,
     ) {
     }
 
     public function sendMessage(string $botToken, string $chatId, string $message): void
     {
-        if ($botToken === 'fake_token' || $botToken === 'test_token') {
+        if ('fake_token' === $botToken || 'test_token' === $botToken) {
             return;
         }
         $url = sprintf('https://api.telegram.org/bot%s/sendMessage', $botToken);

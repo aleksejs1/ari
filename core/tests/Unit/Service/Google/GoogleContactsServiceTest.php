@@ -106,7 +106,7 @@ final class GoogleContactsServiceTest extends TestCase
             ->method('request')
             // Verify new token is used
             ->with('GET', self::anything(), self::callback(function ($options) {
-                return $options['headers']['Authorization'] === 'Bearer new_access_token';
+                return 'Bearer new_access_token' === $options['headers']['Authorization'];
             }))
             ->willReturn($response);
 

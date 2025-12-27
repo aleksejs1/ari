@@ -48,7 +48,7 @@ final class NotificationVoter extends Voter
             case self::SUBSCRIPTION_EDIT:
             case self::INTENT_VIEW:
                 $tenant = $subject->getTenant();
-                if ($tenant !== null) {
+                if (null !== $tenant) {
                     return $tenant->getId() === $user->getId();
                 }
                 break;

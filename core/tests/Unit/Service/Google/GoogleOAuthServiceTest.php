@@ -44,8 +44,8 @@ final class GoogleOAuthServiceTest extends TestCase
         $this->httpClient->expects(self::once())
             ->method('request')
             ->with('POST', 'https://oauth2.googleapis.com/token', self::callback(function ($options) {
-                return $options['body']['code'] === 'code' &&
-                       $options['body']['grant_type'] === 'authorization_code';
+                return 'code' === $options['body']['code']
+                       && 'authorization_code' === $options['body']['grant_type'];
             }))
             ->willReturn($response);
 
@@ -61,8 +61,8 @@ final class GoogleOAuthServiceTest extends TestCase
         $this->httpClient->expects(self::once())
             ->method('request')
             ->with('POST', 'https://oauth2.googleapis.com/token', self::callback(function ($options) {
-                return $options['body']['refresh_token'] === 'refresh_token' &&
-                       $options['body']['grant_type'] === 'refresh_token';
+                return 'refresh_token' === $options['body']['refresh_token']
+                       && 'refresh_token' === $options['body']['grant_type'];
             }))
             ->willReturn($response);
 

@@ -2,11 +2,9 @@
 
 namespace App\State;
 
-use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Contact;
-use App\Security\TenantAwareInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -31,6 +29,7 @@ class ContactProcessor implements ProcessorInterface
 
     /**
      * @param Contact $data
+     *
      * @return Contact|void
      */
     #[\Override]
@@ -71,6 +70,7 @@ class ContactProcessor implements ProcessorInterface
 
                 // Flush changes and return the existing entity
                 $this->entityManager->flush();
+
                 return $existing;
             }
         } else {

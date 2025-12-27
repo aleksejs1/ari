@@ -221,7 +221,7 @@ class NotificationChannel implements TenantAwareInterface
     #[Assert\Callback]
     public function validateConfig(ExecutionContextInterface $context): void
     {
-        if ($this->type === 'telegram') {
+        if ('telegram' === $this->type) {
             $config = $this->config ?? [];
             if (!isset($config['botToken']) || '' === $config['botToken']) {
                 $context->buildViolation('Telegram channel requires a botToken.')

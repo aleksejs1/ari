@@ -55,7 +55,7 @@ class NotificationIntent implements TenantAwareInterface
     public function setChannel(?NotificationChannel $channel): static
     {
         $this->channel = $channel;
-        if ($channel !== null) {
+        if (null !== $channel) {
             $this->setTenant($channel->getTenant());
         }
 

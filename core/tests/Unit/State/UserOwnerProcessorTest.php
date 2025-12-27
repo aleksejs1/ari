@@ -2,7 +2,6 @@
 
 namespace App\Tests\Unit\State;
 
-use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
 use App\Security\TenantAwareInterface;

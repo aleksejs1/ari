@@ -100,9 +100,9 @@ class TelegramNotificationTest extends ApiTestCase
         $found = false;
         foreach ($intents as $intent) {
             $intentChannel = $intent->getChannel();
-            if ($intentChannel !== null && $intentChannel->getId() === $channel->getId()) {
+            if (null !== $intentChannel && $intentChannel->getId() === $channel->getId()) {
                 $payload = $intent->getPayload();
-                if ($payload !== null) {
+                if (null !== $payload) {
                     self::assertStringContainsString('Birthday', (string) ($payload['message'] ?? ''));
                 }
                 $found = true;

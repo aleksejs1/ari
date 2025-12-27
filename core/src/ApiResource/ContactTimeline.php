@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\Collection;
             uriTemplate: '/contacts/{id}/timeline',
             provider: ContactTimelineProvider::class,
             name: 'get_contact_timeline'
-        )
+        ),
     ]
 )]
 class ContactTimeline
@@ -28,7 +28,7 @@ class ContactTimeline
          * @var Collection<int, AuditLog>
          */
         #[ApiProperty(readableLink: true)]
-        public Collection $logs
+        public Collection $logs,
     ) {
     }
 }

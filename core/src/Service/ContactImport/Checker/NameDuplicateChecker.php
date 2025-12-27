@@ -3,8 +3,6 @@
 namespace App\Service\ContactImport\Checker;
 
 use App\Dto\ContactImportDto;
-use App\Entity\Contact;
-use App\Entity\ContactName;
 use App\Entity\User;
 use App\Repository\ContactNameRepository;
 use App\Service\ContactImport\ContactDuplicateCheckerInterface;

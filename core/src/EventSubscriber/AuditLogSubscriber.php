@@ -5,16 +5,12 @@ namespace App\EventSubscriber;
 use App\Entity\AuditLog;
 use App\Entity\User;
 use App\Security\TenantAwareInterface;
-use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\SecurityBundle\Security;
-use Psr\Log\LoggerInterface;
 
 class AuditLogSubscriber
 {
@@ -22,7 +18,7 @@ class AuditLogSubscriber
     private array $insertedEntities = [];
 
     public function __construct(
-        private Security $security
+        private Security $security,
     ) {
     }
 
@@ -48,14 +44,14 @@ class AuditLogSubscriber
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($this->shouldLog($entity)) {
-                /** @var TenantAwareInterface $entity */
+                assert($entity instanceof TenantAwareInterface);
                 $this->logChange($em, $entity, 'UPDATE', $uow->getEntityChangeSet($entity));
             }
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
             if ($this->shouldLog($entity)) {
-                /** @var TenantAwareInterface $entity */
+                assert($entity instanceof TenantAwareInterface);
                 $this->logChange(
                     $em,
                     $entity,
@@ -82,21 +78,21 @@ class AuditLogSubscriber
 
                 // Update snapshotAfter with ID if it exists
                 $snapshotAfter = $auditLog->getSnapshotAfter();
-                if ($snapshotAfter !== null && array_key_exists('id', $snapshotAfter)) {
+                if (null !== $snapshotAfter && array_key_exists('id', $snapshotAfter)) {
                     $snapshotAfter['id'] = $entityId;
                     $auditLog->setSnapshotAfter($snapshotAfter);
                 }
 
                 // If the AuditLog was already persisted (inserted in DB),
                 // we need to update it manually as it's too late for the unit of work to pick it up for a new insert.
-                if ($auditLog->getId() !== null) {
+                if (null !== $auditLog->getId()) {
                     $em = $args->getObjectManager();
                     $em->getConnection()->executeStatement(
                         'UPDATE audit_log SET entity_id = ?, snapshot_after = ? WHERE id = ?',
                         [
                             $entityId,
                             json_encode($auditLog->getSnapshotAfter()),
-                            $auditLog->getId()
+                            $auditLog->getId(),
                         ]
                     );
                 }
@@ -126,13 +122,9 @@ class AuditLogSubscriber
     }
 
     /**
-     * @param EntityManagerInterface $em
-     * @param TenantAwareInterface $entity
-     * @param string $action
      * @param array<string, mixed>|null $changes
      * @param array<string, mixed>|null $snapshotBefore
      * @param array<string, mixed>|null $snapshotAfter
-     * @return AuditLog
      */
     private function logChange(
         EntityManagerInterface $em,
@@ -140,7 +132,7 @@ class AuditLogSubscriber
         string $action,
         ?array $changes,
         ?array $snapshotBefore = null,
-        ?array $snapshotAfter = null
+        ?array $snapshotAfter = null,
     ): AuditLog {
         $auditLog = $this->createAuditLogEntity($entity, $action, $changes, $snapshotBefore, $snapshotAfter);
 
@@ -152,19 +144,16 @@ class AuditLogSubscriber
     }
 
     /**
-     * @param TenantAwareInterface $entity
-     * @param string $action
      * @param array<string, mixed>|null $changes
      * @param array<string, mixed>|null $snapshotBefore
      * @param array<string, mixed>|null $snapshotAfter
-     * @return AuditLog
      */
     private function createAuditLogEntity(
         TenantAwareInterface $entity,
         string $action,
         ?array $changes,
         ?array $snapshotBefore = null,
-        ?array $snapshotAfter = null
+        ?array $snapshotAfter = null,
     ): AuditLog {
         $auditLog = new AuditLog();
         $auditLog->setEntityType(get_class($entity));
@@ -174,7 +163,7 @@ class AuditLogSubscriber
 
         $entityId = null;
         if (method_exists($entity, 'getId')) {
-             $entityId = $entity->getId();
+            $entityId = $entity->getId();
         }
         $auditLog->setEntityId($entityId);
 
@@ -187,7 +176,7 @@ class AuditLogSubscriber
 
         if ($user instanceof User) {
             $auditLog->setUser($user);
-        } elseif ($entity->getTenant() !== null) {
+        } elseif (null !== $entity->getTenant()) {
             // Fallback to tenant if no user in security context (e.g. CLI or background task)
             $auditLog->setUser($entity->getTenant());
         }
@@ -196,8 +185,6 @@ class AuditLogSubscriber
     }
 
     /**
-     * @param EntityManagerInterface $em
-     * @param object $entity
      * @return array<string, mixed>
      */
     private function getEntitySnapshot(EntityManagerInterface $em, object $entity): array

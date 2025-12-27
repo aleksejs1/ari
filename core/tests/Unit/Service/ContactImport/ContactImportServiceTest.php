@@ -5,7 +5,6 @@ namespace App\Tests\Unit\Service\ContactImport;
 use App\Dto\ContactDateDto;
 use App\Dto\ContactImportDto;
 use App\Dto\ContactNameDto;
-use App\Entity\Contact;
 use App\Entity\ContactDate;
 use App\Entity\ContactName;
 use App\Entity\User;

@@ -8,13 +8,14 @@ use App\Repository\TokenStorageRepository;
 use App\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
-#[Route('/connect/google')]
+#[Route('/api/connect/google')]
 class GoogleAuthController extends AbstractController
 {
     public function __construct(
@@ -25,9 +26,11 @@ class GoogleAuthController extends AbstractController
     }
 
     #[Route('', name: 'connect_google_start', methods: ['GET'])]
-    public function connectApply(): Response
+    public function connectApply(): JsonResponse
     {
-        return $this->redirect($this->oauthService->getAuthorizationUrl());
+        return $this->json([
+            'url' => $this->oauthService->getAuthorizationUrl(),
+        ]);
     }
 
     #[Route('/check', name: 'connect_google_check', methods: ['GET'])]
@@ -42,10 +45,10 @@ class GoogleAuthController extends AbstractController
         try {
             $tokens = $this->oauthService->getAccessToken($code);
         } catch (\Exception $e) {
-             return $this->json(
-                 ['error' => 'Failed to fetch access token: ' . $e->getMessage()],
-                 Response::HTTP_BAD_REQUEST
-             );
+            return $this->json(
+                ['error' => 'Failed to fetch access token: ' . $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         /** @var User $user */
