@@ -4,17 +4,43 @@ import { api } from '@/lib/axios'
 import { type Contact, type ContactFormValues } from '@/types/models'
 
 export interface HydraCollection<T> {
-  'hydra:member': T[]
-  'hydra:totalItems'?: number
-  'hydra:view'?: {
-    'hydra:first': string
-    'hydra:last': string
-    'hydra:next'?: string
-    'hydra:previous'?: string
+  member: T[]
+  totalItems?: number
+  view?: {
+    '@id': string
+    '@type': string
+    first: string
+    last: string
+    next?: string
+    previous?: string
   }
-  member?: T[] // Fallback for pure JSON response from OpenAPI schema
-  view?: unknown
   [key: string]: unknown
+}
+
+export function getHydraMember<T>(data?: HydraCollection<T>): T[] {
+  if (!data) return []
+  return data['member'] ?? data.member ?? []
+}
+
+export function getHydraPagination<T>(data?: HydraCollection<T>, page = 1) {
+  const totalItems = data?.['totalItems'] ?? data?.totalItems ?? 0
+  const totalPages = Math.ceil(totalItems / 30)
+  const view = data?.['view']
+
+  return {
+    totalItems,
+    totalPages,
+    hasNext: hasNextPage(view, totalPages, page),
+    hasPrevious: hasPreviousPage(view, page),
+  }
+}
+
+function hasNextPage(view: HydraCollection<unknown>['view'], totalPages: number, page: number) {
+  return !!view?.['next'] || totalPages > page
+}
+
+function hasPreviousPage(view: HydraCollection<unknown>['view'], page: number) {
+  return !!view?.['previous'] || page > 1
 }
 
 export function useContacts(page = 1) {
@@ -24,6 +50,7 @@ export function useContacts(page = 1) {
       const response = await api.get<HydraCollection<Contact>>(`/contacts?page=${page}`)
       return response.data
     },
+    placeholderData: (previousData) => previousData,
   })
 }
 

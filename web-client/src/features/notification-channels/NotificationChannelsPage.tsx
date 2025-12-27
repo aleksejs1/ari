@@ -74,7 +74,7 @@ export default function NotificationChannelsPage() {
   if (isLoading) return <div>{t('app.loading')}</div>
   if (error) return <div>{t('notificationChannels.error', 'Error loading channels.')}</div>
 
-  const channels = data?.['hydra:member'] || data?.member || []
+  const channels = data?.['member'] || data?.member || []
 
   return (
     <div className="space-y-6">

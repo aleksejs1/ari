@@ -37,7 +37,7 @@ describe('useContacts Hooks', () => {
 
   describe('useContacts', () => {
     it('fetches contacts successfully', async () => {
-      const mockData = { 'hydra:member': [] }
+      const mockData = { member: [] }
       vi.mocked(api.get).mockResolvedValue({ data: mockData })
 
       const { result } = renderHook(() => useContacts(1), { wrapper: createWrapper() })
@@ -45,6 +45,7 @@ describe('useContacts Hooks', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
       expect(result.current.data).toEqual(mockData)
+      expect(result.current.isPlaceholderData).toBeDefined()
       expect(api.get).toHaveBeenCalledWith('/contacts?page=1')
     })
   })

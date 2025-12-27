@@ -5,13 +5,13 @@ import { ContactsHeader } from './components/ContactsHeader'
 import { ContactSheet } from './components/ContactSheet'
 import { ContactsPagination } from './components/ContactsPagination'
 import { ContactsTable } from './components/ContactsTable'
-import { useContacts, useDeleteContact, type HydraCollection } from './useContacts'
+import { useContacts, useDeleteContact, getHydraMember, getHydraPagination } from './useContacts'
 
 import { type Contact } from '@/types/models'
 
 export default function ContactsPage() {
   const [page, setPage] = useState(1)
-  const { data, isLoading, isError } = useContacts(page)
+  const { data, isLoading, isPlaceholderData, isError } = useContacts(page)
   const deleteMutation = useDeleteContact()
   const { t } = useTranslation()
 
@@ -29,32 +29,31 @@ export default function ContactsPage() {
   }
 
   const handleDelete = async (contact: Contact) => {
-    if (confirm(t('contacts.deleteConfirm'))) {
-      if (contact['@id']) {
-        await deleteMutation.mutateAsync(contact['@id'])
-      }
+    if (confirm(t('contacts.deleteConfirm')) && contact['@id']) {
+      await deleteMutation.mutateAsync(contact['@id'])
     }
   }
 
-  if (isLoading) return <div>{t('contacts.loading')}</div>
+  if (isLoading && !isPlaceholderData) return <div>{t('contacts.loading')}</div>
   if (isError) return <div>{t('contacts.error')}</div>
 
-  const response = data as HydraCollection<Contact>
-  const contacts = response['hydra:member'] ?? response.member ?? []
-  const view = response['hydra:view']
+  const contacts = getHydraMember(data)
+  const { totalPages, hasNext, hasPrevious } = getHydraPagination(data, page)
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${isPlaceholderData ? 'opacity-50' : ''}`}>
       <ContactsHeader onCreate={handleCreate} />
 
       <ContactsTable data={contacts} onEdit={handleEdit} onDelete={handleDelete} />
 
-      <ContactsPagination
-        onPrevious={() => setPage((p) => Math.max(1, p - 1))}
-        onNext={() => setPage((p) => p + 1)}
-        hasPrevious={!!view?.['hydra:previous']}
-        hasNext={!!view?.['hydra:next']}
-      />
+      {totalPages > 1 && (
+        <ContactsPagination
+          onPrevious={() => setPage((p) => Math.max(1, p - 1))}
+          onNext={() => (hasNext ? setPage((p) => p + 1) : null)}
+          hasPrevious={hasPrevious}
+          hasNext={hasNext}
+        />
+      )}
 
       <ContactSheet
         isOpen={isSheetOpen}

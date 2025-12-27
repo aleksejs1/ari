@@ -4,10 +4,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import ContactsPage from './ContactsPage'
 import { useContacts, useDeleteContact, type HydraCollection } from './useContacts'
 
-vi.mock('./useContacts', () => ({
-  useContacts: vi.fn(),
-  useDeleteContact: vi.fn(),
-}))
+vi.mock('./useContacts', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>
+  return {
+    ...actual,
+    useContacts: vi.fn(),
+    useDeleteContact: vi.fn(),
+  }
+})
 
 import type { Contact } from '@/types/models'
 
@@ -95,8 +99,8 @@ describe('ContactsPage', () => {
     vi.mocked(useContacts).mockReturnValue({
       isLoading: false,
       data: {
-        'hydra:member': [{ '@id': '/api/contacts/1', contactNames: [{ given: 'Alice' }] }],
-        'hydra:view': {},
+        member: [{ '@id': '/api/contacts/1', contactNames: [{ given: 'Alice' }] }],
+        view: {},
       } as HydraCollection<Contact>,
       isError: false,
     } as unknown as ReturnType<typeof useContacts>)
@@ -118,5 +122,27 @@ describe('ContactsPage', () => {
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalledWith('/api/contacts/1')
     })
+  })
+
+  it('handles robust pagination when hydra:view is missing', () => {
+    vi.mocked(useContacts).mockReturnValue({
+      isLoading: false,
+      isPlaceholderData: false,
+      data: {
+        member: [],
+        totalItems: 100, // 4 pages
+      } as HydraCollection<Contact>,
+      isError: false,
+    } as unknown as ReturnType<typeof useContacts>)
+
+    render(<ContactsPage />)
+
+    // Pagination should be visible because totalItems > ITEMS_PER_PAGE
+    const pagination = screen.getByTestId('pagination')
+    expect(pagination).toBeInTheDocument()
+
+    // Next button should be enabled because we are on page 1 and there are 4 pages
+    const nextBtn = screen.getByText('Next')
+    expect(nextBtn).not.toBeDisabled()
   })
 })
