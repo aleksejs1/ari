@@ -77,25 +77,31 @@ export default function ContactsPage() {
   const { totalPages, hasNext, hasPrevious } = getHydraPagination(data, page)
 
   return (
-    <div className={`space-y-4 ${isPlaceholderData ? 'opacity-50' : ''}`}>
+    <div className={`space-y-6 ${isPlaceholderData ? 'opacity-50' : ''}`}>
       <ContactsHeader onCreate={handleCreate} />
 
-      <ContactsTable
-        data={contacts}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onUpdateDate={handleUpdateDate}
-        onDeleteDate={handleDeleteDate}
-      />
+      <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+        <div className="flex-1">
+          <ContactsTable
+            data={contacts}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onUpdateDate={handleUpdateDate}
+            onDeleteDate={handleDeleteDate}
+          />
+        </div>
 
-      {totalPages > 1 && (
-        <ContactsPagination
-          onPrevious={() => setSearchParams({ page: Math.max(1, page - 1).toString() })}
-          onNext={() => (hasNext ? setSearchParams({ page: (page + 1).toString() }) : null)}
-          hasPrevious={hasPrevious}
-          hasNext={hasNext}
-        />
-      )}
+        {totalPages > 1 && (
+          <ContactsPagination
+            onPrevious={() => setSearchParams({ page: Math.max(1, page - 1).toString() })}
+            onNext={() => (hasNext ? setSearchParams({ page: (page + 1).toString() }) : null)}
+            hasPrevious={hasPrevious}
+            hasNext={hasNext}
+            currentPage={page}
+            totalPages={totalPages}
+          />
+        )}
+      </div>
 
       <ContactSheet
         isOpen={isSheetOpen}

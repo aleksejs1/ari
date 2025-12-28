@@ -95,8 +95,8 @@ export function ContactsTable({
   })
 
   return (
-    <div className="rounded-md border">
-      <Table>
+    <div>
+      <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
