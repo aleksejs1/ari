@@ -1,11 +1,11 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { Edit, Trash2 } from 'lucide-react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { ContactDateInlineEdit } from './ContactDateInlineEdit'
+import { ContactsTableActions } from './ContactsTableActions'
+import { ContactsTableDates } from './ContactsTableDates'
 
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -31,85 +31,62 @@ export function ContactsTable({
   onUpdateDate,
   onDeleteDate,
 }: ContactsTableProps) {
-  // renamed internally for the helper above but let's keep it clean
+  'use no memo'
   const onExchangeDate = onUpdateDate
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const columns: ColumnDef<Contact>[] = [
-    {
-      accessorKey: 'contactNames',
-      header: t('contacts.name', 'Name'),
-      cell: ({ row }) => {
-        const names = row.original.contactNames?.length
-          ? row.original.contactNames
-          : [{ given: '', family: '' } as ContactName]
+  const columns = useMemo<ColumnDef<Contact>[]>(
+    () => [
+      {
+        accessorKey: 'contactNames',
+        header: t('contacts.name', 'Name'),
+        cell: ({ row }) => {
+          const names = row.original.contactNames?.length
+            ? row.original.contactNames
+            : [{ given: '', family: '' } as ContactName]
 
-        return (
-          <div className="flex flex-col">
-            {names.map((name, i) => (
-              <div key={i} className="group flex items-center justify-between">
-                <span className="font-medium text-primary">
-                  {name.given} {name.family}
-                </span>
-              </div>
-            ))}
-          </div>
-        )
+          return (
+            <div className="flex flex-col">
+              {names.map((name, i) => (
+                <div key={i} className="group flex items-center justify-between">
+                  <span className="font-medium text-primary">
+                    {name.given} {name.family}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )
+        },
       },
-    },
-    {
-      accessorKey: 'contactDates',
-      header: t('contacts.dates', 'Important Dates'),
-      cell: ({ row }) => {
-        const dates = row.original.contactDates?.length
-          ? row.original.contactDates
-          : [{ date: '', text: '' } as ContactDate]
+      {
+        accessorKey: 'contactDates',
+        header: t('contacts.dates', 'Important Dates'),
+        cell: ({ row }) => {
+          const dates = row.original.contactDates?.length
+            ? row.original.contactDates
+            : [{ date: '', text: '' } as ContactDate]
 
-        return (
-          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-          <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
-            {dates.map((date, i) => (
-              <ContactDateInlineEdit
-                key={i}
-                date={date}
-                onUpdate={(updatedDate) => onExchangeDate(row.original, updatedDate)}
-                onDelete={() => onDeleteDate(row.original, date)}
-              />
-            ))}
-          </div>
-        )
+          return (
+            <ContactsTableDates
+              contact={row.original}
+              dates={dates}
+              onUpdateDate={onExchangeDate}
+              onDeleteDate={onDeleteDate}
+            />
+          )
+        },
       },
-    },
-    {
-      id: 'actions',
-      header: t('common.actions', 'Actions'),
-      cell: ({ row }) => {
-        return (
-          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-          <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onEdit(row.original)}
-              aria-label="Edit Contact"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-red-500 hover:text-red-600"
-              onClick={() => onDelete(row.original)}
-              aria-label="Delete Contact"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        )
+      {
+        id: 'actions',
+        header: t('common.actions', 'Actions'),
+        cell: ({ row }) => {
+          return <ContactsTableActions contact={row.original} onEdit={onEdit} onDelete={onDelete} />
+        },
       },
-    },
-  ]
+    ],
+    [t, onExchangeDate, onDeleteDate, onEdit, onDelete],
+  )
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,

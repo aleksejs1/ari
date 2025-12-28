@@ -88,16 +88,42 @@ describe('ContactsTable', () => {
       </MemoryRouter>,
     )
 
-    // Select buttons using container query selectors to be specific about icons if needed,
-    // or just getAllByRole('button') and know the order: Edit, Delete, Edit, Delete...
-    // 1st row Edit (index 0)
-    const editButtons = screen.getAllByLabelText('Edit Contact')
-    fireEvent.click(editButtons[0])
+    // Get all buttons - we have edit buttons for both inline date editing and actions
+    // The date edit buttons are within the dates column, action buttons are in the actions column
+    // Since we have 2 contacts and each has an edit button in dates + edit/delete in actions
+    // We need to find the right buttons by their position or parent structure
+
+    // Let's get all edit buttons by label and filter them
+    const allEditButtons = screen.getAllByLabelText('common.edit')
+    const allDeleteButtons = screen.getAllByLabelText('common.delete')
+
+    // The first contact has:
+    // - 1 edit button in the  dates column (inline edit for date)
+    // - 1 edit button in the actions column
+    // - 1 delete button in the actions column
+    // So allEditButtons[0] is the date inline edit, allEditButtons[1] is the first contact's action edit
+
+    // For safety, let's click the last edit button of first two, which should be actions
+    // Actually, let's be more specific - find buttons in the actions column
+    // by checking if parent has class 'flex justify-end' (the actions container)
+    const actionEditButton = allEditButtons.find((button) =>
+      button.closest('div')?.className.includes('flex justify-end'),
+    )
+    const actionDeleteButton = allDeleteButtons.find((button) =>
+      button.closest('div')?.className.includes('flex justify-end'),
+    )
+
+    expect(actionEditButton).toBeTruthy()
+    expect(actionDeleteButton).toBeTruthy()
+
+    if (!actionEditButton || !actionDeleteButton) {
+      throw new Error('Action buttons not found')
+    }
+
+    fireEvent.click(actionEditButton)
     expect(onEdit).toHaveBeenCalledWith(mockData[0])
 
-    // 1st row Delete (index 0)
-    const deleteButtons = screen.getAllByLabelText('Delete Contact')
-    fireEvent.click(deleteButtons[0])
+    fireEvent.click(actionDeleteButton)
     expect(onDelete).toHaveBeenCalledWith(mockData[0])
   })
 

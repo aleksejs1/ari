@@ -69,8 +69,7 @@ export default function RegisterPage() {
         password: values.password,
       })
       login(response.data.token)
-      // eslint-disable-next-line sonarjs/void-use
-      void navigate('/')
+      await navigate('/')
     } catch (err: unknown) {
       console.error(err)
       setError('Registration failed. Please try again.')

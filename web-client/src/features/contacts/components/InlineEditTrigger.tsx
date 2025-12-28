@@ -41,6 +41,7 @@ export function InlineEditTrigger({
               'opacity-0 transition-opacity group-hover:opacity-100',
               open && 'opacity-100',
             )}
+            onClick={(e) => e.stopPropagation()}
             aria-label={t(isExistent ? 'common.edit' : 'common.add', { item: label })}
           >
             {isExistent ? <Pencil className="h-3 w-3" /> : <Plus className="h-3 w-3" />}

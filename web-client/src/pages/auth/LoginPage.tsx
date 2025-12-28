@@ -54,8 +54,7 @@ export default function LoginPage() {
         password: values.password,
       })
       login(response.data.token)
-      // eslint-disable-next-line sonarjs/void-use
-      void navigate('/')
+      await navigate('/')
     } catch (err: unknown) {
       console.error(err)
       setError('Invalid credentials')

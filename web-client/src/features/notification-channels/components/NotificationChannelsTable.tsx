@@ -24,6 +24,7 @@ export function NotificationChannelsTable({
   onEdit,
   onDelete,
 }: NotificationChannelsTableProps) {
+  'use no memo'
   const { t } = useTranslation()
 
   const columns: ColumnDef<NotificationChannel>[] = [

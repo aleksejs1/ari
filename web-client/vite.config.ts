@@ -5,7 +5,16 @@ import { defineConfig } from 'vitest/config'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        plugins: [
+          // Disable React Compiler incompatibility warnings for TanStack Table
+          ['babel-plugin-react-compiler', { compilationMode: 'annotation' }],
+        ],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

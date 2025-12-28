@@ -6,6 +6,7 @@ const config: KnipConfig = {
   ignore: ['src/types/schema.d.ts'],
   ignoreBinaries: ['dot'],
   ignoreExportsUsedInFile: true,
+  ignoreDependencies: ['babel-plugin-react-compiler'],
 }
 
 export default config
