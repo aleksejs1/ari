@@ -39,9 +39,9 @@ describe('ContactTimeline', () => {
   it('renders loading state initially', () => {
     const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
     mockGet.mockReturnValue(new Promise(() => undefined)) // Pending promise
-    renderWithClient(<ContactTimeline contactId="1" />)
-    // Check for loader or just basic render success without crash
-    // Since loader might be an icon, we can check if container exists
+    const { container } = renderWithClient(<ContactTimeline contactId="1" />)
+    // Loader should be present
+    expect(container.querySelector('.animate-spin')).toBeInTheDocument()
   })
 
   it('renders timeline events when data fetches successfully', async () => {

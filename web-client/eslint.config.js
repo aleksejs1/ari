@@ -9,6 +9,7 @@ import importPlugin from 'eslint-plugin-import'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
 import pluginQuery from '@tanstack/eslint-plugin-query'
+import sonarjs from 'eslint-plugin-sonarjs'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -27,6 +28,7 @@ export default defineConfig([
       eslintConfigPrettier,
       boundaries.configs.recommended,
       ...pluginQuery.configs['flat/recommended'],
+      sonarjs.configs.recommended,
     ],
     languageOptions: {
       ecmaVersion: 2020,
@@ -127,6 +129,26 @@ export default defineConfig([
           ],
         },
       ],
+      'sonarjs/prefer-read-only-props': 'off',
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'sonarjs/deprecation': 'off',
+      'sonarjs/table-header': 'off',
+    },
+  },
+  {
+    files: ['src/**/*.test.{ts,tsx}'],
+    rules: {
+      'sonarjs/no-hardcoded-passwords': 'off',
+    },
+  },
+  {
+    files: ['src/features/contacts/useContacts.ts'],
+    rules: {
+      'sonarjs/no-identical-functions': 'off',
     },
   },
 ])
