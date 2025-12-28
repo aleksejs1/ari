@@ -1,9 +1,9 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Edit, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
-import { ContactNameInlineEdit } from './ContactNameInlineEdit'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -20,8 +20,6 @@ interface ContactsTableProps {
   data: Contact[]
   onEdit: (contact: Contact) => void
   onDelete: (contact: Contact) => void
-  onUpdateName: (contact: Contact, name: ContactName) => void
-  onDeleteName: (contact: Contact, name: ContactName) => void
   onUpdateDate: (contact: Contact, date: ContactDate) => void
   onDeleteDate: (contact: Contact, date: ContactDate) => void
 }
@@ -30,8 +28,6 @@ export function ContactsTable({
   data,
   onEdit,
   onDelete,
-  onUpdateName,
-  onDeleteName,
   onUpdateDate,
   onDeleteDate,
 }: ContactsTableProps) {
@@ -51,12 +47,14 @@ export function ContactsTable({
         return (
           <div className="flex flex-col">
             {names.map((name, i) => (
-              <ContactNameInlineEdit
-                key={i}
-                name={name}
-                onUpdate={(updatedName) => onUpdateName(row.original, updatedName)}
-                onDelete={() => onDeleteName(row.original, name)}
-              />
+              <div key={i} className="flex items-center justify-between group">
+                <Link
+                  to={`/contacts/${row.original.id}`}
+                  className="font-medium hover:underline text-primary"
+                >
+                  {name.given} {name.family}
+                </Link>
+              </div>
             ))}
           </div>
         )

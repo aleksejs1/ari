@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
 import { ContactsTable } from './ContactsTable'
@@ -27,30 +28,30 @@ describe('ContactsTable', () => {
 
   it('renders empty state', () => {
     render(
-      <ContactsTable
-        data={[]}
-        onEdit={vi.fn()}
-        onDelete={vi.fn()}
-        onUpdateName={vi.fn()}
-        onDeleteName={vi.fn()}
-        onUpdateDate={vi.fn()}
-        onDeleteDate={vi.fn()}
-      />,
+      <MemoryRouter>
+        <ContactsTable
+          data={[]}
+          onEdit={vi.fn()}
+          onDelete={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+        />
+      </MemoryRouter>,
     )
     expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
   })
 
   it('renders data correctly', () => {
     render(
-      <ContactsTable
-        data={mockData}
-        onEdit={vi.fn()}
-        onDelete={vi.fn()}
-        onUpdateName={vi.fn()}
-        onDeleteName={vi.fn()}
-        onUpdateDate={vi.fn()}
-        onDeleteDate={vi.fn()}
-      />,
+      <MemoryRouter>
+        <ContactsTable
+          data={mockData}
+          onEdit={vi.fn()}
+          onDelete={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+        />
+      </MemoryRouter>,
     )
 
     expect(screen.getByText('Alice Smith')).toBeInTheDocument()
@@ -64,15 +65,15 @@ describe('ContactsTable', () => {
     const onDelete = vi.fn()
 
     render(
-      <ContactsTable
-        data={mockData}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onUpdateName={vi.fn()}
-        onDeleteName={vi.fn()}
-        onUpdateDate={vi.fn()}
-        onDeleteDate={vi.fn()}
-      />,
+      <MemoryRouter>
+        <ContactsTable
+          data={mockData}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+        />
+      </MemoryRouter>,
     )
 
     // Select buttons using container query selectors to be specific about icons if needed,

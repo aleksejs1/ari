@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-rou
 
 import DashboardLayout from './components/layout/DashboardLayout'
 import AuditLogsPage from './features/audit-logs/AuditLogsPage'
+import ContactDetailsPage from './features/contacts/ContactDetailsPage'
 import ContactsPage from './features/contacts/ContactsPage'
 import GoogleImportPage from './features/google-import/GoogleImportPage'
 import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
@@ -39,6 +40,10 @@ export default function App() {
             {
               path: '/',
               element: <ContactsPage />,
+            },
+            {
+              path: '/contacts/:id',
+              element: <ContactDetailsPage />,
             },
             {
               path: '/audit-logs',

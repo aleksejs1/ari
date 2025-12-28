@@ -59,6 +59,18 @@ export function useContacts(page = 1) {
   })
 }
 
+export function useContact(id: string) {
+  return useQuery({
+    queryKey: ['contacts', id],
+    queryFn: async () => {
+      const url = id.startsWith('/api') ? id.substring(4) : `/contacts/${id}`
+      const response = await api.get<Contact>(url)
+      return response.data
+    },
+    enabled: !!id,
+  })
+}
+
 export function useCreateContact() {
   const queryClient = useQueryClient()
   return useMutation({

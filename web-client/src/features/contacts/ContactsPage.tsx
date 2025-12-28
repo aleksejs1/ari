@@ -8,9 +8,6 @@ import { ContactsTable } from './components/ContactsTable'
 import {
   useContacts,
   useDeleteContact,
-  useUpdateContactName,
-  useCreateContactName,
-  useDeleteContactName,
   useUpdateContactDate,
   useCreateContactDate,
   useDeleteContactDate,
@@ -18,7 +15,7 @@ import {
   getHydraPagination,
 } from './useContacts'
 
-import { type Contact, type ContactName, type ContactDate } from '@/types/models'
+import { type Contact, type ContactDate } from '@/types/models'
 
 export default function ContactsPage() {
   const [page, setPage] = useState(1)
@@ -43,27 +40,6 @@ export default function ContactsPage() {
     if (confirm(t('contacts.deleteConfirm')) && contact['@id']) {
       await deleteMutation.mutateAsync(contact['@id'])
     }
-  }
-
-  const handleUpdateNameMutation = useUpdateContactName()
-  const handleCreateNameMutation = useCreateContactName()
-  const handleDeleteNameMutation = useDeleteContactName()
-
-  const handleUpdateName = async (contact: Contact, name: ContactName) => {
-    if (name['@id']) {
-      await handleUpdateNameMutation.mutateAsync({ id: name['@id'], data: name })
-    } else if (contact['@id']) {
-      // Create new name
-      await handleCreateNameMutation.mutateAsync({
-        ...name,
-        contact: contact['@id'],
-      })
-    }
-  }
-
-  const handleDeleteName = async (_contact: Contact, name: ContactName) => {
-    if (!name['@id']) return
-    await handleDeleteNameMutation.mutateAsync(name['@id'])
   }
 
   const handleUpdateDateMutation = useUpdateContactDate()
@@ -101,8 +77,6 @@ export default function ContactsPage() {
         data={contacts}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onUpdateName={handleUpdateName}
-        onDeleteName={handleDeleteName}
         onUpdateDate={handleUpdateDate}
         onDeleteDate={handleDeleteDate}
       />
