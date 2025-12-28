@@ -12,6 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { formatApiDate } from '@/lib/utils'
 import { type Contact, type ContactFormValues } from '@/types/models'
 
 // import { useState } from "react"
@@ -41,7 +42,7 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
           id: d.id?.toString(),
           '@id': d['@id'],
           '@type': 'ContactDate',
-          date: d.date ?? new Date().toISOString(), // Fallback if null, though backend should validate
+          date: d.date ?? formatApiDate(new Date()), // Fallback if null, though backend should validate
           text: d.text ?? '',
         })),
       }

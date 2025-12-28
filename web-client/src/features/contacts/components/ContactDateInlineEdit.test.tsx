@@ -81,7 +81,7 @@ describe('ContactDateInlineEdit', () => {
 
     expect(mockOnUpdate).toHaveBeenCalledWith({
       ...mockDate,
-      date: '2000-05-05',
+      date: '2000-05-05T00:00:00+00:00',
       text: 'Anniversary',
     })
   })

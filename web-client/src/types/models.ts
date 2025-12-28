@@ -2,6 +2,8 @@ import { z } from 'zod'
 
 import type { components } from './schema'
 
+import { formatApiDate } from '@/lib/utils'
+
 export type Contact = components['schemas']['Contact.jsonld-contact.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
@@ -29,7 +31,7 @@ export const contactDateSchema = z.object({
   date: z
     .string()
     .or(z.date())
-    .transform((d) => new Date(d).toISOString()),
+    .transform((d) => formatApiDate(d)),
   text: z.string().min(1, 'Label is required'),
 })
 

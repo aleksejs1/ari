@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { formatApiDate } from '@/lib/utils'
 import { type ContactFormValues } from '@/types/models'
 
 export default function ContactDetailsPage() {
@@ -57,7 +58,7 @@ export default function ContactDetailsPage() {
       id: d.id?.toString(),
       '@id': d['@id'],
       '@type': 'ContactDate',
-      date: d.date ?? new Date().toISOString(),
+      date: d.date ?? formatApiDate(new Date()),
       text: d.text ?? '',
     })),
   }
