@@ -68,13 +68,13 @@ export function NotificationSubscriptions({
   }
 
   if (loading) {
-    return <div className="text-xs text-gray-500 italic">{t('app.loading')}</div>
+    return <div className="text-xs italic text-gray-500">{t('app.loading')}</div>
   }
 
   return (
-    <div className="mt-2 pl-4 border-l-2 border-gray-100">
-      <div className="flex flex-col gap-2 mb-2">
-        <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+    <div className="mt-2 border-l-2 border-gray-100 pl-4">
+      <div className="mb-2 flex flex-col gap-2">
+        <h4 className="text-xs font-medium uppercase tracking-wider text-gray-600">
           {t('contacts.subscriptions')}
         </h4>
         <div className="flex flex-wrap gap-1">
@@ -87,12 +87,12 @@ export function NotificationSubscriptions({
               className="h-6 px-2 text-[10px]"
               onClick={() => channel['@id'] && handleAdd(channel['@id'])}
             >
-              <Plus className="w-3 h-3 mr-1" />
+              <Plus className="mr-1 h-3 w-3" />
               {t('contacts.addSubscription')} ({channel.type})
             </Button>
           ))}
           {channels.length === 0 && (
-            <p className="text-[10px] text-gray-400 italic">
+            <p className="text-[10px] italic text-gray-400">
               {t('notificationChannels.noChannels', 'No channels available')}
             </p>
           )}
@@ -100,7 +100,7 @@ export function NotificationSubscriptions({
       </div>
 
       {subscriptions.length === 0 ? (
-        <p className="text-xs text-gray-400 italic">{t('contacts.noSubscriptions')}</p>
+        <p className="text-xs italic text-gray-400">{t('contacts.noSubscriptions')}</p>
       ) : (
         <div className="space-y-1">
           {subscriptions.map((sub) => {
@@ -113,9 +113,9 @@ export function NotificationSubscriptions({
               : null
 
             return (
-              <div key={sub.id} className="flex items-center justify-between group">
+              <div key={sub.id} className="group flex items-center justify-between">
                 <div className="flex items-center text-xs text-gray-600">
-                  <Bell className="w-3 h-3 mr-2 text-blue-500" />
+                  <Bell className="mr-2 h-3 w-3 text-blue-500" />
                   <span>
                     ID: {sub.id} {channelInfo && `(${channelInfo})`}
                   </span>
@@ -124,10 +124,10 @@ export function NotificationSubscriptions({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                   onClick={() => sub.id && handleDelete(sub.id)}
                 >
-                  <Trash2 className="w-3 h-3 text-red-500" />
+                  <Trash2 className="h-3 w-3 text-red-500" />
                 </Button>
               </div>
             )

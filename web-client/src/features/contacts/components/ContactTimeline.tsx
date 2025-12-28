@@ -68,7 +68,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
 
   if (error) {
     return (
-      <div className="p-4 text-sm text-red-500 text-center">
+      <div className="p-4 text-center text-sm text-red-500">
         {t('errors.failedToLoadTimeline', 'Failed to load history')}
       </div>
     )
@@ -87,14 +87,14 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
 
   return (
     <div className="mt-6 border-t pt-4">
-      <h3 className="text-sm font-medium mb-3">{t('contacts.timeline', 'Activity History')}</h3>
-      <div className="h-[300px] pr-4 overflow-y-auto">
-        <div className="relative border-l border-gray-200 ml-2 space-y-6 pb-4">
+      <h3 className="mb-3 text-sm font-medium">{t('contacts.timeline', 'Activity History')}</h3>
+      <div className="h-[300px] overflow-y-auto pr-4">
+        <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
           {logs.map(
             (
               log: TimelineEvent, // Replace 'any' with proper type
             ) => (
-              <div key={log.id} className="mb-6 ml-4 relative">
+              <div key={log.id} className="relative mb-6 ml-4">
                 <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
                 <div className="flex flex-col gap-1">
                   <span className="text-xs text-gray-500">
@@ -105,7 +105,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
                   </p>
                   {/* Basic rendering of changes */}
                   {log.changes && Object.keys(log.changes).length > 0 && (
-                    <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded mt-1">
+                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
                       {Object.entries(log.changes as Record<string, unknown>).map(([key, val]) => (
                         <div key={key}>
                           <span className="font-semibold">{key}:</span> {formatChangeValue(val)}

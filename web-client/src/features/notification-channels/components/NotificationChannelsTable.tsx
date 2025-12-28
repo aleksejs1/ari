@@ -43,7 +43,7 @@ export function NotificationChannelsTable({
             <div>
               {t('notificationChannels.chatId', 'Chat ID')}: {config.chatId}
             </div>
-            <div className="truncate w-40" title={config.botToken}>
+            <div className="w-40 truncate" title={config.botToken}>
               {t('notificationChannels.botToken', 'Bot Token')}: {config.botToken}
             </div>
           </div>
@@ -65,7 +65,7 @@ export function NotificationChannelsTable({
         return (
           <div className="flex justify-end gap-2">
             <Button variant="ghost" size="icon" onClick={() => onEdit(row.original)}>
-              <Edit className="w-4 h-4" />
+              <Edit className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
@@ -73,7 +73,7 @@ export function NotificationChannelsTable({
               className="text-red-500 hover:text-red-600"
               onClick={() => onDelete(row.original)}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         )

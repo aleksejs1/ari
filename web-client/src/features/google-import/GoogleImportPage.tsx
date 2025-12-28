@@ -89,7 +89,7 @@ export default function GoogleImportPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {t('googleImport.title')}
@@ -99,7 +99,7 @@ export default function GoogleImportPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Download className="w-5 h-5" />
+            <Download className="h-5 w-5" />
             {t('googleImport.title')}
           </CardTitle>
         </CardHeader>
@@ -117,33 +117,33 @@ export default function GoogleImportPage() {
               disabled={isAuthenticating || isImporting}
               variant={authSuccess ? 'outline' : 'default'}
             >
-              {isAuthenticating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              {isAuthenticating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {t('googleImport.authorize')}
             </Button>
 
             <Button onClick={handleImport} disabled={isImporting} variant="default">
-              {isImporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {t('googleImport.import')}
             </Button>
           </div>
 
           {authSuccess && (
-            <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mt-2">
-              <CheckCircle2 className="w-5 h-5" />
+            <div className="mt-2 flex items-center gap-2 text-green-600 dark:text-green-400">
+              <CheckCircle2 className="h-5 w-5" />
               <span>{t('googleImport.authSuccess')}</span>
             </div>
           )}
 
           {importCount !== null && (
-            <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mt-2">
-              <CheckCircle2 className="w-5 h-5" />
+            <div className="mt-2 flex items-center gap-2 text-green-600 dark:text-green-400">
+              <CheckCircle2 className="h-5 w-5" />
               <span>{t('googleImport.success', { count: importCount })}</span>
             </div>
           )}
 
           {error && (
-            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 mt-2">
-              <AlertCircle className="w-5 h-5" />
+            <div className="mt-2 flex items-center gap-2 text-red-600 dark:text-red-400">
+              <AlertCircle className="h-5 w-5" />
               <span>{error}</span>
             </div>
           )}

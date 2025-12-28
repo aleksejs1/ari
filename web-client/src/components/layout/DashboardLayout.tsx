@@ -13,56 +13,56 @@ export default function DashboardLayout() {
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-white dark:bg-gray-800 border-r hidden md:block flex flex-col h-screen sticky top-0">
+      <aside className="sticky top-0 flex hidden h-screen w-64 flex-col border-r bg-white dark:bg-gray-800 md:block">
         <div className="p-6">
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
+          <h1 className="bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
             {t('app.title')}
           </h1>
         </div>
-        <nav className="px-4 space-y-2">
+        <nav className="space-y-2 px-4">
           <Link
             to="/"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
-            <Users className="w-5 h-5" />
+            <Users className="h-5 w-5" />
             <span>{t('contacts.title')}</span>
           </Link>
           <Link
             to="/audit-logs"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
-            <History className="w-5 h-5" />
+            <History className="h-5 w-5" />
             <span>{t('auditLogs.title', 'Audit Logs')}</span>
           </Link>
           <Link
             to="/notification-channels"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
-            <Bell className="w-5 h-5" />
+            <Bell className="h-5 w-5" />
             <span>{t('notificationChannels.title', 'Notification Channels')}</span>
           </Link>
           <Link
             to="/google-import"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
-            <Download className="w-5 h-5" />
+            <Download className="h-5 w-5" />
             <span>{t('googleImport.title', 'Google Import')}</span>
           </Link>
         </nav>
-        <div className="mt-auto p-4 border-t dark:border-gray-700 space-y-2">
-          <div className="mb-2 text-sm font-medium truncate" title={user?.uuid}>
+        <div className="mt-auto space-y-2 border-t p-4 dark:border-gray-700">
+          <div className="mb-2 truncate text-sm font-medium" title={user?.uuid}>
             {user?.uuid}
           </div>
           <LanguageSwitcher />
           <Button variant="outline" className="w-full justify-start gap-2" onClick={logout}>
-            <LogOut className="w-4 h-4" />
+            <LogOut className="h-4 w-4" />
             {t('auth.logout')}
           </Button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 overflow-auto p-8">
         <Outlet />
       </main>
     </div>

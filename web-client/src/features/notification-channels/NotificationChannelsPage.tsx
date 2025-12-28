@@ -88,7 +88,7 @@ export default function NotificationChannelsPage() {
           </p>
         </div>
         <Button onClick={handleCreate} className="gap-2">
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" />
           {t('notificationChannels.add', 'Add Channel')}
         </Button>
       </div>

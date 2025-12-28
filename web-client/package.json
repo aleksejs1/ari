@@ -87,6 +87,7 @@
     "openapi-typescript": "^7.10.1",
     "postcss": "^8.5.6",
     "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "stylelint": "^16.26.1",
     "stylelint-config-standard": "^39.0.1",
     "tailwindcss": "^3.4.17",

@@ -59,7 +59,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Names Section */}
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <h3 className="text-sm font-medium">{t('contacts.names')}</h3>
             <Button
               type="button"
@@ -67,12 +67,12 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               size="sm"
               onClick={() => appendName({ given: '', family: '' })}
             >
-              <Plus className="w-4 h-4 mr-1" /> {t('contacts.addName')}
+              <Plus className="mr-1 h-4 w-4" /> {t('contacts.addName')}
             </Button>
           </div>
           <div className="space-y-2">
             {nameFields.map((field, index) => (
-              <div key={field.id} className="flex gap-2 items-start">
+              <div key={field.id} className="flex items-start gap-2">
                 <FormField
                   control={form.control}
                   name={`contactNames.${index}.given`}
@@ -104,7 +104,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                   onClick={() => removeName(index)}
                   disabled={nameFields.length === 1}
                 >
-                  <Trash2 className="w-4 h-4 text-red-500" />
+                  <Trash2 className="h-4 w-4 text-red-500" />
                 </Button>
               </div>
             ))}
@@ -113,7 +113,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
 
         {/* Dates Section */}
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <h3 className="text-sm font-medium">{t('contacts.dates')}</h3>
             <Button
               type="button"
@@ -121,13 +121,13 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               size="sm"
               onClick={() => appendDate({ text: 'Birthday', date: new Date().toISOString() })}
             >
-              <Plus className="w-4 h-4 mr-1" /> {t('contacts.addDate')}
+              <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
             </Button>
           </div>
           <div className="space-y-4">
             {dateFields.map((field, index) => (
               <div key={field.id} className="space-y-2">
-                <div className="flex gap-2 items-start">
+                <div className="flex items-start gap-2">
                   <FormField
                     control={form.control}
                     name={`contactDates.${index}.text`}
@@ -163,7 +163,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                     size="icon"
                     onClick={() => removeDate(index)}
                   >
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>
                 </div>
                 {(() => {
@@ -177,7 +177,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               </div>
             ))}
             {dateFields.length === 0 && (
-              <p className="text-sm text-gray-500 italic">{t('contacts.noDates')}</p>
+              <p className="text-sm italic text-gray-500">{t('contacts.noDates')}</p>
             )}
           </div>
         </div>

@@ -26,9 +26,9 @@ export function InlineEditTrigger({
   const { t } = useTranslation()
 
   return (
-    <div className="relative group w-full h-8 flex items-center">
-      <div className="flex items-center gap-2 text-sm w-full h-full">
-        {isExistent ? children : <span className="w-full h-full" />}
+    <div className="group relative flex h-8 w-full items-center">
+      <div className="flex h-full w-full items-center gap-2 text-sm">
+        {isExistent ? children : <span className="h-full w-full" />}
       </div>
 
       <Popover open={open} onOpenChange={onOpenChange}>
@@ -37,8 +37,8 @@ export function InlineEditTrigger({
             size="icon"
             variant="ghost"
             className={cn(
-              'absolute right-0 top-1/2 -translate-y-1/2 h-6 w-6',
-              'opacity-0 group-hover:opacity-100 transition-opacity',
+              'absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2',
+              'opacity-0 transition-opacity group-hover:opacity-100',
               open && 'opacity-100',
             )}
             aria-label={t(isExistent ? 'common.edit' : 'common.add', { item: label })}

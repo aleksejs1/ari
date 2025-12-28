@@ -47,10 +47,10 @@ export function ContactsTable({
         return (
           <div className="flex flex-col">
             {names.map((name, i) => (
-              <div key={i} className="flex items-center justify-between group">
+              <div key={i} className="group flex items-center justify-between">
                 <Link
                   to={`/contacts/${row.original.id}`}
-                  className="font-medium hover:underline text-primary"
+                  className="font-medium text-primary hover:underline"
                 >
                   {name.given} {name.family}
                 </Link>
@@ -94,7 +94,7 @@ export function ContactsTable({
               onClick={() => onEdit(row.original)}
               aria-label="Edit Contact"
             >
-              <Edit className="w-4 h-4" />
+              <Edit className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
@@ -103,7 +103,7 @@ export function ContactsTable({
               onClick={() => onDelete(row.original)}
               aria-label="Delete Contact"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         )

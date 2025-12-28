@@ -37,11 +37,11 @@ interface AuditLogCollection {
 }
 
 const LogItem = ({ log }: { log: TimelineEvent }) => (
-  <div className="p-6 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+  <div className="dark:hover:bg-gray-750 p-6 transition-colors hover:bg-gray-50">
     <div className="flex items-start justify-between">
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+          <span className="rounded bg-gray-100 px-2 py-0.5 text-sm font-semibold uppercase tracking-wide text-gray-700 dark:bg-gray-700 dark:text-gray-300">
             {log.action}
           </span>
           <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
@@ -54,8 +54,8 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
     </div>
 
     {log.changes && Object.keys(log.changes).length > 0 && (
-      <div className="mt-4 bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="mt-4 rounded-md bg-gray-50 p-4 text-sm dark:bg-gray-900">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {Object.entries(log.changes as Record<string, unknown>)
             .filter(([key]) => key !== 'user' && key !== 'tenant')
             .map(([key, val]) => (
@@ -70,11 +70,11 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
 
     {log.action === 'REMOVE' && log.snapshotBefore && (
       <div className="mt-4">
-        <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
           Snapshot Before Removal
         </div>
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-md p-4 text-sm border border-red-100 dark:border-red-900/30">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+        <div className="rounded-md border border-red-100 bg-red-50 p-4 text-sm dark:border-red-900/30 dark:bg-red-900/20">
+          <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
             {Object.entries(log.snapshotBefore)
               .filter(([key]) => key !== 'user' && key !== 'tenant')
               .map(([key, val]) => (
@@ -90,11 +90,11 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
 
     {log.action === 'INSERT' && log.snapshotAfter && (
       <div className="mt-4">
-        <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
           Snapshot After Insertion
         </div>
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-md p-4 text-sm border border-green-100 dark:border-green-900/30">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+        <div className="rounded-md border border-green-100 bg-green-50 p-4 text-sm dark:border-green-900/30 dark:bg-green-900/20">
+          <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
             {Object.entries(log.snapshotAfter)
               .filter(([key]) => key !== 'user' && key !== 'tenant')
               .map(([key, val]) => (
@@ -188,7 +188,7 @@ export default function AuditLogsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <History className="w-8 h-8 text-blue-500" />
+          <History className="h-8 w-8 text-blue-500" />
           <h1 className="text-3xl font-bold tracking-tight">
             {t('auditLogs.title', 'Audit Logs')}
           </h1>
@@ -198,13 +198,13 @@ export default function AuditLogsPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden flex flex-col min-h-[400px]">
+      <div className="flex min-h-[400px] flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
         <div className="flex-1">
           <LogList logs={logs} isPlaceholderData={isPlaceholderData} t={t} />
         </div>
 
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50">
+          <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
             <div className="text-sm text-gray-700 dark:text-gray-300">
               {t('pagination.pageInfo', 'Page {{current}} of {{total}}', {
                 current: page,
@@ -215,14 +215,14 @@ export default function AuditLogsPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1 || isPlaceholderData}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
+                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 {t('pagination.previous', 'Previous')}
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages || isPlaceholderData}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
+                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 {t('pagination.next', 'Next')}
               </button>

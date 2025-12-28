@@ -62,8 +62,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 relative">
-      <div className="absolute top-4 right-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="absolute right-4 top-4">
         <LanguageSwitcher />
       </div>
       <Card className="w-full max-w-md">
@@ -100,7 +100,7 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              {error && <div className="text-red-500 text-sm">{error}</div>}
+              {error && <div className="text-sm text-red-500">{error}</div>}
               <Button type="submit" className="w-full">
                 {t('auth.signIn')}
               </Button>
