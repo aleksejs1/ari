@@ -31,26 +31,18 @@ class ContactTimelineProvider implements ProviderInterface
             throw new NotFoundHttpException('Contact not found');
         }
 
-        $contact = $this->entityManager->getRepository(Contact::class)->find($id);
-
-        if (null === $contact) {
-            throw new NotFoundHttpException('Contact not found');
-        }
-
-
-
         $auditRepo = $this->entityManager->getRepository(AuditLog::class);
 
         // Fetch logs for the Contact itself
         $contactLogs = $auditRepo->findBy([
             'entityType' => Contact::class,
-            'entityId' => $contact->getId(),
+            'entityId' => $id,
         ]);
 
         // Fetch logs for child entities via owner fields
         $childLogs = $auditRepo->findBy([
             'ownerEntityType' => Contact::class,
-            'ownerEntityId' => $contact->getId(),
+            'ownerEntityId' => $id,
         ]);
 
         $allLogs = array_merge($contactLogs, $childLogs);
@@ -61,8 +53,8 @@ class ContactTimelineProvider implements ProviderInterface
 
             if (0 === $dateComparison) {
                 // If dates are equal, Contact entity type should come last
-                $aIsContact = $a->getEntityType() === Contact::class;
-                $bIsContact = $b->getEntityType() === Contact::class;
+                $aIsContact = $a->getEntityType() === Contact::class && $a->getAction() === 'INSERT';
+                $bIsContact = $b->getEntityType() === Contact::class && $b->getAction() === 'INSERT';
 
                 if ($aIsContact && !$bIsContact) {
                     return 1; // $a comes after $b

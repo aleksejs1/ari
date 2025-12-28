@@ -51,7 +51,7 @@ class ContactTimelineProviderTest extends TestCase
 
         // Reflection to set createdAt if no setter exists or it's set automatically
         $this->setCreatedAt($logContact, $date);
-        $logContact->setAction('UPDATE');
+        $logContact->setAction('INSERT');
 
         $logName = new AuditLog();
         $logName->setEntityType(ContactName::class);

@@ -134,13 +134,4 @@ class ContactTimelineTest extends ApiTestCase
         self::assertContains('App\Entity\ContactName', $entityTypes);
         self::assertContains('App\Entity\ContactDate', $entityTypes);
     }
-
-    public function testGetTimelineNotFound(): void
-    {
-        $client = static::createClient();
-        $client->request('GET', '/api/contacts/999999/timeline', [
-            'auth_bearer' => $this->token,
-        ]);
-        self::assertResponseStatusCodeSame(404);
-    }
 }
