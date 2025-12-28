@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { formatApiDate } from '@/lib/utils'
 import { contactSchema, type ContactFormValues } from '@/types/models'
 
 interface ContactFormProps {
@@ -118,7 +119,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendDate({ text: 'Birthday', date: new Date().toISOString() })}
+              onClick={() => appendDate({ text: 'Birthday', date: formatApiDate(new Date()) })}
             >
               <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
             </Button>

@@ -16,6 +16,62 @@ const isDateTimeObject = (val: unknown): val is { date: string } => {
 }
 
 /**
+ * Safely format a date string, returning the original string if parsing fails.
+ */
+const formatDateString = (dateStr: string): string => {
+  try {
+    return format(new Date(dateStr), 'PPP')
+  } catch {
+    return dateStr
+  }
+}
+
+/**
+ * Format a date value from various date object structures.
+ */
+const formatDateValue = (obj: Record<string, unknown>): string | null => {
+  const dateField = obj.date
+
+  if (typeof dateField === 'object' && isDateTimeObject(dateField)) {
+    return formatDateString(dateField.date)
+  }
+
+  if (typeof dateField === 'string') {
+    return formatDateString(dateField)
+  }
+
+  return null
+}
+
+/**
+ * Format an array value by recursively formatting each element.
+ */
+const formatArrayValue = (val: unknown[]): string => {
+  return val.map(formatChangeValue).join(' → ')
+}
+
+/**
+ * Format an object value, handling date objects and other structures.
+ */
+const formatObjectValue = (obj: Record<string, unknown>): string => {
+  // Try to format as date object with date field
+  if (obj.date) {
+    const formatted = formatDateValue(obj)
+    if (formatted) {
+      return formatted
+    }
+  }
+
+  // Try to format as direct DateTime object
+  if (isDateTimeObject(obj)) {
+    return formatDateString(obj.date)
+  }
+
+  // Fallback to JSON representation
+  return JSON.stringify(obj)
+}
+
+/**
  * Helper to format change values, handling nested DateTime objects from API.
  */
 const formatChangeValue = (val: unknown): string => {
@@ -25,37 +81,10 @@ const formatChangeValue = (val: unknown): string => {
 
   if (typeof val === 'object') {
     if (Array.isArray(val)) {
-      return val.map(formatChangeValue).join(' → ')
+      return formatArrayValue(val)
     }
 
-    const obj = val as Record<string, unknown>
-
-    if (obj.date) {
-      if (typeof obj.date === 'object' && isDateTimeObject(obj.date)) {
-        try {
-          return format(new Date(obj.date.date), 'PPP')
-        } catch {
-          return obj.date.date
-        }
-      }
-      if (typeof obj.date === 'string') {
-        try {
-          return format(new Date(obj.date), 'PPP')
-        } catch {
-          return obj.date
-        }
-      }
-    }
-
-    if (isDateTimeObject(obj)) {
-      try {
-        return format(new Date(obj.date), 'PPP')
-      } catch {
-        return obj.date
-      }
-    }
-
-    return JSON.stringify(val)
+    return formatObjectValue(val as Record<string, unknown>)
   }
 
   return String(val)
@@ -63,14 +92,24 @@ const formatChangeValue = (val: unknown): string => {
 
 const getLogLabelByAction = (type: string, action: string): string => {
   if (action === 'INSERT') {
-    if (type === 'Contact') return 'Contact created'
-    if (type === 'ContactName') return 'Name added'
-    if (type === 'ContactDate') return 'Date added'
+    if (type === 'Contact') {
+      return 'Contact created'
+    }
+    if (type === 'ContactName') {
+      return 'Name added'
+    }
+    if (type === 'ContactDate') {
+      return 'Date added'
+    }
   }
 
   if (action === 'UPDATE') {
-    if (type === 'ContactName') return 'Name changed'
-    if (type === 'ContactDate') return 'Date changed'
+    if (type === 'ContactName') {
+      return 'Name changed'
+    }
+    if (type === 'ContactDate') {
+      return 'Date changed'
+    }
   }
 
   return `${action} ${type}`
