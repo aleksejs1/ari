@@ -31,24 +31,10 @@ const getContactId = (log: TimelineEvent): string | null => {
     return entityId.toString()
   }
 
-  const checkValue = (obj: Record<string, unknown> | null | undefined): string | null => {
-    if (!obj) {
-      return null
-    }
-    const contact = obj.contact
-    if (typeof contact === 'string' && contact.startsWith('/api/contacts/')) {
-      return contact.split('/').pop() || null
-    }
-    if (typeof contact === 'object' && contact !== null && 'id' in contact) {
-      return (contact as { id: string | number }).id.toString()
-    }
-    return null
-  }
-
   return (
-    checkValue(snapshotAfter as Record<string, unknown>) ||
-    checkValue(snapshotBefore as Record<string, unknown>) ||
-    checkValue(changes as Record<string, unknown>)
+    extractFromObject((snapshotAfter as Record<string, unknown>) || {}) ||
+    extractFromObject((snapshotBefore as Record<string, unknown>) || {}) ||
+    extractFromObject((changes as Record<string, unknown>) || {})
   )
 }
 
@@ -67,6 +53,41 @@ const looksLikeId = (val: unknown): boolean => {
     )
   }
   return false
+}
+
+/**
+ * Extract contact ID from a string (URI or raw ID).
+ */
+const extractStringId = (val: string): string | null => {
+  if (val.startsWith('/api/contacts/')) {
+    return val.split('/').pop() ?? null
+  }
+  return looksLikeId(val) ? val : null
+}
+
+/**
+ * Extract contact ID from an object's contact or owner field.
+ */
+const extractFromObject = (obj: Record<string, unknown>): string | null => {
+  const target = obj.contact ?? obj.owner
+
+  if (!target) {
+    return null
+  }
+
+  if (typeof target === 'string') {
+    return extractStringId(target)
+  }
+
+  if (typeof target === 'number') {
+    return target.toString()
+  }
+
+  if (typeof target === 'object' && 'id' in target) {
+    return (target as { id: string | number }).id.toString()
+  }
+
+  return null
 }
 
 /**
@@ -223,11 +244,7 @@ interface AuditLogCollection {
 const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) => {
   const { t } = useTranslation()
   const contactId = getContactId(log)
-  const isContactRelated = !!(
-    log.entityType.includes('Contact') &&
-    log.action !== 'REMOVE' &&
-    contactId
-  )
+  const isContactRelated = !!contactId
 
   const filterFields = (obj: Record<string, unknown> | null | undefined) => {
     if (!obj) {
@@ -250,12 +267,22 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
               {getLogDescription(log, t)}
             </span>
             {isContactRelated ? (
-              <Link
-                to={`/contacts/${contactId}`}
-                className="text-xs text-gray-400 underline transition-colors hover:text-blue-500"
-              >
-                {t('common.viewDetails', 'view contact')}
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  to={`/contacts/${contactId}`}
+                  className="text-info text-xs underline transition-colors hover:text-blue-500"
+                >
+                  {t('common.viewDetails', 'view contact')}
+                </Link>
+                <Link
+                  to={`/contacts/${contactId}/timeline`}
+                  className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-blue-500"
+                  title={t('auditLogs.viewTimeline')}
+                >
+                  <History className="h-3 w-3" />
+                  {t('auditLogs.timeline')}
+                </Link>
+              </div>
             ) : (
               <span className="text-xs text-gray-400">#{log.entityId}</span>
             )}

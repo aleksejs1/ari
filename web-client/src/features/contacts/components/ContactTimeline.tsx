@@ -216,9 +216,10 @@ const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.Reac
 
 interface ContactTimelineProps {
   contactId: string
+  fullHeight?: boolean
 }
 
-export function ContactTimeline({ contactId }: ContactTimelineProps) {
+export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps) {
   const { t, i18n } = useTranslation()
   const language = i18n.language
 
@@ -259,9 +260,11 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
   }
 
   return (
-    <div className="mt-6 border-t pt-4">
-      <h3 className="mb-3 text-sm font-medium">{t('contacts.history.timeline')}</h3>
-      <div className="h-[300px] overflow-y-auto pr-4">
+    <div className={fullHeight ? '' : 'mt-6 border-t pt-4'}>
+      {!fullHeight && (
+        <h3 className="mb-3 text-sm font-medium">{t('contacts.history.timeline')}</h3>
+      )}
+      <div className={fullHeight ? 'pr-4' : 'h-[300px] overflow-y-auto pr-4'}>
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
           {logs.map((log: TimelineEvent) => {
             const snapshotDetails = getLogSnapshotDetails(log, language)

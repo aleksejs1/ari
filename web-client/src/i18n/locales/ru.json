@@ -138,7 +138,9 @@
     "noLogs": "Логи аудита не найдены",
     "totalCount": "Всего элементов: {{count}}",
     "snapshotBeforeRemoval": "Снимок перед удалением",
-    "snapshotAfterInsertion": "Снимок после вставки",
+    "snapshotAfterInsertion": "Снимок после вставки:",
+    "timeline": "Таймлайн",
+    "viewTimeline": "Посмотреть таймлайн",
     "entities": {
       "NotificationIntent": {
         "INSERT": "Отправлена нотификация"

@@ -5,6 +5,7 @@ import DashboardLayout from './components/layout/DashboardLayout'
 import AuditLogsPage from './features/audit-logs/AuditLogsPage'
 import ContactDetailsPage from './features/contacts/ContactDetailsPage'
 import ContactsPage from './features/contacts/ContactsPage'
+import ContactTimelinePage from './features/contacts/ContactTimelinePage'
 import GoogleImportPage from './features/google-import/GoogleImportPage'
 import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
 import LoginPage from './pages/auth/LoginPage'
@@ -48,6 +49,10 @@ export default function App() {
             {
               path: '/contacts/:id',
               element: <ContactDetailsPage />,
+            },
+            {
+              path: '/contacts/:id/timeline',
+              element: <ContactTimelinePage />,
             },
             {
               path: '/audit-logs',

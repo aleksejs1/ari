@@ -139,6 +139,8 @@
     "totalCount": "Total items: {{count}}",
     "snapshotBeforeRemoval": "Snapshot Before Removal",
     "snapshotAfterInsertion": "Snapshot After Insertion",
+    "timeline": "Timeline",
+    "viewTimeline": "View timeline",
     "entities": {
       "NotificationIntent": {
         "INSERT": "Notification sent"
