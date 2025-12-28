@@ -3,19 +3,16 @@ import { expect, test, vi } from 'vitest'
 
 import { NotificationChannelForm } from './NotificationChannelForm'
 
-// Mock useTranslation
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue?: string) => defaultValue ?? key,
-  }),
-}))
-
 test('submits successfully', async () => {
   const onSubmit = vi.fn()
   render(<NotificationChannelForm onSubmit={onSubmit} />)
 
-  fireEvent.change(screen.getByLabelText(/bot token/i), { target: { value: 'tok' } })
-  fireEvent.change(screen.getByLabelText(/chat id/i), { target: { value: '123' } })
+  fireEvent.change(screen.getByLabelText('notificationChannels.botToken'), {
+    target: { value: 'test-token' },
+  })
+  fireEvent.change(screen.getByLabelText('notificationChannels.chatId'), {
+    target: { value: '123' },
+  })
 
   fireEvent.submit(screen.getByRole('form'))
 
@@ -34,7 +31,7 @@ test('shows validation errors', async () => {
   fireEvent.submit(screen.getByRole('form'))
 
   await waitFor(() => {
-    expect(screen.getByText('Bot Token is required')).toBeInTheDocument()
+    expect(screen.getByText('validation.botTokenRequired')).toBeInTheDocument()
     expect(onSubmit).not.toHaveBeenCalled()
   })
 })

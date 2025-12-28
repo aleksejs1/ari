@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { notificationChannelSchema, type NotificationChannelFormValues } from '@/types/models'
+import { type NotificationChannelFormValues } from '@/types/models'
 
 interface NotificationChannelFormProps {
   defaultValues?: NotificationChannelFormValues
@@ -26,6 +27,16 @@ export function NotificationChannelForm({
   isSubmitting,
 }: NotificationChannelFormProps) {
   const { t } = useTranslation()
+
+  const notificationChannelSchema = z.object({
+    id: z.number().optional(),
+    type: z.literal('telegram'),
+    config: z.object({
+      botToken: z.string().min(1, t('validation.botTokenRequired')),
+      chatId: z.string().min(1, t('validation.chatIdRequired')),
+    }),
+  })
+
   const form = useForm<NotificationChannelFormValues>({
     resolver: zodResolver(notificationChannelSchema),
     defaultValues: defaultValues || {
@@ -49,7 +60,7 @@ export function NotificationChannelForm({
           name="type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="type-select">{t('notificationChannels.type', 'Type')}</FormLabel>
+              <FormLabel htmlFor="type-select">{t('notificationChannels.type')}</FormLabel>
               <FormControl>
                 <select
                   {...field}
@@ -69,9 +80,7 @@ export function NotificationChannelForm({
           name="config.botToken"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="bot-token">
-                {t('notificationChannels.botToken', 'Bot Token')}
-              </FormLabel>
+              <FormLabel htmlFor="bot-token">{t('notificationChannels.botToken')}</FormLabel>
               <FormControl>
                 <Input
                   id="bot-token"
@@ -89,7 +98,7 @@ export function NotificationChannelForm({
           name="config.chatId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="chat-id">{t('notificationChannels.chatId', 'Chat ID')}</FormLabel>
+              <FormLabel htmlFor="chat-id">{t('notificationChannels.chatId')}</FormLabel>
               <FormControl>
                 <Input id="chat-id" placeholder="-123456789" {...field} />
               </FormControl>
@@ -99,7 +108,7 @@ export function NotificationChannelForm({
         />
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? t('common.saving', 'Saving...') : t('common.save', 'Save')}
+          {isSubmitting ? t('common.saving') : t('common.save')}
         </Button>
       </form>
     </Form>

@@ -25,28 +25,28 @@ export default function DashboardLayout() {
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Users className="h-5 w-5" />
-            <span>{t('contacts.title')}</span>
+            <span>{t('app.navigation.contacts')}</span>
           </Link>
           <Link
             to="/audit-logs"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <History className="h-5 w-5" />
-            <span>{t('auditLogs.title', 'Audit Logs')}</span>
+            <span>{t('app.navigation.auditLogs')}</span>
           </Link>
           <Link
             to="/notification-channels"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Bell className="h-5 w-5" />
-            <span>{t('notificationChannels.title', 'Notification Channels')}</span>
+            <span>{t('app.navigation.notificationChannels')}</span>
           </Link>
           <Link
             to="/google-import"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Download className="h-5 w-5" />
-            <span>{t('googleImport.title', 'Google Import')}</span>
+            <span>{t('app.navigation.googleImport')}</span>
           </Link>
         </nav>
         <div className="mt-auto space-y-2 border-t p-4 dark:border-gray-700">

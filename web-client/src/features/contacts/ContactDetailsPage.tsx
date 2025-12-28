@@ -117,7 +117,7 @@ export default function ContactDetailsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('contacts.history')}</CardTitle>
+          <CardTitle>{t('contacts.history.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           {contact.id ? <ContactTimeline contactId={contact.id.toString()} /> : null}

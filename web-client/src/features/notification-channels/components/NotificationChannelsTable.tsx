@@ -30,12 +30,12 @@ export function NotificationChannelsTable({
   const columns: ColumnDef<NotificationChannel>[] = [
     {
       accessorKey: 'type',
-      header: t('notificationChannels.type', 'Type'),
+      header: t('notificationChannels.type'),
       cell: ({ row }) => <span className="capitalize">{row.getValue('type')}</span>,
     },
     {
       accessorKey: 'config',
-      header: t('notificationChannels.config', 'Configuration'),
+      header: t('notificationChannels.config'),
       cell: ({ row }) => {
         const config = row.original.config as Record<string, string>
         if (!config) {
@@ -44,10 +44,10 @@ export function NotificationChannelsTable({
         return (
           <div className="text-sm text-gray-500">
             <div>
-              {t('notificationChannels.chatId', 'Chat ID')}: {config.chatId}
+              {t('notificationChannels.chatId')}: {config.chatId}
             </div>
             <div className="w-40 truncate" title={config.botToken}>
-              {t('notificationChannels.botToken', 'Bot Token')}: {config.botToken}
+              {t('notificationChannels.botToken')}: {config.botToken}
             </div>
           </div>
         )
@@ -55,15 +55,15 @@ export function NotificationChannelsTable({
     },
     {
       accessorKey: 'verifiedAt',
-      header: t('notificationChannels.verified', 'Verified'),
+      header: t('notificationChannels.verified'),
       cell: ({ row }) => {
         const date = row.original.verifiedAt
-        return date ? new Date(date).toLocaleString() : t('notificationChannels.notVerified', 'No')
+        return date ? new Date(date).toLocaleString() : t('notificationChannels.notVerified')
       },
     },
     {
       id: 'actions',
-      header: t('common.actions', 'Actions'),
+      header: t('common.actions'),
       cell: ({ row }) => {
         return (
           <div className="flex justify-end gap-2">
@@ -123,7 +123,7 @@ export function NotificationChannelsTable({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                {t('notificationChannels.noChannels', 'No notification channels found')}
+                {t('notificationChannels.noChannels')}
               </TableCell>
             </TableRow>
           )}

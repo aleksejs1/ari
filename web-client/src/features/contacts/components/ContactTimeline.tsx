@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { format } from 'date-fns'
+import { type TFunction } from 'i18next'
 import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { api } from '@/lib/axios'
+import { formatLocalizedDate, formatLocalizedDateTime } from '@/lib/utils'
 import { type ContactTimeline, type TimelineEvent } from '@/types/models'
 
 const isDateTimeObject = (val: unknown): val is { date: string } => {
@@ -16,130 +18,197 @@ const isDateTimeObject = (val: unknown): val is { date: string } => {
 }
 
 /**
- * Safely format a date string, returning the original string if parsing fails.
+ * Safely format a date string, returning a fragment or null.
  */
-const formatDateString = (dateStr: string): string => {
+const formatDateString = (dateStr: string, language: string): React.ReactElement | null => {
   try {
-    return format(new Date(dateStr), 'PPP')
+    return <>{formatLocalizedDate(dateStr, language)}</>
   } catch {
-    return dateStr
+    return <>{dateStr}</>
   }
 }
 
 /**
- * Format a date value from various date object structures.
+ * Format a contact reference object as a clickable link.
  */
-const formatDateValue = (obj: Record<string, unknown>): string | null => {
-  const dateField = obj.date
-
-  if (typeof dateField === 'object' && isDateTimeObject(dateField)) {
-    return formatDateString(dateField.date)
+const formatContactValue = (val: Record<string, unknown>): React.ReactElement | null => {
+  const cid = val.id || (val['@id'] as string)?.split('/').pop()
+  if (!cid) {
+    return null
   }
 
-  if (typeof dateField === 'string') {
-    return formatDateString(dateField)
-  }
+  const label = val.displayName || (val as { name?: string }).name || `Contact #${cid}`
 
-  return null
+  return (
+    <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+      <>{label}</>
+    </Link>
+  )
+}
+
+/**
+ * Check if a value looks like a contact ID.
+ */
+const looksLikeId = (val: unknown): boolean => {
+  if (typeof val === 'number') {
+    return true
+  }
+  if (typeof val === 'string') {
+    return (
+      /^\d+$/.test(val) ||
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)
+    )
+  }
+  return false
 }
 
 /**
  * Format an array value by recursively formatting each element.
  */
-const formatArrayValue = (val: unknown[]): string => {
-  return val.map(formatChangeValue).join(' → ')
+const formatArrayValue = (
+  val: unknown[],
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
+  return (
+    <span className="flex flex-wrap gap-1">
+      {val.map((v, i) => (
+        <span key={i}>
+          {i > 0 && <span className="mx-1 text-gray-400">→</span>}
+          {formatChangeValue(v, language, fieldName)}
+        </span>
+      ))}
+    </span>
+  )
 }
 
 /**
- * Format an object value, handling date objects and other structures.
+ * Check if an object is a contact reference.
  */
-const formatObjectValue = (obj: Record<string, unknown>): string => {
-  // Try to format as date object with date field
-  if (obj.date) {
-    const formatted = formatDateValue(obj)
-    if (formatted) {
-      return formatted
+const isContactReference = (obj: Record<string, unknown>, fieldName?: string): boolean => {
+  return (
+    fieldName === 'contact' ||
+    fieldName === 'owner' ||
+    obj['@type'] === 'Contact' ||
+    (obj['@id'] as string)?.startsWith('/api/contacts/') ||
+    (!!obj.id && (!!obj.displayName || (obj as { name?: string }).name !== undefined))
+  )
+}
+
+/**
+ * Format an object value, handling date objects, contact references, and other structures.
+ */
+const formatObjectValue = (
+  obj: Record<string, unknown>,
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
+  // 1. Check if it's a contact reference
+  if (isContactReference(obj, fieldName)) {
+    const link = formatContactValue(obj)
+    if (link) {
+      return link
     }
   }
 
-  // Try to format as direct DateTime object
-  if (isDateTimeObject(obj)) {
-    return formatDateString(obj.date)
+  // 2. Check for date fields
+  if (obj.date) {
+    const dateField = obj.date
+    if (typeof dateField === 'object' && isDateTimeObject(dateField)) {
+      return formatDateString(dateField.date, language)
+    }
+    if (typeof dateField === 'string') {
+      return formatDateString(dateField, language)
+    }
   }
 
-  // Fallback to JSON representation
-  return JSON.stringify(obj)
+  // 3. Check if it's a direct DateTime object
+  if (isDateTimeObject(obj)) {
+    return formatDateString(obj.date, language)
+  }
+
+  // Fallback to JSON
+  return <>{JSON.stringify(obj)}</>
 }
 
 /**
- * Helper to format change values, handling nested DateTime objects from API.
+ * Handle string values, specifically looking for contact URIs and ID-like strings in contact fields.
  */
-const formatChangeValue = (val: unknown): string => {
+const formatStringValue = (val: string, fieldName?: string): React.ReactElement | null => {
+  if (val.startsWith('/api/contacts/')) {
+    const cid = val.split('/').pop()
+    if (cid && cid !== 'undefined' && cid !== 'null') {
+      return (
+        <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+          {`Contact #${cid}`}
+        </Link>
+      )
+    }
+  }
+
+  if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
+    return (
+      <Link to={`/contacts/${val}`} className="text-blue-600 underline hover:text-blue-800">
+        {`Contact #${val}`}
+      </Link>
+    )
+  }
+
+  return <>{val}</>
+}
+
+/**
+ * Helper to format change values, handling nested objects, contact references, and dates.
+ */
+const formatChangeValue = (
+  val: unknown,
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
   if (val === null || val === undefined) {
-    return ''
+    return <></>
   }
 
   if (typeof val === 'object') {
     if (Array.isArray(val)) {
-      return formatArrayValue(val)
+      return formatArrayValue(val as unknown[], language, fieldName)
     }
-
-    return formatObjectValue(val as Record<string, unknown>)
+    return formatObjectValue(val as Record<string, unknown>, language, fieldName)
   }
 
-  return String(val)
+  return formatStringValue(String(val), fieldName)
 }
 
-const getLogLabelByAction = (type: string, action: string): string => {
-  if (action === 'INSERT') {
-    if (type === 'Contact') {
-      return 'Contact created'
-    }
-    if (type === 'ContactName') {
-      return 'Name added'
-    }
-    if (type === 'ContactDate') {
-      return 'Date added'
-    }
-  }
-
-  if (action === 'UPDATE') {
-    if (type === 'ContactName') {
-      return 'Name changed'
-    }
-    if (type === 'ContactDate') {
-      return 'Date changed'
-    }
-  }
-
-  return `${action} ${type}`
-}
-
-const getLogLabel = (log: TimelineEvent): string => {
+const getLogLabel = (log: TimelineEvent, t: TFunction): string => {
   const { action, entityType } = log
   const type = entityType.replace(/^App\\Entity\\/, '')
-  return getLogLabelByAction(type, action)
+  return t(`contacts.history.actions.${type}.${action}`, `${action} ${type}`)
 }
 
-const getLogInsertDetails = (log: TimelineEvent): string | null => {
-  const { action, entityType, snapshotAfter } = log
-  if (action !== 'INSERT' || !snapshotAfter) {
+const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.ReactElement | null => {
+  const { action, entityType, snapshotAfter, snapshotBefore } = log
+  const snapshot = (action === 'INSERT' ? snapshotAfter : snapshotBefore) as Record<
+    string,
+    unknown
+  > | null
+
+  if (!snapshot) {
     return null
   }
 
   const type = entityType.replace(/^App\\Entity\\/, '')
 
   if (type === 'ContactName') {
-    const family = (snapshotAfter.family as string) || ''
-    const given = (snapshotAfter.given as string) || ''
-    return `${family} ${given}`.trim()
+    return <>{`${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''}`.trim()}</>
   }
 
   if (type === 'ContactDate') {
-    const dateVal = snapshotAfter.date
-    const dateStr = dateVal ? formatChangeValue({ date: dateVal }) : ''
-    const labelText = (snapshotAfter.text as string) || ''
-    return `${dateStr} (${labelText})`
+    const dateStr = snapshot.date ? formatChangeValue({ date: snapshot.date }, language) : ''
+    return (
+      <>
+        {dateStr} ({(snapshot.text as string) || ''})
+      </>
+    )
   }
 
   return null
@@ -147,10 +216,25 @@ const getLogInsertDetails = (log: TimelineEvent): string | null => {
 
 interface ContactTimelineProps {
   contactId: string
+  fullHeight?: boolean
 }
 
-export function ContactTimeline({ contactId }: ContactTimelineProps) {
-  const { t } = useTranslation()
+const getBadgeStyles = (action: string): string => {
+  switch (action) {
+    case 'INSERT':
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+    case 'UPDATE':
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+    case 'REMOVE':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+    default:
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+  }
+}
+
+export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps) {
+  const { t, i18n } = useTranslation()
+  const language = i18n.language
 
   const {
     data: timeline,
@@ -166,7 +250,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center p-4">
+      <div className="flex justify-center p-8">
         <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
       </div>
     )
@@ -175,7 +259,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        {t('errors.failedToLoadTimeline', 'Failed to load history')}
+        {t('contacts.history.failedToLoadTimeline')}
       </div>
     )
   }
@@ -184,44 +268,53 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
 
   if (logs.length === 0) {
     return (
-      <div className="p-4 text-center text-sm text-gray-500">
-        {t('contacts.noHistory', 'No history available')}
-      </div>
+      <div className="p-4 text-center text-sm text-gray-500">{t('contacts.history.noHistory')}</div>
     )
   }
 
   return (
-    <div className="mt-6 border-t pt-4">
-      <h3 className="mb-3 text-sm font-medium">{t('contacts.timeline', 'Activity History')}</h3>
-      <div className="h-[300px] overflow-y-auto pr-4">
+    <div className={fullHeight ? '' : 'mt-6 border-t pt-4'}>
+      {!fullHeight && (
+        <h3 className="mb-3 text-sm font-medium">{t('contacts.history.timeline')}</h3>
+      )}
+      <div className={fullHeight ? 'pr-4' : 'h-[300px] overflow-y-auto pr-4'}>
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
           {logs.map((log: TimelineEvent) => {
-            const insertDetails = getLogInsertDetails(log)
+            const snapshotDetails = getLogSnapshotDetails(log, language)
             const changes = log.changes || {}
             const hasChanges = Object.keys(changes).length > 0
 
             return (
               <div key={log.id} className="relative mb-6 ml-4">
                 <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col items-start gap-2">
                   <span className="text-xs text-gray-500">
-                    {format(new Date(log.createdAt), 'PPP p')}
+                    {formatLocalizedDateTime(log.createdAt, language)}
                   </span>
-                  <p className="text-sm font-medium text-gray-900">{getLogLabel(log)}</p>
+                  <span
+                    className={`rounded px-2 py-0.5 text-sm font-semibold ${getBadgeStyles(
+                      log.action,
+                    )}`}
+                  >
+                    {getLogLabel(log, t)}
+                  </span>
 
-                  {insertDetails ? (
-                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
-                      {insertDetails}
+                  {snapshotDetails ? (
+                    <div className="mt-1 w-full rounded bg-gray-50 p-2 text-xs text-gray-600">
+                      {snapshotDetails}
                     </div>
                   ) : null}
 
                   {hasChanges ? (
-                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
-                      {Object.entries(changes).map(([key, val]) => (
-                        <div key={key}>
-                          <span className="font-semibold">{key}:</span> {formatChangeValue(val)}
-                        </div>
-                      ))}
+                    <div className="mt-1 w-full rounded bg-gray-50 p-2 text-xs text-gray-600">
+                      {Object.entries(changes)
+                        .filter(([key]) => key !== 'user' && key !== 'tenant')
+                        .map(([key, val]) => (
+                          <div key={key}>
+                            <span className="font-semibold">{key}</span>:{' '}
+                            {formatChangeValue(val, language, key)}
+                          </div>
+                        ))}
                     </div>
                   ) : null}
                 </div>

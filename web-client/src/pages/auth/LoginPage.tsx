@@ -28,16 +28,16 @@ import { useAuth } from '@/hooks/useAuth'
 import { api } from '@/lib/axios'
 import { type LoginResponse } from '@/types/auth'
 
-const formSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
-})
-
 export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const { t } = useTranslation()
+
+  const formSchema = z.object({
+    username: z.string().min(1, t('auth.usernameRequired')),
+    password: z.string().min(1, t('auth.passwordRequired')),
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +57,7 @@ export default function LoginPage() {
       await navigate('/')
     } catch (err: unknown) {
       console.error(err)
-      setError('Invalid credentials')
+      setError(t('auth.invalidCredentials'))
     }
   }
 
@@ -69,7 +69,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{t('auth.login')}</CardTitle>
-          <CardDescription>Enter your credentials to access your contacts.</CardDescription>
+          <CardDescription>{t('auth.loginDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -79,9 +79,9 @@ export default function LoginPage() {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>{t('auth.username')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Username" {...field} />
+                      <Input placeholder={t('auth.username')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

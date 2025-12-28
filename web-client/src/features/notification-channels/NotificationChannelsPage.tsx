@@ -42,11 +42,7 @@ export default function NotificationChannelsPage() {
   }
 
   const handleDelete = async (channel: NotificationChannel) => {
-    if (
-      window.confirm(
-        t('notificationChannels.deleteConfirm', 'Are you sure you want to delete this channel?'),
-      )
-    ) {
+    if (window.confirm(t('notificationChannels.deleteConfirm'))) {
       try {
         await deleteMutation.mutateAsync(channel['@id'])
       } catch (err) {
@@ -75,7 +71,7 @@ export default function NotificationChannelsPage() {
     return <div>{t('app.loading')}</div>
   }
   if (error) {
-    return <div>{t('notificationChannels.error', 'Error loading channels.')}</div>
+    return <div>{t('notificationChannels.error')}</div>
   }
 
   const channels = data?.['member'] || data?.member || []
@@ -84,16 +80,12 @@ export default function NotificationChannelsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {t('notificationChannels.title', 'Notification Channels')}
-          </h1>
-          <p className="text-muted-foreground">
-            {t('notificationChannels.description', 'Manage how you receive notifications.')}
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('notificationChannels.title')}</h1>
+          <p className="text-muted-foreground">{t('notificationChannels.description')}</p>
         </div>
         <Button onClick={handleCreate} className="gap-2">
           <Plus className="h-4 w-4" />
-          {t('notificationChannels.add', 'Add Channel')}
+          {t('notificationChannels.add')}
         </Button>
       </div>
 
@@ -103,16 +95,9 @@ export default function NotificationChannelsPage() {
         <SheetContent className="sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
-              {editingChannel
-                ? t('notificationChannels.edit', 'Edit Channel')
-                : t('notificationChannels.add', 'Add Channel')}
+              {editingChannel ? t('notificationChannels.edit') : t('notificationChannels.add')}
             </SheetTitle>
-            <SheetDescription>
-              {t(
-                'notificationChannels.formDescription',
-                'Fill in the details below to configure your notification channel.',
-              )}
-            </SheetDescription>
+            <SheetDescription>{t('notificationChannels.formDescription')}</SheetDescription>
           </SheetHeader>
           <div className="py-6">
             <NotificationChannelForm

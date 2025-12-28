@@ -13,13 +13,6 @@ vi.mock('@/lib/axios', () => ({
   },
 }))
 
-// Mock translations
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue: string) => defaultValue,
-  }),
-}))
-
 const renderWithClient = (ui: React.ReactNode) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -68,9 +61,9 @@ describe('ContactTimeline', () => {
     renderWithClient(<ContactTimeline contactId="1" />)
 
     await waitFor(() => {
-      expect(screen.getByText('Activity History')).toBeInTheDocument()
-      expect(screen.getByText(/update Contact/i)).toBeInTheDocument()
-      expect(screen.getByText('New Name')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.timeline')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.actions.Contact.update')).toBeInTheDocument()
+      expect(screen.getByText(/New Name/)).toBeInTheDocument()
       expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
     })
   })
@@ -85,7 +78,34 @@ describe('ContactTimeline', () => {
     renderWithClient(<ContactTimeline contactId="1" />)
 
     await waitFor(() => {
-      expect(screen.getByText('No history available')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.noHistory')).toBeInTheDocument()
+    })
+  })
+
+  it('renders REMOVE events with snapshotBefore data', async () => {
+    const mockData = {
+      logs: [
+        {
+          id: 1,
+          action: 'REMOVE',
+          entityType: 'ContactDate',
+          createdAt: '2023-01-01T10:00:00Z',
+          snapshotBefore: {
+            date: '1990-05-16T00:00:00+00:00',
+            text: 'Anniversary',
+          },
+        },
+      ],
+    }
+    const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
+    mockGet.mockResolvedValue({ data: mockData })
+
+    renderWithClient(<ContactTimeline contactId="1" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('contacts.history.actions.ContactDate.REMOVE')).toBeInTheDocument()
+      expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
+      expect(screen.getByText(/Anniversary/)).toBeInTheDocument()
     })
   })
 })

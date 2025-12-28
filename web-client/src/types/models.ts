@@ -20,7 +20,7 @@ export const contactNameSchema = z.object({
   id: z.string().optional(),
   '@id': z.string().optional(),
   '@type': z.string().optional(),
-  given: z.string().min(1, 'First name is required'),
+  given: z.string().min(1),
   family: z.string().optional(),
 })
 
@@ -32,11 +32,11 @@ export const contactDateSchema = z.object({
     .string()
     .or(z.date())
     .transform((d) => formatApiDate(d)),
-  text: z.string().min(1, 'Label is required'),
+  text: z.string().min(1),
 })
 
 export const contactSchema = z.object({
-  contactNames: z.array(contactNameSchema).min(1, 'At least one name is required'),
+  contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
 })
 
@@ -63,8 +63,8 @@ export const notificationChannelSchema = z.object({
   id: z.number().optional(),
   type: z.literal('telegram'),
   config: z.object({
-    botToken: z.string().min(1, 'Bot Token is required'),
-    chatId: z.string().min(1, 'Chat ID is required'),
+    botToken: z.string().min(1),
+    chatId: z.string().min(1),
   }),
 })
 

@@ -51,7 +51,7 @@ describe('RegisterPage', () => {
       </MemoryRouter>,
     )
     expect(screen.getByText('auth.register')).toBeInTheDocument()
-    expect(screen.getByLabelText('UUID / Username')).toBeInTheDocument()
+    expect(screen.getByLabelText('auth.uuid')).toBeInTheDocument()
     expect(screen.getByLabelText('auth.password')).toBeInTheDocument()
     expect(screen.getByLabelText('auth.confirmPassword')).toBeInTheDocument()
   })
@@ -63,7 +63,7 @@ describe('RegisterPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
+    fireEvent.change(screen.getByLabelText('auth.uuid'), { target: { value: 'testuser' } })
     fireEvent.change(screen.getByLabelText('auth.password'), {
       target: { value: TEST_PASSWORD },
     })
@@ -73,7 +73,7 @@ describe('RegisterPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
 
-    expect(await screen.findByText("Passwords don't match")).toBeInTheDocument()
+    expect(await screen.findByText('auth.passwordsMatch')).toBeInTheDocument()
   })
 
   it('handles successful registration', async () => {
@@ -86,7 +86,7 @@ describe('RegisterPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
+    fireEvent.change(screen.getByLabelText('auth.uuid'), { target: { value: 'testuser' } })
     fireEvent.change(screen.getByLabelText('auth.password'), {
       target: { value: TEST_PASSWORD },
     })
@@ -119,7 +119,7 @@ describe('RegisterPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
+    fireEvent.change(screen.getByLabelText('auth.uuid'), { target: { value: 'testuser' } })
     fireEvent.change(screen.getByLabelText('auth.password'), {
       target: { value: TEST_PASSWORD },
     })
@@ -129,6 +129,6 @@ describe('RegisterPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
 
-    expect(await screen.findByText('Registration failed. Please try again.')).toBeInTheDocument()
+    expect(await screen.findByText('auth.registrationFailed')).toBeInTheDocument()
   })
 })

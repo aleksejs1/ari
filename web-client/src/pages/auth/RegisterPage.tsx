@@ -28,22 +28,22 @@ import { useAuth } from '@/hooks/useAuth'
 import { api } from '@/lib/axios'
 import { type LoginResponse } from '@/types/auth'
 
-const formSchema = z
-  .object({
-    uuid: z.string().min(1, 'UUID is required'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  })
-
 export default function RegisterPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const { t } = useTranslation()
+
+  const formSchema = z
+    .object({
+      uuid: z.string().min(1, t('auth.uuidRequired')),
+      password: z.string().min(6, t('auth.passwordMinLength')),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('auth.passwordsMatch'),
+      path: ['confirmPassword'],
+    })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,7 +72,7 @@ export default function RegisterPage() {
       await navigate('/')
     } catch (err: unknown) {
       console.error(err)
-      setError('Registration failed. Please try again.')
+      setError(t('auth.registrationFailed'))
     }
   }
 
@@ -84,7 +84,7 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{t('auth.register')}</CardTitle>
-          <CardDescription>Create a new account to get started.</CardDescription>
+          <CardDescription>{t('auth.registerDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -94,9 +94,9 @@ export default function RegisterPage() {
                 name="uuid"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UUID / Username</FormLabel>
+                    <FormLabel>{t('auth.uuid')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Unique Identifier" {...field} />
+                      <Input placeholder={t('auth.uuid')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

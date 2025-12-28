@@ -67,9 +67,7 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
         <SheetHeader>
           <SheetTitle>{contact ? t('contacts.edit') : t('contacts.create')}</SheetTitle>
           <SheetDescription>
-            {contact
-              ? t('contacts.description', 'Make changes to your contact here.')
-              : t('contacts.description', 'Add a new contact to your list.')}
+            {contact ? t('contacts.editDescription') : t('contacts.createDescription')}
           </SheetDescription>
         </SheetHeader>
         <div className="py-4">

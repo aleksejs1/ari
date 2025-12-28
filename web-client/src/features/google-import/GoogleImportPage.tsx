@@ -104,12 +104,7 @@ export default function GoogleImportPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-gray-600 dark:text-gray-400">
-            {t(
-              'googleImport.description',
-              'Connect your Google account to import contacts directly into ari CRM.',
-            )}
-          </p>
+          <p className="text-gray-600 dark:text-gray-400">{t('googleImport.description')}</p>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button

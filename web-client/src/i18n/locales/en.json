@@ -2,27 +2,48 @@
   "app": {
     "title": "ari CRM",
     "loading": "Loading...",
-    "notFound": "404 Not Found"
+    "notFound": "404 Not Found",
+    "navigation": {
+      "contacts": "Contacts",
+      "notificationChannels": "Notification Channels",
+      "auditLogs": "Audit Logs",
+      "googleImport": "Google Import"
+    }
   },
   "auth": {
     "login": "Login",
+    "loginDescription": "Enter your credentials to access your contacts.",
     "logout": "Logout",
     "register": "Register",
+    "registerDescription": "Create a new account to get started.",
     "email": "Email",
+    "username": "Username",
+    "uuid": "UUID / Username",
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "signIn": "Sign In",
     "signUp": "Sign Up",
+    "uuidRequired": "UUID is required",
+    "usernameRequired": "Username is required",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordsMatch": "Passwords don't match",
     "haveAccount": "Already have an account?",
-    "noAccount": "Don't have an account?"
+    "noAccount": "Don't have an account?",
+    "invalidCredentials": "Invalid credentials",
+    "registrationFailed": "Registration failed. Please try again.",
+    "passwordsDontMatch": "Passwords don't match"
   },
   "contacts": {
     "title": "Contacts",
     "loading": "Loading contacts...",
     "error": "Error loading contacts.",
     "create": "Create Contact",
+    "name": "Name",
     "edit": "Edit",
+    "editContact": "Edit Contact",
     "delete": "Delete",
+    "deleteConfirmTitle": "Delete Contact",
     "deleteConfirm": "Are you sure you want to delete this contact?",
     "noContacts": "No contacts found",
     "names": "Names",
@@ -31,8 +52,39 @@
     "familyName": "Family Name",
     "dates": "Important Dates",
     "addDate": "Add Date",
+    "date": "Date",
+    "dateLabel": "Label",
     "dateLabelPlaceholder": "Label (e.g. Birthday)",
-    "noDates": "No dates added."
+    "noLabel": "No label",
+    "birthday": "Birthday",
+    "noDates": "No dates added.",
+    "details": "Contact Details",
+    "createDescription": "Add a new contact to your list.",
+    "editDescription": "Make changes to your contact here.",
+    "history": {
+      "title": "History",
+      "noHistory": "No history available",
+      "timeline": "Activity History",
+      "actions": {
+        "Contact": {
+          "INSERT": "Contact created",
+          "REMOVE": "Contact deleted"
+        },
+        "ContactName": {
+          "INSERT": "Name added",
+          "UPDATE": "Name changed",
+          "REMOVE": "Name removed"
+        },
+        "ContactDate": {
+          "INSERT": "Date added",
+          "UPDATE": "Date changed",
+          "REMOVE": "Date removed"
+        }
+      }
+    },
+    "subscriptions": "Notification Subscriptions",
+    "addSubscription": "Add Subscription",
+    "noSubscriptions": "No subscriptions"
   },
   "notificationChannels": {
     "title": "Notification Channels",
@@ -42,6 +94,7 @@
     "delete": "Delete Channel",
     "deleteConfirm": "Are you sure you want to delete this notification channel?",
     "noChannels": "No notification channels found.",
+    "noChannelsAvailable": "No channels available",
     "type": "Type",
     "selectType": "Select a type",
     "config": "Configuration",
@@ -56,14 +109,79 @@
     "save": "Save",
     "saving": "Saving...",
     "cancel": "Cancel",
-    "actions": "Actions"
+    "actions": "Actions",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "backToContacts": "Back to Contacts",
+    "by": "by",
+    "viewDetails": "View details"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {{current}} of {{total}}"
   },
   "googleImport": {
     "title": "Google Import",
+    "description": "Connect your Google account to import contacts directly into ari CRM.",
     "authorize": "Authorize in Google",
     "import": "Import Contacts",
     "success": "Contacts imported successfully: {{count}}",
     "error": "An error occurred during import.",
     "authSuccess": "Authorization successful!"
+  },
+  "auditLogs": {
+    "title": "Audit Logs",
+    "description": "View system-wide activity history.",
+    "error": "Error loading audit logs.",
+    "noLogs": "No audit logs found",
+    "totalCount": "Total items: {{count}}",
+    "snapshotBeforeRemoval": "Snapshot Before Removal",
+    "snapshotAfterInsertion": "Snapshot After Insertion",
+    "timeline": "Timeline",
+    "viewTimeline": "View timeline",
+    "entities": {
+      "NotificationIntent": {
+        "INSERT": "Notification sent"
+      },
+      "NotificationSubscription": {
+        "INSERT": "Notification activated",
+        "REMOVE": "Notification deactivated"
+      },
+      "NotificationChannel": {
+        "INSERT": "Notification channel created",
+        "UPDATE": "Notification channel updated",
+        "REMOVE": "Notification channel deleted"
+      },
+      "Contact": {
+        "INSERT": "Contact created",
+        "UPDATE": "Contact updated",
+        "REMOVE": "Contact deleted"
+      },
+      "ContactName": {
+        "INSERT": "Name added",
+        "UPDATE": "Name updated",
+        "REMOVE": "Name removed"
+      },
+      "ContactDate": {
+        "INSERT": "Date added",
+        "UPDATE": "Date updated",
+        "REMOVE": "Date removed"
+      }
+    }
+  },
+  "errors": {
+    "failedToLoadContact": "Failed to load contact",
+    "failedToLoadTimeline": "Failed to load history",
+    "failedToLoadLogs": "Failed to load audit logs"
+  },
+  "validation": {
+    "firstNameRequired": "First name is required",
+    "labelRequired": "Label is required",
+    "atLeastOneNameRequired": "At least one name is required",
+    "botTokenRequired": "Bot Token is required",
+    "chatIdRequired": "Chat ID is required"
   }
 }
