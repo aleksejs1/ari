@@ -7,6 +7,13 @@ It is designed for people who want full control over their personal data, comple
 Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency, auditability, and longevity.
 
 ---
+## Demo video
+
+A short walkthrough of the current state of Ari:
+
+▶️ https://youtu.be/wbgmbzlFlKQ
+
+---
 ## Screenshots
 
 Here are some screenshots of the project as it currently looks:
