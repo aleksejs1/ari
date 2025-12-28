@@ -1,9 +1,12 @@
+import { type UseMutationResult, type UseQueryResult } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
 import ContactDetailsPage from './ContactDetailsPage'
 import * as useContactsHook from './useContacts'
+
+import { type Contact, type ContactFormValues } from '@/types/models'
 
 // Mock components to avoid complex rendering in unit test
 vi.mock('./components/ContactForm', () => ({
@@ -19,12 +22,14 @@ describe('ContactDetailsPage', () => {
       isLoading: true,
       data: undefined,
       error: null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue({} as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue({} as any)
+    } as unknown as UseQueryResult<Contact>)
+
+    vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue(
+      {} as UseMutationResult<unknown, Error, { id: string; data: ContactFormValues }, unknown>,
+    )
+    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
+      {} as UseMutationResult<void, Error, string, unknown>,
+    )
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -49,15 +54,21 @@ describe('ContactDetailsPage', () => {
         contactDates: [],
       },
       error: null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    } as unknown as UseQueryResult<Contact>)
+
     vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue({
       isPending: false,
       mutateAsync: vi.fn(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue({} as any)
+    } as unknown as UseMutationResult<
+      unknown,
+      Error,
+      { id: string; data: ContactFormValues },
+      unknown
+    >)
+
+    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
+      {} as UseMutationResult<void, Error, string, unknown>,
+    )
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -78,12 +89,14 @@ describe('ContactDetailsPage', () => {
       isLoading: false,
       data: undefined,
       error: new Error('Failed'),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue({} as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue({} as any)
+    } as unknown as UseQueryResult<Contact>)
+
+    vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue(
+      {} as UseMutationResult<unknown, Error, { id: string; data: ContactFormValues }, unknown>,
+    )
+    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
+      {} as UseMutationResult<void, Error, string, unknown>,
+    )
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -104,19 +117,23 @@ describe('ContactDetailsPage', () => {
         '@id': '/api/contacts/1',
       },
       error: null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    } as unknown as UseQueryResult<Contact>)
+
     vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue({
       isPending: false,
       mutateAsync: vi.fn(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    } as unknown as UseMutationResult<
+      unknown,
+      Error,
+      { id: string; data: ContactFormValues },
+      unknown
+    >)
+
     const mockDelete = vi.fn()
     vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue({
       isPending: false,
       mutateAsync: mockDelete,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    } as unknown as UseMutationResult<void, Error, string, unknown>)
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>

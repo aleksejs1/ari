@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
+import { type TFunction } from 'i18next'
 import { Loader2, History } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -121,8 +122,7 @@ const LogList = ({
 }: {
   logs: TimelineEvent[]
   isPlaceholderData: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: any
+  t: TFunction
 }) => {
   if (logs.length === 0) {
     return (

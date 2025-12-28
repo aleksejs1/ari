@@ -92,33 +92,29 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
       <h3 className="mb-3 text-sm font-medium">{t('contacts.timeline', 'Activity History')}</h3>
       <div className="h-[300px] overflow-y-auto pr-4">
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
-          {logs.map(
-            (
-              log: TimelineEvent, // Replace 'any' with proper type
-            ) => (
-              <div key={log.id} className="relative mb-6 ml-4">
-                <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs text-gray-500">
-                    {format(new Date(log.createdAt), 'PPP p')}
-                  </span>
-                  <p className="text-sm font-medium text-gray-900">
-                    {log.action} {log.entityType}
-                  </p>
-                  {/* Basic rendering of changes */}
-                  {log.changes && Object.keys(log.changes).length > 0 ? (
-                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
-                      {Object.entries(log.changes as Record<string, unknown>).map(([key, val]) => (
-                        <div key={key}>
-                          <span className="font-semibold">{key}:</span> {formatChangeValue(val)}
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
+          {logs.map((log: TimelineEvent) => (
+            <div key={log.id} className="relative mb-6 ml-4">
+              <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-gray-500">
+                  {format(new Date(log.createdAt), 'PPP p')}
+                </span>
+                <p className="text-sm font-medium text-gray-900">
+                  {log.action} {log.entityType}
+                </p>
+                {/* Basic rendering of changes */}
+                {log.changes && Object.keys(log.changes).length > 0 ? (
+                  <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
+                    {Object.entries(log.changes as Record<string, unknown>).map(([key, val]) => (
+                      <div key={key}>
+                        <span className="font-semibold">{key}:</span> {formatChangeValue(val)}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-            ),
-          )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

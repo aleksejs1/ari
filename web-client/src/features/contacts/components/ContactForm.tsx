@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2 } from 'lucide-react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, type Resolver } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { NotificationSubscriptions } from './NotificationSubscriptions'
@@ -26,8 +26,7 @@ interface ContactFormProps {
 export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
   const { t } = useTranslation()
   const form = useForm<ContactFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(contactSchema) as any,
+    resolver: zodResolver(contactSchema) as unknown as Resolver<ContactFormValues>,
     defaultValues: defaultValues || {
       contactNames: [{ given: '', family: '' }],
       contactDates: [],
@@ -167,8 +166,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                   </Button>
                 </div>
                 {(() => {
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const atId = (field as any)['@id']
+                  const atId = field['@id']
                   const realId = atId ? Number(atId.split('/').pop()) : null
                   return realId ? (
                     <NotificationSubscriptions entityType="ContactDate" entityId={realId} />
