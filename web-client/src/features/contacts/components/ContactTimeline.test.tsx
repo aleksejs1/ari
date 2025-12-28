@@ -88,4 +88,31 @@ describe('ContactTimeline', () => {
       expect(screen.getByText('No history available')).toBeInTheDocument()
     })
   })
+
+  it('renders REMOVE events with snapshotBefore data', async () => {
+    const mockData = {
+      logs: [
+        {
+          id: 1,
+          action: 'REMOVE',
+          entityType: 'ContactDate',
+          createdAt: '2023-01-01T10:00:00Z',
+          snapshotBefore: {
+            date: '1990-05-16T00:00:00+00:00',
+            text: 'Anniversary',
+          },
+        },
+      ],
+    }
+    const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
+    mockGet.mockResolvedValue({ data: mockData })
+
+    renderWithClient(<ContactTimeline contactId="1" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Date removed')).toBeInTheDocument()
+      expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
+      expect(screen.getByText(/Anniversary/)).toBeInTheDocument()
+    })
+  })
 })

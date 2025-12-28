@@ -91,28 +91,24 @@ const formatChangeValue = (val: unknown): string => {
 }
 
 const getLogLabelByAction = (type: string, action: string): string => {
-  if (action === 'INSERT') {
-    if (type === 'Contact') {
-      return 'Contact created'
-    }
-    if (type === 'ContactName') {
-      return 'Name added'
-    }
-    if (type === 'ContactDate') {
-      return 'Date added'
-    }
+  const labels: Record<string, Record<string, string>> = {
+    INSERT: {
+      Contact: 'Contact created',
+      ContactName: 'Name added',
+      ContactDate: 'Date added',
+    },
+    UPDATE: {
+      ContactName: 'Name changed',
+      ContactDate: 'Date changed',
+    },
+    REMOVE: {
+      Contact: 'Contact deleted',
+      ContactName: 'Name removed',
+      ContactDate: 'Date removed',
+    },
   }
 
-  if (action === 'UPDATE') {
-    if (type === 'ContactName') {
-      return 'Name changed'
-    }
-    if (type === 'ContactDate') {
-      return 'Date changed'
-    }
-  }
-
-  return `${action} ${type}`
+  return labels[action]?.[type] ?? `${action} ${type}`
 }
 
 const getLogLabel = (log: TimelineEvent): string => {
@@ -121,25 +117,29 @@ const getLogLabel = (log: TimelineEvent): string => {
   return getLogLabelByAction(type, action)
 }
 
-const getLogInsertDetails = (log: TimelineEvent): string | null => {
-  const { action, entityType, snapshotAfter } = log
-  if (action !== 'INSERT' || !snapshotAfter) {
+const getLogSnapshotDetails = (log: TimelineEvent): string | null => {
+  const { action, entityType, snapshotAfter, snapshotBefore } = log
+  let snapshot = null
+
+  if (action === 'INSERT') {
+    snapshot = snapshotAfter
+  } else if (action === 'REMOVE') {
+    snapshot = snapshotBefore
+  }
+
+  if (!snapshot) {
     return null
   }
 
   const type = entityType.replace(/^App\\Entity\\/, '')
 
   if (type === 'ContactName') {
-    const family = (snapshotAfter.family as string) || ''
-    const given = (snapshotAfter.given as string) || ''
-    return `${family} ${given}`.trim()
+    return `${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''}`.trim()
   }
 
   if (type === 'ContactDate') {
-    const dateVal = snapshotAfter.date
-    const dateStr = dateVal ? formatChangeValue({ date: dateVal }) : ''
-    const labelText = (snapshotAfter.text as string) || ''
-    return `${dateStr} (${labelText})`
+    const dateStr = snapshot.date ? formatChangeValue({ date: snapshot.date }) : ''
+    return `${dateStr} (${(snapshot.text as string) || ''})`
   }
 
   return null
@@ -196,7 +196,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
       <div className="h-[300px] overflow-y-auto pr-4">
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
           {logs.map((log: TimelineEvent) => {
-            const insertDetails = getLogInsertDetails(log)
+            const snapshotDetails = getLogSnapshotDetails(log)
             const changes = log.changes || {}
             const hasChanges = Object.keys(changes).length > 0
 
@@ -209,9 +209,9 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
                   </span>
                   <p className="text-sm font-medium text-gray-900">{getLogLabel(log)}</p>
 
-                  {insertDetails ? (
+                  {snapshotDetails ? (
                     <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
-                      {insertDetails}
+                      {snapshotDetails}
                     </div>
                   ) : null}
 
