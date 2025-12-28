@@ -3,33 +3,55 @@ import { format } from 'date-fns'
 import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-// import { ScrollArea } from '@/components/ui/scroll-area'
-import { api } from '@/lib/axios' // Verify if it exports 'api' or default
-import { type ContactTimeline, type TimelineEvent } from '@/types/models' // We need to verify where this type is/define it
+import { api } from '@/lib/axios'
+import { type ContactTimeline, type TimelineEvent } from '@/types/models'
 
-// Temporary mock type if generated types are not sufficient yet
-// based on: /api/contacts/{id}/timeline
-// and AuditLog schema
+const isDateTimeObject = (val: unknown): val is { date: string } => {
+  return (
+    val !== null &&
+    typeof val === 'object' &&
+    'date' in val &&
+    typeof (val as { date: unknown }).date === 'string'
+  )
+}
 
-// Helper to format change values, handling DateTime objects from API
+/**
+ * Helper to format change values, handling nested DateTime objects from API.
+ */
 const formatChangeValue = (val: unknown): string => {
   if (val === null || val === undefined) {
     return ''
   }
 
   if (typeof val === 'object') {
-    // Audit logs often return [old, new] array for updates
     if (Array.isArray(val)) {
       return val.map(formatChangeValue).join(' → ')
     }
 
-    // Check for DateTime object structure
-    const valid = val as Record<string, unknown>
-    if (valid.date && typeof valid.date === 'string') {
+    const obj = val as Record<string, unknown>
+
+    if (obj.date) {
+      if (typeof obj.date === 'object' && isDateTimeObject(obj.date)) {
+        try {
+          return format(new Date(obj.date.date), 'PPP')
+        } catch {
+          return obj.date.date
+        }
+      }
+      if (typeof obj.date === 'string') {
+        try {
+          return format(new Date(obj.date), 'PPP')
+        } catch {
+          return obj.date
+        }
+      }
+    }
+
+    if (isDateTimeObject(obj)) {
       try {
-        return format(new Date(valid.date), 'PPP')
+        return format(new Date(obj.date), 'PPP')
       } catch {
-        return valid.date
+        return obj.date
       }
     }
 
@@ -37,6 +59,51 @@ const formatChangeValue = (val: unknown): string => {
   }
 
   return String(val)
+}
+
+const getLogLabelByAction = (type: string, action: string): string => {
+  if (action === 'INSERT') {
+    if (type === 'Contact') return 'Contact created'
+    if (type === 'ContactName') return 'Name added'
+    if (type === 'ContactDate') return 'Date added'
+  }
+
+  if (action === 'UPDATE') {
+    if (type === 'ContactName') return 'Name changed'
+    if (type === 'ContactDate') return 'Date changed'
+  }
+
+  return `${action} ${type}`
+}
+
+const getLogLabel = (log: TimelineEvent): string => {
+  const { action, entityType } = log
+  const type = entityType.replace(/^App\\Entity\\/, '')
+  return getLogLabelByAction(type, action)
+}
+
+const getLogInsertDetails = (log: TimelineEvent): string | null => {
+  const { action, entityType, snapshotAfter } = log
+  if (action !== 'INSERT' || !snapshotAfter) {
+    return null
+  }
+
+  const type = entityType.replace(/^App\\Entity\\/, '')
+
+  if (type === 'ContactName') {
+    const family = (snapshotAfter.family as string) || ''
+    const given = (snapshotAfter.given as string) || ''
+    return `${family} ${given}`.trim()
+  }
+
+  if (type === 'ContactDate') {
+    const dateVal = snapshotAfter.date
+    const dateStr = dateVal ? formatChangeValue({ date: dateVal }) : ''
+    const labelText = (snapshotAfter.text as string) || ''
+    return `${dateStr} (${labelText})`
+  }
+
+  return null
 }
 
 interface ContactTimelineProps {
@@ -51,10 +118,8 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['contact', contactId, 'timeline'],
+    queryKey: ['contacts', contactId, 'timeline'],
     queryFn: async () => {
-      // Using fetch directly as fallback if client abstraction doesn't support this yet
-      // Adjust based on actual project API usage patterns
       const res = await api.get<ContactTimeline>(`/contacts/${contactId}/timeline`)
       return res.data
     },
@@ -76,7 +141,6 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
     )
   }
 
-  // Assuming structure based on API response
   const logs = Array.isArray(timeline?.logs) ? timeline.logs : []
 
   if (logs.length === 0) {
@@ -92,29 +156,39 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
       <h3 className="mb-3 text-sm font-medium">{t('contacts.timeline', 'Activity History')}</h3>
       <div className="h-[300px] overflow-y-auto pr-4">
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
-          {logs.map((log: TimelineEvent) => (
-            <div key={log.id} className="relative mb-6 ml-4">
-              <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-gray-500">
-                  {format(new Date(log.createdAt), 'PPP p')}
-                </span>
-                <p className="text-sm font-medium text-gray-900">
-                  {log.action} {log.entityType}
-                </p>
-                {/* Basic rendering of changes */}
-                {log.changes && Object.keys(log.changes).length > 0 ? (
-                  <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
-                    {Object.entries(log.changes as Record<string, unknown>).map(([key, val]) => (
-                      <div key={key}>
-                        <span className="font-semibold">{key}:</span> {formatChangeValue(val)}
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
+          {logs.map((log: TimelineEvent) => {
+            const insertDetails = getLogInsertDetails(log)
+            const changes = log.changes || {}
+            const hasChanges = Object.keys(changes).length > 0
+
+            return (
+              <div key={log.id} className="relative mb-6 ml-4">
+                <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-gray-500">
+                    {format(new Date(log.createdAt), 'PPP p')}
+                  </span>
+                  <p className="text-sm font-medium text-gray-900">{getLogLabel(log)}</p>
+
+                  {insertDetails ? (
+                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
+                      {insertDetails}
+                    </div>
+                  ) : null}
+
+                  {hasChanges ? (
+                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
+                      {Object.entries(changes).map(([key, val]) => (
+                        <div key={key}>
+                          <span className="font-semibold">{key}:</span> {formatChangeValue(val)}
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

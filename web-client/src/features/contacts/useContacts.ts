@@ -92,8 +92,12 @@ export function useUpdateContact() {
       const response = await api.put(url, data)
       return response.data
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const id = variables.id.split('/').pop()
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (id) {
+        void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
+      }
     },
   })
 }
@@ -133,8 +137,12 @@ export function useCreateContactDate() {
       const response = await api.post('/contact_dates', data)
       return response.data
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const contactId = variables.contact.split('/').pop()
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (contactId) {
+        void queryClient.invalidateQueries({ queryKey: ['contacts', contactId, 'timeline'] })
+      }
     },
   })
 }
