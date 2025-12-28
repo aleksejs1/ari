@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { type TFunction } from 'i18next'
 import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { api } from '@/lib/axios'
 import { formatLocalizedDate, formatLocalizedDateTime } from '@/lib/utils'
@@ -17,78 +18,165 @@ const isDateTimeObject = (val: unknown): val is { date: string } => {
 }
 
 /**
- * Safely format a date string, returning the original string if parsing fails.
+ * Safely format a date string, returning a fragment or null.
  */
-const formatDateString = (dateStr: string, language: string): string => {
+const formatDateString = (dateStr: string, language: string): React.ReactElement | null => {
   try {
-    return formatLocalizedDate(dateStr, language)
+    return <>{formatLocalizedDate(dateStr, language)}</>
   } catch {
-    return dateStr
+    return <>{dateStr}</>
   }
 }
 
 /**
- * Format a date value from various date object structures.
+ * Format a contact reference object as a clickable link.
  */
-const formatDateValue = (obj: Record<string, unknown>, language: string): string | null => {
-  const dateField = obj.date
-
-  if (typeof dateField === 'object' && isDateTimeObject(dateField)) {
-    return formatDateString(dateField.date, language)
+const formatContactValue = (val: Record<string, unknown>): React.ReactElement | null => {
+  const cid = val.id || (val['@id'] as string)?.split('/').pop()
+  if (!cid) {
+    return null
   }
 
-  if (typeof dateField === 'string') {
-    return formatDateString(dateField, language)
-  }
+  const label = val.displayName || (val as { name?: string }).name || `Contact #${cid}`
 
-  return null
+  return (
+    <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+      <>{label}</>
+    </Link>
+  )
+}
+
+/**
+ * Check if a value looks like a contact ID.
+ */
+const looksLikeId = (val: unknown): boolean => {
+  if (typeof val === 'number') {
+    return true
+  }
+  if (typeof val === 'string') {
+    return (
+      /^\d+$/.test(val) ||
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)
+    )
+  }
+  return false
 }
 
 /**
  * Format an array value by recursively formatting each element.
  */
-const formatArrayValue = (val: unknown[], language: string): string => {
-  return val.map((v) => formatChangeValue(v, language)).join(' → ')
+const formatArrayValue = (
+  val: unknown[],
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
+  return (
+    <span className="flex flex-wrap gap-1">
+      {val.map((v, i) => (
+        <span key={i}>
+          {i > 0 && <span className="mx-1 text-gray-400">→</span>}
+          {formatChangeValue(v, language, fieldName)}
+        </span>
+      ))}
+    </span>
+  )
 }
 
 /**
- * Format an object value, handling date objects and other structures.
+ * Check if an object is a contact reference.
  */
-const formatObjectValue = (obj: Record<string, unknown>, language: string): string => {
-  // Try to format as date object with date field
-  if (obj.date) {
-    const formatted = formatDateValue(obj, language)
-    if (formatted) {
-      return formatted
+const isContactReference = (obj: Record<string, unknown>, fieldName?: string): boolean => {
+  return (
+    fieldName === 'contact' ||
+    fieldName === 'owner' ||
+    obj['@type'] === 'Contact' ||
+    (obj['@id'] as string)?.startsWith('/api/contacts/') ||
+    (!!obj.id && (!!obj.displayName || (obj as { name?: string }).name !== undefined))
+  )
+}
+
+/**
+ * Format an object value, handling date objects, contact references, and other structures.
+ */
+const formatObjectValue = (
+  obj: Record<string, unknown>,
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
+  // 1. Check if it's a contact reference
+  if (isContactReference(obj, fieldName)) {
+    const link = formatContactValue(obj)
+    if (link) {
+      return link
     }
   }
 
-  // Try to format as direct DateTime object
+  // 2. Check for date fields
+  if (obj.date) {
+    const dateField = obj.date
+    if (typeof dateField === 'object' && isDateTimeObject(dateField)) {
+      return formatDateString(dateField.date, language)
+    }
+    if (typeof dateField === 'string') {
+      return formatDateString(dateField, language)
+    }
+  }
+
+  // 3. Check if it's a direct DateTime object
   if (isDateTimeObject(obj)) {
     return formatDateString(obj.date, language)
   }
 
-  // Fallback to JSON representation
-  return JSON.stringify(obj)
+  // Fallback to JSON
+  return <>{JSON.stringify(obj)}</>
 }
 
 /**
- * Helper to format change values, handling nested DateTime objects from API.
+ * Handle string values, specifically looking for contact URIs and ID-like strings in contact fields.
  */
-const formatChangeValue = (val: unknown, language: string): string => {
+const formatStringValue = (val: string, fieldName?: string): React.ReactElement | null => {
+  if (val.startsWith('/api/contacts/')) {
+    const cid = val.split('/').pop()
+    if (cid && cid !== 'undefined' && cid !== 'null') {
+      return (
+        <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+          {`Contact #${cid}`}
+        </Link>
+      )
+    }
+  }
+
+  if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
+    return (
+      <Link to={`/contacts/${val}`} className="text-blue-600 underline hover:text-blue-800">
+        {`Contact #${val}`}
+      </Link>
+    )
+  }
+
+  return <>{val}</>
+}
+
+/**
+ * Helper to format change values, handling nested objects, contact references, and dates.
+ */
+const formatChangeValue = (
+  val: unknown,
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
   if (val === null || val === undefined) {
-    return ''
+    return <></>
   }
 
   if (typeof val === 'object') {
     if (Array.isArray(val)) {
-      return formatArrayValue(val, language)
+      return formatArrayValue(val as unknown[], language, fieldName)
     }
-
-    return formatObjectValue(val as Record<string, unknown>, language)
+    return formatObjectValue(val as Record<string, unknown>, language, fieldName)
   }
 
-  return String(val)
+  return formatStringValue(String(val), fieldName)
 }
 
 const getLogLabel = (log: TimelineEvent, t: TFunction): string => {
@@ -202,7 +290,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
                         .map(([key, val]) => (
                           <div key={key}>
                             <span className="font-semibold">{key}</span>:{' '}
-                            {formatChangeValue(val, language)}
+                            {formatChangeValue(val, language, key)}
                           </div>
                         ))}
                     </div>

@@ -113,8 +113,9 @@
     "edit": "Редактировать",
     "add": "Добавить",
     "back": "Назад",
-    "backToContacts": "Назад к списку контактов",
-    "by": "от"
+    "backToContacts": "Назад к списку",
+    "by": "от",
+    "viewDetails": "Открыть"
   },
   "pagination": {
     "previous": "Назад",
@@ -137,7 +138,36 @@
     "noLogs": "Логи аудита не найдены",
     "totalCount": "Всего элементов: {{count}}",
     "snapshotBeforeRemoval": "Снимок перед удалением",
-    "snapshotAfterInsertion": "Снимок после вставки"
+    "snapshotAfterInsertion": "Снимок после вставки",
+    "entities": {
+      "NotificationIntent": {
+        "INSERT": "Отправлена нотификация"
+      },
+      "NotificationSubscription": {
+        "INSERT": "Активировано уведомление",
+        "REMOVE": "Деактивировано уведомление"
+      },
+      "NotificationChannel": {
+        "INSERT": "Создан канал уведомлений",
+        "UPDATE": "Обновлен канал уведомлений",
+        "REMOVE": "Удален канал уведомлений"
+      },
+      "Contact": {
+        "INSERT": "Контакт создан",
+        "UPDATE": "Контакт обновлен",
+        "REMOVE": "Контакт удален"
+      },
+      "ContactName": {
+        "INSERT": "Имя добавлено",
+        "UPDATE": "Имя изменено",
+        "REMOVE": "Имя удалено"
+      },
+      "ContactDate": {
+        "INSERT": "Дата добавлена",
+        "UPDATE": "Дата изменена",
+        "REMOVE": "Дата удалена"
+      }
+    }
   },
   "errors": {
     "failedToLoadContact": "Не удалось загрузить контакт",

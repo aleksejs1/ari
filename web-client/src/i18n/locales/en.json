@@ -114,7 +114,8 @@
     "add": "Add",
     "back": "Back",
     "backToContacts": "Back to Contacts",
-    "by": "by"
+    "by": "by",
+    "viewDetails": "View details"
   },
   "pagination": {
     "previous": "Previous",
@@ -137,7 +138,36 @@
     "noLogs": "No audit logs found",
     "totalCount": "Total items: {{count}}",
     "snapshotBeforeRemoval": "Snapshot Before Removal",
-    "snapshotAfterInsertion": "Snapshot After Insertion"
+    "snapshotAfterInsertion": "Snapshot After Insertion",
+    "entities": {
+      "NotificationIntent": {
+        "INSERT": "Notification sent"
+      },
+      "NotificationSubscription": {
+        "INSERT": "Notification activated",
+        "REMOVE": "Notification deactivated"
+      },
+      "NotificationChannel": {
+        "INSERT": "Notification channel created",
+        "UPDATE": "Notification channel updated",
+        "REMOVE": "Notification channel deleted"
+      },
+      "Contact": {
+        "INSERT": "Contact created",
+        "UPDATE": "Contact updated",
+        "REMOVE": "Contact deleted"
+      },
+      "ContactName": {
+        "INSERT": "Name added",
+        "UPDATE": "Name updated",
+        "REMOVE": "Name removed"
+      },
+      "ContactDate": {
+        "INSERT": "Date added",
+        "UPDATE": "Date updated",
+        "REMOVE": "Date removed"
+      }
+    }
   },
   "errors": {
     "failedToLoadContact": "Failed to load contact",

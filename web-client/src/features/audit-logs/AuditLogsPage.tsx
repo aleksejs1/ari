@@ -3,35 +3,216 @@ import { type TFunction } from 'i18next'
 import { Loader2, History } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { api } from '@/lib/axios'
 import { formatLocalizedDate, formatLocalizedDateTime } from '@/lib/utils'
 import { type TimelineEvent } from '@/types/models'
 
-// Helper to format change values, handling nested objects.
-const formatChangeValue = (val: unknown, language: string): string => {
+const getLogDescription = (log: TimelineEvent, t: TFunction): string => {
+  const { action, entityType } = log
+  const type = entityType.replace(/^App\\Entity\\/, '')
+  const key = `auditLogs.entities.${type}.${action}`
+  const translated = t(key)
+
+  if (translated !== key) {
+    return translated
+  }
+
+  // Fallback to generic format if specific translation is missing
+  return `${action} ${type}`
+}
+
+const getContactId = (log: TimelineEvent): string | null => {
+  const { entityType, entityId, changes, snapshotAfter, snapshotBefore } = log
+  const type = entityType.replace(/^App\\Entity\\/, '')
+
+  if (type === 'Contact' && entityId) {
+    return entityId.toString()
+  }
+
+  const checkValue = (obj: Record<string, unknown> | null | undefined): string | null => {
+    if (!obj) {
+      return null
+    }
+    const contact = obj.contact
+    if (typeof contact === 'string' && contact.startsWith('/api/contacts/')) {
+      return contact.split('/').pop() || null
+    }
+    if (typeof contact === 'object' && contact !== null && 'id' in contact) {
+      return (contact as { id: string | number }).id.toString()
+    }
+    return null
+  }
+
+  return (
+    checkValue(snapshotAfter as Record<string, unknown>) ||
+    checkValue(snapshotBefore as Record<string, unknown>) ||
+    checkValue(changes as Record<string, unknown>)
+  )
+}
+
+/**
+ * Detect if a value looks like a contact ID (numeric or UUID string).
+ */
+const looksLikeId = (val: unknown): boolean => {
+  if (typeof val === 'number') {
+    return true
+  }
+  if (typeof val === 'string') {
+    // Simple check for numbers or UUID-like strings
+    return (
+      /^\d+$/.test(val) ||
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)
+    )
+  }
+  return false
+}
+
+/**
+ * Format an array of values, recursively calling formatChangeValue.
+ */
+const formatArrayValue = (
+  arr: unknown[],
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
+  return (
+    <span className="flex flex-wrap gap-1">
+      {arr.map((v, i) => (
+        <span key={i}>
+          {i > 0 && <span className="mx-1 text-gray-400">→</span>}
+          {formatChangeValue(v, language, fieldName)}
+        </span>
+      ))}
+    </span>
+  )
+}
+
+/**
+ * Format a contact reference object as a clickable link.
+ */
+const formatContactValue = (val: Record<string, unknown>): React.ReactElement | null => {
+  const cid = val.id || (val['@id'] as string)?.split('/').pop()
+  if (!cid) {
+    return null
+  }
+
+  const label = val.displayName || (val as { name?: string }).name || `Contact #${cid}`
+
+  return (
+    <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+      <>{label}</>
+    </Link>
+  )
+}
+
+/**
+ * Format a date string within an object.
+ */
+const formatDateValue = (dateStr: string, language: string): React.ReactElement | null => {
+  try {
+    return <>{formatLocalizedDate(dateStr, language)}</>
+  } catch {
+    return <>{dateStr}</>
+  }
+}
+
+/**
+ * Check if an object is a contact reference.
+ */
+const isContactReference = (obj: Record<string, unknown>, fieldName?: string): boolean => {
+  return (
+    fieldName === 'contact' ||
+    fieldName === 'owner' ||
+    obj['@type'] === 'Contact' ||
+    (obj['@id'] as string)?.startsWith('/api/contacts/') ||
+    (!!obj.id && (!!obj.displayName || (obj as { name?: string }).name !== undefined))
+  )
+}
+
+/**
+ * Format a general object, filtering internal fields.
+ */
+const formatObjectValue = (
+  obj: Record<string, unknown>,
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
+  // 1. Check if it's a contact reference
+  if (isContactReference(obj, fieldName)) {
+    const link = formatContactValue(obj)
+    if (link) {
+      return link
+    }
+  }
+
+  // 2. Check if it's a date object
+  if (obj.date && typeof obj.date === 'string') {
+    return formatDateValue(obj.date, language)
+  }
+
+  // 3. Fallback: Filter and stringify (excluding and hiding IDs)
+  const filtered = Object.entries(obj)
+    .filter(([key]) => !['id', '@id', '@type', 'user', 'tenant'].includes(key))
+    .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {})
+
+  if (Object.keys(filtered).length === 0) {
+    return null
+  }
+
+  return <>{JSON.stringify(filtered)}</>
+}
+
+/**
+ * Handle string values, specifically looking for contact URIs and ID-like strings in contact fields.
+ */
+const formatStringValue = (val: string, fieldName?: string): React.ReactElement | null => {
+  // Handle contact URIs
+  if (val.startsWith('/api/contacts/')) {
+    const cid = val.split('/').pop()
+    if (cid && cid !== 'undefined' && cid !== 'null') {
+      return (
+        <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+          {`Contact #${cid}`}
+        </Link>
+      )
+    }
+  }
+
+  // Handle field-based contact linking (id values in 'contact' fields)
+  if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
+    return (
+      <Link to={`/contacts/${val}`} className="text-blue-600 underline hover:text-blue-800">
+        {`Contact #${val}`}
+      </Link>
+    )
+  }
+
+  return <>{val}</>
+}
+
+/**
+ * Main helper to format change values with clickable contact links and ID filtering.
+ */
+const formatChangeValue = (
+  val: unknown,
+  language: string,
+  fieldName?: string,
+): React.ReactElement | null => {
   if (val === null || val === undefined) {
-    return ''
+    return <></>
+  }
+
+  if (Array.isArray(val)) {
+    return formatArrayValue(val, language, fieldName)
   }
 
   if (typeof val === 'object') {
-    if (Array.isArray(val)) {
-      return val.map((v) => formatChangeValue(v, language)).join(' → ')
-    }
-
-    const valid = val as Record<string, unknown>
-    if (valid.date && typeof valid.date === 'string') {
-      try {
-        return formatLocalizedDate(valid.date, language)
-      } catch {
-        return valid.date
-      }
-    }
-
-    return JSON.stringify(val)
+    return formatObjectValue(val as Record<string, unknown>, language, fieldName)
   }
 
-  return String(val)
+  return formatStringValue(String(val), fieldName)
 }
 
 interface AuditLogCollection {
@@ -41,6 +222,22 @@ interface AuditLogCollection {
 
 const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) => {
   const { t } = useTranslation()
+  const contactId = getContactId(log)
+  const isContactRelated = !!(
+    log.entityType.includes('Contact') &&
+    log.action !== 'REMOVE' &&
+    contactId
+  )
+
+  const filterFields = (obj: Record<string, unknown> | null | undefined) => {
+    if (!obj) {
+      return []
+    }
+    return Object.entries(obj).filter(
+      ([key]) => !['id', '@id', '@type', 'user', 'tenant'].includes(key),
+    )
+  }
+
   return (
     <div className="dark:hover:bg-gray-750 p-6 transition-colors hover:bg-gray-50">
       <div className="flex items-start justify-between">
@@ -50,13 +247,18 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
               {log.action}
             </span>
             <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-              {log.entityType} #{log.entityId}
+              {getLogDescription(log, t)}
             </span>
-            {log.user ? (
-              <span className="text-sm text-gray-500">
-                {t('common.by', 'by')} {log.user}
-              </span>
-            ) : null}
+            {isContactRelated ? (
+              <Link
+                to={`/contacts/${contactId}`}
+                className="text-xs text-gray-400 underline transition-colors hover:text-blue-500"
+              >
+                {t('common.viewDetails', 'view contact')}
+              </Link>
+            ) : (
+              <span className="text-xs text-gray-400">#{log.entityId}</span>
+            )}
           </div>
           <div className="text-sm text-gray-500">
             {formatLocalizedDateTime(log.createdAt, language)}
@@ -64,19 +266,17 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
         </div>
       </div>
 
-      {log.changes && Object.keys(log.changes).length > 0 ? (
+      {log.changes && filterFields(log.changes as Record<string, unknown>).length > 0 ? (
         <div className="mt-4 rounded-md bg-gray-50 p-4 text-sm dark:bg-gray-900">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {Object.entries(log.changes as Record<string, unknown>)
-              .filter(([key]) => key !== 'user' && key !== 'tenant')
-              .map(([key, val]) => (
-                <div key={key} className="break-all">
-                  <span className="font-semibold text-gray-700 dark:text-gray-300">{key}:</span>{' '}
-                  <span className="text-gray-600 dark:text-gray-400">
-                    {formatChangeValue(val, language)}
-                  </span>
-                </div>
-              ))}
+            {filterFields(log.changes as Record<string, unknown>).map(([key, val]) => (
+              <div key={key} className="break-all">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">{key}:</span>{' '}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {formatChangeValue(val, language, key)}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       ) : null}
@@ -88,16 +288,14 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
           </div>
           <div className="rounded-md border border-red-100 bg-red-50 p-4 text-sm dark:border-red-900/30 dark:bg-red-900/20">
             <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-              {Object.entries(log.snapshotBefore)
-                .filter(([key]) => key !== 'user' && key !== 'tenant')
-                .map(([key, val]) => (
-                  <div key={key} className="break-all">
-                    <span className="font-semibold text-red-800 dark:text-red-300">{key}:</span>{' '}
-                    <span className="text-red-700 dark:text-red-400">
-                      {formatChangeValue(val, language)}
-                    </span>
-                  </div>
-                ))}
+              {filterFields(log.snapshotBefore).map(([key, val]) => (
+                <div key={key} className="break-all">
+                  <span className="font-semibold text-red-800 dark:text-red-300">{key}:</span>{' '}
+                  <span className="text-red-700 dark:text-red-400">
+                    {formatChangeValue(val, language, key)}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -110,16 +308,14 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
           </div>
           <div className="rounded-md border border-green-100 bg-green-50 p-4 text-sm dark:border-green-900/30 dark:bg-green-900/20">
             <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-              {Object.entries(log.snapshotAfter)
-                .filter(([key]) => key !== 'user' && key !== 'tenant')
-                .map(([key, val]) => (
-                  <div key={key} className="break-all">
-                    <span className="font-semibold text-green-800 dark:text-green-300">{key}:</span>{' '}
-                    <span className="text-green-700 dark:text-green-400">
-                      {formatChangeValue(val, language)}
-                    </span>
-                  </div>
-                ))}
+              {filterFields(log.snapshotAfter).map(([key, val]) => (
+                <div key={key} className="break-all">
+                  <span className="font-semibold text-green-800 dark:text-green-300">{key}:</span>{' '}
+                  <span className="text-green-700 dark:text-green-400">
+                    {formatChangeValue(val, language, key)}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
