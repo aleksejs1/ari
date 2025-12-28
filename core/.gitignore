@@ -35,3 +35,5 @@
 /infection-report.html
 /.infection/
 ###< infection/infection ###
+
+.env
