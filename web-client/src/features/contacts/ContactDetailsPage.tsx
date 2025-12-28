@@ -29,7 +29,7 @@ export default function ContactDetailsPage() {
     return (
       <div className="p-4 text-center">
         <p className="text-red-500 mb-4">{t('errors.failedToLoadContact')}</p>
-        <Button onClick={() => navigate('/')}>{t('common.backToContacts')}</Button>
+        <Button onClick={() => navigate(-1)}>{t('common.backToContacts')}</Button>
       </div>
     )
   }
@@ -64,7 +64,7 @@ export default function ContactDetailsPage() {
   return (
     <div className="container mx-auto py-6 max-w-3xl space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-bold">{t('contacts.details')}</h1>

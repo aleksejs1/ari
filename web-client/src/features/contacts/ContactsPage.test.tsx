@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import ContactsPage from './ContactsPage'
@@ -122,7 +123,11 @@ describe('ContactsPage', () => {
       isError: false,
     } as unknown as ReturnType<typeof useContacts>)
 
-    render(<ContactsPage />)
+    render(
+      <MemoryRouter>
+        <ContactsPage />
+      </MemoryRouter>,
+    )
     expect(screen.getByText('contacts.loading')).toBeInTheDocument()
   })
 
@@ -133,7 +138,11 @@ describe('ContactsPage', () => {
       isError: true,
     } as unknown as ReturnType<typeof useContacts>)
 
-    render(<ContactsPage />)
+    render(
+      <MemoryRouter>
+        <ContactsPage />
+      </MemoryRouter>,
+    )
     expect(screen.getByText('contacts.error')).toBeInTheDocument()
   })
 
@@ -147,7 +156,11 @@ describe('ContactsPage', () => {
       isError: false,
     } as unknown as ReturnType<typeof useContacts>)
 
-    render(<ContactsPage />)
+    render(
+      <MemoryRouter>
+        <ContactsPage />
+      </MemoryRouter>,
+    )
 
     // Check data rendering
     expect(screen.getByText('Alice')).toBeInTheDocument()
@@ -177,7 +190,11 @@ describe('ContactsPage', () => {
       isError: false,
     } as unknown as ReturnType<typeof useContacts>)
 
-    render(<ContactsPage />)
+    render(
+      <MemoryRouter>
+        <ContactsPage />
+      </MemoryRouter>,
+    )
 
     // Pagination should be visible because totalItems > ITEMS_PER_PAGE
     const pagination = screen.getByTestId('pagination')

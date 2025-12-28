@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 
 import { ContactsHeader } from './components/ContactsHeader'
 import { ContactSheet } from './components/ContactSheet'
@@ -18,7 +19,8 @@ import {
 import { type Contact, type ContactDate } from '@/types/models'
 
 export default function ContactsPage() {
-  const [page, setPage] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page = Number(searchParams.get('page')) || 1
   const { data, isLoading, isPlaceholderData, isError } = useContacts(page)
   const deleteMutation = useDeleteContact()
   const { t } = useTranslation()
@@ -83,8 +85,8 @@ export default function ContactsPage() {
 
       {totalPages > 1 && (
         <ContactsPagination
-          onPrevious={() => setPage((p) => Math.max(1, p - 1))}
-          onNext={() => (hasNext ? setPage((p) => p + 1) : null)}
+          onPrevious={() => setSearchParams({ page: Math.max(1, page - 1).toString() })}
+          onNext={() => (hasNext ? setSearchParams({ page: (page + 1).toString() }) : null)}
           hasPrevious={hasPrevious}
           hasNext={hasNext}
         />
