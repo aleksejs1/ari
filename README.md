@@ -7,6 +7,19 @@ It is designed for people who want full control over their personal data, comple
 Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency, auditability, and longevity.
 
 ---
+## Screenshots
+
+Here are some screenshots of the project as it currently looks:
+
+![Login Page](assets/ari_login_2.png)
+![Contact List](assets/ari_contact_list_2.png)
+![Contact Edit](assets/ari_contact_edit_2.png)
+![Audit Log](assets/ari_contact_timeline_2.png)
+![Google Import page](assets/ari_import_2.png)
+![Notification Channels confoguration](assets/ari_notification_channels_2.png)
+![Notifications in telegram](assets/ari_notifications_telegram_2.png)
+
+---
 ## Why this exists
 
 This project started from a very practical frustration.
@@ -128,14 +141,3 @@ However, the project already delivers real value and is actively evolving.
 
 If you are looking for a polished, feature-complete CRM today, Ari is probably not for you.  
 If you care about **data reliability, transparent history, and trustworthy notifications**, and are comfortable with an evolving system — Ari may be worth following or experimenting with early.
-
----
-## Screenshots
-
-Here are some screenshots of the project as it currently looks:
-
-![Audit Log](assets/ari_audit.png)
-![Contact List](assets/ari_list.png)
-![Contact Edit](assets/ari_edit_contact.png)
-![Notification Channels confoguration](assets/ari_notifications.png)
-![Google Import page](assets/ari_google_import.png)
