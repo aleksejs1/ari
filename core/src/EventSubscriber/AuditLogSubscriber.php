@@ -45,7 +45,12 @@ class AuditLogSubscriber
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($this->shouldLog($entity)) {
                 assert($entity instanceof TenantAwareInterface);
-                $this->logChange($em, $entity, 'UPDATE', $uow->getEntityChangeSet($entity));
+                $changeSet = $uow->getEntityChangeSet($entity);
+                $filteredChangeSet = $this->filterChangeSet($changeSet);
+
+                if ($filteredChangeSet !== []) {
+                    $this->logChange($em, $entity, 'UPDATE', $filteredChangeSet);
+                }
             }
         }
 
@@ -206,5 +211,26 @@ class AuditLogSubscriber
         }
 
         return $snapshot;
+    }
+
+    /**
+     * @param array<string, mixed> $changeSet
+     *
+     * @return array<string, mixed>
+     */
+    private function filterChangeSet(array $changeSet): array
+    {
+        foreach ($changeSet as $field => $values) {
+            [$old, $new] = $values;
+
+            if ($old instanceof \DateTimeInterface && $new instanceof \DateTimeInterface) {
+                // Compare timestamps to ignore timezone differences (e.g. UTC vs +00:00)
+                if ($old->format('U') === $new->format('U')) {
+                    unset($changeSet[$field]);
+                }
+            }
+        }
+
+        return $changeSet;
     }
 }

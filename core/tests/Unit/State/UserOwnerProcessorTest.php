@@ -9,7 +9,9 @@ use App\State\UserOwnerProcessor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class UserOwnerProcessorTest extends TestCase
 {
     /** @var ProcessorInterface<mixed, mixed>&\PHPUnit\Framework\MockObject\MockObject */

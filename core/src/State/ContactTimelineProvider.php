@@ -72,7 +72,22 @@ class ContactTimelineProvider implements ProviderInterface
 
         // Sort by createdAt DESC
         usort($allLogs, function (AuditLog $a, AuditLog $b) {
-            return $b->getCreatedAt() <=> $a->getCreatedAt();
+            $dateComparison = $b->getCreatedAt() <=> $a->getCreatedAt();
+
+            if (0 === $dateComparison) {
+                // If dates are equal, Contact entity type should come last
+                $aIsContact = $a->getEntityType() === Contact::class;
+                $bIsContact = $b->getEntityType() === Contact::class;
+
+                if ($aIsContact && !$bIsContact) {
+                    return 1; // $a comes after $b
+                }
+                if (!$aIsContact && $bIsContact) {
+                    return -1; // $b comes after $a
+                }
+            }
+
+            return $dateComparison;
         });
 
         /* @var array<int, AuditLog> $allLogs */

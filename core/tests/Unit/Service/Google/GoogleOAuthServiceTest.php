@@ -7,7 +7,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class GoogleOAuthServiceTest extends TestCase
 {
     private GoogleOAuthService $service;
@@ -38,7 +40,7 @@ final class GoogleOAuthServiceTest extends TestCase
 
     public function testGetAccessTokenExchangesCodeForToken(): void
     {
-        $response = $this->createMock(ResponseInterface::class);
+        $response = self::createStub(ResponseInterface::class);
         $response->method('toArray')->willReturn(['access_token' => 'token']);
 
         $this->httpClient->expects(self::once())
@@ -55,7 +57,7 @@ final class GoogleOAuthServiceTest extends TestCase
 
     public function testRefreshAccessTokenRefreshesToken(): void
     {
-        $response = $this->createMock(ResponseInterface::class);
+        $response = self::createStub(ResponseInterface::class);
         $response->method('toArray')->willReturn(['access_token' => 'new_token']);
 
         $this->httpClient->expects(self::once())

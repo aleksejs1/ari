@@ -83,6 +83,12 @@ class ContactDate implements TenantAwareInterface
 
     public function setDate(?\DateTime $date): static
     {
+        if (null !== $date) {
+            $date = clone $date;
+            $date->setTimezone(new \DateTimeZone('UTC'));
+            $date->setTime(0, 0, 0);
+        }
+
         $this->date = $date;
 
         return $this;
