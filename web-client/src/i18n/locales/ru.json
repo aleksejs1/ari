@@ -56,6 +56,7 @@
     "dateLabel": "Метка",
     "dateLabelPlaceholder": "Название (например, День рождения)",
     "noLabel": "Без метки",
+    "birthday": "День рождения",
     "noDates": "Даты не добавлены",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
@@ -175,5 +176,12 @@
     "failedToLoadContact": "Не удалось загрузить контакт",
     "failedToLoadTimeline": "Не удалось загрузить историю",
     "failedToLoadLogs": "Не удалось загрузить логи аудита"
+  },
+  "validation": {
+    "firstNameRequired": "Имя обязательно",
+    "labelRequired": "Название обязательно",
+    "atLeastOneNameRequired": "Требуется хотя бы одно имя",
+    "botTokenRequired": "Токен бота обязателен",
+    "chatIdRequired": "ID чата обязателен"
   }
 }

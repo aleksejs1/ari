@@ -241,6 +241,19 @@ interface AuditLogCollection {
   totalItems: number
 }
 
+const getBadgeStyles = (action: string): string => {
+  switch (action) {
+    case 'INSERT':
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+    case 'UPDATE':
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+    case 'REMOVE':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+    default:
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+  }
+}
+
 const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) => {
   const { t } = useTranslation()
   const contactId = getContactId(log)
@@ -260,10 +273,9 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-gray-100 px-2 py-0.5 text-sm font-semibold uppercase tracking-wide text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-              {log.action}
-            </span>
-            <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+            <span
+              className={`rounded px-2 py-0.5 text-sm font-semibold ${getBadgeStyles(log.action)}`}
+            >
               {getLogDescription(log, t)}
             </span>
             {isContactRelated ? (

@@ -31,7 +31,7 @@ test('shows validation errors', async () => {
   fireEvent.submit(screen.getByRole('form'))
 
   await waitFor(() => {
-    expect(screen.getByText('Bot Token is required')).toBeInTheDocument()
+    expect(screen.getByText('validation.botTokenRequired')).toBeInTheDocument()
     expect(onSubmit).not.toHaveBeenCalled()
   })
 })

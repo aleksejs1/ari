@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { notificationChannelSchema, type NotificationChannelFormValues } from '@/types/models'
+import { type NotificationChannelFormValues } from '@/types/models'
 
 interface NotificationChannelFormProps {
   defaultValues?: NotificationChannelFormValues
@@ -26,6 +27,16 @@ export function NotificationChannelForm({
   isSubmitting,
 }: NotificationChannelFormProps) {
   const { t } = useTranslation()
+
+  const notificationChannelSchema = z.object({
+    id: z.number().optional(),
+    type: z.literal('telegram'),
+    config: z.object({
+      botToken: z.string().min(1, t('validation.botTokenRequired')),
+      chatId: z.string().min(1, t('validation.chatIdRequired')),
+    }),
+  })
+
   const form = useForm<NotificationChannelFormValues>({
     resolver: zodResolver(notificationChannelSchema),
     defaultValues: defaultValues || {

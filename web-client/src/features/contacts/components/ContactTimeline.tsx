@@ -219,6 +219,19 @@ interface ContactTimelineProps {
   fullHeight?: boolean
 }
 
+const getBadgeStyles = (action: string): string => {
+  switch (action) {
+    case 'INSERT':
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+    case 'UPDATE':
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+    case 'REMOVE':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+    default:
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+  }
+}
+
 export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps) {
   const { t, i18n } = useTranslation()
   const language = i18n.language
@@ -274,20 +287,26 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
             return (
               <div key={log.id} className="relative mb-6 ml-4">
                 <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col items-start gap-2">
                   <span className="text-xs text-gray-500">
                     {formatLocalizedDateTime(log.createdAt, language)}
                   </span>
-                  <p className="text-sm font-medium text-gray-900">{getLogLabel(log, t)}</p>
+                  <span
+                    className={`rounded px-2 py-0.5 text-sm font-semibold ${getBadgeStyles(
+                      log.action,
+                    )}`}
+                  >
+                    {getLogLabel(log, t)}
+                  </span>
 
                   {snapshotDetails ? (
-                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
+                    <div className="mt-1 w-full rounded bg-gray-50 p-2 text-xs text-gray-600">
                       {snapshotDetails}
                     </div>
                   ) : null}
 
                   {hasChanges ? (
-                    <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
+                    <div className="mt-1 w-full rounded bg-gray-50 p-2 text-xs text-gray-600">
                       {Object.entries(changes)
                         .filter(([key]) => key !== 'user' && key !== 'tenant')
                         .map(([key, val]) => (

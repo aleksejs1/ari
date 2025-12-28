@@ -56,6 +56,7 @@
     "dateLabel": "Label",
     "dateLabelPlaceholder": "Label (e.g. Birthday)",
     "noLabel": "No label",
+    "birthday": "Birthday",
     "noDates": "No dates added.",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
@@ -175,5 +176,12 @@
     "failedToLoadContact": "Failed to load contact",
     "failedToLoadTimeline": "Failed to load history",
     "failedToLoadLogs": "Failed to load audit logs"
+  },
+  "validation": {
+    "firstNameRequired": "First name is required",
+    "labelRequired": "Label is required",
+    "atLeastOneNameRequired": "At least one name is required",
+    "botTokenRequired": "Bot Token is required",
+    "chatIdRequired": "Chat ID is required"
   }
 }

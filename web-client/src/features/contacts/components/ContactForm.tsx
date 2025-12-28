@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2 } from 'lucide-react'
 import { useForm, useFieldArray, type Resolver } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
 
 import { NotificationSubscriptions } from './NotificationSubscriptions'
 
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { formatApiDate } from '@/lib/utils'
-import { contactSchema, type ContactFormValues } from '@/types/models'
+import { type ContactFormValues } from '@/types/models'
 
 interface ContactFormProps {
   defaultValues?: ContactFormValues
@@ -26,6 +27,31 @@ interface ContactFormProps {
 
 export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
   const { t } = useTranslation()
+
+  const contactNameSchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    given: z.string().min(1, t('validation.firstNameRequired')),
+    family: z.string().optional(),
+  })
+
+  const contactDateSchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    date: z
+      .string()
+      .or(z.date())
+      .transform((d) => formatApiDate(d)),
+    text: z.string().min(1, t('validation.labelRequired')),
+  })
+
+  const contactSchema = z.object({
+    contactNames: z.array(contactNameSchema).min(1, t('validation.atLeastOneNameRequired')),
+    contactDates: z.array(contactDateSchema),
+  })
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema) as unknown as Resolver<ContactFormValues>,
     defaultValues: defaultValues || {
@@ -119,7 +145,9 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendDate({ text: 'Birthday', date: formatApiDate(new Date()) })}
+              onClick={() =>
+                appendDate({ text: t('contacts.birthday'), date: formatApiDate(new Date()) })
+              }
             >
               <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
             </Button>
