@@ -92,10 +92,24 @@ class AuditLogSubscriber
                 // we need to update it manually as it's too late for the unit of work to pick it up for a new insert.
                 if (null !== $auditLog->getId()) {
                     $em = $args->getObjectManager();
+
+                    // Also check for owner ID if it wasn't set (e.g. cascaded persist)
+                    $ownerEntityId = $auditLog->getOwnerEntityId();
+                    if (null === $ownerEntityId && null !== $auditLog->getOwnerEntityType()) {
+                        if (method_exists($entity, 'getContact')) {
+                            $contact = $entity->getContact();
+                            if (is_object($contact) && method_exists($contact, 'getId')) {
+                                $ownerEntityId = $contact->getId();
+                                $auditLog->setOwnerEntityId($ownerEntityId);
+                            }
+                        }
+                    }
+
                     $em->getConnection()->executeStatement(
-                        'UPDATE audit_log SET entity_id = ?, snapshot_after = ? WHERE id = ?',
+                        'UPDATE audit_log SET entity_id = ?, owner_entity_id = ?, snapshot_after = ? WHERE id = ?',
                         [
                             $entityId,
+                            $ownerEntityId,
                             json_encode($auditLog->getSnapshotAfter()),
                             $auditLog->getId(),
                         ]
@@ -171,6 +185,14 @@ class AuditLogSubscriber
             $entityId = $entity->getId();
         }
         $auditLog->setEntityId($entityId);
+
+        if (method_exists($entity, 'getContact')) {
+            $contact = $entity->getContact();
+            if (is_object($contact) && method_exists($contact, 'getId')) {
+                $auditLog->setOwnerEntityType(get_class($contact));
+                $auditLog->setOwnerEntityId($contact->getId());
+            }
+        }
 
         $auditLog->setAction($action);
         $auditLog->setChanges($changes);

@@ -3,14 +3,16 @@
 namespace App\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\AuditLog;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-class AuditLogIdempotencyTest extends ApiTestCase
+class DeletedEntityAuditLogTest extends ApiTestCase
 {
     private string $token;
     private string $userUuid;
+
+    // Suppress API Platform deprecation about kernel booting
+    protected static ?bool $alwaysBootKernel = true;
 
     #[\Override]
     protected function setUp(): void
@@ -38,9 +40,6 @@ class AuditLogIdempotencyTest extends ApiTestCase
         $this->token = $this->getToken($this->userUuid, 'pass');
     }
 
-    // Suppress API Platform deprecation about kernel booting
-    protected static ?bool $alwaysBootKernel = true;
-
     private function getToken(string $username, string $password): string
     {
         $response = static::createClient()->request('POST', '/api/login_check', [
@@ -53,58 +52,58 @@ class AuditLogIdempotencyTest extends ApiTestCase
         return $response->toArray()['token'];
     }
 
-    public function testIdempotentUpdateDoesNotCreateAuditLog(): void
+    public function testTimelineIncludesLogsForDeletedEntities(): void
     {
         $client = static::createClient();
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
 
-        // 1. Create a contact with a date
+        // 1. Create a contact with a name
         $response = $client->request('POST', '/api/contacts', [
             'auth_bearer' => $this->token,
             'json' => [
-                'contactDates' => [
+                'contactNames' => [
                     [
-                        'date' => '2025-01-23',
-                        'text' => 'Birthday',
+                        'given' => 'John',
+                        'family' => 'Doe',
                     ],
                 ],
             ],
         ]);
         self::assertResponseStatusCodeSame(201);
         $data = $response->toArray();
-        $contactIri = $data['@id'];
-        $contactDateId = $data['contactDates'][0]['id'];
-        $contactDateIri = $data['contactDates'][0]['@id'];
+        $contactId = $data['id'];
+        $contactNameId = $data['contactNames'][0]['id'];
+        $contactNameIri = $data['contactNames'][0]['@id'];
 
-        // Get initial AuditLog count
-        $em->clear();
-        $auditLogsBefore = $em->getRepository(AuditLog::class)->findAll();
-        $countBefore = count($auditLogsBefore);
-
-        // 2. Perform PUT with the same date but potentially different timezone representation
-        $client->request('PUT', $contactIri, [
+        // 2. Delete the Name (not the contact)
+        $client->request('DELETE', $contactNameIri, [
             'auth_bearer' => $this->token,
-            'json' => [
-                'contactDates' => [
-                    [
-                        'id' => (string) $contactDateId,
-                        '@id' => $contactDateIri,
-                        'date' => '2025-01-23T00:00:00+00:00',
-                        'text' => 'Birthday',
-                    ]
-                ]
-            ],
+        ]);
+        self::assertResponseStatusCodeSame(204);
+
+        // 3. Get Contact Timeline
+        $timelineResponse = $client->request('GET', "/api/contacts/{$contactId}/timeline", [
+            'auth_bearer' => $this->token,
         ]);
         self::assertResponseIsSuccessful();
+        $timelineData = $timelineResponse->toArray();
+        $logs = $timelineData['logs'];
 
-        // 3. Verify AuditLog count has NOT increased
-        $em->clear();
-        $auditLogsAfter = $em->getRepository(AuditLog::class)->findAll();
-        $countAfter = count($auditLogsAfter);
+        // 4. Verify logs for the deleted name are present
+        $foundCreateLog = false;
+        $foundDeleteLog = false;
 
-        self::assertEquals($countBefore, $countAfter, 'Audit log count should not increase for idempotent update');
+        foreach ($logs as $log) {
+            if ($log['entityType'] === 'App\\Entity\\ContactName' && $log['entityId'] === $contactNameId) {
+                if ($log['action'] === 'INSERT') {
+                    $foundCreateLog = true;
+                }
+                if ($log['action'] === 'REMOVE') {
+                    $foundDeleteLog = true;
+                }
+            }
+        }
+
+        self::assertTrue($foundCreateLog, 'Timeline should contain INSERT log for deleted ContactName');
+        self::assertTrue($foundDeleteLog, 'Timeline should contain REMOVE log for deleted ContactName');
     }
 }

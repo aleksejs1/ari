@@ -37,38 +37,23 @@ class ContactTimelineProvider implements ProviderInterface
             throw new NotFoundHttpException('Contact not found');
         }
 
-        // Collect IDs of related entities
-        $relatedEntities = [];
-        $relatedEntities[] = [
-            'type' => Contact::class,
-            'id' => $contact->getId(),
-        ];
 
-        foreach ($contact->getContactNames() as $name) {
-            $relatedEntities[] = [
-                'type' => ContactName::class,
-                'id' => $name->getId(),
-            ];
-        }
 
-        foreach ($contact->getContactDates() as $date) {
-            $relatedEntities[] = [
-                'type' => ContactDate::class,
-                'id' => $date->getId(),
-            ];
-        }
-
-        $allLogs = [];
         $auditRepo = $this->entityManager->getRepository(AuditLog::class);
-        foreach ($relatedEntities as $entityInfo) {
-            $logs = $auditRepo->findBy([
-                'entityType' => $entityInfo['type'],
-                'entityId' => $entityInfo['id'],
-            ]);
-            foreach ($logs as $log) {
-                $allLogs[] = $log;
-            }
-        }
+
+        // Fetch logs for the Contact itself
+        $contactLogs = $auditRepo->findBy([
+            'entityType' => Contact::class,
+            'entityId' => $contact->getId(),
+        ]);
+
+        // Fetch logs for child entities via owner fields
+        $childLogs = $auditRepo->findBy([
+            'ownerEntityType' => Contact::class,
+            'ownerEntityId' => $contact->getId(),
+        ]);
+
+        $allLogs = array_merge($contactLogs, $childLogs);
 
         // Sort by createdAt DESC
         usort($allLogs, function (AuditLog $a, AuditLog $b) {

@@ -67,17 +67,18 @@ class ContactTimelineProviderTest extends TestCase
 
         $auditLogRepository->method('findBy')
             ->willReturnCallback(function ($criteria) use ($logContact, $logName, $logDate) {
-                if ($criteria['entityType'] === Contact::class) {
+                // Main Contact request
+                if (isset($criteria['entityType']) && $criteria['entityType'] === Contact::class) {
                     return [$logContact];
                 }
-            if ($criteria['entityType'] === ContactName::class) {
-                return [$logName];
-            }
-            if ($criteria['entityType'] === ContactDate::class) {
-                return [$logDate];
-            }
-            return [];
-        });
+
+                // Child entities request (fetched via owner)
+                if (isset($criteria['ownerEntityType']) && $criteria['ownerEntityType'] === Contact::class) {
+                    return [$logName, $logDate];
+                }
+
+                return [];
+            });
 
         // Add dummy relations to Contact to trigger lookups
         $name = new ContactName();

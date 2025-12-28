@@ -43,6 +43,14 @@ class AuditLog implements TenantAwareInterface
     private ?int $entityId = null;
 
     #[Groups(['audit:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ownerEntityType = null;
+
+    #[Groups(['audit:read'])]
+    #[ORM\Column(nullable: true)]
+    private ?int $ownerEntityId = null;
+
+    #[Groups(['audit:read'])]
     #[ORM\Column(length: 255)]
     private ?string $action = null;
 
@@ -191,6 +199,30 @@ class AuditLog implements TenantAwareInterface
     public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getOwnerEntityType(): ?string
+    {
+        return $this->ownerEntityType;
+    }
+
+    public function setOwnerEntityType(?string $ownerEntityType): static
+    {
+        $this->ownerEntityType = $ownerEntityType;
+
+        return $this;
+    }
+
+    public function getOwnerEntityId(): ?int
+    {
+        return $this->ownerEntityId;
+    }
+
+    public function setOwnerEntityId(?int $ownerEntityId): static
+    {
+        $this->ownerEntityId = $ownerEntityId;
 
         return $this;
     }
