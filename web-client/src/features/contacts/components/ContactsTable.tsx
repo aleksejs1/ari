@@ -1,7 +1,7 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Edit, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
 
@@ -34,6 +34,7 @@ export function ContactsTable({
   // renamed internally for the helper above but let's keep it clean
   const onExchangeDate = onUpdateDate
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const columns: ColumnDef<Contact>[] = [
     {
@@ -48,12 +49,9 @@ export function ContactsTable({
           <div className="flex flex-col">
             {names.map((name, i) => (
               <div key={i} className="group flex items-center justify-between">
-                <Link
-                  to={`/contacts/${row.original.id}`}
-                  className="font-medium text-primary hover:underline"
-                >
+                <span className="font-medium text-primary">
                   {name.given} {name.family}
-                </Link>
+                </span>
               </div>
             ))}
           </div>
@@ -69,7 +67,8 @@ export function ContactsTable({
           : [{ date: '', text: '' } as ContactDate]
 
         return (
-          <div className="flex flex-col gap-1">
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+          <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
             {dates.map((date, i) => (
               <ContactDateInlineEdit
                 key={i}
@@ -87,7 +86,8 @@ export function ContactsTable({
       header: t('common.actions', 'Actions'),
       cell: ({ row }) => {
         return (
-          <div className="flex justify-end gap-2">
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+          <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
             <Button
               variant="ghost"
               size="icon"
@@ -138,7 +138,12 @@ export function ContactsTable({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className="cursor-pointer"
+                onClick={() => navigate(`/contacts/${row.original.id}`)}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

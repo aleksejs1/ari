@@ -6,10 +6,21 @@ import { ContactsTable } from './ContactsTable'
 
 import type { Contact } from '@/types/models'
 
+// Mock useNavigate
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  }
+})
+
 describe('ContactsTable', () => {
   const mockData: Contact[] = [
     {
       '@id': '/api/contacts/1',
+      id: 1,
       '@type': 'Contact',
       contactNames: [
         { '@id': '/api/cn/1', '@type': 'ContactName', given: 'Alice', family: 'Smith' },
@@ -20,6 +31,7 @@ describe('ContactsTable', () => {
     },
     {
       '@id': '/api/contacts/2',
+      id: 2,
       '@type': 'Contact',
       contactNames: [{ '@id': '/api/cn/2', '@type': 'ContactName', given: 'Bob' }], // No family name
       contactDates: [],
@@ -87,5 +99,24 @@ describe('ContactsTable', () => {
     const deleteButtons = screen.getAllByLabelText('Delete Contact')
     fireEvent.click(deleteButtons[0])
     expect(onDelete).toHaveBeenCalledWith(mockData[0])
+  })
+
+  it('navigates on row click', () => {
+    render(
+      <MemoryRouter>
+        <ContactsTable
+          data={mockData}
+          onEdit={vi.fn()}
+          onDelete={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+        />
+      </MemoryRouter>,
+    )
+
+    const row = screen.getByText('Alice Smith').closest('tr')
+    expect(row).toBeInTheDocument()
+    fireEvent.click(row as Element)
+    expect(mockNavigate).toHaveBeenCalledWith('/contacts/1')
   })
 })
