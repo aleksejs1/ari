@@ -8,6 +8,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import importPlugin from 'eslint-plugin-import'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
+import pluginQuery from '@tanstack/eslint-plugin-query'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -25,6 +26,7 @@ export default defineConfig([
       reactHooks.configs.flat.recommended,
       eslintConfigPrettier,
       boundaries.configs.recommended,
+      ...pluginQuery.configs['flat/recommended'],
     ],
     languageOptions: {
       ecmaVersion: 2020,
