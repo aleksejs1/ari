@@ -25,7 +25,7 @@ export function useCreateNotificationChannel() {
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
     },
   })
 }
@@ -39,7 +39,7 @@ export function useUpdateNotificationChannel() {
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
     },
   })
 }
@@ -52,7 +52,7 @@ export function useDeleteNotificationChannel() {
       await api.delete(url)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
     },
   })
 }

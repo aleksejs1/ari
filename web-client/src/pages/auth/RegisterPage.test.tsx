@@ -2,6 +2,9 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+const TEST_PASSWORD = crypto.randomUUID()
+const TEST_DIFFERENT_PASSWORD = crypto.randomUUID()
+
 import RegisterPage from './RegisterPage'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -61,9 +64,11 @@ describe('RegisterPage', () => {
     )
 
     fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
-    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText('auth.password'), {
+      target: { value: TEST_PASSWORD },
+    })
     fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
-      target: { value: 'password456' },
+      target: { value: TEST_DIFFERENT_PASSWORD },
     })
 
     fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
@@ -82,9 +87,11 @@ describe('RegisterPage', () => {
     )
 
     fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
-    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText('auth.password'), {
+      target: { value: TEST_PASSWORD },
+    })
     fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
-      target: { value: 'password123' },
+      target: { value: TEST_PASSWORD },
     })
 
     fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))
@@ -92,11 +99,11 @@ describe('RegisterPage', () => {
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith('/users', {
         uuid: 'testuser',
-        plainPassword: 'password123',
+        plainPassword: TEST_PASSWORD,
       })
       expect(api.post).toHaveBeenCalledWith('/login_check', {
         username: 'testuser',
-        password: 'password123',
+        password: TEST_PASSWORD,
       })
       expect(login).toHaveBeenCalledWith('fake-token')
       expect(navigate).toHaveBeenCalledWith('/')
@@ -113,9 +120,11 @@ describe('RegisterPage', () => {
     )
 
     fireEvent.change(screen.getByLabelText('UUID / Username'), { target: { value: 'testuser' } })
-    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText('auth.password'), {
+      target: { value: TEST_PASSWORD },
+    })
     fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
-      target: { value: 'password123' },
+      target: { value: TEST_PASSWORD },
     })
 
     fireEvent.click(screen.getByRole('button', { name: 'auth.signUp' }))

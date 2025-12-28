@@ -6,12 +6,8 @@ import ContactsPage from './ContactsPage'
 import {
   useContacts,
   useDeleteContact,
-  useUpdateContactName,
-  useCreateContactName,
-  useDeleteContactName,
   useUpdateContactDate,
   useCreateContactDate,
-  useDeleteContactDate,
   type HydraCollection,
 } from './useContacts'
 
@@ -23,12 +19,9 @@ vi.mock('./useContacts', async (importOriginal) => {
     ...actual,
     useContacts: vi.fn(),
     useDeleteContact: vi.fn(),
-    useUpdateContactName: vi.fn(),
-    useCreateContactName: vi.fn(),
-    useDeleteContactName: vi.fn(),
+
     useUpdateContactDate: vi.fn(),
     useCreateContactDate: vi.fn(),
-    useDeleteContactDate: vi.fn(),
   }
 })
 
@@ -91,18 +84,6 @@ describe('ContactsPage', () => {
       reset: vi.fn(),
     } as unknown as ReturnType<typeof useDeleteContact>)
 
-    vi.mocked(useUpdateContactName).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useUpdateContactName>)
-
-    vi.mocked(useCreateContactName).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useCreateContactName>)
-
-    vi.mocked(useDeleteContactName).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useDeleteContactName>)
-
     vi.mocked(useUpdateContactDate).mockReturnValue({
       mutateAsync: vi.fn(),
     } as unknown as ReturnType<typeof useUpdateContactDate>)
@@ -110,10 +91,6 @@ describe('ContactsPage', () => {
     vi.mocked(useCreateContactDate).mockReturnValue({
       mutateAsync: vi.fn(),
     } as unknown as ReturnType<typeof useCreateContactDate>)
-
-    vi.mocked(useDeleteContactDate).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useDeleteContactDate>)
   })
 
   it('renders loading state', () => {

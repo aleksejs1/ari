@@ -42,7 +42,7 @@ export default function GoogleImportPage() {
     }
 
     if (code) {
-      handleAuthCheck(code)
+      void handleAuthCheck(code)
     }
   }, [code, setSearchParams, t])
 
@@ -127,12 +127,12 @@ export default function GoogleImportPage() {
             </Button>
           </div>
 
-          {authSuccess && (
+          {authSuccess ? (
             <div className="mt-2 flex items-center gap-2 text-green-600 dark:text-green-400">
               <CheckCircle2 className="h-5 w-5" />
               <span>{t('googleImport.authSuccess')}</span>
             </div>
-          )}
+          ) : null}
 
           {importCount !== null && (
             <div className="mt-2 flex items-center gap-2 text-green-600 dark:text-green-400">
@@ -141,12 +141,12 @@ export default function GoogleImportPage() {
             </div>
           )}
 
-          {error && (
+          {error ? (
             <div className="mt-2 flex items-center gap-2 text-red-600 dark:text-red-400">
               <AlertCircle className="h-5 w-5" />
               <span>{error}</span>
             </div>
-          )}
+          ) : null}
         </CardContent>
       </Card>
     </div>

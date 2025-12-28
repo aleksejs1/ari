@@ -15,14 +15,18 @@ import { useAuth } from '@/hooks/useAuth'
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
   const { t } = useTranslation()
-  if (isLoading) return <div>{t('app.loading')}</div>
+  if (isLoading) {
+    return <div>{t('app.loading')}</div>
+  }
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />
 }
 
 const PublicRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
   const { t } = useTranslation()
-  if (isLoading) return <div>{t('app.loading')}</div>
+  if (isLoading) {
+    return <div>{t('app.loading')}</div>
+  }
   return isAuthenticated ? <Navigate to="/" /> : <Outlet />
 }
 

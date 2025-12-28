@@ -50,7 +50,7 @@ describe('ContactSheet', () => {
   })
 
   it('renders create mode correctly', () => {
-    render(<ContactSheet isOpen={true} onClose={vi.fn()} />)
+    render(<ContactSheet isOpen onClose={vi.fn()} />)
     expect(screen.getByText('contacts.create')).toBeInTheDocument()
     expect(screen.getByTestId('contact-form')).toBeInTheDocument()
   })
@@ -62,13 +62,13 @@ describe('ContactSheet', () => {
       contactNames: [{ '@id': '/api/cn/1', '@type': 'ContactName', given: 'John' }],
       contactDates: [],
     }
-    render(<ContactSheet isOpen={true} onClose={vi.fn()} contact={contact} />)
+    render(<ContactSheet isOpen onClose={vi.fn()} contact={contact} />)
     expect(screen.getByText('contacts.edit')).toBeInTheDocument()
   })
 
   it('handles create submission', async () => {
     const onClose = vi.fn()
-    render(<ContactSheet isOpen={true} onClose={onClose} />)
+    render(<ContactSheet isOpen onClose={onClose} />)
 
     fireEvent.click(screen.getByText('Submit'))
 
@@ -86,7 +86,7 @@ describe('ContactSheet', () => {
       contactNames: [{ '@id': '/api/cn/1', '@type': 'ContactName', given: 'John' }],
       contactDates: [],
     }
-    render(<ContactSheet isOpen={true} onClose={onClose} contact={contact} />)
+    render(<ContactSheet isOpen onClose={onClose} contact={contact} />)
 
     fireEvent.click(screen.getByText('Submit'))
 

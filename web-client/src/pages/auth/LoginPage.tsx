@@ -54,7 +54,8 @@ export default function LoginPage() {
         password: values.password,
       })
       login(response.data.token)
-      navigate('/')
+      // eslint-disable-next-line sonarjs/void-use
+      void navigate('/')
     } catch (err: unknown) {
       console.error(err)
       setError('Invalid credentials')
@@ -100,7 +101,7 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              {error && <div className="text-sm text-red-500">{error}</div>}
+              {error ? <div className="text-sm text-red-500">{error}</div> : null}
               <Button type="submit" className="w-full">
                 {t('auth.signIn')}
               </Button>

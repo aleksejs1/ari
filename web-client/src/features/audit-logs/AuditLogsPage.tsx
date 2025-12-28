@@ -9,7 +9,9 @@ import { type TimelineEvent } from '@/types/models'
 
 // Reuse the formatter logic
 const formatChangeValue = (val: unknown): string => {
-  if (val === null || val === undefined) return ''
+  if (val === null || val === undefined) {
+    return ''
+  }
 
   if (typeof val === 'object') {
     if (Array.isArray(val)) {
@@ -47,13 +49,13 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
           <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
             {log.entityType} #{log.entityId}
           </span>
-          {log.user && <span className="text-sm text-gray-500">by {log.user}</span>}
+          {log.user ? <span className="text-sm text-gray-500">by {log.user}</span> : null}
         </div>
         <div className="text-sm text-gray-500">{format(new Date(log.createdAt), 'PPP p')}</div>
       </div>
     </div>
 
-    {log.changes && Object.keys(log.changes).length > 0 && (
+    {log.changes && Object.keys(log.changes).length > 0 ? (
       <div className="mt-4 rounded-md bg-gray-50 p-4 text-sm dark:bg-gray-900">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {Object.entries(log.changes as Record<string, unknown>)
@@ -66,9 +68,9 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
             ))}
         </div>
       </div>
-    )}
+    ) : null}
 
-    {log.action === 'REMOVE' && log.snapshotBefore && (
+    {log.action === 'REMOVE' && log.snapshotBefore ? (
       <div className="mt-4">
         <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
           Snapshot Before Removal
@@ -86,9 +88,9 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
           </div>
         </div>
       </div>
-    )}
+    ) : null}
 
-    {log.action === 'INSERT' && log.snapshotAfter && (
+    {log.action === 'INSERT' && log.snapshotAfter ? (
       <div className="mt-4">
         <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
           Snapshot After Insertion
@@ -108,7 +110,7 @@ const LogItem = ({ log }: { log: TimelineEvent }) => (
           </div>
         </div>
       </div>
-    )}
+    ) : null}
   </div>
 )
 

@@ -83,9 +83,14 @@ export default defineConfig([
     },
     rules: {
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'react/jsx-no-leaked-render': ['error', { validStrategies: ['ternary', 'coerce'] }],
+      'react/jsx-boolean-value': ['error', 'never'],
+      'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/switch-exhaustiveness-check': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
       'import/order': [
         'error',
@@ -95,6 +100,10 @@ export default defineConfig([
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
+      'import/no-duplicates': 'error',
+      eqeqeq: ['error', 'always'],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      curly: ['error', 'all'],
       'react/prop-types': 'off',
       'react/self-closing-comp': 'error',
       complexity: ['warn', 10],
@@ -130,25 +139,6 @@ export default defineConfig([
         },
       ],
       'sonarjs/prefer-read-only-props': 'off',
-    },
-  },
-  {
-    files: ['src/components/ui/**/*.{ts,tsx}'],
-    rules: {
-      'sonarjs/deprecation': 'off',
-      'sonarjs/table-header': 'off',
-    },
-  },
-  {
-    files: ['src/**/*.test.{ts,tsx}'],
-    rules: {
-      'sonarjs/no-hardcoded-passwords': 'off',
-    },
-  },
-  {
-    files: ['src/features/contacts/useContacts.ts'],
-    rules: {
-      'sonarjs/no-identical-functions': 'off',
     },
   },
 ])

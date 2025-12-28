@@ -13,7 +13,9 @@ import { type ContactTimeline, type TimelineEvent } from '@/types/models' // We 
 
 // Helper to format change values, handling DateTime objects from API
 const formatChangeValue = (val: unknown): string => {
-  if (val === null || val === undefined) return ''
+  if (val === null || val === undefined) {
+    return ''
+  }
 
   if (typeof val === 'object') {
     // Audit logs often return [old, new] array for updates
@@ -104,7 +106,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
                     {log.action} {log.entityType}
                   </p>
                   {/* Basic rendering of changes */}
-                  {log.changes && Object.keys(log.changes).length > 0 && (
+                  {log.changes && Object.keys(log.changes).length > 0 ? (
                     <div className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-600">
                       {Object.entries(log.changes as Record<string, unknown>).map(([key, val]) => (
                         <div key={key}>
@@ -112,7 +114,7 @@ export function ContactTimeline({ contactId }: ContactTimelineProps) {
                         </div>
                       ))}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             ),

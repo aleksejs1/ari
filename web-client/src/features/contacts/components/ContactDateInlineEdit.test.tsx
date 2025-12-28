@@ -36,7 +36,9 @@ describe('ContactDateInlineEdit', () => {
     )
 
     const container = screen.getByText('(Birthday)').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
 
     const editButton = screen.getByRole('button', { name: /edit/i })
@@ -59,7 +61,9 @@ describe('ContactDateInlineEdit', () => {
     )
 
     const container = screen.getByText('(Birthday)').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
 
@@ -88,7 +92,9 @@ describe('ContactDateInlineEdit', () => {
     )
 
     const container = screen.getByText('(Birthday)').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
 
@@ -113,7 +119,9 @@ describe('ContactDateInlineEdit', () => {
     )
 
     const container = screen.getByText('(Birthday)').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
 

@@ -69,7 +69,8 @@ export default function RegisterPage() {
         password: values.password,
       })
       login(response.data.token)
-      navigate('/')
+      // eslint-disable-next-line sonarjs/void-use
+      void navigate('/')
     } catch (err: unknown) {
       console.error(err)
       setError('Registration failed. Please try again.')
@@ -128,7 +129,7 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
-              {error && <div className="text-sm text-red-500">{error}</div>}
+              {error ? <div className="text-sm text-red-500">{error}</div> : null}
               <Button type="submit" className="w-full">
                 {t('auth.signUp')}
               </Button>

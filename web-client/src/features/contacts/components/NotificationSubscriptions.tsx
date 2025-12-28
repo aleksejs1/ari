@@ -41,7 +41,7 @@ export function NotificationSubscriptions({
   }, [entityType, entityId])
 
   useEffect(() => {
-    fetchData()
+    void fetchData()
   }, [fetchData])
 
   const handleAdd = async (channelId: string) => {
@@ -52,7 +52,7 @@ export function NotificationSubscriptions({
         channel: channelId,
         enabled: 1,
       })
-      fetchData()
+      void fetchData()
     } catch (error) {
       console.error('Error adding subscription:', error)
     }
@@ -61,7 +61,7 @@ export function NotificationSubscriptions({
   const handleDelete = async (id: number) => {
     try {
       await api.delete(`/notification_subscriptions/${id}`)
-      fetchData()
+      void fetchData()
     } catch (error) {
       console.error('Error deleting subscription:', error)
     }
@@ -117,7 +117,7 @@ export function NotificationSubscriptions({
                 <div className="flex items-center text-xs text-gray-600">
                   <Bell className="mr-2 h-3 w-3 text-blue-500" />
                   <span>
-                    ID: {sub.id} {channelInfo && `(${channelInfo})`}
+                    ID: {sub.id} {channelInfo ? `(${channelInfo})` : null}
                   </span>
                 </div>
                 <Button

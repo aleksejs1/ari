@@ -37,7 +37,9 @@ export function NotificationChannelsTable({
       header: t('notificationChannels.config', 'Configuration'),
       cell: ({ row }) => {
         const config = row.original.config as Record<string, string>
-        if (!config) return null
+        if (!config) {
+          return null
+        }
         return (
           <div className="text-sm text-gray-500">
             <div>

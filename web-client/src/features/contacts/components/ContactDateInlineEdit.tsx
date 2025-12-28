@@ -71,7 +71,7 @@ export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateI
         />
       </div>
       <div className="flex justify-end gap-2">
-        {hasDate && (
+        {hasDate ? (
           <Button
             size="icon"
             variant="ghost"
@@ -81,7 +81,7 @@ export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateI
           >
             <Trash2 className="h-4 w-4" />
           </Button>
-        )}
+        ) : null}
         <Button
           size="sm"
           variant="ghost"

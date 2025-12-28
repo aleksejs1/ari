@@ -69,7 +69,7 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
         />
       </div>
       <div className="flex justify-end gap-2">
-        {hasName && (
+        {hasName ? (
           <Button
             size="icon"
             variant="ghost"
@@ -79,7 +79,7 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
           >
             <Trash2 className="h-4 w-4" />
           </Button>
-        )}
+        ) : null}
         <Button
           size="sm"
           variant="ghost"

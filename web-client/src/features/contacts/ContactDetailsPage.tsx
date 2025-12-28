@@ -88,7 +88,7 @@ export default function ContactDetailsPage() {
           <CardTitle>{t('contacts.history')}</CardTitle>
         </CardHeader>
         <CardContent>
-          {contact.id && <ContactTimeline contactId={contact.id.toString()} />}
+          {contact.id ? <ContactTimeline contactId={contact.id.toString()} /> : null}
         </CardContent>
       </Card>
     </div>

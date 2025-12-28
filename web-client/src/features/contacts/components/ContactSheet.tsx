@@ -77,7 +77,7 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
             onSubmit={handleSubmit}
             isSubmitting={createMutation.isPending || updateMutation.isPending}
           />
-          {contact && contact.id && <ContactTimeline contactId={contact.id.toString()} />}
+          {contact && contact.id ? <ContactTimeline contactId={contact.id.toString()} /> : null}
         </div>
       </SheetContent>
     </Sheet>

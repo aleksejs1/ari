@@ -35,7 +35,9 @@ describe('ContactNameInlineEdit', () => {
     )
 
     const container = screen.getByText('John Doe').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
 
     // Trigger button (Edit Name)
@@ -58,7 +60,9 @@ describe('ContactNameInlineEdit', () => {
     )
 
     const container = screen.getByText('John Doe').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
 
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
@@ -89,7 +93,9 @@ describe('ContactNameInlineEdit', () => {
     )
 
     const container = screen.getByText('John Doe').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
 
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
@@ -116,7 +122,9 @@ describe('ContactNameInlineEdit', () => {
     )
 
     const container = screen.getByText('John Doe').closest('div')
-    if (!container) throw new Error('Container not found')
+    if (!container) {
+      throw new Error('Container not found')
+    }
     fireEvent.mouseEnter(container)
 
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
