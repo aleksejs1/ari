@@ -2,27 +2,48 @@
   "app": {
     "title": "ari CRM",
     "loading": "Загрузка...",
-    "notFound": "404 Страница не найдена"
+    "notFound": "404 Страница не найдена",
+    "navigation": {
+      "contacts": "Контакты",
+      "notificationChannels": "Каналы уведомлений",
+      "auditLogs": "Логи аудита",
+      "googleImport": "Импорт из Google"
+    }
   },
   "auth": {
-    "login": "Войти",
+    "login": "Вход",
+    "loginDescription": "Введите свои учетные данные для доступа к контактам.",
     "logout": "Выйти",
     "register": "Регистрация",
+    "registerDescription": "Создайте новый аккаунт, чтобы начать.",
     "email": "Email",
+    "username": "Имя пользователя",
+    "uuid": "UUID / Имя пользователя",
     "password": "Пароль",
     "confirmPassword": "Подтвердите пароль",
     "signIn": "Войти",
     "signUp": "Зарегистрироваться",
+    "uuidRequired": "UUID обязателен",
+    "usernameRequired": "Имя пользователя обязательно",
+    "passwordRequired": "Пароль обязателен",
+    "passwordMinLength": "Пароль должен быть не менее 6 символов",
+    "passwordsMatch": "Пароли не совпадают",
     "haveAccount": "Уже есть аккаунт?",
-    "noAccount": "Нет аккаунта?"
+    "noAccount": "Нет аккаунта?",
+    "invalidCredentials": "Неверные учетные данные",
+    "registrationFailed": "Ошибка регистрации. Попробуйте еще раз.",
+    "passwordsDontMatch": "Пароли не совпадают"
   },
   "contacts": {
     "title": "Контакты",
     "loading": "Загрузка контактов...",
     "error": "Ошибка загрузки контактов.",
     "create": "Создать контакт",
+    "name": "Имя",
     "edit": "Редактировать",
+    "editContact": "Редактировать контакт",
     "delete": "Удалить",
+    "deleteConfirmTitle": "Удалить контакт",
     "deleteConfirm": "Вы уверены, что хотите удалить этот контакт?",
     "noContacts": "Контакты не найдены",
     "names": "Имена",
@@ -31,24 +52,96 @@
     "familyName": "Фамилия",
     "dates": "Важные даты",
     "addDate": "Добавить дату",
+    "date": "Дата",
+    "dateLabel": "Метка",
     "dateLabelPlaceholder": "Название (например, День рождения)",
+    "noLabel": "Без метки",
     "noDates": "Даты не добавлены",
-    "subscriptions": "Подписки",
+    "details": "Детали контакта",
+    "createDescription": "Добавьте новый контакт в свой список.",
+    "editDescription": "Здесь вы можете изменить данные контакта.",
+    "history": {
+      "title": "История",
+      "noHistory": "История отсутствует",
+      "timeline": "История активности",
+      "actions": {
+        "Contact": {
+          "INSERT": "Контакт создан",
+          "REMOVE": "Контакт удален"
+        },
+        "ContactName": {
+          "INSERT": "Имя добавлено",
+          "UPDATE": "Имя изменено",
+          "REMOVE": "Имя удалено"
+        },
+        "ContactDate": {
+          "INSERT": "Дата добавлена",
+          "UPDATE": "Дата изменена",
+          "REMOVE": "Дата удалена"
+        }
+      }
+    },
+    "subscriptions": "Подписки на уведомления",
     "addSubscription": "Добавить подписку",
     "noSubscriptions": "Нет подписок"
+  },
+  "notificationChannels": {
+    "title": "Каналы уведомлений",
+    "description": "Управление способами получения уведомлений.",
+    "add": "Добавить канал",
+    "edit": "Редактировать канал",
+    "delete": "Удалить канал",
+    "deleteConfirm": "Вы уверены, что хотите удалить этот канал уведомлений?",
+    "noChannels": "Каналы уведомлений не найдены.",
+    "noChannelsAvailable": "Нет доступных каналов",
+    "type": "Тип",
+    "selectType": "Выберите тип",
+    "config": "Конфигурация",
+    "botToken": "Токен бота",
+    "chatId": "ID чата",
+    "verified": "Верифицирован",
+    "notVerified": "Не верифицирован",
+    "formDescription": "Заполните данные ниже для настройки канала уведомлений.",
+    "error": "Ошибка загрузки каналов уведомлений."
   },
   "common": {
     "save": "Сохранить",
     "saving": "Сохранение...",
     "cancel": "Отмена",
-    "actions": "Действия"
+    "actions": "Действия",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "add": "Добавить",
+    "back": "Назад",
+    "backToContacts": "Назад к списку контактов",
+    "by": "от"
+  },
+  "pagination": {
+    "previous": "Назад",
+    "next": "Вперед",
+    "pageInfo": "Страница {{current}} из {{total}}"
   },
   "googleImport": {
     "title": "Импорт из Google",
+    "description": "Подключите свой аккаунт Google для импорта контактов напрямую в ari CRM.",
     "authorize": "Авторизоваться в Google",
     "import": "Импортировать контакты",
     "success": "Контакты успешно импортированы: {{count}}",
     "error": "Произошла ошибка при импорте.",
     "authSuccess": "Авторизация прошла успешно!"
+  },
+  "auditLogs": {
+    "title": "Логи аудита",
+    "description": "Просмотр истории активности системы.",
+    "error": "Ошибка загрузки логов аудита.",
+    "noLogs": "Логи аудита не найдены",
+    "totalCount": "Всего элементов: {{count}}",
+    "snapshotBeforeRemoval": "Снимок перед удалением",
+    "snapshotAfterInsertion": "Снимок после вставки"
+  },
+  "errors": {
+    "failedToLoadContact": "Не удалось загрузить контакт",
+    "failedToLoadTimeline": "Не удалось загрузить историю",
+    "failedToLoadLogs": "Не удалось загрузить логи аудита"
   }
 }

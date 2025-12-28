@@ -93,7 +93,7 @@ export function NotificationSubscriptions({
           ))}
           {channels.length === 0 && (
             <p className="text-[10px] italic text-gray-400">
-              {t('notificationChannels.noChannels', 'No channels available')}
+              {t('notificationChannels.noChannelsAvailable')}
             </p>
           )}
         </div>

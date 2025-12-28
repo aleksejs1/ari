@@ -22,7 +22,7 @@ export function ContactsTableActions({ contact, onEdit, onDelete }: ContactsTabl
           e.stopPropagation()
           onEdit(contact)
         }}
-        aria-label={t('common.edit', 'Edit')}
+        aria-label={t('common.edit')}
       >
         <Edit className="h-4 w-4" />
       </Button>
@@ -34,7 +34,7 @@ export function ContactsTableActions({ contact, onEdit, onDelete }: ContactsTabl
           e.stopPropagation()
           onDelete(contact)
         }}
-        aria-label={t('common.delete', 'Delete')}
+        aria-label={t('common.delete')}
       >
         <Trash2 className="h-4 w-4" />
       </Button>

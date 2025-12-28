@@ -40,7 +40,7 @@ export function ContactsTable({
     () => [
       {
         accessorKey: 'contactNames',
-        header: t('contacts.name', 'Name'),
+        header: t('contacts.name'),
         cell: ({ row }) => {
           const names = row.original.contactNames?.length
             ? row.original.contactNames
@@ -61,7 +61,7 @@ export function ContactsTable({
       },
       {
         accessorKey: 'contactDates',
-        header: t('contacts.dates', 'Important Dates'),
+        header: t('contacts.dates'),
         cell: ({ row }) => {
           const dates = row.original.contactDates?.length
             ? row.original.contactDates
@@ -79,7 +79,7 @@ export function ContactsTable({
       },
       {
         id: 'actions',
-        header: t('common.actions', 'Actions'),
+        header: t('common.actions'),
         cell: ({ row }) => {
           return <ContactsTableActions contact={row.original} onEdit={onEdit} onDelete={onDelete} />
         },

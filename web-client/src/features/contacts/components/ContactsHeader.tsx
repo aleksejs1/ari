@@ -14,9 +14,7 @@ export function ContactsHeader({ onCreate }: ContactsHeaderProps) {
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">{t('contacts.title')}</h2>
-        <p className="text-muted-foreground">
-          {t('contacts.description', 'Manage your contacts list.')}
-        </p>
+        <p className="text-muted-foreground">{t('contacts.editDescription')}</p>
       </div>
       <Button onClick={onCreate}>
         <Plus className="mr-2 h-4 w-4" />

@@ -13,13 +13,6 @@ vi.mock('@/lib/axios', () => ({
   },
 }))
 
-// Mock translations
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue: string) => defaultValue,
-  }),
-}))
-
 const renderWithClient = (ui: React.ReactNode) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -68,9 +61,9 @@ describe('ContactTimeline', () => {
     renderWithClient(<ContactTimeline contactId="1" />)
 
     await waitFor(() => {
-      expect(screen.getByText('Activity History')).toBeInTheDocument()
-      expect(screen.getByText(/update Contact/i)).toBeInTheDocument()
-      expect(screen.getByText('New Name')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.timeline')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.actions.Contact.update')).toBeInTheDocument()
+      expect(screen.getByText(/New Name/)).toBeInTheDocument()
       expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
     })
   })
@@ -85,7 +78,7 @@ describe('ContactTimeline', () => {
     renderWithClient(<ContactTimeline contactId="1" />)
 
     await waitFor(() => {
-      expect(screen.getByText('No history available')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.noHistory')).toBeInTheDocument()
     })
   })
 
@@ -110,7 +103,7 @@ describe('ContactTimeline', () => {
     renderWithClient(<ContactTimeline contactId="1" />)
 
     await waitFor(() => {
-      expect(screen.getByText('Date removed')).toBeInTheDocument()
+      expect(screen.getByText('contacts.history.actions.ContactDate.REMOVE')).toBeInTheDocument()
       expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
       expect(screen.getByText(/Anniversary/)).toBeInTheDocument()
     })
