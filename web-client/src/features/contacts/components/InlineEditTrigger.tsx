@@ -47,7 +47,13 @@ export function InlineEditTrigger({
             {isExistent ? <Pencil className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-2" align="start" side="bottom" alignOffset={-10}>
+        <PopoverContent
+          className="w-80 p-2"
+          align="start"
+          side="bottom"
+          alignOffset={-10}
+          onClick={(e) => e.stopPropagation()}
+        >
           {popoverContent}
         </PopoverContent>
       </Popover>
