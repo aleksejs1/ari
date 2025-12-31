@@ -9,6 +9,7 @@ export type ContactName = components['schemas']['ContactName.jsonld-contact.read
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
 export type ContactPhoneNumber = components['schemas']['ContactPhoneNumber.jsonld-contact.read']
 export type ContactEmailAdress = components['schemas']['ContactEmailAdress.jsonld-contact.read']
+export type ContactAddress = components['schemas']['ContactAddress.jsonld-contact.read']
 export type NotificationChannel =
   components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 export type NotificationSubscription =
@@ -54,11 +55,26 @@ export const contactEmailAdressSchema = z.object({
   type: z.string().min(1),
 })
 
+export const contactAddressSchema = z.object({
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  type: z.string().min(1),
+  street: z.string().optional().nullable(),
+  streetExtended: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  region: z.string().optional().nullable(),
+  postalCode: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
+  countryCode: z.string().optional().nullable(),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
   phoneNumbers: z.array(contactPhoneNumberSchema),
   contactEmailAdresses: z.array(contactEmailAdressSchema),
+  contactAddresses: z.array(contactAddressSchema),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

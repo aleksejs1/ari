@@ -68,6 +68,17 @@
     "emailAddress": "Email Address",
     "emailType": "Type",
     "emailTypePlaceholder": "Type (e.g. Personal, Work)",
+    "addresses": "Addresses",
+    "addAddress": "Add Address",
+    "addressStreet": "Street",
+    "addressStreetExtended": "Street Extended",
+    "addressCity": "City",
+    "addressRegion": "Region",
+    "addressPostalCode": "Postal Code",
+    "addressCountry": "Country",
+    "addressCountryCode": "Country Code",
+    "addressType": "Type",
+    "addressTypePlaceholder": "Type (e.g. Home, Office)",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
     "editDescription": "Make changes to your contact here.",
@@ -99,6 +110,11 @@
           "INSERT": "Email address added",
           "UPDATE": "Email address changed",
           "REMOVE": "Email address removed"
+        },
+        "ContactAddress": {
+          "INSERT": "Address added",
+          "UPDATE": "Address changed",
+          "REMOVE": "Address removed"
         }
       }
     },
@@ -199,6 +215,11 @@
         "INSERT": "Email address added",
         "UPDATE": "Email address updated",
         "REMOVE": "Email address removed"
+      },
+      "ContactAddress": {
+        "INSERT": "Address added",
+        "UPDATE": "Address updated",
+        "REMOVE": "Address removed"
       }
     }
   },
@@ -216,6 +237,9 @@
     "phoneNumberRequired": "Phone number is required",
     "emailRequired": "Email is required",
     "invalidEmail": "Invalid email format",
-    "typeRequired": "Type is required"
+    "typeRequired": "Type is required",
+    "streetRequired": "Street is required",
+    "cityRequired": "City is required",
+    "postalCodeRequired": "Postal code is required"
   }
 }

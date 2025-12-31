@@ -206,6 +206,25 @@ const getContactValueTypeLabel = (snapshot: Record<string, unknown>) => {
   )
 }
 
+const getContactAddressLabel = (snapshot: Record<string, unknown>) => {
+  const parts = [
+    snapshot.street,
+    snapshot.streetExtended,
+    snapshot.postalCode,
+    snapshot.city,
+    snapshot.region,
+    snapshot.country,
+  ]
+    .filter(Boolean)
+    .join(', ')
+
+  return (
+    <>
+      {parts} ({(snapshot.type as string) || ''})
+    </>
+  )
+}
+
 const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.ReactElement | null => {
   const { action, entityType, snapshotAfter, snapshotBefore } = log
   const snapshot = (action === 'INSERT' ? snapshotAfter : snapshotBefore) as Record<
@@ -227,6 +246,8 @@ const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.Reac
     case 'ContactPhoneNumber':
     case 'ContactEmailAdress':
       return getContactValueTypeLabel(snapshot)
+    case 'ContactAddress':
+      return getContactAddressLabel(snapshot)
     default:
       return null
   }

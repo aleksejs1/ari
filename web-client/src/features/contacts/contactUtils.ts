@@ -1,5 +1,5 @@
 import { formatApiDate } from '@/lib/utils'
-import { type Contact, type ContactFormValues } from '@/types/models'
+import { type Contact, type ContactFormValues, type ContactAddress } from '@/types/models'
 
 export function mapContactToFormValues(contact: Contact): ContactFormValues {
   return {
@@ -30,6 +30,19 @@ export function mapContactToFormValues(contact: Contact): ContactFormValues {
       '@type': 'ContactEmailAdress',
       value: e.value ?? '',
       type: e.type ?? '',
+    })),
+    contactAddresses: ((contact.contactAddresses as ContactAddress[]) ?? []).map((a) => ({
+      id: a.id?.toString(),
+      '@id': a['@id'],
+      '@type': 'ContactAddress',
+      type: a.type ?? '',
+      street: a.street ?? '',
+      streetExtended: a.streetExtended ?? '',
+      city: a.city ?? '',
+      region: a.region ?? '',
+      postalCode: a.postalCode ?? '',
+      country: a.country ?? '',
+      countryCode: a.countryCode ?? '',
     })),
   }
 }

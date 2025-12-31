@@ -68,6 +68,17 @@
     "emailAddress": "Email адрес",
     "emailType": "Тип",
     "emailTypePlaceholder": "Тип (напр. Личный, Рабочий)",
+    "addresses": "Адреса",
+    "addAddress": "Добавить адрес",
+    "addressStreet": "Улица",
+    "addressStreetExtended": "Дополнение к адресу",
+    "addressCity": "Город",
+    "addressRegion": "Регион",
+    "addressPostalCode": "Почтовый индекс",
+    "addressCountry": "Страна",
+    "addressCountryCode": "Код страны",
+    "addressType": "Тип",
+    "addressTypePlaceholder": "Тип (напр. Дом, Офис)",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
     "editDescription": "Здесь вы можете изменить данные контакта.",
@@ -99,6 +110,11 @@
           "INSERT": "Email адрес добавлен",
           "UPDATE": "Email адрес изменен",
           "REMOVE": "Email адрес удален"
+        },
+        "ContactAddress": {
+          "INSERT": "Адрес добавлен",
+          "UPDATE": "Адрес изменен",
+          "REMOVE": "Адрес удален"
         }
       }
     },
@@ -199,6 +215,11 @@
         "INSERT": "Email адрес добавлен",
         "UPDATE": "Email адрес изменен",
         "REMOVE": "Email адрес удален"
+      },
+      "ContactAddress": {
+        "INSERT": "Адрес добавлен",
+        "UPDATE": "Адрес изменен",
+        "REMOVE": "Адрес удален"
       }
     }
   },
@@ -216,6 +237,9 @@
     "phoneNumberRequired": "Номер телефона обязателен",
     "emailRequired": "Email адрес обязателен",
     "invalidEmail": "Неверный формат email",
-    "typeRequired": "Тип обязателен"
+    "typeRequired": "Тип обязателен",
+    "streetRequired": "Улица обязательна",
+    "cityRequired": "Город обязателен",
+    "postalCodeRequired": "Почтовый индекс обязателен"
   }
 }

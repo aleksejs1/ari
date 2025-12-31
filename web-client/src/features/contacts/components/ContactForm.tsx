@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2 } from 'lucide-react'
-import { useForm, useFieldArray, type Resolver } from 'react-hook-form'
+import { useForm, useFieldArray, useWatch, type Resolver } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -68,11 +68,26 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     type: z.string().min(1, t('validation.typeRequired')),
   })
 
+  const contactAddressSchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    type: z.string().min(1, t('validation.typeRequired')),
+    street: z.string().optional().nullable(),
+    streetExtended: z.string().optional().nullable(),
+    city: z.string().optional().nullable(),
+    region: z.string().optional().nullable(),
+    postalCode: z.string().optional().nullable(),
+    country: z.string().optional().nullable(),
+    countryCode: z.string().optional().nullable(),
+  })
+
   const contactSchema = z.object({
     contactNames: z.array(contactNameSchema).min(1, t('validation.atLeastOneNameRequired')),
     contactDates: z.array(contactDateSchema),
     phoneNumbers: z.array(contactPhoneNumberSchema),
     contactEmailAdresses: z.array(contactEmailAdressSchema),
+    contactAddresses: z.array(contactAddressSchema),
   })
 
   const form = useForm<ContactFormValues>({
@@ -82,6 +97,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       contactDates: [],
       phoneNumbers: [],
       contactEmailAdresses: [],
+      contactAddresses: [],
     },
   })
 
@@ -123,6 +139,22 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
   } = useFieldArray({
     control: form.control,
     name: 'contactEmailAdresses',
+  })
+
+  // Addresses Field Array
+  const {
+    fields: addressFields,
+    append: appendAddress,
+    remove: removeAddress,
+  } = useFieldArray({
+    control: form.control,
+    name: 'contactAddresses',
+  })
+
+  const watchedAddresses = useWatch({
+    control: form.control,
+    name: 'contactAddresses',
+    defaultValue: defaultValues?.contactAddresses || [],
   })
 
   return (
@@ -282,6 +314,142 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
                 >
                   <Trash2 className="h-4 w-4 text-red-500" />
                 </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Addresses Section */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium">{t('contacts.addresses')}</h3>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                appendAddress({
+                  type: 'Home',
+                  street: '',
+                  city: '',
+                  postalCode: '',
+                  country: '',
+                })
+              }
+            >
+              <Plus className="mr-1 h-4 w-4" /> {t('contacts.addAddress')}
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {addressFields.map((field, index) => (
+              <div key={field.id} className="rounded-md border border-gray-100 p-4 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase text-gray-400">
+                    {t('contacts.addressType')}: {watchedAddresses[index]?.type || ''}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeAddress(index)}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name={`contactAddresses.${index}.street`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder={t('contacts.addressStreet')}
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`contactAddresses.${index}.streetExtended`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder={t('contacts.addressStreetExtended')}
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`contactAddresses.${index}.city`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder={t('contacts.addressCity')}
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`contactAddresses.${index}.postalCode`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder={t('contacts.addressPostalCode')}
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`contactAddresses.${index}.country`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder={t('contacts.addressCountry')}
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`contactAddresses.${index}.type`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder={t('contacts.addressTypePlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             ))}
           </div>

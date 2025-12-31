@@ -112,6 +112,62 @@ export interface paths {
         patch: operations["api_contacts_id_patch"];
         trace?: never;
     };
+    "/api/contact_addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactAddress resources.
+         * @description Retrieves the collection of ContactAddress resources.
+         */
+        get: operations["api_contact_addresses_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactAddress resource.
+         * @description Creates a ContactAddress resource.
+         */
+        post: operations["api_contact_addresses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_addresses/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactAddress resource.
+         * @description Retrieves a ContactAddress resource.
+         */
+        get: operations["api_contact_addresses_id_get"];
+        /**
+         * Replaces the ContactAddress resource.
+         * @description Replaces the ContactAddress resource.
+         */
+        put: operations["api_contact_addresses_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactAddress resource.
+         * @description Removes the ContactAddress resource.
+         */
+        delete: operations["api_contact_addresses_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactAddress resource.
+         * @description Updates the ContactAddress resource.
+         */
+        patch: operations["api_contact_addresses_id_patch"];
+        trace?: never;
+    };
     "/api/contact_dates": {
         parameters: {
             query?: never;
@@ -792,12 +848,14 @@ export interface components {
             contactDates?: components["schemas"]["ContactDate-contact.create"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.create"][];
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.create"][];
+            contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
         };
         "Contact-contact.create.jsonMergePatch": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
             contactDates?: components["schemas"]["ContactDate-contact.create"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.create"][];
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.create"][];
+            contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
         };
         "Contact-contact.read": {
             readonly id?: number;
@@ -805,6 +863,7 @@ export interface components {
             contactDates?: components["schemas"]["ContactDate-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.read"][];
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.read"][];
+            contactAddresses?: components["schemas"]["ContactAddress-contact.read"][];
         };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -812,6 +871,101 @@ export interface components {
             contactDates?: components["schemas"]["ContactDate.jsonld-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber.jsonld-contact.read"][];
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress.jsonld-contact.read"][];
+            contactAddresses?: components["schemas"]["ContactAddress.jsonld-contact.read"][];
+        };
+        "ContactAddress-contact.create": {
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress-contact.read": {
+            readonly id?: number;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress-contact_address.create_contact_address.update": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress-contact_address.create_contact_address.update.jsonMergePatch": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress-contact_address.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress.jsonld-contact_address.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
         };
         "ContactDate-contact.create": {
             /** Format: date-time */
@@ -1800,6 +1954,339 @@ export interface operations {
                 content: {
                     "application/ld+json": components["schemas"]["Contact.jsonld-contact.read"];
                     "application/json": components["schemas"]["Contact-contact.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_addresses_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactAddress collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactAddress.jsonld-contact_address.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactAddress-contact_address.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_addresses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactAddress resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactAddress-contact_address.create_contact_address.update"];
+                "application/json": components["schemas"]["ContactAddress-contact_address.create_contact_address.update"];
+            };
+        };
+        responses: {
+            /** @description ContactAddress resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactAddress.jsonld-contact_address.read"];
+                    "application/json": components["schemas"]["ContactAddress-contact_address.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_addresses_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactAddress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactAddress resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactAddress.jsonld-contact_address.read"];
+                    "application/json": components["schemas"]["ContactAddress-contact_address.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_addresses_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactAddress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactAddress resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactAddress-contact_address.create_contact_address.update"];
+                "application/json": components["schemas"]["ContactAddress-contact_address.create_contact_address.update"];
+            };
+        };
+        responses: {
+            /** @description ContactAddress resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactAddress.jsonld-contact_address.read"];
+                    "application/json": components["schemas"]["ContactAddress-contact_address.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_addresses_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactAddress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactAddress resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_addresses_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactAddress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactAddress resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactAddress-contact_address.create_contact_address.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactAddress resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactAddress.jsonld-contact_address.read"];
+                    "application/json": components["schemas"]["ContactAddress-contact_address.read"];
                 };
             };
             /** @description Invalid input */
