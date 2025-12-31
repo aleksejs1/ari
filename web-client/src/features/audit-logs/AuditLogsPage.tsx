@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { type TFunction } from 'i18next'
-import { Loader2, History } from 'lucide-react'
+import { Loader2, History, User } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import { Button } from '@/components/ui/button'
 import { api } from '@/lib/axios'
 import { formatLocalizedDate, formatLocalizedDateTime } from '@/lib/utils'
 import { type TimelineEvent } from '@/types/models'
@@ -23,19 +24,109 @@ const getLogDescription = (log: TimelineEvent, t: TFunction): string => {
   return `${action} ${type}`
 }
 
-const getContactId = (log: TimelineEvent): string | null => {
-  const { entityType, entityId, changes, snapshotAfter, snapshotBefore } = log
+const getDirectContactId = (
+  entityType: string,
+  entityId: string | number | undefined,
+): string | null => {
   const type = entityType.replace(/^App\\Entity\\/, '')
-
   if (type === 'Contact' && entityId) {
     return entityId.toString()
   }
+  return null
+}
 
-  return (
-    extractFromObject((snapshotAfter as Record<string, unknown>) || {}) ||
-    extractFromObject((snapshotBefore as Record<string, unknown>) || {}) ||
-    extractFromObject((changes as Record<string, unknown>) || {})
-  )
+const findContactIdInSources = (log: TimelineEvent): string | null => {
+  const sources = [
+    log.snapshotAfter,
+    log.snapshotBefore,
+    log.changes,
+    log as unknown as Record<string, unknown>,
+  ] as Record<string, unknown>[]
+
+  for (const source of sources) {
+    const id = extractFromObject(source || {}) || findContactIri(source || {})
+    if (id) {
+      return id
+    }
+  }
+  return null
+}
+
+const getContactId = (log: TimelineEvent): string | null => {
+  const { entityType, entityId, ownerEntityType, ownerEntityId } = log
+
+  // Check direct entity
+  const directId = getDirectContactId(entityType, entityId)
+  if (directId) {
+    return directId
+  }
+
+  // Check owner entity
+  if (ownerEntityType) {
+    const ownerId = getDirectContactId(ownerEntityType, ownerEntityId)
+    if (ownerId) {
+      return ownerId
+    }
+  }
+
+  // Deep search
+  return findContactIdInSources(log)
+}
+
+/**
+ * Check if a specific value represents a contact ID
+ */
+const extractIdFromValue = (key: string, val: unknown): string | null => {
+  if (typeof val === 'string' && val.startsWith('/api/contacts/')) {
+    return val.split('/').pop() ?? null
+  }
+  if ((key === 'contact' || key === 'contactId' || key === 'owner') && looksLikeId(val)) {
+    return val ? String(val) : null
+  }
+  return null
+}
+
+/**
+ * Recursively search for a contact IRI in an object.
+ */
+const findInArray = (arr: unknown[]): string | null => {
+  for (const item of arr) {
+    if (item && typeof item === 'object') {
+      const found = findContactIri(item as Record<string, unknown>)
+      if (found) {
+        return found
+      }
+    }
+  }
+  return null
+}
+
+const findInObject = (val: unknown): string | null => {
+  if (Array.isArray(val)) {
+    return findInArray(val)
+  }
+  return findContactIri(val as Record<string, unknown>)
+}
+
+const findContactIri = (obj: Record<string, unknown> | null): string | null => {
+  if (!obj) {
+    return null
+  }
+
+  for (const [key, val] of Object.entries(obj)) {
+    const id = extractIdFromValue(key, val)
+    if (id) {
+      return id
+    }
+
+    if (val && typeof val === 'object') {
+      const found = findInObject(val)
+      if (found) {
+        return found
+      }
+    }
+  }
+  return null
 }
 
 /**
@@ -256,6 +347,7 @@ const getBadgeStyles = (action: string): string => {
 
 const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const contactId = getContactId(log)
   const isContactRelated = !!contactId
 
@@ -270,39 +362,48 @@ const LogItem = ({ log, language }: { log: TimelineEvent; language: string }) =>
 
   return (
     <div className="dark:hover:bg-gray-750 p-6 transition-colors hover:bg-gray-50">
-      <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="flex flex-wrap items-center gap-2">
             <span
-              className={`rounded px-2 py-0.5 text-sm font-semibold ${getBadgeStyles(log.action)}`}
+              className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold leading-5 ${getBadgeStyles(
+                log.action,
+              )}`}
             >
               {getLogDescription(log, t)}
             </span>
-            {isContactRelated ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  to={`/contacts/${contactId}`}
-                  className="text-info text-xs underline transition-colors hover:text-blue-500"
-                >
-                  {t('common.viewDetails', 'view contact')}
-                </Link>
-                <Link
-                  to={`/contacts/${contactId}/timeline`}
-                  className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-blue-500"
-                  title={t('auditLogs.viewTimeline')}
-                >
-                  <History className="h-3 w-3" />
-                  {t('auditLogs.timeline')}
-                </Link>
-              </div>
-            ) : (
+            {!isContactRelated ? (
               <span className="text-xs text-gray-400">#{log.entityId}</span>
-            )}
+            ) : null}
           </div>
           <div className="text-sm text-gray-500">
             {formatLocalizedDateTime(log.createdAt, language)}
           </div>
         </div>
+
+        {isContactRelated ? (
+          <div className="flex shrink-0 items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5"
+              onClick={() => navigate(`/contacts/${contactId}`)}
+            >
+              <User className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t('common.viewDetails')}</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1.5 text-gray-500 hover:text-blue-600"
+              onClick={() => navigate(`/contacts/${contactId}/timeline`)}
+              title={t('auditLogs.viewTimeline')}
+            >
+              <History className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t('auditLogs.timeline')}</span>
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       {log.changes && filterFields(log.changes as Record<string, unknown>).length > 0 ? (

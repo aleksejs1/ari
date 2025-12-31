@@ -89,6 +89,8 @@ export interface TimelineEvent {
   action: string
   entityType: string
   entityId?: number
+  ownerEntityType?: string
+  ownerEntityId?: number
   changes?: Record<string, unknown> | null
   snapshotBefore?: Record<string, unknown> | null
   snapshotAfter?: Record<string, unknown> | null
