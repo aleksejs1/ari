@@ -92,7 +92,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema) as unknown as Resolver<ContactFormValues>,
-    defaultValues: defaultValues || {
+    values: defaultValues || {
       contactNames: [{ given: '', family: '' }],
       contactDates: [],
       phoneNumbers: [],

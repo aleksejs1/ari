@@ -65,6 +65,7 @@ export function useContact(id: string) {
       return response.data
     },
     enabled: !!id,
+    staleTime: 30000, // 30 seconds
   })
 }
 
@@ -72,14 +73,14 @@ export function useCreateContact() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (data: ContactFormValues) => {
-      // API Platform usually handles nested resources creation if Cascade Persist is on
-      // Otherwise, might need to create Contact then POST names/dates.
-      // Assuming standard POST /api/contacts accepts names/dates
       const response = await api.post('/contacts', data)
       return response.data
     },
-    onSuccess: () => {
+    onSuccess: (newContact) => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (newContact.id) {
+        queryClient.setQueryData(['contacts', newContact.id.toString()], newContact)
+      }
     },
   })
 }
@@ -92,10 +93,11 @@ export function useUpdateContact() {
       const response = await api.put(url, data)
       return response.data
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (updatedContact, variables) => {
       const id = variables.id.split('/').pop()
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
       if (id) {
+        queryClient.setQueryData(['contacts', id], updatedContact)
         void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
       }
     },
