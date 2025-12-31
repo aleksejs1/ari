@@ -100,12 +100,28 @@ class Contact implements TenantAwareInterface
     )]
     private Collection $contactEmailAdresses;
 
+    /**
+     * @var Collection<int, ContactAddress>
+     */
+    /**
+     * @var Collection<int, ContactAddress>
+     */
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactAddress::class,
+        mappedBy: 'contact',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private Collection $contactAddresses;
+
     public function __construct()
     {
         $this->contactNames = new ArrayCollection();
         $this->contactDates = new ArrayCollection();
         $this->phoneNumbers = new ArrayCollection();
         $this->contactEmailAdresses = new ArrayCollection();
+        $this->contactAddresses = new ArrayCollection();
     }
 
     public function setUser(?User $user): static
@@ -248,6 +264,37 @@ class Contact implements TenantAwareInterface
             // set the owning side to null (unless already changed)
             if ($contactEmailAdress->getContact() === $this) {
                 $contactEmailAdress->setContact(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContactAddress>
+     */
+    public function getContactAddresses(): Collection
+    {
+        return $this->contactAddresses;
+    }
+
+    public function addContactAddress(ContactAddress $contactAddress): static
+    {
+        if (!$this->contactAddresses->contains($contactAddress)) {
+            $this->contactAddresses->add($contactAddress);
+            $contactAddress->setContact($this);
+            $contactAddress->setTenant($this->getTenant());
+        }
+
+        return $this;
+    }
+
+    public function removeContactAddress(ContactAddress $contactAddress): static
+    {
+        if ($this->contactAddresses->removeElement($contactAddress)) {
+            // set the owning side to null (unless already changed)
+            if ($contactAddress->getContact() === $this) {
+                $contactAddress->setContact(null);
             }
         }
 

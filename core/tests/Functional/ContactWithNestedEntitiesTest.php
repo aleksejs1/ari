@@ -103,6 +103,16 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'type' => 'Work',
                     ],
                 ],
+                'contactAddresses' => [
+                    [
+                        'type' => 'Home',
+                        'city' => 'City 1',
+                    ],
+                    [
+                        'type' => 'Work',
+                        'city' => 'City 2',
+                    ],
+                ],
             ],
         ]);
 
@@ -123,6 +133,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
 
         self::assertArrayHasKey('contactEmailAdresses', $data);
         self::assertCount(2, $data['contactEmailAdresses']);
+
+        self::assertArrayHasKey('contactAddresses', $data);
+        self::assertCount(2, $data['contactAddresses']);
 
         // Verify the names
         self::assertJsonContains([
@@ -175,6 +188,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(2, $getData['contactDates']);
         self::assertCount(2, $getData['phoneNumbers']);
         self::assertCount(2, $getData['contactEmailAdresses']);
+        self::assertCount(2, $getData['contactAddresses']);
     }
 
     /**
@@ -213,6 +227,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'type' => 'Old',
                     ],
                 ],
+                'contactAddresses' => [
+                    [
+                        'type' => 'Old',
+                        'city' => 'Old City',
+                    ],
+                ],
             ],
         ]);
 
@@ -249,6 +269,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                     [
                         'value' => 'new@example.com',
                         'type' => 'New',
+                    ],
+                ],
+                'contactAddresses' => [
+                    [
+                        'type' => 'New',
+                        'city' => 'New City',
                     ],
                 ],
             ],
@@ -293,6 +319,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 [
                     'value' => 'new@example.com',
                     'type' => 'New',
+                ],
+            ],
+            'contactAddresses' => [
+                [
+                    'type' => 'New',
+                    'city' => 'New City',
                 ],
             ],
         ]);
@@ -343,6 +375,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'type' => 'Patch',
                     ],
                 ],
+                'contactAddresses' => [
+                    [
+                        'type' => 'Patch',
+                        'city' => 'Patch City',
+                    ],
+                ],
             ],
         ]);
 
@@ -380,6 +418,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 [
                     'value' => 'patch@example.com',
                     'type' => 'Patch',
+                ],
+            ],
+            'contactAddresses' => [
+                [
+                    'type' => 'Patch',
+                    'city' => 'Patch City',
                 ],
             ],
         ]);

@@ -75,4 +75,18 @@ class ContactTest extends TestCase
         self::assertFalse($contact->getContactEmailAdresses()->contains($email));
         self::assertNull($email->getContact());
     }
+
+    public function testContactAddressAssociation(): void
+    {
+        $contact = new Contact();
+        $address = new \App\Entity\ContactAddress($contact);
+
+        $contact->addContactAddress($address);
+        self::assertTrue($contact->getContactAddresses()->contains($address));
+        self::assertSame($contact, $address->getContact());
+
+        $contact->removeContactAddress($address);
+        self::assertFalse($contact->getContactAddresses()->contains($address));
+        self::assertNull($address->getContact());
+    }
 }
