@@ -154,7 +154,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type;
+        $this->type = $type === '' ? null : $type;
 
         return $this;
     }
@@ -166,7 +166,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setStreet(?string $street): static
     {
-        $this->street = $street;
+        $this->street = $street === '' ? null : $street;
 
         return $this;
     }
@@ -178,7 +178,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setStreetExtended(?string $streetExtended): static
     {
-        $this->streetExtended = $streetExtended;
+        $this->streetExtended = $streetExtended === '' ? null : $streetExtended;
 
         return $this;
     }
@@ -190,7 +190,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setCity(?string $city): static
     {
-        $this->city = $city;
+        $this->city = $city === '' ? null : $city;
 
         return $this;
     }
@@ -202,7 +202,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setRegion(?string $region): static
     {
-        $this->region = $region;
+        $this->region = $region === '' ? null : $region;
 
         return $this;
     }
@@ -214,7 +214,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setPostalCode(?string $postalCode): static
     {
-        $this->postalCode = $postalCode;
+        $this->postalCode = $postalCode === '' ? null : $postalCode;
 
         return $this;
     }
@@ -226,7 +226,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setCountry(?string $country): static
     {
-        $this->country = $country;
+        $this->country = $country === '' ? null : $country;
 
         return $this;
     }
@@ -238,7 +238,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setCountryCode(?string $countryCode): static
     {
-        $this->countryCode = $countryCode;
+        $this->countryCode = $countryCode === '' ? null : $countryCode;
 
         return $this;
     }

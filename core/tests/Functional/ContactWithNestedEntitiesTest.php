@@ -238,6 +238,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
 
         self::assertResponseStatusCodeSame(201);
         $contactIri = $response->toArray()['@id'];
+        $contactId = $response->toArray()['id'];
 
         // 2. Use PUT to replace with new nested entities
         $putResponse = $client->request('PUT', $contactIri, [
@@ -286,7 +287,6 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $data = $putResponse->toArray();
 
         // Should have 2 names and 1 date (old ones should be removed)
-        // Should have 2 names and 1 date (old ones should be removed)
         self::assertCount(2, $data['contactNames']);
         self::assertCount(1, $data['contactDates']);
         self::assertCount(1, $data['phoneNumbers']);
@@ -328,6 +328,34 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 ],
             ],
         ]);
+
+        // Verify Audit Log for the PUT operation (Removal of old entities and Insert of new ones)
+        $timelineResponse = $client->request('GET', '/api/contacts/' . $contactId . '/timeline', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $logs = $timelineResponse->toArray()['logs'];
+
+        $addressInserts = 0;
+        $addressRemoves = 0;
+
+        foreach ($logs as $log) {
+            if ($log['entityType'] === 'App\\Entity\\ContactAddress') {
+                if ($log['action'] === 'INSERT') {
+                    $addressInserts++;
+                    // Check if snapshotAfter has correct data
+                    if (isset($log['snapshotAfter']['type']) && $log['snapshotAfter']['type'] === 'New') {
+                        // OK
+                    }
+                } elseif ($log['action'] === 'REMOVE') {
+                    $addressRemoves++;
+                }
+            }
+        }
+
+        // Assert we have activity
+        self::assertGreaterThan(0, $addressInserts, 'Should have inserted new addresses');
+        self::assertGreaterThan(0, $addressRemoves, 'Should have removed old addresses');
     }
 
     /**

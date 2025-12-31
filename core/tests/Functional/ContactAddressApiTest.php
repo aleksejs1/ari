@@ -146,6 +146,75 @@ class ContactAddressApiTest extends ApiTestCase
         self::assertResponseIsSuccessful();
         self::assertCount(1, $response->toArray()['member']);
 
+        // 5.1 Check Audit Log for PUT (Update)
+        // The PUT update changed 'type' from 'Home' to 'Work' and 'street' from '123 Test St' to '456 Business Rd'
+        $timelineResponse = $client->request('GET', $this->contactIri . '/timeline', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $timelineData = $timelineResponse->toArray();
+        $logs = $timelineData['logs'];
+
+        // Find the UPDATE log for ContactAddress
+        $updateLog = null;
+        foreach ($logs as $log) {
+            if ($log['entityType'] === 'App\\Entity\\ContactAddress' && $log['action'] === 'UPDATE') {
+                $updateLog = $log;
+                break;
+            }
+        }
+
+        self::assertNotNull($updateLog, 'Audit log for ContactAddress UPDATE not found');
+        self::assertArrayHasKey('changes', $updateLog);
+
+        // Detailed check for the bug reported: updates should show actual values, not null -> ""
+        // Changes: type: Home -> Work, street: 123 Test St -> 456 Business Rd
+        $changes = $updateLog['changes'];
+        self::assertArrayHasKey('type', $changes);
+        self::assertEquals('Home', $changes['type'][0]);
+        self::assertEquals('Work', $changes['type'][1]);
+
+        self::assertArrayHasKey('street', $changes);
+        self::assertEquals('123 Test St', $changes['street'][0]);
+        self::assertEquals('456 Business Rd', $changes['street'][1]);
+
+        self::assertEquals('456 Business Rd', $changes['street'][1]);
+
+        // 5.2 Test "Empty String to Null" behavior
+        // Update with empty strings for optional fields. They should be converted to null,
+        // and since they are already null (default), no audit log change should be recorded for them.
+        $client->request('PUT', $addressIri, [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'type' => 'Work',
+                'street' => '456 Business Rd',
+                'streetExtended' => '',
+                'region' => '',
+                'countryCode' => '',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+
+        $timelineResponse = $client->request('GET', $this->contactIri . '/timeline', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $logs = $timelineResponse->toArray()['logs'];
+
+        // Find the log that has 'streetExtended' in changes (Bug reproduction)
+        $bugLog = null;
+        foreach ($logs as $log) {
+            if ($log['entityType'] === 'App\\Entity\\ContactAddress' && $log['action'] === 'UPDATE') {
+                if (isset($log['changes']['streetExtended'])) {
+                    $bugLog = $log;
+                    break;
+                }
+            }
+        }
+
+        self::assertNull($bugLog, 'Should NOT find an UPDATE log with streetExtended change (Bug fixed)');
+
         // 6. Security: Other user cannot see this item
         $client->request('GET', $addressIri, [
             'auth_bearer' => $this->otherToken,
