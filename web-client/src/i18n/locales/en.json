@@ -79,6 +79,8 @@
     "addressCountryCode": "Country Code",
     "addressType": "Type",
     "addressTypePlaceholder": "Type (e.g. Home, Office)",
+    "groups": "Groups",
+    "selectGroup": "Select group...",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
     "editDescription": "Make changes to your contact here.",
@@ -152,7 +154,9 @@
     "back": "Back",
     "backToContacts": "Back to Contacts",
     "by": "by",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "noResults": "No results found.",
+    "create": "Create"
   },
   "pagination": {
     "previous": "Previous",
@@ -220,6 +224,11 @@
         "INSERT": "Address added",
         "UPDATE": "Address updated",
         "REMOVE": "Address removed"
+      },
+      "ContactGroup": {
+        "INSERT": "Group added",
+        "UPDATE": "Group changed",
+        "REMOVE": "Group removed"
       }
     }
   },

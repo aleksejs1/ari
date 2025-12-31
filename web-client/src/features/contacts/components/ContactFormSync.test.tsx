@@ -1,9 +1,24 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+import { useCreateGroup, useGroups } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
 
+// Mock useContacts
+vi.mock('../useContacts', () => ({
+  useCreateGroup: vi.fn(),
+  useGroups: vi.fn(),
+}))
+
 describe('ContactForm Synchronization', () => {
+  beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+  })
+
   it('updates form values and IDs when props change after save', async () => {
     const { rerender } = render(
       <ContactForm

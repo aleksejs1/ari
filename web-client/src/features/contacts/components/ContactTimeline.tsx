@@ -103,32 +103,34 @@ const formatObjectValue = (
   language: string,
   fieldName?: string,
 ): React.ReactElement | null => {
-  // 1. Check if it's a contact reference
   if (isContactReference(obj, fieldName)) {
-    const link = formatContactValue(obj)
-    if (link) {
-      return link
-    }
+    return formatContactValue(obj)
   }
 
-  // 2. Check for date fields
+  // Check for date fields
   if (obj.date) {
-    const dateField = obj.date
-    if (typeof dateField === 'object' && isDateTimeObject(dateField)) {
-      return formatDateString(dateField.date, language)
+    if (typeof obj.date === 'object' && isDateTimeObject(obj.date)) {
+      return formatDateString(obj.date.date, language)
     }
-    if (typeof dateField === 'string') {
-      return formatDateString(dateField, language)
+    if (typeof obj.date === 'string') {
+      return formatDateString(obj.date, language)
     }
   }
 
-  // 3. Check if it's a direct DateTime object
   if (isDateTimeObject(obj)) {
     return formatDateString(obj.date, language)
   }
 
   // Fallback to JSON
-  return <>{JSON.stringify(obj)}</>
+  const filtered = Object.entries(obj)
+    .filter(([key]) => !['id', '@id', '@type', 'user', 'tenant'].includes(key))
+    .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {})
+
+  if (Object.keys(filtered).length === 0) {
+    return null
+  }
+
+  return <>{JSON.stringify(filtered)}</>
 }
 
 /**
@@ -143,6 +145,13 @@ const formatStringValue = (val: string, fieldName?: string): React.ReactElement 
           {`Contact #${cid}`}
         </Link>
       )
+    }
+  }
+
+  if (val.startsWith('/api/groups/')) {
+    const gid = val.split('/').pop()
+    if (gid) {
+      return <>{`Group #${gid}`}</>
     }
   }
 
@@ -238,19 +247,22 @@ const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.Reac
 
   const type = entityType.replace(/^App\\Entity\\/, '')
 
-  switch (type) {
-    case 'ContactName':
-      return <>{getContactNameLabel(snapshot)}</>
-    case 'ContactDate':
-      return getContactDateLabel(snapshot, language)
-    case 'ContactPhoneNumber':
-    case 'ContactEmailAdress':
-      return getContactValueTypeLabel(snapshot)
-    case 'ContactAddress':
-      return getContactAddressLabel(snapshot)
-    default:
-      return null
+  const renderers: Record<string, () => React.ReactElement | null> = {
+    ContactName: () => <>{getContactNameLabel(snapshot)}</>,
+    ContactDate: () => getContactDateLabel(snapshot, language),
+    ContactPhoneNumber: () => getContactValueTypeLabel(snapshot),
+    ContactEmailAdress: () => getContactValueTypeLabel(snapshot),
+    ContactAddress: () => getContactAddressLabel(snapshot),
+    ContactGroup: () => (
+      <>
+        {(snapshot.groupResource as { name?: string })?.name ||
+          (snapshot.groupResource as string) ||
+          ''}
+      </>
+    ),
   }
+
+  return renderers[type] ? renderers[type]() : null
 }
 
 interface ContactTimelineProps {

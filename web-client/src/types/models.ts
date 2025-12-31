@@ -14,6 +14,8 @@ export type NotificationChannel =
   components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 export type NotificationSubscription =
   components['schemas']['NotificationSubscription.jsonld-notification_subscription.read']
+export type ContactGroup = components['schemas']['ContactGroup.jsonld-contact.read']
+export type Group = components['schemas']['Group.jsonld-group.read']
 
 // Zod Schemas for Forms
 // These need to match the API requirements for creation/update
@@ -69,12 +71,20 @@ export const contactAddressSchema = z.object({
   countryCode: z.string().optional().nullable(),
 })
 
+export const contactGroupSchema = z.object({
+  id: z.number().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  groupResource: z.union([z.string(), z.object({ name: z.string() })]),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
   phoneNumbers: z.array(contactPhoneNumberSchema),
   contactEmailAdresses: z.array(contactEmailAdressSchema),
   contactAddresses: z.array(contactAddressSchema),
+  contactGroups: z.array(contactGroupSchema).optional(),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

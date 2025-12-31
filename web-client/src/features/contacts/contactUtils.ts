@@ -44,5 +44,14 @@ export function mapContactToFormValues(contact: Contact): ContactFormValues {
       country: a.country ?? '',
       countryCode: a.countryCode ?? '',
     })),
+    contactGroups: (contact.contactGroups ?? []).map((g) => ({
+      id: g.id,
+      '@id': g['@id'],
+      '@type': 'ContactGroup',
+      groupResource:
+        typeof g.groupResource === 'object' && g.groupResource?.['@id']
+          ? (g.groupResource['@id'] as string)
+          : (g.groupResource as unknown as string),
+    })),
   }
 }

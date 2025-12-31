@@ -2,9 +2,16 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
+import { useGroups } from '../useContacts'
+
 import { ContactsTable } from './ContactsTable'
 
 import type { Contact } from '@/types/models'
+
+// Mock useContacts
+vi.mock('../useContacts', () => ({
+  useGroups: vi.fn(),
+}))
 
 // Mock useNavigate
 const mockNavigate = vi.fn()
@@ -17,6 +24,11 @@ vi.mock('react-router-dom', async () => {
 })
 
 describe('ContactsTable', () => {
+  beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+  })
+
   const mockData: Contact[] = [
     {
       '@id': '/api/contacts/1',

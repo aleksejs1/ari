@@ -1,9 +1,25 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 
+import { useCreateGroup, useGroups } from '../useContacts'
+
 import { ContactForm } from './ContactForm'
 
+// Mock useContacts
+vi.mock('../useContacts', () => ({
+  useCreateGroup: vi.fn(),
+  useGroups: vi.fn(),
+}))
+
 describe('ContactForm', () => {
+  // Setup default mocks
+  beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+  })
+
   it('renders correctly with default values', () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
@@ -46,7 +62,6 @@ describe('ContactForm', () => {
             expect.objectContaining({ given: 'John', family: 'Doe' }),
           ]),
         }),
-        expect.anything(),
       )
     })
   })

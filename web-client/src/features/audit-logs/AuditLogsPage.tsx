@@ -292,6 +292,14 @@ const formatStringValue = (val: string, fieldName?: string): React.ReactElement 
     }
   }
 
+  // Handle group URIs
+  if (val.startsWith('/api/groups/')) {
+    const gid = val.split('/').pop()
+    if (gid) {
+      return <>{`Group #${gid}`}</>
+    }
+  }
+
   // Handle field-based contact linking (id values in 'contact' fields)
   if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
     return (

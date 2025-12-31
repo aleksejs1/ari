@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
-import { type Contact, type ContactFormValues, type ContactDate } from '@/types/models'
+import { type Contact, type ContactFormValues, type ContactDate, type Group } from '@/types/models'
 
 export interface HydraCollection<T> {
   member: T[]
@@ -145,6 +145,28 @@ export function useCreateContactDate() {
       if (contactId) {
         void queryClient.invalidateQueries({ queryKey: ['contacts', contactId, 'timeline'] })
       }
+    },
+  })
+}
+export function useGroups() {
+  return useQuery({
+    queryKey: ['groups'],
+    queryFn: async () => {
+      const response = await api.get<HydraCollection<Group>>('/groups')
+      return getHydraMember(response.data)
+    },
+  })
+}
+
+export function useCreateGroup() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: Partial<Group>) => {
+      const response = await api.post<Group>('/groups', data)
+      return response.data
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['groups'] })
     },
   })
 }

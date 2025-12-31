@@ -1,9 +1,24 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+import { useCreateGroup, useGroups } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
 
+// Mock useContacts
+vi.mock('../useContacts', () => ({
+  useCreateGroup: vi.fn(),
+  useGroups: vi.fn(),
+}))
+
 describe('ContactForm Email Addresses', () => {
+  beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+  })
+
   it('adds and removes email address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
@@ -59,7 +74,6 @@ describe('ContactForm Email Addresses', () => {
             expect.objectContaining({ value: 'john.doe@example.com', type: 'Personal' }),
           ]),
         }),
-        expect.anything(),
       )
     })
   })

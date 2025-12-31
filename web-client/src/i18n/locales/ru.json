@@ -79,6 +79,8 @@
     "addressCountryCode": "Код страны",
     "addressType": "Тип",
     "addressTypePlaceholder": "Тип (напр. Дом, Офис)",
+    "groups": "Группы",
+    "selectGroup": "Выберите группу...",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
     "editDescription": "Здесь вы можете изменить данные контакта.",
@@ -152,7 +154,9 @@
     "back": "Назад",
     "backToContacts": "Назад к списку",
     "by": "от",
-    "viewDetails": "Открыть"
+    "viewDetails": "Открыть",
+    "noResults": "Ничего не найдено.",
+    "create": "Создать"
   },
   "pagination": {
     "previous": "Назад",
@@ -220,6 +224,11 @@
         "INSERT": "Адрес добавлен",
         "UPDATE": "Адрес изменен",
         "REMOVE": "Адрес удален"
+      },
+      "ContactGroup": {
+        "INSERT": "Группа добавлена",
+        "UPDATE": "Группа изменена",
+        "REMOVE": "Группа удалена"
       }
     }
   },

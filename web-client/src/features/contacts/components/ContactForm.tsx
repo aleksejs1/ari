@@ -4,6 +4,9 @@ import { useForm, useFieldArray, useWatch, type Resolver } from 'react-hook-form
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
+import { useCreateGroup } from '../useContacts'
+
+import { ContactGroupSelect } from './ContactGroupSelect'
 import { NotificationSubscriptions } from './NotificationSubscriptions'
 
 import { Button } from '@/components/ui/button'
@@ -80,6 +83,11 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     postalCode: z.string().optional().nullable(),
     country: z.string().optional().nullable(),
     countryCode: z.string().optional().nullable(),
+    contactCode: z.string().optional().nullable(),
+  })
+
+  const contactGroupSchema = z.object({
+    groupResource: z.union([z.string(), z.object({ name: z.string() })]),
   })
 
   const contactSchema = z.object({
@@ -88,6 +96,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     phoneNumbers: z.array(contactPhoneNumberSchema),
     contactEmailAdresses: z.array(contactEmailAdressSchema),
     contactAddresses: z.array(contactAddressSchema),
+    contactGroups: z.array(contactGroupSchema).optional(),
   })
 
   const form = useForm<ContactFormValues>({
@@ -98,6 +107,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       phoneNumbers: [],
       contactEmailAdresses: [],
       contactAddresses: [],
+      contactGroups: [],
     },
   })
 
@@ -157,9 +167,39 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     defaultValue: defaultValues?.contactAddresses || [],
   })
 
+  const { mutateAsync: createGroup } = useCreateGroup()
+
+  const processContactGroups = async (groups?: ContactFormValues['contactGroups']) => {
+    const processed: { groupResource: string }[] = []
+    if (!groups) {
+      return processed
+    }
+
+    for (const group of groups) {
+      if (typeof group.groupResource === 'object' && group.groupResource.name) {
+        try {
+          const newGroup = await createGroup({ name: group.groupResource.name })
+          if (newGroup['@id']) {
+            processed.push({ groupResource: newGroup['@id'] })
+          }
+        } catch {
+          // ignore
+        }
+      } else if (typeof group.groupResource === 'string') {
+        processed.push({ groupResource: group.groupResource })
+      }
+    }
+    return processed
+  }
+
+  const handleFormSubmit = async (data: ContactFormValues) => {
+    const contactGroups = await processContactGroups(data.contactGroups)
+    onSubmit({ ...data, contactGroups })
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
         {/* Names Section */}
         <div>
           <div className="mb-2 flex items-center justify-between">
@@ -525,6 +565,24 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               <p className="text-sm italic text-gray-500">{t('contacts.noDates')}</p>
             )}
           </div>
+        </div>
+        {/* Groups Section */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium">{t('contacts.groups')}</h3>
+          </div>
+          <FormField
+            control={form.control}
+            name="contactGroups"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <ContactGroupSelect value={field.value} onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? t('common.saving') : t('common.save')}

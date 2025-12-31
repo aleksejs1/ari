@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
+import { useGroups } from '../useContacts'
+
 import { ContactsTableActions } from './ContactsTableActions'
 import { ContactsTableDates } from './ContactsTableDates'
 
@@ -20,6 +22,7 @@ import {
   type ContactName,
   type ContactPhoneNumber,
   type ContactEmailAdress,
+  type Group,
 } from '@/types/models'
 
 interface ContactsTableProps {
@@ -28,6 +31,45 @@ interface ContactsTableProps {
   onDelete: (contact: Contact) => void
   onUpdateDate: (contact: Contact, date: ContactDate) => void
   onDeleteDate: (contact: Contact, date: ContactDate) => void
+}
+
+const ContactsTableGroupCell = ({
+  contactGroups,
+  groups,
+}: {
+  contactGroups: Contact['contactGroups']
+  groups: Group[]
+}) => {
+  if (!contactGroups) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1">
+      {contactGroups.map((cg, i) => {
+        const groupIri =
+          typeof cg.groupResource === 'string'
+            ? cg.groupResource
+            : (cg.groupResource as { '@id'?: string })?.['@id']
+
+        if (!groupIri) {
+          return null
+        }
+
+        const group = groups?.find((g) => g['@id'] === groupIri)
+        const label = group?.name || '...'
+
+        return (
+          <span
+            key={i}
+            className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+          >
+            {label}
+          </span>
+        )
+      })}
+    </div>
+  )
 }
 
 export function ContactsTable({
@@ -41,6 +83,7 @@ export function ContactsTable({
   const onExchangeDate = onUpdateDate
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { data: groups } = useGroups()
 
   const columns = useMemo<ColumnDef<Contact>[]>(
     () => [
@@ -104,6 +147,16 @@ export function ContactsTable({
         },
       },
       {
+        accessorKey: 'contactGroups',
+        header: t('contacts.groups'),
+        cell: ({ row }) => (
+          <ContactsTableGroupCell
+            contactGroups={row.original.contactGroups}
+            groups={groups || []}
+          />
+        ),
+      },
+      {
         accessorKey: 'contactDates',
         header: t('contacts.dates'),
         cell: ({ row }) => {
@@ -129,7 +182,7 @@ export function ContactsTable({
         },
       },
     ],
-    [t, onExchangeDate, onDeleteDate, onEdit, onDelete],
+    [t, onExchangeDate, onDeleteDate, onEdit, onDelete, groups],
   )
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
