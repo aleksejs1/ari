@@ -54,6 +54,7 @@ class ContactProcessor implements ProcessorInterface
                 // Clear existing collections (orphanRemoval will delete them)
                 $existing->getContactNames()->clear();
                 $existing->getContactDates()->clear();
+                $existing->getPhoneNumbers()->clear();
 
                 // Add new nested entities from the deserialized data
                 foreach ($data->getContactNames() as $contactName) {
@@ -66,6 +67,12 @@ class ContactProcessor implements ProcessorInterface
                     $contactDate->setContact($existing);
                     $contactDate->setTenant($existing->getTenant());
                     $existing->addContactDate($contactDate);
+                }
+
+                foreach ($data->getPhoneNumbers() as $phoneNumber) {
+                    $phoneNumber->setContact($existing);
+                    $phoneNumber->setTenant($existing->getTenant());
+                    $existing->addPhoneNumber($phoneNumber);
                 }
 
                 // Flush changes and return the existing entity
@@ -90,6 +97,15 @@ class ContactProcessor implements ProcessorInterface
                 }
                 if (null === $contactDate->getTenant()) {
                     $contactDate->setTenant($data->getTenant());
+                }
+            }
+
+            foreach ($data->getPhoneNumbers() as $phoneNumber) {
+                if (null === $phoneNumber->getContact()) {
+                    $phoneNumber->setContact($data);
+                }
+                if (null === $phoneNumber->getTenant()) {
+                    $phoneNumber->setTenant($data->getTenant());
                 }
             }
         }

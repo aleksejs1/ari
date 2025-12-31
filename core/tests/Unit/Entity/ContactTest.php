@@ -47,4 +47,18 @@ class ContactTest extends TestCase
         self::assertFalse($contact->getContactDates()->contains($contactDate));
         self::assertNull($contactDate->getContact());
     }
+
+    public function testContactPhoneNumbersAssociation(): void
+    {
+        $contact = new Contact();
+        $phoneNumber = new \App\Entity\ContactPhoneNumber($contact);
+
+        $contact->addPhoneNumber($phoneNumber);
+        self::assertTrue($contact->getPhoneNumbers()->contains($phoneNumber));
+        self::assertSame($contact, $phoneNumber->getContact());
+
+        $contact->removePhoneNumber($phoneNumber);
+        self::assertFalse($contact->getPhoneNumbers()->contains($phoneNumber));
+        self::assertNull($phoneNumber->getContact());
+    }
 }

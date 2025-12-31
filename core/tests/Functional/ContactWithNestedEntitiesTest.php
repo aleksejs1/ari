@@ -83,6 +83,16 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'text' => 'Anniversary',
                     ],
                 ],
+                'phoneNumbers' => [
+                    [
+                        'value' => '+111111111',
+                        'type' => 'Home',
+                    ],
+                    [
+                        'value' => '+222222222',
+                        'type' => 'Work',
+                    ],
+                ],
             ],
         ]);
 
@@ -97,6 +107,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
 
         self::assertArrayHasKey('contactDates', $data);
         self::assertCount(2, $data['contactDates']);
+
+        self::assertArrayHasKey('phoneNumbers', $data);
+        self::assertCount(2, $data['phoneNumbers']);
 
         // Verify the names
         self::assertJsonContains([
@@ -124,6 +137,16 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                     'text' => 'Anniversary',
                 ],
             ],
+            'phoneNumbers' => [
+                [
+                    'value' => '+111111111',
+                    'type' => 'Home',
+                ],
+                [
+                    'value' => '+222222222',
+                    'type' => 'Work',
+                ],
+            ],
         ]);
 
         // Additional verification: fetch the contact and verify persistence
@@ -135,7 +158,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $getData = $getResponse->toArray();
 
         self::assertCount(2, $getData['contactNames']);
+        self::assertCount(2, $getData['contactNames']);
         self::assertCount(2, $getData['contactDates']);
+        self::assertCount(2, $getData['phoneNumbers']);
     }
 
     /**
@@ -160,6 +185,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                     [
                         'date' => '1985-03-20',
                         'text' => 'Birthday',
+                    ],
+                ],
+                'phoneNumbers' => [
+                    [
+                        'value' => '+123',
+                        'type' => 'Old',
                     ],
                 ],
             ],
@@ -188,6 +219,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'text' => 'Christmas',
                     ],
                 ],
+                'phoneNumbers' => [
+                    [
+                        'value' => '+999',
+                        'type' => 'New',
+                    ],
+                ],
             ],
         ]);
 
@@ -197,8 +234,10 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $data = $putResponse->toArray();
 
         // Should have 2 names and 1 date (old ones should be removed)
+        // Should have 2 names and 1 date (old ones should be removed)
         self::assertCount(2, $data['contactNames']);
         self::assertCount(1, $data['contactDates']);
+        self::assertCount(1, $data['phoneNumbers']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -215,6 +254,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 [
                     'date' => '2024-12-25T00:00:00+00:00',
                     'text' => 'Christmas',
+                ],
+            ],
+            'phoneNumbers' => [
+                [
+                    'value' => '+999',
+                    'type' => 'New',
                 ],
             ],
         ]);
@@ -253,6 +298,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'text' => 'New Year',
                     ],
                 ],
+                'phoneNumbers' => [
+                    [
+                        'value' => '+555',
+                        'type' => 'Patch',
+                    ],
+                ],
             ],
         ]);
 
@@ -262,7 +313,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $data = $patchResponse->toArray();
 
         self::assertCount(1, $data['contactNames']);
+        self::assertCount(1, $data['contactNames']);
         self::assertCount(1, $data['contactDates']);
+        self::assertCount(1, $data['phoneNumbers']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -275,6 +328,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 [
                     'date' => '2025-01-01T00:00:00+00:00',
                     'text' => 'New Year',
+                ],
+            ],
+            'phoneNumbers' => [
+                [
+                    'value' => '+555',
+                    'type' => 'Patch',
                 ],
             ],
         ]);
