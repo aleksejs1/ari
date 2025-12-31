@@ -93,6 +93,16 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'type' => 'Work',
                     ],
                 ],
+                'contactEmailAdresses' => [
+                    [
+                        'value' => 'test1@example.com',
+                        'type' => 'Home',
+                    ],
+                    [
+                        'value' => 'test2@example.com',
+                        'type' => 'Work',
+                    ],
+                ],
             ],
         ]);
 
@@ -110,6 +120,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
 
         self::assertArrayHasKey('phoneNumbers', $data);
         self::assertCount(2, $data['phoneNumbers']);
+
+        self::assertArrayHasKey('contactEmailAdresses', $data);
+        self::assertCount(2, $data['contactEmailAdresses']);
 
         // Verify the names
         self::assertJsonContains([
@@ -161,6 +174,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(2, $getData['contactNames']);
         self::assertCount(2, $getData['contactDates']);
         self::assertCount(2, $getData['phoneNumbers']);
+        self::assertCount(2, $getData['contactEmailAdresses']);
     }
 
     /**
@@ -190,6 +204,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 'phoneNumbers' => [
                     [
                         'value' => '+123',
+                        'type' => 'Old',
+                    ],
+                ],
+                'contactEmailAdresses' => [
+                    [
+                        'value' => 'old@example.com',
                         'type' => 'Old',
                     ],
                 ],
@@ -225,6 +245,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'type' => 'New',
                     ],
                 ],
+                'contactEmailAdresses' => [
+                    [
+                        'value' => 'new@example.com',
+                        'type' => 'New',
+                    ],
+                ],
             ],
         ]);
 
@@ -238,6 +264,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(2, $data['contactNames']);
         self::assertCount(1, $data['contactDates']);
         self::assertCount(1, $data['phoneNumbers']);
+        self::assertCount(1, $data['contactEmailAdresses']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -259,6 +286,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
             'phoneNumbers' => [
                 [
                     'value' => '+999',
+                    'type' => 'New',
+                ],
+            ],
+            'contactEmailAdresses' => [
+                [
+                    'value' => 'new@example.com',
                     'type' => 'New',
                 ],
             ],
@@ -304,6 +337,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'type' => 'Patch',
                     ],
                 ],
+                'contactEmailAdresses' => [
+                    [
+                        'value' => 'patch@example.com',
+                        'type' => 'Patch',
+                    ],
+                ],
             ],
         ]);
 
@@ -316,6 +355,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(1, $data['contactNames']);
         self::assertCount(1, $data['contactDates']);
         self::assertCount(1, $data['phoneNumbers']);
+        self::assertCount(1, $data['contactEmailAdresses']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -333,6 +373,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
             'phoneNumbers' => [
                 [
                     'value' => '+555',
+                    'type' => 'Patch',
+                ],
+            ],
+            'contactEmailAdresses' => [
+                [
+                    'value' => 'patch@example.com',
                     'type' => 'Patch',
                 ],
             ],
