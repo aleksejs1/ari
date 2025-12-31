@@ -1,291 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import { type TFunction } from 'i18next'
 import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+
+import { ContactTimelineItem } from './ContactTimelineItem'
 
 import { api } from '@/lib/axios'
-import { formatLocalizedDate, formatLocalizedDateTime } from '@/lib/utils'
-import { type ContactTimeline, type TimelineEvent } from '@/types/models'
-
-const isDateTimeObject = (val: unknown): val is { date: string } => {
-  return (
-    val !== null &&
-    typeof val === 'object' &&
-    'date' in val &&
-    typeof (val as { date: unknown }).date === 'string'
-  )
-}
-
-/**
- * Safely format a date string, returning a fragment or null.
- */
-const formatDateString = (dateStr: string, language: string): React.ReactElement | null => {
-  try {
-    return <>{formatLocalizedDate(dateStr, language)}</>
-  } catch {
-    return <>{dateStr}</>
-  }
-}
-
-/**
- * Format a contact reference object as a clickable link.
- */
-const formatContactValue = (val: Record<string, unknown>): React.ReactElement | null => {
-  const cid = val.id || (val['@id'] as string)?.split('/').pop()
-  if (!cid) {
-    return null
-  }
-
-  const label = val.displayName || (val as { name?: string }).name || `Contact #${cid}`
-
-  return (
-    <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
-      <>{label}</>
-    </Link>
-  )
-}
-
-/**
- * Check if a value looks like a contact ID.
- */
-const looksLikeId = (val: unknown): boolean => {
-  if (typeof val === 'number') {
-    return true
-  }
-  if (typeof val === 'string') {
-    return (
-      /^\d+$/.test(val) ||
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)
-    )
-  }
-  return false
-}
-
-/**
- * Format an array value by recursively formatting each element.
- */
-const formatArrayValue = (
-  val: unknown[],
-  language: string,
-  fieldName?: string,
-): React.ReactElement | null => {
-  return (
-    <span className="flex flex-wrap gap-1">
-      {val.map((v, i) => (
-        <span key={i}>
-          {i > 0 && <span className="mx-1 text-gray-400">→</span>}
-          {formatChangeValue(v, language, fieldName)}
-        </span>
-      ))}
-    </span>
-  )
-}
-
-/**
- * Check if an object is a contact reference.
- */
-const isContactReference = (obj: Record<string, unknown>, fieldName?: string): boolean => {
-  return (
-    fieldName === 'contact' ||
-    fieldName === 'owner' ||
-    obj['@type'] === 'Contact' ||
-    (obj['@id'] as string)?.startsWith('/api/contacts/') ||
-    (!!obj.id && (!!obj.displayName || (obj as { name?: string }).name !== undefined))
-  )
-}
-
-/**
- * Format an object value, handling date objects, contact references, and other structures.
- */
-const formatObjectValue = (
-  obj: Record<string, unknown>,
-  language: string,
-  fieldName?: string,
-): React.ReactElement | null => {
-  if (isContactReference(obj, fieldName)) {
-    return formatContactValue(obj)
-  }
-
-  // Check for date fields
-  if (obj.date) {
-    if (typeof obj.date === 'object' && isDateTimeObject(obj.date)) {
-      return formatDateString(obj.date.date, language)
-    }
-    if (typeof obj.date === 'string') {
-      return formatDateString(obj.date, language)
-    }
-  }
-
-  if (isDateTimeObject(obj)) {
-    return formatDateString(obj.date, language)
-  }
-
-  // Fallback to JSON
-  const filtered = Object.entries(obj)
-    .filter(([key]) => !['id', '@id', '@type', 'user', 'tenant'].includes(key))
-    .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {})
-
-  if (Object.keys(filtered).length === 0) {
-    return null
-  }
-
-  return <>{JSON.stringify(filtered)}</>
-}
-
-/**
- * Handle string values, specifically looking for contact URIs and ID-like strings in contact fields.
- */
-const formatStringValue = (val: string, fieldName?: string): React.ReactElement | null => {
-  if (val.startsWith('/api/contacts/')) {
-    const cid = val.split('/').pop()
-    if (cid && cid !== 'undefined' && cid !== 'null') {
-      return (
-        <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
-          {`Contact #${cid}`}
-        </Link>
-      )
-    }
-  }
-
-  if (val.startsWith('/api/groups/')) {
-    const gid = val.split('/').pop()
-    if (gid) {
-      return <>{`Group #${gid}`}</>
-    }
-  }
-
-  if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
-    return (
-      <Link to={`/contacts/${val}`} className="text-blue-600 underline hover:text-blue-800">
-        {`Contact #${val}`}
-      </Link>
-    )
-  }
-
-  return <>{val}</>
-}
-
-/**
- * Helper to format change values, handling nested objects, contact references, and dates.
- */
-const formatChangeValue = (
-  val: unknown,
-  language: string,
-  fieldName?: string,
-): React.ReactElement | null => {
-  if (val === null || val === undefined) {
-    return <></>
-  }
-
-  if (typeof val === 'object') {
-    if (Array.isArray(val)) {
-      return formatArrayValue(val as unknown[], language, fieldName)
-    }
-    return formatObjectValue(val as Record<string, unknown>, language, fieldName)
-  }
-
-  return formatStringValue(String(val), fieldName)
-}
-
-const getLogLabel = (log: TimelineEvent, t: TFunction): string => {
-  const { action, entityType } = log
-  const type = entityType.replace(/^App\\Entity\\/, '')
-  return t(`contacts.history.actions.${type}.${action}`, `${action} ${type}`)
-}
-
-const getContactNameLabel = (snapshot: Record<string, unknown>) => {
-  return `${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''}`.trim()
-}
-
-const getContactDateLabel = (snapshot: Record<string, unknown>, language: string) => {
-  const dateStr = snapshot.date ? formatChangeValue({ date: snapshot.date }, language) : ''
-  return (
-    <>
-      {dateStr} ({(snapshot.text as string) || ''})
-    </>
-  )
-}
-
-const getContactValueTypeLabel = (snapshot: Record<string, unknown>) => {
-  return (
-    <>
-      {(snapshot.value as string) || ''} ({(snapshot.type as string) || ''})
-    </>
-  )
-}
-
-const getContactAddressLabel = (snapshot: Record<string, unknown>) => {
-  const parts = [
-    snapshot.street,
-    snapshot.streetExtended,
-    snapshot.postalCode,
-    snapshot.city,
-    snapshot.region,
-    snapshot.country,
-  ]
-    .filter(Boolean)
-    .join(', ')
-
-  return (
-    <>
-      {parts} ({(snapshot.type as string) || ''})
-    </>
-  )
-}
-
-const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.ReactElement | null => {
-  const { action, entityType, snapshotAfter, snapshotBefore } = log
-  const snapshot = (action === 'INSERT' ? snapshotAfter : snapshotBefore) as Record<
-    string,
-    unknown
-  > | null
-
-  if (!snapshot) {
-    return null
-  }
-
-  const type = entityType.replace(/^App\\Entity\\/, '')
-
-  const renderers: Record<string, () => React.ReactElement | null> = {
-    ContactName: () => <>{getContactNameLabel(snapshot)}</>,
-    ContactDate: () => getContactDateLabel(snapshot, language),
-    ContactPhoneNumber: () => getContactValueTypeLabel(snapshot),
-    ContactEmailAdress: () => getContactValueTypeLabel(snapshot),
-    ContactAddress: () => getContactAddressLabel(snapshot),
-    ContactGroup: () => (
-      <>
-        {(snapshot.groupResource as { name?: string })?.name ||
-          (snapshot.groupResource as string) ||
-          ''}
-      </>
-    ),
-  }
-
-  return renderers[type] ? renderers[type]() : null
-}
+import { type ContactTimeline as ContactTimelineType, type TimelineEvent } from '@/types/models'
 
 interface ContactTimelineProps {
   contactId: string
   fullHeight?: boolean
 }
 
-const getBadgeStyles = (action: string): string => {
-  switch (action) {
-    case 'INSERT':
-      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-    case 'UPDATE':
-      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-    case 'REMOVE':
-      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-    default:
-      return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-  }
-}
-
 export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps) {
-  const { t, i18n } = useTranslation()
-  const language = i18n.language
+  const { t } = useTranslation()
 
   const {
     data: timeline,
@@ -294,7 +22,7 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
   } = useQuery({
     queryKey: ['contacts', contactId, 'timeline'],
     queryFn: async () => {
-      const res = await api.get<ContactTimeline>(`/contacts/${contactId}/timeline`)
+      const res = await api.get<ContactTimelineType>(`/contacts/${contactId}/timeline`)
       return res.data
     },
   })
@@ -330,48 +58,9 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
       )}
       <div className={fullHeight ? 'pr-4' : 'h-[300px] overflow-y-auto pr-4'}>
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
-          {logs.map((log: TimelineEvent) => {
-            const snapshotDetails = getLogSnapshotDetails(log, language)
-            const changes = log.changes || {}
-            const hasChanges = Object.keys(changes).length > 0
-
-            return (
-              <div key={log.id} className="relative mb-6 ml-4">
-                <span className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-gray-300 ring-4 ring-white" />
-                <div className="flex flex-col items-start gap-2">
-                  <span className="text-xs text-gray-500">
-                    {formatLocalizedDateTime(log.createdAt, language)}
-                  </span>
-                  <span
-                    className={`rounded px-2 py-0.5 text-sm font-semibold ${getBadgeStyles(
-                      log.action,
-                    )}`}
-                  >
-                    {getLogLabel(log, t)}
-                  </span>
-
-                  {snapshotDetails ? (
-                    <div className="mt-1 w-full rounded bg-gray-50 p-2 text-xs text-gray-600">
-                      {snapshotDetails}
-                    </div>
-                  ) : null}
-
-                  {hasChanges ? (
-                    <div className="mt-1 w-full rounded bg-gray-50 p-2 text-xs text-gray-600">
-                      {Object.entries(changes)
-                        .filter(([key]) => key !== 'user' && key !== 'tenant')
-                        .map(([key, val]) => (
-                          <div key={key}>
-                            <span className="font-semibold">{key}</span>:{' '}
-                            {formatChangeValue(val, language, key)}
-                          </div>
-                        ))}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            )
-          })}
+          {logs.map((log: TimelineEvent) => (
+            <ContactTimelineItem key={log.id} log={log} />
+          ))}
         </div>
       </div>
     </div>
