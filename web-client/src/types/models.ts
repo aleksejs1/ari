@@ -7,6 +7,7 @@ import { formatApiDate } from '@/lib/utils'
 export type Contact = components['schemas']['Contact.jsonld-contact.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
+export type ContactPhoneNumber = components['schemas']['ContactPhoneNumber.jsonld-contact.read']
 export type NotificationChannel =
   components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 export type NotificationSubscription =
@@ -35,9 +36,18 @@ export const contactDateSchema = z.object({
   text: z.string().min(1),
 })
 
+export const contactPhoneNumberSchema = z.object({
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  value: z.string().min(1),
+  type: z.string().min(1),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
+  phoneNumbers: z.array(contactPhoneNumberSchema),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

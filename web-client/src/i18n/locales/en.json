@@ -58,6 +58,11 @@
     "noLabel": "No label",
     "birthday": "Birthday",
     "noDates": "No dates added.",
+    "phoneNumbers": "Phone Numbers",
+    "addPhoneNumber": "Add Phone Number",
+    "phoneNumber": "Phone Number",
+    "phoneType": "Type",
+    "phoneTypePlaceholder": "Type (e.g. Work, Mobile)",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
     "editDescription": "Make changes to your contact here.",
@@ -79,6 +84,11 @@
           "INSERT": "Date added",
           "UPDATE": "Date changed",
           "REMOVE": "Date removed"
+        },
+        "ContactPhoneNumber": {
+          "INSERT": "Phone number added",
+          "UPDATE": "Phone number changed",
+          "REMOVE": "Phone number removed"
         }
       }
     },
@@ -169,6 +179,11 @@
         "INSERT": "Date added",
         "UPDATE": "Date updated",
         "REMOVE": "Date removed"
+      },
+      "ContactPhoneNumber": {
+        "INSERT": "Phone number added",
+        "UPDATE": "Phone number updated",
+        "REMOVE": "Phone number removed"
       }
     }
   },
@@ -182,6 +197,8 @@
     "labelRequired": "Label is required",
     "atLeastOneNameRequired": "At least one name is required",
     "botTokenRequired": "Bot Token is required",
-    "chatIdRequired": "Chat ID is required"
+    "chatIdRequired": "Chat ID is required",
+    "phoneNumberRequired": "Phone number is required",
+    "typeRequired": "Type is required"
   }
 }

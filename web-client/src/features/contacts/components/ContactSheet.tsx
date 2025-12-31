@@ -45,6 +45,13 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
           date: d.date ?? formatApiDate(new Date()), // Fallback if null, though backend should validate
           text: d.text ?? '',
         })),
+        phoneNumbers: (contact.phoneNumbers ?? []).map((p) => ({
+          id: p.id?.toString(),
+          '@id': p['@id'],
+          '@type': 'ContactPhoneNumber',
+          value: p.value ?? '',
+          type: p.type ?? '',
+        })),
       }
     : undefined
 

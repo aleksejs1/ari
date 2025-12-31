@@ -14,7 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { type Contact, type ContactDate, type ContactName } from '@/types/models'
+import {
+  type Contact,
+  type ContactDate,
+  type ContactName,
+  type ContactPhoneNumber,
+} from '@/types/models'
 
 interface ContactsTableProps {
   data: Contact[]
@@ -53,6 +58,25 @@ export function ContactsTable({
                   <span className="font-medium text-primary">
                     {name.given} {name.family}
                   </span>
+                </div>
+              ))}
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: 'phoneNumbers',
+        header: t('contacts.phoneNumbers'),
+        cell: ({ row }) => {
+          const phones = (row.original.phoneNumbers || []) as ContactPhoneNumber[]
+          return (
+            <div className="flex flex-col gap-1">
+              {phones.map((phone, i) => (
+                <div key={i} className="flex flex-col leading-tight">
+                  <span className="text-sm font-medium">{phone.value}</span>
+                  {!!phone.type && (
+                    <span className="text-[10px] text-muted-foreground">{phone.type}</span>
+                  )}
                 </div>
               ))}
             </div>

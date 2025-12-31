@@ -58,6 +58,11 @@
     "noLabel": "Без метки",
     "birthday": "День рождения",
     "noDates": "Даты не добавлены",
+    "phoneNumbers": "Номера телефонов",
+    "addPhoneNumber": "Добавить номер",
+    "phoneNumber": "Номер телефона",
+    "phoneType": "Тип",
+    "phoneTypePlaceholder": "Тип (напр. Рабочий, Мобильный)",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
     "editDescription": "Здесь вы можете изменить данные контакта.",
@@ -79,6 +84,11 @@
           "INSERT": "Дата добавлена",
           "UPDATE": "Дата изменена",
           "REMOVE": "Дата удалена"
+        },
+        "ContactPhoneNumber": {
+          "INSERT": "Номер телефона добавлен",
+          "UPDATE": "Номер телефона изменен",
+          "REMOVE": "Номер телефона удален"
         }
       }
     },
@@ -169,6 +179,11 @@
         "INSERT": "Дата добавлена",
         "UPDATE": "Дата изменена",
         "REMOVE": "Дата удалена"
+      },
+      "ContactPhoneNumber": {
+        "INSERT": "Номер телефона добавлен",
+        "UPDATE": "Номер телефона изменен",
+        "REMOVE": "Номер телефона удален"
       }
     }
   },
@@ -182,6 +197,8 @@
     "labelRequired": "Название обязательно",
     "atLeastOneNameRequired": "Требуется хотя бы одно имя",
     "botTokenRequired": "Токен бота обязателен",
-    "chatIdRequired": "ID чата обязателен"
+    "chatIdRequired": "ID чата обязателен",
+    "phoneNumberRequired": "Номер телефона обязателен",
+    "typeRequired": "Тип обязателен"
   }
 }

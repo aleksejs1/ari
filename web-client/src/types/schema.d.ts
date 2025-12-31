@@ -224,6 +224,62 @@ export interface paths {
         patch: operations["api_contact_names_id_patch"];
         trace?: never;
     };
+    "/api/contact_phone_numbers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactPhoneNumber resources.
+         * @description Retrieves the collection of ContactPhoneNumber resources.
+         */
+        get: operations["api_contact_phone_numbers_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactPhoneNumber resource.
+         * @description Creates a ContactPhoneNumber resource.
+         */
+        post: operations["api_contact_phone_numbers_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_phone_numbers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactPhoneNumber resource.
+         * @description Retrieves a ContactPhoneNumber resource.
+         */
+        get: operations["api_contact_phone_numbers_id_get"];
+        /**
+         * Replaces the ContactPhoneNumber resource.
+         * @description Replaces the ContactPhoneNumber resource.
+         */
+        put: operations["api_contact_phone_numbers_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactPhoneNumber resource.
+         * @description Removes the ContactPhoneNumber resource.
+         */
+        delete: operations["api_contact_phone_numbers_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactPhoneNumber resource.
+         * @description Updates the ContactPhoneNumber resource.
+         */
+        patch: operations["api_contact_phone_numbers_id_patch"];
+        trace?: never;
+    };
     "/api/contacts/{id}/timeline": {
         parameters: {
             query?: never;
@@ -529,6 +585,8 @@ export interface components {
             user?: string;
             entityType?: string;
             entityId?: number | null;
+            ownerEntityType?: string | null;
+            ownerEntityId?: number | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -556,6 +614,8 @@ export interface components {
             user?: string;
             entityType?: string;
             entityId?: number | null;
+            ownerEntityType?: string | null;
+            ownerEntityId?: number | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -578,6 +638,8 @@ export interface components {
             user?: string;
             entityType?: string;
             entityId?: number | null;
+            ownerEntityType?: string | null;
+            ownerEntityId?: number | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -605,6 +667,8 @@ export interface components {
             user?: string;
             entityType?: string;
             entityId?: number | null;
+            ownerEntityType?: string | null;
+            ownerEntityId?: number | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -670,20 +734,24 @@ export interface components {
         "Contact-contact.create": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
             contactDates?: components["schemas"]["ContactDate-contact.create"][];
+            phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.create"][];
         };
         "Contact-contact.create.jsonMergePatch": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
             contactDates?: components["schemas"]["ContactDate-contact.create"][];
+            phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.create"][];
         };
         "Contact-contact.read": {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName-contact.read"][];
             contactDates?: components["schemas"]["ContactDate-contact.read"][];
+            phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.read"][];
         };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName.jsonld-contact.read"][];
             contactDates?: components["schemas"]["ContactDate.jsonld-contact.read"][];
+            phoneNumbers?: components["schemas"]["ContactPhoneNumber.jsonld-contact.read"][];
         };
         "ContactDate-contact.create": {
             /** Format: date-time */
@@ -795,6 +863,58 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
+        };
+        "ContactPhoneNumber-contact.create": {
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactPhoneNumber-contact.read": {
+            readonly id?: number;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update": {
+            value?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+        };
+        "ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update.jsonMergePatch": {
+            value?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+        };
+        "ContactPhoneNumber-contact_phone_number.read": {
+            readonly id?: number;
+            value?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+        };
+        "ContactPhoneNumber.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactPhoneNumber.jsonld-contact_phone_number.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            value?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
         };
         ContactTimeline: {
             id?: number;
@@ -2234,6 +2354,339 @@ export interface operations {
                 content: {
                     "application/ld+json": components["schemas"]["ContactName.jsonld-contact_name.read"];
                     "application/json": components["schemas"]["ContactName-contact_name.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_phone_numbers_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactPhoneNumber collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactPhoneNumber.jsonld-contact_phone_number.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_phone_numbers_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactPhoneNumber resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update"];
+                "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update"];
+            };
+        };
+        responses: {
+            /** @description ContactPhoneNumber resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactPhoneNumber.jsonld-contact_phone_number.read"];
+                    "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_phone_numbers_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactPhoneNumber identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactPhoneNumber resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactPhoneNumber.jsonld-contact_phone_number.read"];
+                    "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_phone_numbers_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactPhoneNumber identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactPhoneNumber resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update"];
+                "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update"];
+            };
+        };
+        responses: {
+            /** @description ContactPhoneNumber resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactPhoneNumber.jsonld-contact_phone_number.read"];
+                    "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_phone_numbers_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactPhoneNumber identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactPhoneNumber resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_phone_numbers_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactPhoneNumber identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactPhoneNumber resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactPhoneNumber-contact_phone_number.create_contact_phone_number.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactPhoneNumber resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactPhoneNumber.jsonld-contact_phone_number.read"];
+                    "application/json": components["schemas"]["ContactPhoneNumber-contact_phone_number.read"];
                 };
             };
             /** @description Invalid input */

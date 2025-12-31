@@ -61,6 +61,13 @@ export default function ContactDetailsPage() {
       date: d.date ?? formatApiDate(new Date()),
       text: d.text ?? '',
     })),
+    phoneNumbers: (contact.phoneNumbers ?? []).map((p) => ({
+      id: p.id?.toString(),
+      '@id': p['@id'],
+      '@type': 'ContactPhoneNumber',
+      value: p.value ?? '',
+      type: p.type ?? '',
+    })),
   }
 
   const handleSubmit = async (data: ContactFormValues) => {
