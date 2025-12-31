@@ -115,6 +115,18 @@ class Contact implements TenantAwareInterface
     )]
     private Collection $contactAddresses;
 
+    /**
+     * @var Collection<int, ContactGroup>
+     */
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactGroup::class,
+        mappedBy: 'contact',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private Collection $contactGroups;
+
     public function __construct()
     {
         $this->contactNames = new ArrayCollection();
@@ -122,6 +134,7 @@ class Contact implements TenantAwareInterface
         $this->phoneNumbers = new ArrayCollection();
         $this->contactEmailAdresses = new ArrayCollection();
         $this->contactAddresses = new ArrayCollection();
+        $this->contactGroups = new ArrayCollection();
     }
 
     public function setUser(?User $user): static
@@ -295,6 +308,36 @@ class Contact implements TenantAwareInterface
             // set the owning side to null (unless already changed)
             if ($contactAddress->getContact() === $this) {
                 $contactAddress->setContact(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContactGroup>
+     */
+    public function getContactGroups(): Collection
+    {
+        return $this->contactGroups;
+    }
+
+    public function addContactGroup(ContactGroup $contactGroup): static
+    {
+        if (!$this->contactGroups->contains($contactGroup)) {
+            $this->contactGroups->add($contactGroup);
+            $contactGroup->setContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactGroup(ContactGroup $contactGroup): static
+    {
+        if ($this->contactGroups->removeElement($contactGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($contactGroup->getContact() === $this) {
+                $contactGroup->setContact(null);
             }
         }
 

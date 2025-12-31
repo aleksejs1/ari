@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\GroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
@@ -51,9 +53,20 @@ class Group implements TenantAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[Groups(['group:read', 'group:create'])]
+    #[Groups(['group:read', 'group:create', 'contact:create', 'contact_group:create'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    /**
+     * @var Collection<int, ContactGroup>
+     */
+    #[ORM\OneToMany(targetEntity: ContactGroup::class, mappedBy: 'groupResource', orphanRemoval: true)]
+    private Collection $contactGroups;
+
+    public function __construct()
+    {
+        $this->contactGroups = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -81,6 +94,36 @@ class Group implements TenantAwareInterface
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContactGroup>
+     */
+    public function getContactGroups(): Collection
+    {
+        return $this->contactGroups;
+    }
+
+    public function addContactGroup(ContactGroup $contactGroup): static
+    {
+        if (!$this->contactGroups->contains($contactGroup)) {
+            $this->contactGroups->add($contactGroup);
+            $contactGroup->setGroupResource($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactGroup(ContactGroup $contactGroup): static
+    {
+        if ($this->contactGroups->removeElement($contactGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($contactGroup->getGroupResource() === $this) {
+                $contactGroup->setGroupResource(null);
+            }
+        }
 
         return $this;
     }

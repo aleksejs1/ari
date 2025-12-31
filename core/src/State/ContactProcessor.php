@@ -58,6 +58,7 @@ class ContactProcessor implements ProcessorInterface
                 $existing->getPhoneNumbers()->clear();
                 $existing->getContactEmailAdresses()->clear();
                 $existing->getContactAddresses()->clear();
+                $existing->getContactGroups()->clear();
 
                 // Add new nested entities from the deserialized data
                 foreach ($data->getContactNames() as $contactName) {
@@ -88,6 +89,19 @@ class ContactProcessor implements ProcessorInterface
                     $address->setContact($existing);
                     $address->setTenant($existing->getTenant());
                     $existing->addContactAddress($address);
+                }
+
+                foreach ($data->getContactGroups() as $contactGroup) {
+                    $contactGroup->setContact($existing);
+                    $contactGroup->setTenant($existing->getTenant());
+
+                    // Propagate tenant to nested Group if it's new
+                    $group = $contactGroup->getGroupResource();
+                    if (null !== $group && null === $group->getUser()) {
+                        $group->setUser($existing->getTenant());
+                    }
+
+                    $existing->addContactGroup($contactGroup);
                 }
 
                 // Flush changes and return the existing entity
@@ -139,6 +153,21 @@ class ContactProcessor implements ProcessorInterface
                 }
                 if (null === $address->getTenant()) {
                     $address->setTenant($data->getTenant());
+                }
+            }
+
+            foreach ($data->getContactGroups() as $contactGroup) {
+                if (null === $contactGroup->getContact()) {
+                    $contactGroup->setContact($data);
+                }
+                if (null === $contactGroup->getTenant()) {
+                    $contactGroup->setTenant($data->getTenant());
+                }
+
+                // Propagate tenant to nested Group if it's new
+                $group = $contactGroup->getGroupResource();
+                if (null !== $group && null === $group->getUser()) {
+                    $group->setUser($data->getTenant());
                 }
             }
         }
