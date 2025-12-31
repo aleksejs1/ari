@@ -35,6 +35,13 @@ export default function DashboardLayout() {
             <span>{t('app.navigation.auditLogs')}</span>
           </Link>
           <Link
+            to="/groups"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Users className="h-5 w-5" />
+            <span>{t('app.navigation.groups', 'Groups')}</span>
+          </Link>
+          <Link
             to="/notification-channels"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >

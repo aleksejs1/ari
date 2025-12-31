@@ -7,6 +7,7 @@ import ContactDetailsPage from './features/contacts/ContactDetailsPage'
 import ContactsPage from './features/contacts/ContactsPage'
 import ContactTimelinePage from './features/contacts/ContactTimelinePage'
 import GoogleImportPage from './features/google-import/GoogleImportPage'
+import GroupsPage from './features/groups/GroupsPage'
 import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
@@ -61,6 +62,10 @@ export default function App() {
             {
               path: '/notification-channels',
               element: <NotificationChannelsPage />,
+            },
+            {
+              path: '/groups',
+              element: <GroupsPage />,
             },
             {
               path: '/google-import',

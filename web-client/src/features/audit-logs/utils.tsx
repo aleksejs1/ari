@@ -94,7 +94,6 @@ const findContactIri = (obj: Record<string, unknown> | null): string | null => {
     }
 
     if (val && typeof val === 'object') {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const found = findInObject(val)
       if (found) {
         return found
@@ -275,7 +274,7 @@ const formatArrayValue = (
   arr: unknown[],
   language: string,
   fieldName?: string,
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
   recursiveFormatter?: (
     val: unknown,
     language: string,
