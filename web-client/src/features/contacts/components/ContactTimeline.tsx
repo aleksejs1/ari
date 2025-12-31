@@ -185,6 +185,27 @@ const getLogLabel = (log: TimelineEvent, t: TFunction): string => {
   return t(`contacts.history.actions.${type}.${action}`, `${action} ${type}`)
 }
 
+const getContactNameLabel = (snapshot: Record<string, unknown>) => {
+  return `${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''}`.trim()
+}
+
+const getContactDateLabel = (snapshot: Record<string, unknown>, language: string) => {
+  const dateStr = snapshot.date ? formatChangeValue({ date: snapshot.date }, language) : ''
+  return (
+    <>
+      {dateStr} ({(snapshot.text as string) || ''})
+    </>
+  )
+}
+
+const getContactValueTypeLabel = (snapshot: Record<string, unknown>) => {
+  return (
+    <>
+      {(snapshot.value as string) || ''} ({(snapshot.type as string) || ''})
+    </>
+  )
+}
+
 const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.ReactElement | null => {
   const { action, entityType, snapshotAfter, snapshotBefore } = log
   const snapshot = (action === 'INSERT' ? snapshotAfter : snapshotBefore) as Record<
@@ -198,20 +219,17 @@ const getLogSnapshotDetails = (log: TimelineEvent, language: string): React.Reac
 
   const type = entityType.replace(/^App\\Entity\\/, '')
 
-  if (type === 'ContactName') {
-    return <>{`${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''}`.trim()}</>
+  switch (type) {
+    case 'ContactName':
+      return <>{getContactNameLabel(snapshot)}</>
+    case 'ContactDate':
+      return getContactDateLabel(snapshot, language)
+    case 'ContactPhoneNumber':
+    case 'ContactEmailAdress':
+      return getContactValueTypeLabel(snapshot)
+    default:
+      return null
   }
-
-  if (type === 'ContactDate') {
-    const dateStr = snapshot.date ? formatChangeValue({ date: snapshot.date }, language) : ''
-    return (
-      <>
-        {dateStr} ({(snapshot.text as string) || ''})
-      </>
-    )
-  }
-
-  return null
 }
 
 interface ContactTimelineProps {

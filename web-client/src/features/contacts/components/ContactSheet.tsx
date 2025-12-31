@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { mapContactToFormValues } from '../contactUtils'
 import { useCreateContact, useUpdateContact } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
@@ -12,7 +13,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { formatApiDate } from '@/lib/utils'
 import { type Contact, type ContactFormValues } from '@/types/models'
 
 // import { useState } from "react"
@@ -29,31 +29,7 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
   const { t } = useTranslation()
 
   // Transform Contact to FormValues if editing
-  const defaultValues: ContactFormValues | undefined = contact
-    ? {
-        contactNames: (contact.contactNames ?? []).map((n) => ({
-          id: n.id?.toString(),
-          '@id': n['@id'],
-          '@type': 'ContactName',
-          given: n.given ?? '',
-          family: n.family ?? '',
-        })),
-        contactDates: (contact.contactDates ?? []).map((d) => ({
-          id: d.id?.toString(),
-          '@id': d['@id'],
-          '@type': 'ContactDate',
-          date: d.date ?? formatApiDate(new Date()), // Fallback if null, though backend should validate
-          text: d.text ?? '',
-        })),
-        phoneNumbers: (contact.phoneNumbers ?? []).map((p) => ({
-          id: p.id?.toString(),
-          '@id': p['@id'],
-          '@type': 'ContactPhoneNumber',
-          value: p.value ?? '',
-          type: p.type ?? '',
-        })),
-      }
-    : undefined
+  const defaultValues = contact ? mapContactToFormValues(contact) : undefined
 
   const handleSubmit = async (data: ContactFormValues) => {
     try {

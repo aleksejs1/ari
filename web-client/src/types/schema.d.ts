@@ -168,6 +168,62 @@ export interface paths {
         patch: operations["api_contact_dates_id_patch"];
         trace?: never;
     };
+    "/api/contact_email_adresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactEmailAdress resources.
+         * @description Retrieves the collection of ContactEmailAdress resources.
+         */
+        get: operations["api_contact_email_adresses_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactEmailAdress resource.
+         * @description Creates a ContactEmailAdress resource.
+         */
+        post: operations["api_contact_email_adresses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_email_adresses/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactEmailAdress resource.
+         * @description Retrieves a ContactEmailAdress resource.
+         */
+        get: operations["api_contact_email_adresses_id_get"];
+        /**
+         * Replaces the ContactEmailAdress resource.
+         * @description Replaces the ContactEmailAdress resource.
+         */
+        put: operations["api_contact_email_adresses_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactEmailAdress resource.
+         * @description Removes the ContactEmailAdress resource.
+         */
+        delete: operations["api_contact_email_adresses_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactEmailAdress resource.
+         * @description Updates the ContactEmailAdress resource.
+         */
+        patch: operations["api_contact_email_adresses_id_patch"];
+        trace?: never;
+    };
     "/api/contact_names": {
         parameters: {
             query?: never;
@@ -735,23 +791,27 @@ export interface components {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
             contactDates?: components["schemas"]["ContactDate-contact.create"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.create"][];
+            contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.create"][];
         };
         "Contact-contact.create.jsonMergePatch": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
             contactDates?: components["schemas"]["ContactDate-contact.create"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.create"][];
+            contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.create"][];
         };
         "Contact-contact.read": {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName-contact.read"][];
             contactDates?: components["schemas"]["ContactDate-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.read"][];
+            contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.read"][];
         };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName.jsonld-contact.read"][];
             contactDates?: components["schemas"]["ContactDate.jsonld-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber.jsonld-contact.read"][];
+            contactEmailAdresses?: components["schemas"]["ContactEmailAdress.jsonld-contact.read"][];
         };
         "ContactDate-contact.create": {
             /** Format: date-time */
@@ -811,6 +871,58 @@ export interface components {
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+        };
+        "ContactEmailAdress-contact.create": {
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress-contact.read": {
+            readonly id?: number;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress-contact_email_adress.create_contact_email_adress.update": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress-contact_email_adress.create_contact_email_adress.update.jsonMergePatch": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress-contact_email_adress.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress.jsonld-contact_email_adress.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            value?: string | null;
+            type?: string | null;
         };
         "ContactName-contact.create": {
             family?: string | null;
@@ -2021,6 +2133,339 @@ export interface operations {
                 content: {
                     "application/ld+json": components["schemas"]["ContactDate.jsonld-contact_date.read"];
                     "application/json": components["schemas"]["ContactDate-contact_date.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_email_adresses_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactEmailAdress collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactEmailAdress.jsonld-contact_email_adress.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_email_adresses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactEmailAdress resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactEmailAdress-contact_email_adress.create_contact_email_adress.update"];
+                "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.create_contact_email_adress.update"];
+            };
+        };
+        responses: {
+            /** @description ContactEmailAdress resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactEmailAdress.jsonld-contact_email_adress.read"];
+                    "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_email_adresses_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactEmailAdress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactEmailAdress resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactEmailAdress.jsonld-contact_email_adress.read"];
+                    "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_email_adresses_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactEmailAdress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactEmailAdress resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactEmailAdress-contact_email_adress.create_contact_email_adress.update"];
+                "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.create_contact_email_adress.update"];
+            };
+        };
+        responses: {
+            /** @description ContactEmailAdress resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactEmailAdress.jsonld-contact_email_adress.read"];
+                    "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_email_adresses_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactEmailAdress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactEmailAdress resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_email_adresses_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactEmailAdress identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactEmailAdress resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactEmailAdress-contact_email_adress.create_contact_email_adress.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactEmailAdress resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactEmailAdress.jsonld-contact_email_adress.read"];
+                    "application/json": components["schemas"]["ContactEmailAdress-contact_email_adress.read"];
                 };
             };
             /** @description Invalid input */

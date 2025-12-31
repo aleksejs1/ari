@@ -63,6 +63,11 @@
     "phoneNumber": "Номер телефона",
     "phoneType": "Тип",
     "phoneTypePlaceholder": "Тип (напр. Рабочий, Мобильный)",
+    "emailAddresses": "Электронные адреса",
+    "addEmailAddress": "Добавить email",
+    "emailAddress": "Email адрес",
+    "emailType": "Тип",
+    "emailTypePlaceholder": "Тип (напр. Личный, Рабочий)",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
     "editDescription": "Здесь вы можете изменить данные контакта.",
@@ -89,6 +94,11 @@
           "INSERT": "Номер телефона добавлен",
           "UPDATE": "Номер телефона изменен",
           "REMOVE": "Номер телефона удален"
+        },
+        "ContactEmailAdress": {
+          "INSERT": "Email адрес добавлен",
+          "UPDATE": "Email адрес изменен",
+          "REMOVE": "Email адрес удален"
         }
       }
     },
@@ -184,6 +194,11 @@
         "INSERT": "Номер телефона добавлен",
         "UPDATE": "Номер телефона изменен",
         "REMOVE": "Номер телефона удален"
+      },
+      "ContactEmailAdress": {
+        "INSERT": "Email адрес добавлен",
+        "UPDATE": "Email адрес изменен",
+        "REMOVE": "Email адрес удален"
       }
     }
   },
@@ -199,6 +214,8 @@
     "botTokenRequired": "Токен бота обязателен",
     "chatIdRequired": "ID чата обязателен",
     "phoneNumberRequired": "Номер телефона обязателен",
+    "emailRequired": "Email адрес обязателен",
+    "invalidEmail": "Неверный формат email",
     "typeRequired": "Тип обязателен"
   }
 }

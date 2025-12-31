@@ -19,6 +19,7 @@ import {
   type ContactDate,
   type ContactName,
   type ContactPhoneNumber,
+  type ContactEmailAdress,
 } from '@/types/models'
 
 interface ContactsTableProps {
@@ -76,6 +77,25 @@ export function ContactsTable({
                   <span className="text-sm font-medium">{phone.value}</span>
                   {!!phone.type && (
                     <span className="text-[10px] text-muted-foreground">{phone.type}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: 'contactEmailAdresses',
+        header: t('contacts.emailAddresses'),
+        cell: ({ row }) => {
+          const emails = (row.original.contactEmailAdresses || []) as ContactEmailAdress[]
+          return (
+            <div className="flex flex-col gap-1">
+              {emails.map((email, i) => (
+                <div key={i} className="flex flex-col leading-tight">
+                  <span className="text-sm font-medium">{email.value}</span>
+                  {!!email.type && (
+                    <span className="text-[10px] text-muted-foreground">{email.type}</span>
                   )}
                 </div>
               ))}

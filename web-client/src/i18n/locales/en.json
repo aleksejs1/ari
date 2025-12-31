@@ -63,6 +63,11 @@
     "phoneNumber": "Phone Number",
     "phoneType": "Type",
     "phoneTypePlaceholder": "Type (e.g. Work, Mobile)",
+    "emailAddresses": "Email Addresses",
+    "addEmailAddress": "Add Email Address",
+    "emailAddress": "Email Address",
+    "emailType": "Type",
+    "emailTypePlaceholder": "Type (e.g. Personal, Work)",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
     "editDescription": "Make changes to your contact here.",
@@ -89,6 +94,11 @@
           "INSERT": "Phone number added",
           "UPDATE": "Phone number changed",
           "REMOVE": "Phone number removed"
+        },
+        "ContactEmailAdress": {
+          "INSERT": "Email address added",
+          "UPDATE": "Email address changed",
+          "REMOVE": "Email address removed"
         }
       }
     },
@@ -184,6 +194,11 @@
         "INSERT": "Phone number added",
         "UPDATE": "Phone number updated",
         "REMOVE": "Phone number removed"
+      },
+      "ContactEmailAdress": {
+        "INSERT": "Email address added",
+        "UPDATE": "Email address updated",
+        "REMOVE": "Email address removed"
       }
     }
   },
@@ -199,6 +214,8 @@
     "botTokenRequired": "Bot Token is required",
     "chatIdRequired": "Chat ID is required",
     "phoneNumberRequired": "Phone number is required",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email format",
     "typeRequired": "Type is required"
   }
 }

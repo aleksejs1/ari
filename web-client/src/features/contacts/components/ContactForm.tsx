@@ -55,10 +55,24 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     type: z.string().min(1, t('validation.typeRequired')),
   })
 
+  const contactEmailAdressSchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    /* eslint-disable sonarjs/deprecation */
+    value: z
+      .string()
+      .min(1, t('validation.emailRequired'))
+      .email({ message: t('validation.invalidEmail') }),
+    /* eslint-enable sonarjs/deprecation */
+    type: z.string().min(1, t('validation.typeRequired')),
+  })
+
   const contactSchema = z.object({
     contactNames: z.array(contactNameSchema).min(1, t('validation.atLeastOneNameRequired')),
     contactDates: z.array(contactDateSchema),
     phoneNumbers: z.array(contactPhoneNumberSchema),
+    contactEmailAdresses: z.array(contactEmailAdressSchema),
   })
 
   const form = useForm<ContactFormValues>({
@@ -67,6 +81,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       contactNames: [{ given: '', family: '' }],
       contactDates: [],
       phoneNumbers: [],
+      contactEmailAdresses: [],
     },
   })
 
@@ -98,6 +113,16 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
   } = useFieldArray({
     control: form.control,
     name: 'phoneNumbers',
+  })
+
+  // Email Addresses Field Array
+  const {
+    fields: emailFields,
+    append: appendEmail,
+    remove: removeEmail,
+  } = useFieldArray({
+    control: form.control,
+    name: 'contactEmailAdresses',
   })
 
   return (
@@ -208,6 +233,60 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
             ))}
           </div>
         </div>
+
+        {/* Email Addresses Section */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium">{t('contacts.emailAddresses')}</h3>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendEmail({ value: '', type: 'Personal' })}
+            >
+              <Plus className="mr-1 h-4 w-4" /> {t('contacts.addEmailAddress')}
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {emailFields.map((field, index) => (
+              <div key={field.id} className="flex items-start gap-2">
+                <FormField
+                  control={form.control}
+                  name={`contactEmailAdresses.${index}.value`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <Input placeholder={t('contacts.emailAddress')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`contactEmailAdresses.${index}.type`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <Input placeholder={t('contacts.emailTypePlaceholder')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeEmail(index)}
+                >
+                  <Trash2 className="h-4 w-4 text-red-500" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Dates Section */}
         <div>
           <div className="mb-2 flex items-center justify-between">

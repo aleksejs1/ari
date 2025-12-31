@@ -8,6 +8,7 @@ export type Contact = components['schemas']['Contact.jsonld-contact.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
 export type ContactPhoneNumber = components['schemas']['ContactPhoneNumber.jsonld-contact.read']
+export type ContactEmailAdress = components['schemas']['ContactEmailAdress.jsonld-contact.read']
 export type NotificationChannel =
   components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 export type NotificationSubscription =
@@ -44,10 +45,20 @@ export const contactPhoneNumberSchema = z.object({
   type: z.string().min(1),
 })
 
+export const contactEmailAdressSchema = z.object({
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  // eslint-disable-next-line sonarjs/deprecation
+  value: z.string().min(1).email({}),
+  type: z.string().min(1),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
   phoneNumbers: z.array(contactPhoneNumberSchema),
+  contactEmailAdresses: z.array(contactEmailAdressSchema),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

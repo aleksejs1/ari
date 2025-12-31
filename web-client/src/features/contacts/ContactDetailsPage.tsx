@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { ContactForm } from './components/ContactForm'
 import { ContactTimeline } from './components/ContactTimeline'
+import { mapContactToFormValues } from './contactUtils'
 import { useContact, useUpdateContact, useDeleteContact } from './useContacts'
 
 import { Button } from '@/components/ui/button'
@@ -17,7 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { formatApiDate } from '@/lib/utils'
 import { type ContactFormValues } from '@/types/models'
 
 export default function ContactDetailsPage() {
@@ -46,29 +46,7 @@ export default function ContactDetailsPage() {
     )
   }
 
-  const defaultValues: ContactFormValues = {
-    contactNames: (contact.contactNames ?? []).map((n) => ({
-      id: n.id?.toString(),
-      '@id': n['@id'],
-      '@type': 'ContactName',
-      given: n.given ?? '',
-      family: n.family ?? '',
-    })),
-    contactDates: (contact.contactDates ?? []).map((d) => ({
-      id: d.id?.toString(),
-      '@id': d['@id'],
-      '@type': 'ContactDate',
-      date: d.date ?? formatApiDate(new Date()),
-      text: d.text ?? '',
-    })),
-    phoneNumbers: (contact.phoneNumbers ?? []).map((p) => ({
-      id: p.id?.toString(),
-      '@id': p['@id'],
-      '@type': 'ContactPhoneNumber',
-      value: p.value ?? '',
-      type: p.type ?? '',
-    })),
-  }
+  const defaultValues = mapContactToFormValues(contact)
 
   const handleSubmit = async (data: ContactFormValues) => {
     try {
