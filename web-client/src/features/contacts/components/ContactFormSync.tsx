@@ -1,0 +1,93 @@
+import { Plus, Trash2 } from 'lucide-react'
+import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
+import { NotificationSubscriptions } from './NotificationSubscriptions'
+
+import { Button } from '@/components/ui/button'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { formatApiDate } from '@/lib/utils'
+import { type ContactFormValues } from '@/types/models'
+
+export function ContactFormSync() {
+  const { t } = useTranslation()
+  const { control } = useFormContext<ContactFormValues>()
+
+  const {
+    fields: dateFields,
+    append: appendDate,
+    remove: removeDate,
+  } = useFieldArray({
+    control,
+    name: 'contactDates',
+  })
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-medium">{t('contacts.dates')}</h3>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            appendDate({ text: t('contacts.birthday'), date: formatApiDate(new Date()) })
+          }
+        >
+          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
+        </Button>
+      </div>
+      <div className="space-y-4">
+        {dateFields.map((field, index) => (
+          <div key={field.id} className="space-y-2">
+            <div className="flex items-start gap-2">
+              <FormField
+                control={control}
+                name={`contactDates.${index}.text`}
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input placeholder={t('contacts.dateLabelPlaceholder')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`contactDates.${index}.date`}
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      {/* Simple text input for date for now, could be DatePicker */}
+                      <Input
+                        type="date"
+                        {...field}
+                        value={field.value ? field.value.split('T')[0] : ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="button" variant="ghost" size="icon" onClick={() => removeDate(index)}>
+                <Trash2 className="h-4 w-4 text-red-500" />
+              </Button>
+            </div>
+            {(() => {
+              const atId = field['@id']
+              const realId = atId ? Number(atId.split('/').pop()) : null
+              return realId ? (
+                <NotificationSubscriptions entityType="ContactDate" entityId={realId} />
+              ) : null
+            })()}
+          </div>
+        ))}
+        {dateFields.length === 0 && (
+          <p className="text-sm italic text-gray-500">{t('contacts.noDates')}</p>
+        )}
+      </div>
+    </div>
+  )
+}
