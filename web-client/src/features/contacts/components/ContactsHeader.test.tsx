@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 
 import { ContactsHeader } from './ContactsHeader'
@@ -21,11 +21,16 @@ describe('ContactsHeader', () => {
     expect(onCreate).toHaveBeenCalled()
   })
 
-  it('calls onSearchChange when input changes', () => {
+  it('calls onSearchChange when input changes', async () => {
     const onSearchChange = vi.fn()
     render(<ContactsHeader onCreate={vi.fn()} search="" onSearchChange={onSearchChange} />)
     const input = screen.getByPlaceholderText('common.search')
     fireEvent.change(input, { target: { value: 'test' } })
-    expect(onSearchChange).toHaveBeenCalledWith('test')
+
+    expect(input).toHaveValue('test')
+
+    await waitFor(() => {
+      expect(onSearchChange).toHaveBeenCalledWith('test')
+    })
   })
 })

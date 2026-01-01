@@ -1,4 +1,5 @@
 import { Plus, Search } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -12,6 +13,32 @@ interface ContactsHeaderProps {
 
 export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHeaderProps) {
   const { t } = useTranslation()
+  const [inputValue, setInputValue] = useState(search)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Sync from prop (URL) to local state, but ONLY if not focused
+  // This handles the "Back button" or external navigation case without interrupting typing
+  // Sync from prop (URL) to local state, but ONLY if not focused
+  // This handles the "Back button" or external navigation case without interrupting typing
+  useEffect(() => {
+    // Check focus to ensure we don't overwrite user typing if URL updates (though we debounce URL updates)
+    // We only update if the input is NOT focused.
+    if (document.activeElement !== inputRef.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInputValue(search)
+    }
+  }, [search])
+
+  // Debounce the local input changes up to the parent
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Only fire if the value is different from what came in via props (to avoid loops or unnecessary calls)
+      if (inputValue !== search) {
+        onSearchChange(inputValue)
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [inputValue, search, onSearchChange])
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -23,9 +50,10 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
+            ref={inputRef}
             placeholder={t('common.search')}
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             className="pl-8"
           />
         </div>
