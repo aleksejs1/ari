@@ -9,6 +9,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Traits\ContactAddressesTrait;
 use App\Entity\Traits\ContactBiographiesTrait;
 use App\Entity\Traits\ContactDatesTrait;
@@ -45,6 +47,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
     processor: 'App\State\ContactProcessor'
 )]
+#[ApiFilter(SearchFilter::class, properties: ['contactGroups.groupResource' => 'exact'])]
 class Contact implements TenantAwareInterface
 {
     use TenantAwareTrait;
