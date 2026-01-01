@@ -7,7 +7,9 @@
       "contacts": "Контакты",
       "notificationChannels": "Каналы уведомлений",
       "auditLogs": "Логи аудита",
-      "googleImport": "Импорт из Google"
+      "googleImport": "Импорт из Google",
+      "groups": "Группы",
+      "manageGroups": "Управление группами"
     }
   },
   "auth": {
@@ -179,7 +181,17 @@
     "by": "от",
     "viewDetails": "Открыть",
     "noResults": "Ничего не найдено.",
-    "create": "Создать"
+    "create": "Создать",
+    "search": "Поиск"
+  },
+  "groups": {
+    "title": "Группы контактов",
+    "createGroup": "Создать группу",
+    "editGroup": "Редактировать группу",
+    "fields": {
+      "name": "Название",
+      "color": "Цвет"
+    }
   },
   "pagination": {
     "previous": "Назад",
@@ -268,7 +280,8 @@
   "errors": {
     "failedToLoadContact": "Не удалось загрузить контакт",
     "failedToLoadTimeline": "Не удалось загрузить историю",
-    "failedToLoadLogs": "Не удалось загрузить логи аудита"
+    "failedToLoadLogs": "Не удалось загрузить логи аудита",
+    "failedToLoadGroups": "Не удалось загрузить группы."
   },
   "validation": {
     "firstNameRequired": "Имя обязательно",

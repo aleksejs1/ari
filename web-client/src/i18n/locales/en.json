@@ -7,7 +7,9 @@
       "contacts": "Contacts",
       "notificationChannels": "Notification Channels",
       "auditLogs": "Audit Logs",
-      "googleImport": "Google Import"
+      "googleImport": "Google Import",
+      "groups": "Groups",
+      "manageGroups": "Manage Groups"
     }
   },
   "auth": {
@@ -179,7 +181,17 @@
     "by": "by",
     "viewDetails": "View details",
     "noResults": "No results found.",
-    "create": "Create"
+    "create": "Create",
+    "search": "Search"
+  },
+  "groups": {
+    "title": "Contact Groups",
+    "createGroup": "Create Group",
+    "editGroup": "Edit Group",
+    "fields": {
+      "name": "Name",
+      "color": "Color"
+    }
   },
   "pagination": {
     "previous": "Previous",
@@ -268,7 +280,8 @@
   "errors": {
     "failedToLoadContact": "Failed to load contact",
     "failedToLoadTimeline": "Failed to load history",
-    "failedToLoadLogs": "Failed to load audit logs"
+    "failedToLoadLogs": "Failed to load audit logs",
+    "failedToLoadGroups": "Failed to load groups."
   },
   "validation": {
     "firstNameRequired": "First name is required",
