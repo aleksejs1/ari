@@ -8,6 +8,7 @@ import { useCreateGroup } from '../useContacts'
 import { ContactFormAddress } from './ContactFormAddress'
 import { ContactFormEmail } from './ContactFormEmail'
 import { ContactFormNames } from './ContactFormNames'
+import { ContactFormOrganization } from './ContactFormOrganization'
 import { ContactFormPhone } from './ContactFormPhone'
 import { ContactFormSync } from './ContactFormSync'
 import { ContactGroupSelect } from './ContactGroupSelect'
@@ -81,6 +82,30 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     contactCode: z.string().optional().nullable(),
   })
 
+  const contactOrganizationSchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    name: z.string().optional().nullable(),
+    title: z.string().optional().nullable(),
+    department: z.string().optional().nullable(),
+    description: z.string().optional().nullable(),
+    jobDescription: z.string().optional().nullable(),
+    startDate: z
+      .string()
+      .or(z.date())
+      .optional()
+      .nullable()
+      .transform((d) => (d ? formatApiDate(d) : null)),
+    endDate: z
+      .string()
+      .or(z.date())
+      .optional()
+      .nullable()
+      .transform((d) => (d ? formatApiDate(d) : null)),
+    type: z.string().optional().nullable(),
+  })
+
   const contactGroupSchema = z.object({
     groupResource: z.union([z.string(), z.object({ name: z.string() })]),
   })
@@ -91,6 +116,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     phoneNumbers: z.array(contactPhoneNumberSchema),
     contactEmailAdresses: z.array(contactEmailAdressSchema),
     contactAddresses: z.array(contactAddressSchema),
+    contactOrganizations: z.array(contactOrganizationSchema).optional(),
     contactGroups: z.array(contactGroupSchema).optional(),
   })
 
@@ -102,6 +128,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       phoneNumbers: [],
       contactEmailAdresses: [],
       contactAddresses: [],
+      contactOrganizations: [],
       contactGroups: [],
     },
   })
@@ -143,6 +170,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         <ContactFormPhone />
         <ContactFormEmail />
         <ContactFormAddress />
+        <ContactFormOrganization />
         <ContactFormSync />
 
         {/* Groups Section */}

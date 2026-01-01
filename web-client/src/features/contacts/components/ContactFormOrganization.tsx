@@ -1,0 +1,187 @@
+import { Plus, Trash2 } from 'lucide-react'
+import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
+import { Button } from '@/components/ui/button'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { type ContactFormValues } from '@/types/models'
+
+export function ContactFormOrganization() {
+  const { t } = useTranslation()
+  const { control } = useFormContext<ContactFormValues>()
+
+  const {
+    fields: organizationFields,
+    append: appendOrganization,
+    remove: removeOrganization,
+  } = useFieldArray({
+    control,
+    name: 'contactOrganizations',
+  })
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-medium">{t('contacts.organizations')}</h3>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            appendOrganization({
+              name: '',
+              title: '',
+              department: '',
+              type: 'Work',
+              jobDescription: '',
+              startDate: '',
+              endDate: '',
+            })
+          }
+        >
+          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addOrganization')}
+        </Button>
+      </div>
+      <div className="space-y-4">
+        {organizationFields.map((field, index) => (
+          <div key={field.id} className="rounded-md border border-gray-100 p-4 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-gray-400">
+                {t('contacts.organizationType')}:{' '}
+                {control._formValues.contactOrganizations?.[index]?.type || ''}
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => removeOrganization(index)}
+              >
+                <Trash2 className="h-4 w-4 text-red-500" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField
+                control={control}
+                name={`contactOrganizations.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder={t('contacts.organizationName')}
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`contactOrganizations.${index}.title`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder={t('contacts.organizationTitle')}
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`contactOrganizations.${index}.department`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder={t('contacts.organizationDepartment')}
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`contactOrganizations.${index}.type`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder={t('contacts.organizationTypePlaceholder')}
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`contactOrganizations.${index}.startDate`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        placeholder={t('contacts.organizationStartDate')}
+                        {...field}
+                        value={field.value ? String(field.value).split('T')[0] : ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`contactOrganizations.${index}.endDate`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        placeholder={t('contacts.organizationEndDate')}
+                        {...field}
+                        value={field.value ? String(field.value).split('T')[0] : ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="sm:col-span-2">
+                <FormField
+                  control={control}
+                  name={`contactOrganizations.${index}.jobDescription`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t('contacts.organizationDescription')}
+                          {...field}
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

@@ -15,6 +15,7 @@ export type NotificationChannel =
 export type NotificationSubscription =
   components['schemas']['NotificationSubscription.jsonld-notification_subscription.read']
 export type ContactGroup = components['schemas']['ContactGroup.jsonld-contact.read']
+export type ContactOrganization = components['schemas']['ContactOrganization.jsonld-contact.read']
 export type Group = components['schemas']['Group.jsonld-group.read']
 
 // Zod Schemas for Forms
@@ -78,6 +79,30 @@ export const contactGroupSchema = z.object({
   groupResource: z.union([z.string(), z.object({ name: z.string() })]),
 })
 
+export const contactOrganizationSchema = z.object({
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  name: z.string().optional().nullable(),
+  title: z.string().optional().nullable(),
+  department: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  jobDescription: z.string().optional().nullable(),
+  startDate: z
+    .string()
+    .or(z.date())
+    .optional()
+    .nullable()
+    .transform((d) => (d ? formatApiDate(d) : null)),
+  endDate: z
+    .string()
+    .or(z.date())
+    .optional()
+    .nullable()
+    .transform((d) => (d ? formatApiDate(d) : null)),
+  type: z.string().optional().nullable(),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
@@ -85,6 +110,7 @@ export const contactSchema = z.object({
   contactEmailAdresses: z.array(contactEmailAdressSchema),
   contactAddresses: z.array(contactAddressSchema),
   contactGroups: z.array(contactGroupSchema).optional(),
+  contactOrganizations: z.array(contactOrganizationSchema).optional(),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

@@ -81,6 +81,16 @@
     "addressTypePlaceholder": "Type (e.g. Home, Office)",
     "groups": "Groups",
     "selectGroup": "Select group...",
+    "organizations": "Organizations",
+    "addOrganization": "Add Organization",
+    "organizationName": "Organization Name",
+    "organizationTitle": "Title",
+    "organizationDepartment": "Department",
+    "organizationType": "Type",
+    "organizationTypePlaceholder": "Type",
+    "organizationDescription": "Description",
+    "organizationStartDate": "Start Date",
+    "organizationEndDate": "End Date",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
     "editDescription": "Make changes to your contact here.",
@@ -117,6 +127,11 @@
           "INSERT": "Address added",
           "UPDATE": "Address changed",
           "REMOVE": "Address removed"
+        },
+        "ContactOrganization": {
+          "INSERT": "Organization added",
+          "UPDATE": "Organization changed",
+          "REMOVE": "Organization removed"
         }
       }
     },
@@ -229,6 +244,11 @@
         "INSERT": "Group added",
         "UPDATE": "Group changed",
         "REMOVE": "Group removed"
+      },
+      "ContactOrganization": {
+        "INSERT": "Organization added",
+        "UPDATE": "Organization changed",
+        "REMOVE": "Organization removed"
       }
     }
   },

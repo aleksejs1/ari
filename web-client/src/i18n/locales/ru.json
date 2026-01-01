@@ -81,6 +81,16 @@
     "addressTypePlaceholder": "Тип (напр. Дом, Офис)",
     "groups": "Группы",
     "selectGroup": "Выберите группу...",
+    "organizations": "Организации",
+    "addOrganization": "Добавить организацию",
+    "organizationName": "Название организации",
+    "organizationTitle": "Должность",
+    "organizationDepartment": "Отдел",
+    "organizationType": "Тип",
+    "organizationTypePlaceholder": "Тип",
+    "organizationDescription": "Описание",
+    "organizationStartDate": "Дата начала",
+    "organizationEndDate": "Дата окончания",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
     "editDescription": "Здесь вы можете изменить данные контакта.",
@@ -117,6 +127,11 @@
           "INSERT": "Адрес добавлен",
           "UPDATE": "Адрес изменен",
           "REMOVE": "Адрес удален"
+        },
+        "ContactOrganization": {
+          "INSERT": "Организация добавлена",
+          "UPDATE": "Организация изменена",
+          "REMOVE": "Организация удалена"
         }
       }
     },
@@ -229,6 +244,11 @@
         "INSERT": "Группа добавлена",
         "UPDATE": "Группа изменена",
         "REMOVE": "Группа удалена"
+      },
+      "ContactOrganization": {
+        "INSERT": "Организация добавлена",
+        "UPDATE": "Организация изменена",
+        "REMOVE": "Организация удалена"
       }
     }
   },

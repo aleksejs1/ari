@@ -2,7 +2,7 @@ import { type TFunction } from 'i18next'
 import { Link } from 'react-router-dom'
 
 import { formatLocalizedDate } from '@/lib/utils'
-import { type TimelineEvent } from '@/types/models'
+import { type ContactOrganization, type TimelineEvent } from '@/types/models'
 
 const isDateTimeObject = (val: unknown): val is { date: string } => {
   return (
@@ -33,10 +33,10 @@ const formatContactValue = (val: Record<string, unknown>): React.ReactElement | 
     return null
   }
 
-  const label = val.displayName || (val as { name?: string }).name || `Contact #${cid}`
+  const label = val.displayName || (val as { name?: string }).name || `Contact #${cid} `
 
   return (
-    <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+    <Link to={`/ contacts / ${cid} `} className="text-blue-600 underline hover:text-blue-800">
       <>{label}</>
     </Link>
   )
@@ -79,8 +79,8 @@ const formatStringValue = (val: string, fieldName?: string): React.ReactElement 
     const cid = val.split('/').pop()
     if (cid && cid !== 'undefined' && cid !== 'null') {
       return (
-        <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
-          {`Contact #${cid}`}
+        <Link to={`/ contacts / ${cid} `} className="text-blue-600 underline hover:text-blue-800">
+          {`Contact #${cid} `}
         </Link>
       )
     }
@@ -89,14 +89,14 @@ const formatStringValue = (val: string, fieldName?: string): React.ReactElement 
   if (val.startsWith('/api/groups/')) {
     const gid = val.split('/').pop()
     if (gid) {
-      return <>{`Group #${gid}`}</>
+      return <>{`Group #${gid} `}</>
     }
   }
 
   if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
     return (
-      <Link to={`/contacts/${val}`} className="text-blue-600 underline hover:text-blue-800">
-        {`Contact #${val}`}
+      <Link to={`/ contacts / ${val} `} className="text-blue-600 underline hover:text-blue-800">
+        {`Contact #${val} `}
       </Link>
     )
   }
@@ -192,11 +192,11 @@ export const formatChangeValue = (
 export const getLogLabel = (log: TimelineEvent, t: TFunction): string => {
   const { action, entityType } = log
   const type = entityType.replace(/^App\\Entity\\/, '')
-  return t(`contacts.history.actions.${type}.${action}`, `${action} ${type}`)
+  return t(`contacts.history.actions.${type}.${action} `, `${action} ${type} `)
 }
 
 const getContactNameLabel = (snapshot: Record<string, unknown>) => {
-  return `${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''}`.trim()
+  return `${(snapshot.family as string) || ''} ${(snapshot.given as string) || ''} `.trim()
 }
 
 const getContactDateLabel = (snapshot: Record<string, unknown>, language: string) => {
@@ -235,6 +235,30 @@ const getContactAddressLabel = (snapshot: Record<string, unknown>) => {
   )
 }
 
+const getContactOrganizationLabel = (
+  snapshot: Record<string, unknown> | ContactOrganization,
+  language: string,
+) => {
+  const parts = [snapshot.name, snapshot.title, snapshot.department].filter(Boolean).join(', ')
+
+  // Format dates if present
+  const start = snapshot.startDate
+    ? formatLocalizedDate(snapshot.startDate as string, language)
+    : ''
+  const end = snapshot.endDate ? formatLocalizedDate(snapshot.endDate as string, language) : ''
+  let dates = ''
+  if (start || end) {
+    const range = end ? ` - ${end} ` : ''
+    dates = `(${start}${range})`
+  }
+
+  return (
+    <>
+      {parts} {dates} ({(snapshot.type as string) || ''})
+    </>
+  )
+}
+
 export const getLogSnapshotDetails = (
   log: TimelineEvent,
   language: string,
@@ -257,6 +281,7 @@ export const getLogSnapshotDetails = (
     ContactPhoneNumber: () => getContactValueTypeLabel(snapshot),
     ContactEmailAdress: () => getContactValueTypeLabel(snapshot),
     ContactAddress: () => getContactAddressLabel(snapshot),
+    ContactOrganization: () => getContactOrganizationLabel(snapshot, language),
     ContactGroup: () => (
       <>
         {(snapshot.groupResource as { name?: string })?.name ||

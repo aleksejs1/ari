@@ -392,6 +392,62 @@ export interface paths {
         patch: operations["api_contact_names_id_patch"];
         trace?: never;
     };
+    "/api/contact_organizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactOrganization resources.
+         * @description Retrieves the collection of ContactOrganization resources.
+         */
+        get: operations["api_contact_organizations_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactOrganization resource.
+         * @description Creates a ContactOrganization resource.
+         */
+        post: operations["api_contact_organizations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_organizations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactOrganization resource.
+         * @description Retrieves a ContactOrganization resource.
+         */
+        get: operations["api_contact_organizations_id_get"];
+        /**
+         * Replaces the ContactOrganization resource.
+         * @description Replaces the ContactOrganization resource.
+         */
+        put: operations["api_contact_organizations_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactOrganization resource.
+         * @description Removes the ContactOrganization resource.
+         */
+        delete: operations["api_contact_organizations_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactOrganization resource.
+         * @description Updates the ContactOrganization resource.
+         */
+        patch: operations["api_contact_organizations_id_patch"];
+        trace?: never;
+    };
     "/api/contact_phone_numbers": {
         parameters: {
             query?: never;
@@ -962,6 +1018,7 @@ export interface components {
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.create"][];
             contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
+            contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
         };
         "Contact-contact.create.jsonMergePatch": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
@@ -970,6 +1027,7 @@ export interface components {
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.create"][];
             contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
+            contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
         };
         "Contact-contact.read": {
             readonly id?: number;
@@ -979,6 +1037,7 @@ export interface components {
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-contact.read"][];
             contactAddresses?: components["schemas"]["ContactAddress-contact.read"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.read"][];
+            contactOrganizations?: components["schemas"]["ContactOrganization-contact.read"][];
         };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -988,6 +1047,7 @@ export interface components {
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress.jsonld-contact.read"][];
             contactAddresses?: components["schemas"]["ContactAddress.jsonld-contact.read"][];
             contactGroups?: components["schemas"]["ContactGroup.jsonld-contact.read"][];
+            contactOrganizations?: components["schemas"]["ContactOrganization.jsonld-contact.read"][];
         };
         "ContactAddress-contact.create": {
             type?: string | null;
@@ -1306,6 +1366,107 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
+        };
+        "ContactOrganization-contact.create": {
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization-contact.read": {
+            readonly id?: number;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization-contact_organization.create_contact_organization.update": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization-contact_organization.create_contact_organization.update.jsonMergePatch": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization-contact_organization.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization.jsonld-contact_organization.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
         };
         "ContactPhoneNumber-contact.create": {
             value?: string | null;
@@ -3816,6 +3977,339 @@ export interface operations {
                 content: {
                     "application/ld+json": components["schemas"]["ContactName.jsonld-contact_name.read"];
                     "application/json": components["schemas"]["ContactName-contact_name.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_organizations_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactOrganization collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactOrganization.jsonld-contact_organization.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactOrganization-contact_organization.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_organizations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactOrganization resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactOrganization-contact_organization.create_contact_organization.update"];
+                "application/json": components["schemas"]["ContactOrganization-contact_organization.create_contact_organization.update"];
+            };
+        };
+        responses: {
+            /** @description ContactOrganization resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactOrganization.jsonld-contact_organization.read"];
+                    "application/json": components["schemas"]["ContactOrganization-contact_organization.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_organizations_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactOrganization identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactOrganization resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactOrganization.jsonld-contact_organization.read"];
+                    "application/json": components["schemas"]["ContactOrganization-contact_organization.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_organizations_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactOrganization identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactOrganization resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactOrganization-contact_organization.create_contact_organization.update"];
+                "application/json": components["schemas"]["ContactOrganization-contact_organization.create_contact_organization.update"];
+            };
+        };
+        responses: {
+            /** @description ContactOrganization resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactOrganization.jsonld-contact_organization.read"];
+                    "application/json": components["schemas"]["ContactOrganization-contact_organization.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_organizations_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactOrganization identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactOrganization resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_organizations_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactOrganization identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactOrganization resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactOrganization-contact_organization.create_contact_organization.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactOrganization resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactOrganization.jsonld-contact_organization.read"];
+                    "application/json": components["schemas"]["ContactOrganization-contact_organization.read"];
                 };
             };
             /** @description Invalid input */
