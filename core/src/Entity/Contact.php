@@ -127,6 +127,18 @@ class Contact implements TenantAwareInterface
     )]
     private Collection $contactGroups;
 
+    /**
+     * @var Collection<int, ContactOrganization>
+     */
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactOrganization::class,
+        mappedBy: 'contact',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private Collection $contactOrganizations;
+
     public function __construct()
     {
         $this->contactNames = new ArrayCollection();
@@ -135,6 +147,7 @@ class Contact implements TenantAwareInterface
         $this->contactEmailAdresses = new ArrayCollection();
         $this->contactAddresses = new ArrayCollection();
         $this->contactGroups = new ArrayCollection();
+        $this->contactOrganizations = new ArrayCollection();
     }
 
     public function setUser(?User $user): static
@@ -338,6 +351,37 @@ class Contact implements TenantAwareInterface
             // set the owning side to null (unless already changed)
             if ($contactGroup->getContact() === $this) {
                 $contactGroup->setContact(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContactOrganization>
+     */
+    public function getContactOrganizations(): Collection
+    {
+        return $this->contactOrganizations;
+    }
+
+    public function addContactOrganization(ContactOrganization $contactOrganization): static
+    {
+        if (!$this->contactOrganizations->contains($contactOrganization)) {
+            $this->contactOrganizations->add($contactOrganization);
+            $contactOrganization->setContact($this);
+            $contactOrganization->setTenant($this->getTenant());
+        }
+
+        return $this;
+    }
+
+    public function removeContactOrganization(ContactOrganization $contactOrganization): static
+    {
+        if ($this->contactOrganizations->removeElement($contactOrganization)) {
+            // set the owning side to null (unless already changed)
+            if ($contactOrganization->getContact() === $this) {
+                $contactOrganization->setContact(null);
             }
         }
 
