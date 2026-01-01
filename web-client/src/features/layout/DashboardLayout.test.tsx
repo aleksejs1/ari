@@ -1,10 +1,17 @@
+import { type UseQueryResult } from '@tanstack/react-query'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
 import DashboardLayout from './DashboardLayout'
 
+import { useGroups } from '@/features/groups/useGroups'
 import { useAuth } from '@/hooks/useAuth'
+import { type Group } from '@/types/models'
+
+vi.mock('@/features/groups/useGroups', () => ({
+  useGroups: vi.fn(),
+}))
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),
@@ -20,6 +27,12 @@ describe('DashboardLayout', () => {
       isAuthenticated: true,
       isLoading: false,
     })
+
+    vi.mocked(useGroups).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: false,
+    } as unknown as UseQueryResult<Group[]>)
 
     render(
       <MemoryRouter>
@@ -41,6 +54,12 @@ describe('DashboardLayout', () => {
       isAuthenticated: true,
       isLoading: false,
     })
+
+    vi.mocked(useGroups).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: false,
+    } as unknown as UseQueryResult<Group[]>)
 
     render(
       <MemoryRouter initialEntries={['/']}>
@@ -65,6 +84,12 @@ describe('DashboardLayout', () => {
       isAuthenticated: true,
       isLoading: false,
     })
+
+    vi.mocked(useGroups).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: false,
+    } as unknown as UseQueryResult<Group[]>)
 
     render(
       <MemoryRouter>

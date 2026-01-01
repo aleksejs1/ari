@@ -91,7 +91,6 @@
     "organizationDescription": "Описание",
     "organizationStartDate": "Дата начала",
     "organizationEndDate": "Дата окончания",
-    "organizationEndDate": "Дата окончания",
     "biography": "Биография",
     "addBiography": "Добавить биографию",
     "biographyPlaceholder": "Введите текст биографии...",
@@ -282,7 +281,6 @@
     "invalidEmail": "Неверный формат email",
     "typeRequired": "Тип обязателен",
     "streetRequired": "Улица обязательна",
-    "cityRequired": "Город обязателен",
     "cityRequired": "Город обязателен",
     "postalCodeRequired": "Почтовый индекс обязателен",
     "biographyRequired": "Текст биографии обязателен"

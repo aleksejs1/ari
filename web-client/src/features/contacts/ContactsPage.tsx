@@ -20,7 +20,8 @@ import { type Contact, type ContactDate } from '@/types/models'
 export default function ContactsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const page = Number(searchParams.get('page')) || 1
-  const { data, isLoading, isPlaceholderData, isError } = useContacts(page)
+  const group = searchParams.get('group') ?? undefined
+  const { data, isLoading, isPlaceholderData, isError } = useContacts(page, { group })
   const deleteMutation = useDeleteContact()
   const { t } = useTranslation()
 
@@ -93,8 +94,18 @@ export default function ContactsPage() {
 
         {totalPages > 1 && (
           <ContactsPagination
-            onPrevious={() => setSearchParams({ page: Math.max(1, page - 1).toString() })}
-            onNext={() => (hasNext ? setSearchParams({ page: (page + 1).toString() }) : null)}
+            onPrevious={() => {
+              const newParams = new URLSearchParams(searchParams)
+              newParams.set('page', Math.max(1, page - 1).toString())
+              setSearchParams(newParams)
+            }}
+            onNext={() => {
+              if (hasNext) {
+                const newParams = new URLSearchParams(searchParams)
+                newParams.set('page', (page + 1).toString())
+                setSearchParams(newParams)
+              }
+            }}
             hasPrevious={hasPrevious}
             hasNext={hasNext}
             currentPage={page}

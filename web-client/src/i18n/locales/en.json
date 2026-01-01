@@ -91,7 +91,6 @@
     "organizationDescription": "Description",
     "organizationStartDate": "Start Date",
     "organizationEndDate": "End Date",
-    "organizationEndDate": "End Date",
     "biography": "Biographies",
     "addBiography": "Add Biography",
     "biographyPlaceholder": "Enter biography text...",
@@ -282,7 +281,6 @@
     "invalidEmail": "Invalid email format",
     "typeRequired": "Type is required",
     "streetRequired": "Street is required",
-    "cityRequired": "City is required",
     "cityRequired": "City is required",
     "postalCodeRequired": "Postal code is required",
     "biographyRequired": "Biography text is required"
