@@ -84,6 +84,38 @@ describe('ContactsTable', () => {
     expect(screen.getByText(/Birthday/)).toBeInTheDocument()
   })
 
+  it('renders group pills', () => {
+    vi.mocked(useGroups).mockReturnValue({
+      data: [{ '@id': '/api/groups/1', name: 'Work' }],
+    } as unknown as UseQueryResult<unknown, unknown>)
+
+    const mockDataWithGroups: Contact[] = [
+      {
+        '@id': '/api/contacts/3',
+        id: 3,
+        '@type': 'Contact',
+        contactNames: [{ '@id': '/api/cn/3', '@type': 'ContactName', given: 'Charlie' }],
+        contactGroups: [
+          { '@id': '/api/cg/1', '@type': 'ContactGroup', groupResource: '/api/groups/1' },
+        ],
+      },
+    ]
+
+    render(
+      <MemoryRouter>
+        <ContactsTable
+          data={mockDataWithGroups}
+          onEdit={vi.fn()}
+          onDelete={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+        />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('Work')).toBeInTheDocument()
+  })
+
   it('triggers actions', () => {
     const onEdit = vi.fn()
     const onDelete = vi.fn()
