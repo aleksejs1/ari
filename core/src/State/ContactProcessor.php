@@ -59,7 +59,9 @@ class ContactProcessor implements ProcessorInterface
                 $existing->getContactEmailAdresses()->clear();
                 $existing->getContactAddresses()->clear();
                 $existing->getContactGroups()->clear();
+                $existing->getContactGroups()->clear();
                 $existing->getContactOrganizations()->clear();
+                $existing->getContactBiographies()->clear();
 
                 // Add new nested entities from the deserialized data
                 foreach ($data->getContactNames() as $contactName) {
@@ -109,6 +111,12 @@ class ContactProcessor implements ProcessorInterface
                     $contactOrganization->setContact($existing);
                     $contactOrganization->setTenant($existing->getTenant());
                     $existing->addContactOrganization($contactOrganization);
+                }
+
+                foreach ($data->getContactBiographies() as $contactBiography) {
+                    $contactBiography->setContact($existing);
+                    $contactBiography->setTenant($existing->getTenant());
+                    $existing->addContactBiography($contactBiography);
                 }
 
                 // Flush changes and return the existing entity
@@ -184,6 +192,15 @@ class ContactProcessor implements ProcessorInterface
                 }
                 if (null === $contactOrganization->getTenant()) {
                     $contactOrganization->setTenant($data->getTenant());
+                }
+            }
+
+            foreach ($data->getContactBiographies() as $contactBiography) {
+                if (null === $contactBiography->getContact()) {
+                    $contactBiography->setContact($data);
+                }
+                if (null === $contactBiography->getTenant()) {
+                    $contactBiography->setTenant($data->getTenant());
                 }
             }
         }

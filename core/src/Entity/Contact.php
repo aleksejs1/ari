@@ -139,6 +139,18 @@ class Contact implements TenantAwareInterface
     )]
     private Collection $contactOrganizations;
 
+    /**
+     * @var Collection<int, ContactBiography>
+     */
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactBiography::class,
+        mappedBy: 'contact',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private Collection $contactBiographies;
+
     public function __construct()
     {
         $this->contactNames = new ArrayCollection();
@@ -148,6 +160,7 @@ class Contact implements TenantAwareInterface
         $this->contactAddresses = new ArrayCollection();
         $this->contactGroups = new ArrayCollection();
         $this->contactOrganizations = new ArrayCollection();
+        $this->contactBiographies = new ArrayCollection();
     }
 
     public function setUser(?User $user): static
@@ -382,6 +395,37 @@ class Contact implements TenantAwareInterface
             // set the owning side to null (unless already changed)
             if ($contactOrganization->getContact() === $this) {
                 $contactOrganization->setContact(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContactBiography>
+     */
+    public function getContactBiographies(): Collection
+    {
+        return $this->contactBiographies;
+    }
+
+    public function addContactBiography(ContactBiography $contactBiography): static
+    {
+        if (!$this->contactBiographies->contains($contactBiography)) {
+            $this->contactBiographies->add($contactBiography);
+            $contactBiography->setContact($this);
+            $contactBiography->setTenant($this->getTenant());
+        }
+
+        return $this;
+    }
+
+    public function removeContactBiography(ContactBiography $contactBiography): static
+    {
+        if ($this->contactBiographies->removeElement($contactBiography)) {
+            // set the owning side to null (unless already changed)
+            if ($contactBiography->getContact() === $this) {
+                $contactBiography->setContact(null);
             }
         }
 
