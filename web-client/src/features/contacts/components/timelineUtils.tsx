@@ -242,13 +242,17 @@ const getContactOrganizationLabel = (
   const parts = [snapshot.name, snapshot.title, snapshot.department].filter(Boolean).join(', ')
 
   // Format dates if present
-  const start = snapshot.startDate
-    ? formatLocalizedDate(snapshot.startDate as string, language)
-    : ''
-  const end = snapshot.endDate ? formatLocalizedDate(snapshot.endDate as string, language) : ''
+  const start =
+    snapshot.startDate && !isNaN(new Date(snapshot.startDate as string).getTime())
+      ? formatLocalizedDate(snapshot.startDate as string, language)
+      : ''
+  const end =
+    snapshot.endDate && !isNaN(new Date(snapshot.endDate as string).getTime())
+      ? formatLocalizedDate(snapshot.endDate as string, language)
+      : ''
   let dates = ''
   if (start || end) {
-    const range = end ? ` - ${end} ` : ''
+    const range = end ? ` - ${end}` : ''
     dates = `(${start}${range})`
   }
 
