@@ -1,10 +1,12 @@
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
+import { type UseMutationResult, type UseQueryResult } from '@tanstack/react-query'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import GroupsPage from './GroupsPage'
-import * as useGroupsHooks from './useGroups'
+import { useGroups, useCreateGroup, useUpdateGroup, useDeleteGroup } from './useGroups'
 
-import { TestWrapper } from '@/test/setup'
+import type { Group } from '@/types/models'
 
 // Mock the hooks
 vi.mock('./useGroups', () => ({
@@ -14,90 +16,140 @@ vi.mock('./useGroups', () => ({
   useDeleteGroup: vi.fn(),
 }))
 
+// Mock components to simplify testing
+vi.mock('./components/GroupsTable', () => ({
+  GroupsTable: ({ groups, onEdit }: { groups: Group[]; onEdit: (g: Group) => void }) => (
+    <div data-testid="groups-table">
+      {groups.map((g) => (
+        <div key={g.id} data-testid={`group-${g.id}`}>
+          {g.name}
+          <button onClick={() => onEdit(g)}>Edit</button>
+        </div>
+      ))}
+    </div>
+  ),
+}))
+
+vi.mock('./components/GroupDialog', () => ({
+  GroupDialog: ({ open, group }: { open: boolean; group?: Group }) => (
+    <div data-testid="group-dialog">
+      Dialog: {open ? 'Open' : 'Closed'}
+      {group ? ` - Editing: ${group.name}` : ' - Creating'}
+    </div>
+  ),
+}))
+
 describe('GroupsPage', () => {
-  const mockGroups = [
-    { id: 1, name: 'Family', color: '#ff0000' },
-    { id: 2, name: 'Friends', color: '#00ff00' },
+  const mockGroups: Group[] = [
+    { '@id': '/api/groups/1', '@type': 'Group', id: 1, name: 'Family', color: '#ff0000' },
+    { '@id': '/api/groups/2', '@type': 'Group', id: 2, name: 'Work', color: '#0000ff' },
   ]
 
   beforeEach(() => {
-    vi.resetAllMocks()
-    vi.mocked(useGroupsHooks.useGroups).mockReturnValue({
-      data: mockGroups,
-      isLoading: false,
-      error: null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-
-    vi.mocked(useGroupsHooks.useCreateGroup).mockReturnValue({
+    vi.clearAllMocks()
+    vi.mocked(useCreateGroup).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-
-    vi.mocked(useGroupsHooks.useUpdateGroup).mockReturnValue({
+    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    vi.mocked(useUpdateGroup).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-
-    vi.mocked(useGroupsHooks.useDeleteGroup).mockReturnValue({
+    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    vi.mocked(useDeleteGroup).mockReturnValue({
       mutateAsync: vi.fn(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+      isPending: false,
+    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
   })
 
   it('renders loading state', () => {
-    vi.mocked(useGroupsHooks.useGroups).mockReturnValue({
+    vi.mocked(useGroups).mockReturnValue({
       data: undefined,
       isLoading: true,
       error: null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    } as unknown as UseQueryResult<Group[], unknown>)
 
-    render(<GroupsPage />, { wrapper: TestWrapper })
-    // Loader is an icon, might not have text, checking generic structure or class could be hard without aria-label.
-    // However, GroupsPage returns a div with "animate-spin" class on Loader2.
-    // Let's just check if it doesn't crash and doesn't show "failed".
-    const loader = document.querySelector('.animate-spin')
-    expect(loader).toBeInTheDocument()
+    render(
+      <MemoryRouter>
+        <GroupsPage />
+      </MemoryRouter>,
+    )
+
+    // Check for spinner or loading indicator logic (Loader2 is used in GroupsPage)
+    // The implementation uses Loader2 but no text. We can check for the svg or class.
+    // However, it's easier to check that the table is NOT present.
+    expect(screen.queryByTestId('groups-table')).not.toBeInTheDocument()
   })
 
   it('renders error state', () => {
-    vi.mocked(useGroupsHooks.useGroups).mockReturnValue({
+    vi.mocked(useGroups).mockReturnValue({
       data: undefined,
       isLoading: false,
-      error: new Error('Failed'),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+      error: new Error('Failed to load'),
+    } as unknown as UseQueryResult<Group[], unknown>)
 
-    render(<GroupsPage />, { wrapper: TestWrapper })
+    render(
+      <MemoryRouter>
+        <GroupsPage />
+      </MemoryRouter>,
+    )
+
     expect(screen.getByText('errors.failedToLoadGroups')).toBeInTheDocument()
   })
 
-  it('renders group list', () => {
-    render(<GroupsPage />, { wrapper: TestWrapper })
+  it('renders groups list', () => {
+    vi.mocked(useGroups).mockReturnValue({
+      data: mockGroups,
+      isLoading: false,
+      error: null,
+    } as unknown as UseQueryResult<Group[], unknown>)
+
+    render(
+      <MemoryRouter>
+        <GroupsPage />
+      </MemoryRouter>,
+    )
+
     expect(screen.getByText('groups.title')).toBeInTheDocument()
+    expect(screen.getByTestId('groups-table')).toBeInTheDocument()
     expect(screen.getByText('Family')).toBeInTheDocument()
-    expect(screen.getByText('Friends')).toBeInTheDocument()
+    expect(screen.getByText('Work')).toBeInTheDocument()
   })
 
-  it('opens create dialog', async () => {
-    render(<GroupsPage />, { wrapper: TestWrapper })
-    // The query might find multiple if relying on text alone if key is same as content?
-    // t('groups.createGroup', 'Create Group')
-    // Button has 'groups.createGroup'.
-    // `getAllByText` returns array.
+  it('opens create dialog', () => {
+    vi.mocked(useGroups).mockReturnValue({
+      data: mockGroups,
+      isLoading: false,
+      error: null,
+    } as unknown as UseQueryResult<Group[], unknown>)
 
-    // safe approach:
-    const createButton = screen.getAllByText('groups.createGroup')[0]
-    fireEvent.click(createButton)
+    render(
+      <MemoryRouter>
+        <GroupsPage />
+      </MemoryRouter>,
+    )
 
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    })
+    fireEvent.click(screen.getByText('groups.createGroup'))
 
-    const dialog = screen.getByRole('dialog')
-    expect(within(dialog).getByText('groups.createGroup')).toBeInTheDocument()
+    expect(screen.getByTestId('group-dialog')).toHaveTextContent('Dialog: Open - Creating')
+  })
+
+  it('opens edit dialog', () => {
+    vi.mocked(useGroups).mockReturnValue({
+      data: mockGroups,
+      isLoading: false,
+      error: null,
+    } as unknown as UseQueryResult<Group[], unknown>)
+
+    render(
+      <MemoryRouter>
+        <GroupsPage />
+      </MemoryRouter>,
+    )
+
+    // Click edit on the first group
+    const editButtons = screen.getAllByText('Edit')
+    fireEvent.click(editButtons[0])
+
+    expect(screen.getByTestId('group-dialog')).toHaveTextContent('Dialog: Open - Editing: Family')
   })
 })

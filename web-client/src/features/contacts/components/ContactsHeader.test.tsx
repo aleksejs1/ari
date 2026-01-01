@@ -33,4 +33,47 @@ describe('ContactsHeader', () => {
       expect(onSearchChange).toHaveBeenCalledWith('test')
     })
   })
+
+  it('syncs input value from prop when not focused', () => {
+    const { rerender } = render(
+      <ContactsHeader onCreate={vi.fn()} search="initial" onSearchChange={vi.fn()} />,
+    )
+    const input = screen.getByPlaceholderText('common.search')
+
+    expect(input).toHaveValue('initial')
+
+    // Update prop
+    rerender(<ContactsHeader onCreate={vi.fn()} search="updated" onSearchChange={vi.fn()} />)
+
+    expect(input).toHaveValue('updated')
+  })
+
+  it('does NOT sync input value from prop when focused', () => {
+    const { rerender } = render(
+      <ContactsHeader onCreate={vi.fn()} search="initial" onSearchChange={vi.fn()} />,
+    )
+    const input = screen.getByPlaceholderText('common.search')
+
+    // Focus and type
+    input.focus()
+    fireEvent.change(input, { target: { value: 'typing' } })
+    expect(input).toHaveValue('typing')
+
+    // Update prop (simulate navigation or external change)
+    rerender(<ContactsHeader onCreate={vi.fn()} search="external" onSearchChange={vi.fn()} />)
+
+    // Should keep user input because it is focused
+    expect(input).toHaveValue('typing')
+
+    // Blur and update prop, should sync
+    input.blur()
+
+    // We need to trigger a re-render for the effect to run again with the SAME prop?
+    // No, the effect runs on [search]. If search hasn't changed since last render, it won't run.
+    // Sync happens when 'search' prop changes.
+    // So to test sync after blur, we'd need 'search' to change again.
+
+    rerender(<ContactsHeader onCreate={vi.fn()} search="external_new" onSearchChange={vi.fn()} />)
+    expect(input).toHaveValue('external_new')
+  })
 })

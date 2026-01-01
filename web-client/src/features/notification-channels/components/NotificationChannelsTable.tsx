@@ -122,8 +122,8 @@ export function NotificationChannelsTable({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                {t('notificationChannels.noChannels')}
+              <TableCell colSpan={4} className="h-24 text-center">
+                {t('notificationChannels.noChannels', 'No notification channels found.')}
               </TableCell>
             </TableRow>
           )}
