@@ -100,9 +100,11 @@ final class UserOwnerProcessorTest extends TestCase
                 return $this->tenant;
             }
 
-            public function setTenant(User $tenant): void
+            #[\Override]
+            public function setTenant(?User $tenant): static
             {
                 $this->tenant = $tenant;
+                return $this;
             }
         };
 
@@ -130,9 +132,11 @@ final class UserOwnerProcessorTest extends TestCase
                 return $this->tenant;
             }
 
-            public function setTenant(User $tenant): void
+            #[\Override]
+            public function setTenant(?User $tenant): static
             {
                 $this->tenant = $tenant;
+                return $this;
             }
         };
 

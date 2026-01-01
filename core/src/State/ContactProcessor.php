@@ -51,73 +51,72 @@ class ContactProcessor implements ProcessorInterface
             $existing = $this->entityManager->find(Contact::class, $uriVariables['id']);
 
             if (null !== $existing) {
-                // Clear existing collections (orphanRemoval will delete them)
-                $existing->getContactNames()->clear();
-                $existing->getContactDates()->clear();
-                $existing->getPhoneNumbers()->clear();
-                $existing->getPhoneNumbers()->clear();
-                $existing->getContactEmailAdresses()->clear();
-                $existing->getContactAddresses()->clear();
-                $existing->getContactGroups()->clear();
-                $existing->getContactGroups()->clear();
-                $existing->getContactOrganizations()->clear();
-                $existing->getContactBiographies()->clear();
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactNames(),
+                    $existing->getContactNames(),
+                    'addContactName',
+                    true
+                );
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactDates(),
+                    $existing->getContactDates(),
+                    'addContactDate',
+                    true
+                );
+                $this->handleCollection(
+                    $existing,
+                    $data->getPhoneNumbers(),
+                    $existing->getPhoneNumbers(),
+                    'addPhoneNumber',
+                    true
+                );
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactEmailAdresses(),
+                    $existing->getContactEmailAdresses(),
+                    'addContactEmailAdress',
+                    true
+                );
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactAddresses(),
+                    $existing->getContactAddresses(),
+                    'addContactAddress',
+                    true
+                );
 
-                // Add new nested entities from the deserialized data
-                foreach ($data->getContactNames() as $contactName) {
-                    $contactName->setContact($existing);
-                    $contactName->setTenant($existing->getTenant());
-                    $existing->addContactName($contactName);
-                }
-
-                foreach ($data->getContactDates() as $contactDate) {
-                    $contactDate->setContact($existing);
-                    $contactDate->setTenant($existing->getTenant());
-                    $existing->addContactDate($contactDate);
-                }
-
-                foreach ($data->getPhoneNumbers() as $phoneNumber) {
-                    $phoneNumber->setContact($existing);
-                    $phoneNumber->setTenant($existing->getTenant());
-                    $existing->addPhoneNumber($phoneNumber);
-                }
-
-                foreach ($data->getContactEmailAdresses() as $email) {
-                    $email->setContact($existing);
-                    $email->setTenant($existing->getTenant());
-                    $existing->addContactEmailAdress($email);
-                }
-
-                foreach ($data->getContactAddresses() as $address) {
-                    $address->setContact($existing);
-                    $address->setTenant($existing->getTenant());
-                    $existing->addContactAddress($address);
-                }
-
-                foreach ($data->getContactGroups() as $contactGroup) {
-                    $contactGroup->setContact($existing);
-                    $contactGroup->setTenant($existing->getTenant());
-
-                    // Propagate tenant to nested Group if it's new
-                    $group = $contactGroup->getGroupResource();
-                    if (null !== $group && null === $group->getUser()) {
-                        $group->setUser($existing->getTenant());
+                // ContactGroup has extra logic
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactGroups(),
+                    $existing->getContactGroups(),
+                    'addContactGroup',
+                    true,
+                    function ($contactGroup, $owner) {
+                         // Propagate tenant to nested Group if it's new
+                        $group = $contactGroup->getGroupResource();
+                        if (null !== $group && null === $group->getUser()) {
+                            $group->setUser($owner->getTenant());
+                        }
                     }
+                );
 
-                    $existing->addContactGroup($contactGroup);
-                }
-
-                foreach ($data->getContactOrganizations() as $contactOrganization) {
-                    $contactOrganization->setContact($existing);
-                    $contactOrganization->setTenant($existing->getTenant());
-                    $existing->addContactOrganization($contactOrganization);
-                }
-
-                foreach ($data->getContactBiographies() as $contactBiography) {
-                    $contactBiography->setContact($existing);
-                    $contactBiography->setTenant($existing->getTenant());
-                    $existing->addContactBiography($contactBiography);
-                }
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactOrganizations(),
+                    $existing->getContactOrganizations(),
+                    'addContactOrganization',
+                    true
+                );
+                $this->handleCollection(
+                    $existing,
+                    $data->getContactBiographies(),
+                    $existing->getContactBiographies(),
+                    'addContactBiography',
+                    true
+                );
 
                 // Flush changes and return the existing entity
                 $this->entityManager->flush();
@@ -126,86 +125,86 @@ class ContactProcessor implements ProcessorInterface
             }
         } else {
             // For POST/PATCH operations, just link nested entities
-            foreach ($data->getContactNames() as $contactName) {
-                if (null === $contactName->getContact()) {
-                    $contactName->setContact($data);
-                }
-                if (null === $contactName->getTenant()) {
-                    $contactName->setTenant($data->getTenant());
-                }
-            }
+            $this->handleCollection($data, $data->getContactNames(), null, 'addContactName', false);
+            $this->handleCollection($data, $data->getContactDates(), null, 'addContactDate', false);
+            $this->handleCollection($data, $data->getPhoneNumbers(), null, 'addPhoneNumber', false);
+            $this->handleCollection($data, $data->getContactEmailAdresses(), null, 'addContactEmailAdress', false);
+            $this->handleCollection($data, $data->getContactAddresses(), null, 'addContactAddress', false);
 
-            foreach ($data->getContactDates() as $contactDate) {
-                if (null === $contactDate->getContact()) {
-                    $contactDate->setContact($data);
+            $this->handleCollection(
+                $data,
+                $data->getContactGroups(),
+                null,
+                'addContactGroup',
+                false,
+                function ($contactGroup, $owner) {
+                     // Propagate tenant to nested Group if it's new
+                    $group = $contactGroup->getGroupResource();
+                    if (null !== $group && null === $group->getUser()) {
+                        $group->setUser($owner->getTenant());
+                    }
                 }
-                if (null === $contactDate->getTenant()) {
-                    $contactDate->setTenant($data->getTenant());
-                }
-            }
+            );
 
-            foreach ($data->getPhoneNumbers() as $phoneNumber) {
-                if (null === $phoneNumber->getContact()) {
-                    $phoneNumber->setContact($data);
-                }
-                if (null === $phoneNumber->getTenant()) {
-                    $phoneNumber->setTenant($data->getTenant());
-                }
-            }
-
-            foreach ($data->getContactEmailAdresses() as $email) {
-                if (null === $email->getContact()) {
-                    $email->setContact($data);
-                }
-                if (null === $email->getTenant()) {
-                    $email->setTenant($data->getTenant());
-                }
-            }
-
-            foreach ($data->getContactAddresses() as $address) {
-                if (null === $address->getContact()) {
-                    $address->setContact($data);
-                }
-                if (null === $address->getTenant()) {
-                    $address->setTenant($data->getTenant());
-                }
-            }
-
-            foreach ($data->getContactGroups() as $contactGroup) {
-                if (null === $contactGroup->getContact()) {
-                    $contactGroup->setContact($data);
-                }
-                if (null === $contactGroup->getTenant()) {
-                    $contactGroup->setTenant($data->getTenant());
-                }
-
-                // Propagate tenant to nested Group if it's new
-                $group = $contactGroup->getGroupResource();
-                if (null !== $group && null === $group->getUser()) {
-                    $group->setUser($data->getTenant());
-                }
-            }
-
-            foreach ($data->getContactOrganizations() as $contactOrganization) {
-                if (null === $contactOrganization->getContact()) {
-                    $contactOrganization->setContact($data);
-                }
-                if (null === $contactOrganization->getTenant()) {
-                    $contactOrganization->setTenant($data->getTenant());
-                }
-            }
-
-            foreach ($data->getContactBiographies() as $contactBiography) {
-                if (null === $contactBiography->getContact()) {
-                    $contactBiography->setContact($data);
-                }
-                if (null === $contactBiography->getTenant()) {
-                    $contactBiography->setTenant($data->getTenant());
-                }
-            }
+            $this->handleCollection($data, $data->getContactOrganizations(), null, 'addContactOrganization', false);
+            $this->handleCollection($data, $data->getContactBiographies(), null, 'addContactBiography', false);
         }
 
         // Let the UserOwnerProcessor handle user assignment and main persistence
         return $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
+    }
+
+    /**
+     * @template T of object
+     * @param Contact $owner
+     * @param iterable<mixed, T> $items
+     * @param \Doctrine\Common\Collections\Collection<int, T>|null $targetCollection
+     * @param string $addMethod
+     * @param bool $isPut
+     * @param (callable(T, Contact): void)|null $extraLogic
+     */
+    private function handleCollection(
+        Contact $owner,
+        iterable $items,
+        ?\Doctrine\Common\Collections\Collection $targetCollection,
+        string $addMethod,
+        bool $isPut,
+        ?callable $extraLogic = null
+    ): void {
+        if ($isPut && null !== $targetCollection) {
+            $targetCollection->clear();
+            foreach ($items as $item) {
+                if (method_exists($item, 'setContact')) {
+                    $item->setContact($owner);
+                }
+                if ($item instanceof \App\Security\TenantAwareInterface) {
+                    $item->setTenant($owner->getTenant());
+                }
+
+                if (null !== $extraLogic) {
+                    $extraLogic($item, $owner);
+                }
+
+                /** @phpstan-ignore method.dynamicName */
+                $owner->$addMethod($item);
+            }
+        } else {
+            foreach ($items as $item) {
+                if (method_exists($item, 'getContact') && method_exists($item, 'setContact')) {
+                    if (null === $item->getContact()) {
+                        $item->setContact($owner);
+                    }
+                }
+                if ($item instanceof \App\Security\TenantAwareInterface) {
+                    if (null === $item->getTenant()) {
+                        $item->setTenant($owner->getTenant());
+                    }
+                }
+
+                if (null !== $extraLogic) {
+                    $extraLogic($item, $owner);
+                }
+            }
+        }
     }
 }

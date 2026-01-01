@@ -37,9 +37,7 @@ class UserOwnerProcessor implements ProcessorInterface
             $token = $this->tokenStorage->getToken();
             $user = $token?->getUser();
             if ($user instanceof \App\Entity\User) {
-                if (method_exists($data, 'setTenant')) {
-                    $data->setTenant($user);
-                }
+                $data->setTenant($user);
                 if (method_exists($data, 'setUser')) {
                     $data->setUser($user);
                 }
