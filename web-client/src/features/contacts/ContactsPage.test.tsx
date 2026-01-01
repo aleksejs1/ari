@@ -29,8 +29,15 @@ import type { Contact } from '@/types/models'
 
 // Mock Sub Components
 vi.mock('./components/ContactsHeader', () => ({
-  ContactsHeader: ({ onCreate }: { onCreate: () => void }) => (
+  ContactsHeader: ({
+    onCreate,
+    onSearchChange,
+  }: {
+    onCreate: () => void
+    onSearchChange: (val: string) => void
+  }) => (
     <div data-testid="header">
+      <input data-testid="search-input" onChange={(e) => onSearchChange(e.target.value)} />
       <button onClick={onCreate}>Create</button>
     </div>
   ),
@@ -153,6 +160,30 @@ describe('ContactsPage', () => {
 
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalledWith('/api/contacts/1')
+    })
+  })
+
+  it('updates search filter when search input changes', async () => {
+    vi.mocked(useContacts).mockReturnValue({
+      isLoading: false,
+      data: { member: [], view: {} },
+      isError: false,
+    } as unknown as ReturnType<typeof useContacts>)
+
+    render(
+      <MemoryRouter>
+        <ContactsPage />
+      </MemoryRouter>,
+    )
+
+    const input = screen.getByTestId('search-input')
+    fireEvent.change(input, { target: { value: 'alice' } })
+
+    await waitFor(() => {
+      expect(useContacts).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ search: 'alice' }),
+      )
     })
   })
 

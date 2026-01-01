@@ -45,7 +45,7 @@ function hasPreviousPage(view: HydraCollection<unknown>['view'], page: number) {
   return !!view?.['previous'] || page > 1
 }
 
-export function useContacts(page = 1, filters?: { group?: string }) {
+export function useContacts(page = 1, filters?: { group?: string; search?: string }) {
   return useQuery({
     queryKey: ['contacts', page, filters],
     queryFn: async () => {
@@ -54,6 +54,10 @@ export function useContacts(page = 1, filters?: { group?: string }) {
 
       if (filters?.group) {
         params.append('contactGroups.groupResource', filters.group)
+      }
+
+      if (filters?.search) {
+        params.append('search', filters.search)
       }
 
       const response = await api.get<HydraCollection<Contact>>(`/contacts?${params.toString()}`)

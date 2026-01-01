@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
@@ -21,7 +21,43 @@ export default function ContactsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const page = Number(searchParams.get('page')) || 1
   const group = searchParams.get('group') ?? undefined
-  const { data, isLoading, isPlaceholderData, isError } = useContacts(page, { group })
+  const search = searchParams.get('search') ?? undefined
+
+  const [searchTerm, setSearchTerm] = useState(search || '')
+
+  /* eslint-disable react-hooks/rules-of-hooks */
+  // Track previous search to sync state when URL changes externally
+  const [prevSearch, setPrevSearch] = useState(search)
+  if (search !== prevSearch) {
+    setPrevSearch(search)
+    setSearchTerm(search || '')
+  }
+  /* eslint-enable react-hooks/rules-of-hooks */
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev)
+        const currentSearch = newParams.get('search') || ''
+
+        // Avoid redundant updates
+        if ((!searchTerm && !currentSearch) || searchTerm === currentSearch) {
+          return prev
+        }
+
+        if (searchTerm) {
+          newParams.set('search', searchTerm)
+        } else {
+          newParams.delete('search')
+        }
+        newParams.set('page', '1')
+        return newParams
+      })
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchTerm, setSearchParams])
+
+  const { data, isLoading, isPlaceholderData, isError } = useContacts(page, { group, search })
   const deleteMutation = useDeleteContact()
   const { t } = useTranslation()
 
@@ -79,7 +115,7 @@ export default function ContactsPage() {
 
   return (
     <div className={`space-y-6 ${isPlaceholderData ? 'opacity-50' : ''}`}>
-      <ContactsHeader onCreate={handleCreate} />
+      <ContactsHeader onCreate={handleCreate} search={searchTerm} onSearchChange={setSearchTerm} />
 
       <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
         <div className="flex-1">

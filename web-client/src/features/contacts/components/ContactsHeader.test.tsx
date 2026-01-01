@@ -5,18 +5,27 @@ import { ContactsHeader } from './ContactsHeader'
 
 describe('ContactsHeader', () => {
   it('renders correctly', () => {
-    render(<ContactsHeader onCreate={vi.fn()} />)
+    render(<ContactsHeader onCreate={vi.fn()} search="" onSearchChange={vi.fn()} />)
     expect(screen.getByText('contacts.title')).toBeInTheDocument()
     // expect(screen.getByText('Manage your contacts list.')).toBeInTheDocument()
     // Commenting out description check as key might vary or be missing in basic json.
     // If I confirmed key exists I would use it. I'll search for it later if needed.
     expect(screen.getByText('contacts.create')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('common.search')).toBeInTheDocument()
   })
 
   it('calls onCreate when add button is clicked', () => {
     const onCreate = vi.fn()
-    render(<ContactsHeader onCreate={onCreate} />)
+    render(<ContactsHeader onCreate={onCreate} search="" onSearchChange={vi.fn()} />)
     fireEvent.click(screen.getByText('contacts.create'))
     expect(onCreate).toHaveBeenCalled()
+  })
+
+  it('calls onSearchChange when input changes', () => {
+    const onSearchChange = vi.fn()
+    render(<ContactsHeader onCreate={vi.fn()} search="" onSearchChange={onSearchChange} />)
+    const input = screen.getByPlaceholderText('common.search')
+    fireEvent.change(input, { target: { value: 'test' } })
+    expect(onSearchChange).toHaveBeenCalledWith('test')
   })
 })
