@@ -112,6 +112,62 @@ export interface paths {
         patch: operations["api_contacts_id_patch"];
         trace?: never;
     };
+    "/api/contact_biographies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactBiography resources.
+         * @description Retrieves the collection of ContactBiography resources.
+         */
+        get: operations["api_contact_biographies_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactBiography resource.
+         * @description Creates a ContactBiography resource.
+         */
+        post: operations["api_contact_biographies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_biographies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactBiography resource.
+         * @description Retrieves a ContactBiography resource.
+         */
+        get: operations["api_contact_biographies_id_get"];
+        /**
+         * Replaces the ContactBiography resource.
+         * @description Replaces the ContactBiography resource.
+         */
+        put: operations["api_contact_biographies_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactBiography resource.
+         * @description Removes the ContactBiography resource.
+         */
+        delete: operations["api_contact_biographies_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactBiography resource.
+         * @description Updates the ContactBiography resource.
+         */
+        patch: operations["api_contact_biographies_id_patch"];
+        trace?: never;
+    };
     "/api/contact_addresses": {
         parameters: {
             query?: never;

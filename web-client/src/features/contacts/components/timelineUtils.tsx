@@ -286,6 +286,7 @@ export const getLogSnapshotDetails = (
     ContactEmailAdress: () => getContactValueTypeLabel(snapshot),
     ContactAddress: () => getContactAddressLabel(snapshot),
     ContactOrganization: () => getContactOrganizationLabel(snapshot, language),
+    ContactBiography: () => getContactValueTypeLabel(snapshot),
     ContactGroup: () => (
       <>
         {(snapshot.groupResource as { name?: string })?.name ||

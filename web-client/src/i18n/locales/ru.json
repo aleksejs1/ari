@@ -91,6 +91,10 @@
     "organizationDescription": "Описание",
     "organizationStartDate": "Дата начала",
     "organizationEndDate": "Дата окончания",
+    "organizationEndDate": "Дата окончания",
+    "biography": "Биография",
+    "addBiography": "Добавить биографию",
+    "biographyPlaceholder": "Введите текст биографии...",
     "details": "Детали контакта",
     "createDescription": "Добавьте новый контакт в свой список.",
     "editDescription": "Здесь вы можете изменить данные контакта.",
@@ -132,6 +136,11 @@
           "INSERT": "Организация добавлена",
           "UPDATE": "Организация изменена",
           "REMOVE": "Организация удалена"
+        },
+        "ContactBiography": {
+          "INSERT": "Биография добавлена",
+          "UPDATE": "Биография изменена",
+          "REMOVE": "Биография удалена"
         }
       }
     },
@@ -249,6 +258,11 @@
         "INSERT": "Организация добавлена",
         "UPDATE": "Организация изменена",
         "REMOVE": "Организация удалена"
+      },
+      "ContactBiography": {
+        "INSERT": "Биография добавлена",
+        "UPDATE": "Биография изменена",
+        "REMOVE": "Биография удалена"
       }
     }
   },
@@ -269,6 +283,8 @@
     "typeRequired": "Тип обязателен",
     "streetRequired": "Улица обязательна",
     "cityRequired": "Город обязателен",
-    "postalCodeRequired": "Почтовый индекс обязателен"
+    "cityRequired": "Город обязателен",
+    "postalCodeRequired": "Почтовый индекс обязателен",
+    "biographyRequired": "Текст биографии обязателен"
   }
 }

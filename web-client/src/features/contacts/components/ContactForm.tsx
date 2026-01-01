@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { useCreateGroup } from '../useContacts'
 
 import { ContactFormAddress } from './ContactFormAddress'
+import { ContactFormBiography } from './ContactFormBiography'
 import { ContactFormEmail } from './ContactFormEmail'
 import { ContactFormNames } from './ContactFormNames'
 import { ContactFormOrganization } from './ContactFormOrganization'
@@ -110,6 +111,14 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     groupResource: z.union([z.string(), z.object({ name: z.string() })]),
   })
 
+  const contactBiographySchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    value: z.string().min(1, t('validation.biographyRequired')),
+    type: z.string().min(1, t('validation.typeRequired')),
+  })
+
   const contactSchema = z.object({
     contactNames: z.array(contactNameSchema).min(1, t('validation.atLeastOneNameRequired')),
     contactDates: z.array(contactDateSchema),
@@ -118,6 +127,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     contactAddresses: z.array(contactAddressSchema),
     contactOrganizations: z.array(contactOrganizationSchema).optional(),
     contactGroups: z.array(contactGroupSchema).optional(),
+    contactBiographies: z.array(contactBiographySchema).optional(),
   })
 
   const form = useForm<ContactFormValues>({
@@ -130,6 +140,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       contactAddresses: [],
       contactOrganizations: [],
       contactGroups: [],
+      contactBiographies: [],
     },
   })
 
@@ -170,6 +181,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         <ContactFormPhone />
         <ContactFormEmail />
         <ContactFormAddress />
+        <ContactFormBiography />
         <ContactFormOrganization />
         <ContactFormSync />
 

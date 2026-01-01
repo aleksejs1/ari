@@ -91,6 +91,10 @@
     "organizationDescription": "Description",
     "organizationStartDate": "Start Date",
     "organizationEndDate": "End Date",
+    "organizationEndDate": "End Date",
+    "biography": "Biographies",
+    "addBiography": "Add Biography",
+    "biographyPlaceholder": "Enter biography text...",
     "details": "Contact Details",
     "createDescription": "Add a new contact to your list.",
     "editDescription": "Make changes to your contact here.",
@@ -132,6 +136,11 @@
           "INSERT": "Organization added",
           "UPDATE": "Organization changed",
           "REMOVE": "Organization removed"
+        },
+        "ContactBiography": {
+          "INSERT": "Biography added",
+          "UPDATE": "Biography changed",
+          "REMOVE": "Biography removed"
         }
       }
     },
@@ -249,6 +258,11 @@
         "INSERT": "Organization added",
         "UPDATE": "Organization changed",
         "REMOVE": "Organization removed"
+      },
+      "ContactBiography": {
+        "INSERT": "Biography added",
+        "UPDATE": "Biography changed",
+        "REMOVE": "Biography removed"
       }
     }
   },
@@ -269,6 +283,8 @@
     "typeRequired": "Type is required",
     "streetRequired": "Street is required",
     "cityRequired": "City is required",
-    "postalCodeRequired": "Postal code is required"
+    "cityRequired": "City is required",
+    "postalCodeRequired": "Postal code is required",
+    "biographyRequired": "Biography text is required"
   }
 }

@@ -16,6 +16,8 @@ export type NotificationSubscription =
   components['schemas']['NotificationSubscription.jsonld-notification_subscription.read']
 export type ContactGroup = components['schemas']['ContactGroup.jsonld-contact.read']
 export type ContactOrganization = components['schemas']['ContactOrganization.jsonld-contact.read']
+export type ContactBiography = components['schemas']['ContactBiography.jsonld-contact.read']
+
 export type Group = components['schemas']['Group.jsonld-group.read']
 
 // Zod Schemas for Forms
@@ -103,6 +105,14 @@ export const contactOrganizationSchema = z.object({
   type: z.string().optional().nullable(),
 })
 
+export const contactBiographySchema = z.object({
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  value: z.string().min(1),
+  type: z.string().min(1),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
@@ -111,6 +121,7 @@ export const contactSchema = z.object({
   contactAddresses: z.array(contactAddressSchema),
   contactGroups: z.array(contactGroupSchema).optional(),
   contactOrganizations: z.array(contactOrganizationSchema).optional(),
+  contactBiographies: z.array(contactBiographySchema).optional(),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

@@ -1,0 +1,81 @@
+import { Plus, Trash2 } from 'lucide-react'
+import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
+import { Button } from '@/components/ui/button'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { type ContactFormValues } from '@/types/models'
+
+export function ContactFormBiography() {
+  const { t } = useTranslation()
+  const { control } = useFormContext<ContactFormValues>()
+
+  const {
+    fields: biographyFields,
+    append: appendBiography,
+    remove: removeBiography,
+  } = useFieldArray({
+    control,
+    name: 'contactBiographies',
+  })
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-medium">{t('contacts.biography')}</h3>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => appendBiography({ value: '', type: 'Bio' })}
+        >
+          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addBiography')}
+        </Button>
+      </div>
+      <div className="space-y-4">
+        {biographyFields.map((field, index) => (
+          <div key={field.id} className="flex items-start gap-2">
+            <FormField
+              control={control}
+              name={`contactBiographies.${index}.value`}
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <Textarea
+                      placeholder={t('contacts.biographyPlaceholder')}
+                      className="min-h-[100px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name={`contactBiographies.${index}.type`}
+              render={({ field }) => (
+                <FormItem className="w-[150px]">
+                  <FormControl>
+                    <Input placeholder={t('contacts.typePlaceholder')} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeBiography(index)}
+            >
+              <Trash2 className="h-4 w-4 text-red-500" />
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
