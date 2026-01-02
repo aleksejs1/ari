@@ -48,35 +48,35 @@ export default function UpcomingAnniversariesWidget() {
           <p className="text-sm text-muted-foreground">{t('dashboard.noUpcoming')}</p>
         ) : (
           <ul className="space-y-4">
-            {anniversaries.map((anniversary) => (
-              <li key={anniversary.id} className="flex flex-col space-y-1">
-                <div className="flex items-center justify-between">
-                  <Link
-                    to={`/contacts/${anniversary.contact?.id?.toString().split('/').pop()}`}
-                    className="font-medium hover:underline"
-                  >
-                    {anniversary.contact?.displayName || t('contacts.noName')}
-                  </Link>
-                  <span className="text-sm font-semibold text-primary">
-                    {anniversary.nextAnniversaryDate
-                      ? formatLocalizedDate(
-                          anniversary.nextAnniversaryDate,
-                          i18n.language,
-                          'd MMMM',
-                        )
-                      : ''}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>{anniversary.text}</span>
-                  {anniversary.yearsAtNextAnniversary !== undefined && (
-                    <span>
-                      {t('dashboard.yearsCount', { count: anniversary.yearsAtNextAnniversary })}
+            {anniversaries.map((anniversary) => {
+              const contactId = anniversary.contact?.['@id']?.split('/').pop()
+              return (
+                <li key={anniversary.id} className="flex flex-col space-y-1">
+                  <div className="flex items-center justify-between">
+                    <Link to={`/contacts/${contactId}`} className="font-medium hover:underline">
+                      {anniversary.contact?.displayName || t('contacts.noName')}
+                    </Link>
+                    <span className="text-sm font-semibold text-primary">
+                      {anniversary.nextAnniversaryDate
+                        ? formatLocalizedDate(
+                            anniversary.nextAnniversaryDate,
+                            i18n.language,
+                            'd MMMM',
+                          )
+                        : ''}
                     </span>
-                  )}
-                </div>
-              </li>
-            ))}
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>{anniversary.text}</span>
+                    {anniversary.yearsAtNextAnniversary !== undefined && (
+                      <span>
+                        {t('dashboard.yearsCount', { count: anniversary.yearsAtNextAnniversary })}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         )}
       </CardContent>
