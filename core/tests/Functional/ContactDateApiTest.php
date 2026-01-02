@@ -103,6 +103,9 @@ class ContactDateApiTest extends ApiTestCase
         self::assertJsonContains([
             'date' => '2023-01-01', // Expect Y-m-d format
             'text' => 'Wedding Anniversary',
+            'contact' => [
+                'displayName' => 'Unknown Contact' // Since we didn't add names
+            ]
         ]);
 
         // 3. PUT (Update fully)
@@ -282,5 +285,121 @@ class ContactDateApiTest extends ApiTestCase
         $expectedNext = (clone $today)->modify('+1 year')->modify('-1 day')->format('Y-m-d');
         self::assertEquals($expectedNext, $data['nextAnniversaryDate']);
         self::assertEquals(6, $data['yearsAtNextAnniversary']);
+    }
+    public function testGetCollectionSortedByUpcomingDate(): void
+    {
+        $client = static::createClient();
+        $today = new \DateTime('today');
+
+        // Clean up existing dates for this contact first to ensure clean state
+        // (Though in this test setup we create fresh users/contacts per test usually?
+        // Ah, setUp creates one contact for each user. We can just add to it.)
+
+        // 1. Date: Today (Should be 1st)
+        // Year doesn't matter, pick random past year
+        $date1 = (clone $today)->format('1990-m-d');
+        $this->createContactDate($client, $date1, 'Today Anniversary');
+
+        // 2. Date: Tomorrow (Should be 2nd)
+        $tomorrow = (clone $today)->modify('+1 day');
+        $date2 = $tomorrow->format('2000-m-d');
+        $this->createContactDate($client, $date2, 'Tomorrow Anniversary');
+
+        // 3. Date: Yesterday (Should be 3rd - as it's next year's anniversary)
+        $yesterday = (clone $today)->modify('-1 day');
+        $date3 = $yesterday->format('1985-m-d');
+        $this->createContactDate($client, $date3, 'Yesterday Anniversary');
+
+        // 4. Date: 6 months from now (Should be 4th)
+        $futureMonth = (clone $today)->modify('+6 months');
+        $date4 = $futureMonth->format('1995-m-d');
+        $this->createContactDate($client, $date4, 'Future Month Anniversary');
+
+        // Request with Sort
+        $response = $client->request('GET', '/api/contact_dates?upcomingAnniversary=asc', [
+            'auth_bearer' => $this->token,
+        ]);
+
+        self::assertResponseIsSuccessful();
+        /** @var array<int, array<string, mixed>> $items */
+        $items = $response->toArray()['member'];
+
+        // We expect 4 items.
+        // We should verify the order.
+        // Note: The default setUp creates 0 dates.
+        self::assertCount(4, $items);
+
+        self::assertEquals('Today Anniversary', $items[0]['text']);
+        self::assertEquals('Tomorrow Anniversary', $items[1]['text']);
+        // +6 months is sooner than "yesterday" (which is +1 year - 1 day)
+        self::assertEquals('Future Month Anniversary', $items[2]['text']);
+        self::assertEquals('Yesterday Anniversary', $items[3]['text']);
+    }
+
+    private function createContactDate(
+        \ApiPlatform\Symfony\Bundle\Test\Client $client,
+        string $date,
+        string $text
+    ): void {
+        $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => $date,
+                'text' => $text,
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+    }
+
+    public function testDisplayNameResolution(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create a new Contact for this test to avoid pollution
+        // We need a user. We can reuse $this->userUuid
+        // But we need to post to /api/contacts
+        // Actually, let's just use the existing contact but Add a Name to it.
+
+        // Get Contact IRI
+        $contactIri = $this->contactIri;
+
+        // Post a ContactName
+        $client->request('POST', '/api/contact_names', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'given' => 'John',
+                'family' => 'Doe',
+                'contact' => $contactIri
+            ]
+        ]);
+        self::assertResponseStatusCodeSame(201);
+
+        // Now create a date
+        $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => '2025-01-01',
+                'text' => 'New Year',
+                'contact' => $contactIri
+            ]
+        ]);
+        self::assertResponseStatusCodeSame(201);
+
+        // Get collection and verify displayName
+        $response = $client->request('GET', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+        ]);
+        /** @var array<int, array<string, mixed>> $items */
+        $items = $response->toArray()['member'];
+
+        // Find the one we just added (or any of them for this contact really)
+        // Since we modify the contact, all dates for this contact should now show the name.
+        self::assertNotEmpty($items);
+        $item = $items[count($items) - 1]; // Get last one
+
+        self::assertArrayHasKey('contact', $item);
+        self::assertArrayHasKey('displayName', $item['contact']);
+        self::assertEquals('John Doe', $item['contact']['displayName']);
     }
 }

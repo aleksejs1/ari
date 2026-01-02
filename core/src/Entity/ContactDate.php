@@ -9,9 +9,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\ContactDateRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
+use App\Filter\UpcomingAnniversaryOrderFilter;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Context;
@@ -24,6 +26,7 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
     normalizationContext: ['groups' => ['contact_date:read']],
     denormalizationContext: ['groups' => ['contact_date:create', 'contact_date:update']],
 )]
+#[ApiFilter(UpcomingAnniversaryOrderFilter::class)]
 #[Get(security: "is_granted('CONTACT_VIEW', object)")]
 #[GetCollection]
 #[Post(securityPostDenormalize: "is_granted('CONTACT_EDIT', object)")]

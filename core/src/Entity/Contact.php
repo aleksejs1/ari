@@ -105,4 +105,54 @@ class Contact implements TenantAwareInterface
 
         return $this->user;
     }
+
+    #[Groups(['contact:read', 'contact_date:read', 'contact_name:read', 'contact_organization:read'])]
+    public function getDisplayName(): string
+    {
+        // 1. Names
+        $name = $this->contactNames->first();
+        if ($name instanceof ContactName) {
+            $parts = [];
+            $given = $name->getGiven();
+            if (null !== $given && '' !== $given) {
+                $parts[] = $given;
+            }
+            $family = $name->getFamily();
+            if (null !== $family && '' !== $family) {
+                $parts[] = $family;
+            }
+            if ([] !== $parts) {
+                return implode(' ', $parts);
+            }
+        }
+
+        // 2. Organization
+        $org = $this->contactOrganizations->first();
+        if ($org instanceof ContactOrganization) {
+            $orgName = $org->getName();
+            if (null !== $orgName && '' !== $orgName) {
+                return $orgName;
+            }
+        }
+
+        // 3. Email
+        $email = $this->contactEmailAdresses->first();
+        if ($email instanceof ContactEmailAdress) {
+            $emailValue = $email->getValue();
+            if (null !== $emailValue && '' !== $emailValue) {
+                return $emailValue;
+            }
+        }
+
+        // 4. Phone
+        $phone = $this->phoneNumbers->first();
+        if ($phone instanceof ContactPhoneNumber) {
+            $phoneValue = $phone->getValue();
+            if (null !== $phoneValue && '' !== $phoneValue) {
+                return $phoneValue;
+            }
+        }
+
+        return 'Unknown Contact';
+    }
 }
