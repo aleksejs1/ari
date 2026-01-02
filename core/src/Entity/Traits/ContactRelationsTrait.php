@@ -95,6 +95,21 @@ trait ContactRelationsTrait
 
     public function addContactRelation(ContactRelation $contactRelation): static
     {
+        // 1. Self-reference check
+        if ($contactRelation->getPerson() === $this) {
+            return $this;
+        }
+
+        // 2. Duplicate check (same person and type)
+        foreach ($this->contactRelations as $existing) {
+            if (
+                $existing->getPerson() === $contactRelation->getPerson() &&
+                $existing->getType() === $contactRelation->getType()
+            ) {
+                return $this;
+            }
+        }
+
         if (!$this->contactRelations->contains($contactRelation)) {
             $this->contactRelations->add($contactRelation);
             $contactRelation->setContact($this);
