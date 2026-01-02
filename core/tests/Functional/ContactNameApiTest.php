@@ -198,6 +198,78 @@ class ContactNameApiTest extends ApiTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    public function testEmptyStringToNullNormalization(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create with empty strings
+        $response = $client->request('POST', '/api/contact_names', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'given' => '',
+                'family' => '',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+
+        self::assertResponseStatusCodeSame(201);
+        $data = $response->toArray();
+        self::assertNull($data['given']);
+        self::assertNull($data['family']);
+
+        $nameIri = $data['@id'];
+
+        // 2. Update with strings then back to empty
+        $client->request('PUT', $nameIri, [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'given' => 'John',
+                'family' => 'Doe',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+
+        $response = $client->request('PATCH', $nameIri, [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'given' => '',
+                'family' => '',
+            ],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertNull($data['given']);
+        self::assertNull($data['family']);
+
+        // 3. Verify no audit log bug (null -> "" instead of null -> null)
+        $timelineResponse = $client->request('GET', $this->contactIri . '/timeline', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $logs = $timelineResponse->toArray()['logs'];
+
+        // Find the LATEST UPDATE log for ContactName that changes 'given'
+        $normalizationLog = null;
+        foreach ($logs as $log) {
+            if (
+                $log['entityType'] === 'App\\Entity\\ContactName'
+                && $log['action'] === 'UPDATE'
+                && isset($log['changes']['given'])
+            ) {
+                // We want the one where it changes FROM 'John'
+                if ($log['changes']['given'][0] === 'John') {
+                    $normalizationLog = $log;
+                    break;
+                }
+            }
+        }
+
+        self::assertNotNull($normalizationLog, 'Could not find the UPDATE log changing given from John to null');
+        self::assertNull($normalizationLog['changes']['given'][1], 'The new value should be null, not an empty string');
+    }
+
     public function testCannotCreateContactNameForOthersContact(): void
     {
         $client = static::createClient();

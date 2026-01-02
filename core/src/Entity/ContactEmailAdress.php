@@ -94,7 +94,7 @@ class ContactEmailAdress implements TenantAwareInterface
 
     public function setValue(?string $value): static
     {
-        $this->value = $value;
+        $this->value = $value === '' ? null : $value;
 
         return $this;
     }
@@ -106,7 +106,7 @@ class ContactEmailAdress implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type;
+        $this->type = $type === '' ? null : $type;
 
         return $this;
     }

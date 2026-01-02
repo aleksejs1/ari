@@ -107,7 +107,7 @@ class ContactRelation implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type;
+        $this->type = $type === '' ? null : $type;
 
         return $this;
     }

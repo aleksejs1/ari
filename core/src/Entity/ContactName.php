@@ -70,7 +70,7 @@ class ContactName implements TenantAwareInterface
 
     public function setFamily(?string $family): static
     {
-        $this->family = $family;
+        $this->family = $family === '' ? null : $family;
 
         return $this;
     }
@@ -82,7 +82,7 @@ class ContactName implements TenantAwareInterface
 
     public function setGiven(?string $given): static
     {
-        $this->given = $given;
+        $this->given = $given === '' ? null : $given;
 
         return $this;
     }

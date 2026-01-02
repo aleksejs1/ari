@@ -107,7 +107,7 @@ class ContactDate implements TenantAwareInterface
 
     public function setText(?string $text): static
     {
-        $this->text = $text;
+        $this->text = $text === '' ? null : $text;
 
         return $this;
     }

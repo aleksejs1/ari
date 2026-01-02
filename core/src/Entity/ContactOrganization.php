@@ -145,7 +145,7 @@ class ContactOrganization implements TenantAwareInterface
 
     public function setName(?string $name): static
     {
-        $this->name = $name;
+        $this->name = $name === '' ? null : $name;
 
         return $this;
     }
@@ -157,7 +157,7 @@ class ContactOrganization implements TenantAwareInterface
 
     public function setDepartment(?string $department): static
     {
-        $this->department = $department;
+        $this->department = $department === '' ? null : $department;
 
         return $this;
     }
@@ -169,7 +169,7 @@ class ContactOrganization implements TenantAwareInterface
 
     public function setTitle(?string $title): static
     {
-        $this->title = $title;
+        $this->title = $title === '' ? null : $title;
 
         return $this;
     }
@@ -217,7 +217,7 @@ class ContactOrganization implements TenantAwareInterface
 
     public function setJobDescription(?string $jobDescription): static
     {
-        $this->jobDescription = $jobDescription;
+        $this->jobDescription = $jobDescription === '' ? null : $jobDescription;
 
         return $this;
     }
@@ -229,7 +229,7 @@ class ContactOrganization implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type;
+        $this->type = $type === '' ? null : $type;
 
         return $this;
     }
