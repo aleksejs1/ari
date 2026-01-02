@@ -36,7 +36,7 @@ const formatContactValue = (val: Record<string, unknown>): React.ReactElement | 
   const label = val.displayName || (val as { name?: string }).name || `Contact #${cid} `
 
   return (
-    <Link to={`/ contacts / ${cid} `} className="text-blue-600 underline hover:text-blue-800">
+    <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
       <>{label}</>
     </Link>
   )
@@ -79,8 +79,8 @@ const formatStringValue = (val: string, fieldName?: string): React.ReactElement 
     const cid = val.split('/').pop()
     if (cid && cid !== 'undefined' && cid !== 'null') {
       return (
-        <Link to={`/ contacts / ${cid} `} className="text-blue-600 underline hover:text-blue-800">
-          {`Contact #${cid} `}
+        <Link to={`/contacts/${cid}`} className="text-blue-600 underline hover:text-blue-800">
+          {`Contact #${cid}`}
         </Link>
       )
     }
@@ -95,8 +95,8 @@ const formatStringValue = (val: string, fieldName?: string): React.ReactElement 
 
   if ((fieldName === 'contact' || fieldName === 'owner') && looksLikeId(val)) {
     return (
-      <Link to={`/ contacts / ${val} `} className="text-blue-600 underline hover:text-blue-800">
-        {`Contact #${val} `}
+      <Link to={`/contacts/${val}`} className="text-blue-600 underline hover:text-blue-800">
+        {`Contact #${val}`}
       </Link>
     )
   }
