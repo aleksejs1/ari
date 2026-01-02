@@ -2,11 +2,21 @@
 
 namespace App\Tests\Unit\Service\ContactImport;
 
+use App\Dto\ContactAddressDto;
+use App\Dto\ContactBiographyDto;
 use App\Dto\ContactDateDto;
+use App\Dto\ContactEmailDto;
 use App\Dto\ContactImportDto;
 use App\Dto\ContactNameDto;
+use App\Dto\ContactOrganizationDto;
+use App\Dto\ContactPhoneDto;
+use App\Entity\ContactAddress;
+use App\Entity\ContactBiography;
 use App\Entity\ContactDate;
+use App\Entity\ContactEmailAdress;
 use App\Entity\ContactName;
+use App\Entity\ContactOrganization;
+use App\Entity\ContactPhoneNumber;
 use App\Entity\User;
 use App\Service\ContactImport\ContactDuplicateCheckerInterface;
 use App\Service\ContactImport\ContactImportService;
@@ -38,7 +48,23 @@ final class ContactImportServiceTest extends TestCase
         $user = new User();
         $dto = new ContactImportDto(
             names: [new ContactNameDto('Doe', 'John')],
-            dates: [new ContactDateDto(new \DateTime('2023-01-01'), 'Birthday')]
+            dates: [new ContactDateDto(new \DateTime('2023-01-01'), 'Birthday')],
+            emails: [new ContactEmailDto('test@example.com', 'home')],
+            phones: [new ContactPhoneDto('1234567890', 'mobile')],
+            addresses: [
+                new ContactAddressDto(
+                    '123 Main St',
+                    'Apt 1',
+                    'City',
+                    'Region',
+                    '12345',
+                    'Country',
+                    'US',
+                    'home'
+                ),
+            ],
+            organizations: [new ContactOrganizationDto('Org Name', 'Dept', 'Title', 'Desc', 'work')],
+            biographies: [new ContactBiographyDto('Bio text', 'note')]
         );
 
         $this->checker->expects(self::once())
@@ -64,6 +90,36 @@ final class ContactImportServiceTest extends TestCase
         $date = $contact->getContactDates()->first();
         self::assertInstanceOf(ContactDate::class, $date);
         self::assertEquals('Birthday', $date->getText());
+
+        self::assertCount(1, $contact->getContactEmailAdresses());
+        $email = $contact->getContactEmailAdresses()->first();
+        self::assertInstanceOf(ContactEmailAdress::class, $email);
+        self::assertEquals('test@example.com', $email->getValue());
+        self::assertEquals('home', $email->getType());
+
+        self::assertCount(1, $contact->getPhoneNumbers());
+        $phone = $contact->getPhoneNumbers()->first();
+        self::assertInstanceOf(ContactPhoneNumber::class, $phone);
+        self::assertEquals('1234567890', $phone->getValue());
+        self::assertEquals('mobile', $phone->getType());
+
+        self::assertCount(1, $contact->getContactAddresses());
+        $address = $contact->getContactAddresses()->first();
+        self::assertInstanceOf(ContactAddress::class, $address);
+        self::assertEquals('123 Main St', $address->getStreet());
+        self::assertEquals('home', $address->getType());
+
+        self::assertCount(1, $contact->getContactOrganizations());
+        $org = $contact->getContactOrganizations()->first();
+        self::assertInstanceOf(ContactOrganization::class, $org);
+        self::assertEquals('Org Name', $org->getName());
+        self::assertEquals('work', $org->getType());
+
+        self::assertCount(1, $contact->getContactBiographies());
+        $bio = $contact->getContactBiographies()->first();
+        self::assertInstanceOf(ContactBiography::class, $bio);
+        self::assertEquals('Bio text', $bio->getValue());
+        self::assertEquals('note', $bio->getType());
     }
 
     public function testImportReturnsNullWhenDuplicateExists(): void

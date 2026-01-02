@@ -2,9 +2,14 @@
 
 namespace App\Service\Google;
 
+use App\Dto\ContactAddressDto;
+use App\Dto\ContactBiographyDto;
 use App\Dto\ContactDateDto;
+use App\Dto\ContactEmailDto;
 use App\Dto\ContactImportDto;
 use App\Dto\ContactNameDto;
+use App\Dto\ContactOrganizationDto;
+use App\Dto\ContactPhoneDto;
 use App\Entity\TokenStorage;
 use App\Entity\User;
 use App\Repository\ImportMappingRepository;
@@ -43,7 +48,7 @@ class GoogleContactsService
                 'Authorization' => 'Bearer ' . $accessToken,
             ],
             'query' => [
-                'personFields' => 'names,birthdays',
+                'personFields' => 'names,birthdays,emailAddresses,phoneNumbers,addresses,organizations,biographies',
                 'pageSize' => 1000,
             ],
         ]);
@@ -99,9 +104,94 @@ class GoogleContactsService
                 continue;
             }
 
+            $emails = [];
+            if (isset($connection['emailAddresses'])) {
+                foreach ($connection['emailAddresses'] as $emailParam) {
+                    $emails[] = new ContactEmailDto(
+                        value: $emailParam['value'] ?? '',
+                        type: $emailParam['type'] ?? ''
+                    );
+                }
+            }
+
+            $phones = [];
+            if (isset($connection['phoneNumbers'])) {
+                foreach ($connection['phoneNumbers'] as $phoneParam) {
+                    $phones[] = new ContactPhoneDto(
+                        value: $phoneParam['value'] ?? '',
+                        type: $phoneParam['type'] ?? ''
+                    );
+                }
+            }
+
+            $addresses = [];
+            if (isset($connection['addresses'])) {
+                foreach ($connection['addresses'] as $addressParam) {
+                    $addresses[] = new ContactAddressDto(
+                        street: $addressParam['streetAddress'] ?? '',
+                        streetExtended: $addressParam['extendedAddress'] ?? '',
+                        city: $addressParam['city'] ?? '',
+                        region: $addressParam['region'] ?? '',
+                        postalCode: $addressParam['postalCode'] ?? '',
+                        country: $addressParam['country'] ?? '',
+                        countryCode: $addressParam['countryCode'] ?? '',
+                        type: $addressParam['type'] ?? ''
+                    );
+                }
+            }
+
+            $organizations = [];
+            if (isset($connection['organizations'])) {
+                foreach ($connection['organizations'] as $orgParam) {
+                    $startDate = null;
+                    if (isset($orgParam['startDate'])) {
+                        $sd = $orgParam['startDate'];
+                        if (isset($sd['year'], $sd['month'], $sd['day'])) {
+                            $startDate = new \DateTime(
+                                sprintf('%04d-%02d-%02d', $sd['year'], $sd['month'], $sd['day'])
+                            );
+                        }
+                    }
+                    $endDate = null;
+                    if (isset($orgParam['endDate'])) {
+                        $ed = $orgParam['endDate'];
+                        if (isset($ed['year'], $ed['month'], $ed['day'])) {
+                            $endDate = new \DateTime(
+                                sprintf('%04d-%02d-%02d', $ed['year'], $ed['month'], $ed['day'])
+                            );
+                        }
+                    }
+
+                    $organizations[] = new ContactOrganizationDto(
+                        name: $orgParam['name'] ?? '',
+                        department: $orgParam['department'] ?? '',
+                        title: $orgParam['title'] ?? '',
+                        jobDescription: $orgParam['jobDescription'] ?? '',
+                        type: $orgParam['type'] ?? '',
+                        startDate: $startDate,
+                        endDate: $endDate
+                    );
+                }
+            }
+
+            $biographies = [];
+            if (isset($connection['biographies'])) {
+                foreach ($connection['biographies'] as $bioParam) {
+                    $biographies[] = new ContactBiographyDto(
+                        value: $bioParam['value'] ?? '',
+                        type: $bioParam['type'] ?? ''
+                    );
+                }
+            }
+
             $dto = new ContactImportDto(
                 names: $names,
-                dates: $dates
+                dates: $dates,
+                emails: $emails,
+                phones: $phones,
+                addresses: $addresses,
+                organizations: $organizations,
+                biographies: $biographies
             );
 
             $mapping = $this->importMappingRepository->findOneBy([
