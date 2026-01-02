@@ -27,25 +27,15 @@ use PHPUnit\Framework\TestCase;
 
 final class ContactImportServiceTest extends TestCase
 {
-    /** @var EntityManagerInterface&MockObject */
-    private EntityManagerInterface $entityManager;
-    private ContactImportService $service;
-    /** @var ContactDuplicateCheckerInterface&MockObject */
-    private ContactDuplicateCheckerInterface $checker;
-
-    #[\Override]
-    protected function setUp(): void
-    {
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->checker = $this->createMock(ContactDuplicateCheckerInterface::class);
-        $this->service = new ContactImportService(
-            [$this->checker],
-            $this->entityManager
-        );
-    }
-
     public function testImportCreatesContactWhenNoDuplicate(): void
     {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $checker = $this->createMock(ContactDuplicateCheckerInterface::class);
+        $service = new ContactImportService(
+            [$checker],
+            $entityManager
+        );
+
         $user = new User();
         $dto = new ContactImportDto(
             names: [new ContactNameDto('Doe', 'John')],
@@ -68,15 +58,15 @@ final class ContactImportServiceTest extends TestCase
             biographies: [new ContactBiographyDto('Bio text', 'note')]
         );
 
-        $this->checker->expects(self::once())
+        $checker->expects(self::once())
             ->method('isDuplicate')
             ->with($dto, $user)
             ->willReturn(false);
 
-        $this->entityManager->expects(self::once())->method('persist');
-        $this->entityManager->expects(self::once())->method('flush');
+        $entityManager->expects(self::once())->method('persist');
+        $entityManager->expects(self::once())->method('flush');
 
-        $contact = $this->service->import($dto, $user);
+        $contact = $service->import($dto, $user);
 
         self::assertNotNull($contact);
         self::assertSame($user, $contact->getUser());
@@ -125,23 +115,38 @@ final class ContactImportServiceTest extends TestCase
 
     public function testImportReturnsNullWhenDuplicateExists(): void
     {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $checker = $this->createMock(ContactDuplicateCheckerInterface::class);
+        $service = new ContactImportService(
+            [$checker],
+            $entityManager
+        );
+
         $user = new User();
         $dto = new ContactImportDto();
 
-        $this->checker->expects(self::once())
+        $checker->expects(self::once())
             ->method('isDuplicate')
             ->with($dto, $user)
             ->willReturn(true);
 
-        $this->entityManager->expects(self::never())->method('persist');
-        $this->entityManager->expects(self::never())->method('flush');
+        $entityManager->expects(self::never())->method('persist');
+        $entityManager->expects(self::never())->method('flush');
 
-        $result = $this->service->import($dto, $user);
+        $result = $service->import($dto, $user);
 
         self::assertNull($result);
     }
+
     public function testUpdateRecyclesEntities(): void
     {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        // We pass an empty array of checkers because update() doesn't use them
+        $service = new ContactImportService(
+            [],
+            $entityManager
+        );
+
         $contact = new Contact();
         $originalName = new ContactName();
         $originalName->setGiven('OldGiven');
@@ -152,10 +157,10 @@ final class ContactImportServiceTest extends TestCase
             names: [new ContactNameDto('NewFamily', 'NewGiven')],
         );
 
-        $this->entityManager->expects(self::once())->method('persist');
-        $this->entityManager->expects(self::once())->method('flush');
+        $entityManager->expects(self::once())->method('persist');
+        $entityManager->expects(self::once())->method('flush');
 
-        $this->service->update($contact, $dto);
+        $service->update($contact, $dto);
 
         self::assertCount(1, $contact->getContactNames());
         $updatedName = $contact->getContactNames()->first();
@@ -168,6 +173,13 @@ final class ContactImportServiceTest extends TestCase
 
     public function testUpdateDoesNothingIfMatch(): void
     {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        // We pass an empty array of checkers because update() doesn't use them
+        $service = new ContactImportService(
+            [],
+            $entityManager
+        );
+
         $contact = new Contact();
         $originalName = new ContactName();
         $originalName->setGiven('Given');
@@ -178,10 +190,10 @@ final class ContactImportServiceTest extends TestCase
             names: [new ContactNameDto('Family', 'Given')],
         );
 
-        $this->entityManager->expects(self::once())->method('persist');
-        $this->entityManager->expects(self::once())->method('flush');
+        $entityManager->expects(self::once())->method('persist');
+        $entityManager->expects(self::once())->method('flush');
 
-        $this->service->update($contact, $dto);
+        $service->update($contact, $dto);
 
         self::assertCount(1, $contact->getContactNames());
         $currentName = $contact->getContactNames()->first();
