@@ -112,62 +112,6 @@ export interface paths {
         patch: operations["api_contacts_id_patch"];
         trace?: never;
     };
-    "/api/contact_biographies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Retrieves the collection of ContactBiography resources.
-         * @description Retrieves the collection of ContactBiography resources.
-         */
-        get: operations["api_contact_biographies_get_collection"];
-        put?: never;
-        /**
-         * Creates a ContactBiography resource.
-         * @description Creates a ContactBiography resource.
-         */
-        post: operations["api_contact_biographies_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/contact_biographies/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Retrieves a ContactBiography resource.
-         * @description Retrieves a ContactBiography resource.
-         */
-        get: operations["api_contact_biographies_id_get"];
-        /**
-         * Replaces the ContactBiography resource.
-         * @description Replaces the ContactBiography resource.
-         */
-        put: operations["api_contact_biographies_id_put"];
-        post?: never;
-        /**
-         * Removes the ContactBiography resource.
-         * @description Removes the ContactBiography resource.
-         */
-        delete: operations["api_contact_biographies_id_delete"];
-        options?: never;
-        head?: never;
-        /**
-         * Updates the ContactBiography resource.
-         * @description Updates the ContactBiography resource.
-         */
-        patch: operations["api_contact_biographies_id_patch"];
-        trace?: never;
-    };
     "/api/contact_addresses": {
         parameters: {
             query?: never;
@@ -222,6 +166,62 @@ export interface paths {
          * @description Updates the ContactAddress resource.
          */
         patch: operations["api_contact_addresses_id_patch"];
+        trace?: never;
+    };
+    "/api/contact_biographies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactBiography resources.
+         * @description Retrieves the collection of ContactBiography resources.
+         */
+        get: operations["api_contact_biographies_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactBiography resource.
+         * @description Creates a ContactBiography resource.
+         */
+        post: operations["api_contact_biographies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_biographies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactBiography resource.
+         * @description Retrieves a ContactBiography resource.
+         */
+        get: operations["api_contact_biographies_id_get"];
+        /**
+         * Replaces the ContactBiography resource.
+         * @description Replaces the ContactBiography resource.
+         */
+        put: operations["api_contact_biographies_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactBiography resource.
+         * @description Removes the ContactBiography resource.
+         */
+        delete: operations["api_contact_biographies_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactBiography resource.
+         * @description Updates the ContactBiography resource.
+         */
+        patch: operations["api_contact_biographies_id_patch"];
         trace?: never;
     };
     "/api/contact_dates": {
@@ -1075,6 +1075,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
+            contactBiographies?: components["schemas"]["ContactBiography-contact.create"][];
         };
         "Contact-contact.create.jsonMergePatch": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
@@ -1084,6 +1085,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
+            contactBiographies?: components["schemas"]["ContactBiography-contact.create"][];
         };
         "Contact-contact.read": {
             readonly id?: number;
@@ -1094,6 +1096,17 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-contact.read"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.read"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.read"][];
+            contactBiographies?: components["schemas"]["ContactBiography-contact.read"][];
+            readonly displayName?: string;
+        };
+        "Contact-contact_date.read": {
+            readonly displayName?: string;
+        };
+        "Contact-contact_name.read": {
+            readonly displayName?: string;
+        };
+        "Contact-contact_organization.read": {
+            readonly displayName?: string;
         };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -1104,6 +1117,17 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress.jsonld-contact.read"][];
             contactGroups?: components["schemas"]["ContactGroup.jsonld-contact.read"][];
             contactOrganizations?: components["schemas"]["ContactOrganization.jsonld-contact.read"][];
+            contactBiographies?: components["schemas"]["ContactBiography.jsonld-contact.read"][];
+            readonly displayName?: string;
+        };
+        "Contact.jsonld-contact_date.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly displayName?: string;
+        };
+        "Contact.jsonld-contact_name.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly displayName?: string;
+        };
+        "Contact.jsonld-contact_organization.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly displayName?: string;
         };
         "ContactAddress-contact.create": {
             type?: string | null;
@@ -1199,16 +1223,76 @@ export interface components {
             country?: string | null;
             countryCode?: string | null;
         };
+        "ContactBiography-contact.create": {
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography-contact.read": {
+            readonly id?: number;
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography-contact_biography.create_contact_biography.update": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography-contact_biography.create_contact_biography.update.jsonMergePatch": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography-contact_biography.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography.jsonld-contact_biography.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            value?: string | null;
+        };
         "ContactDate-contact.create": {
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+            readonly yearsPassed?: number | null;
+            /** Format: date-time */
+            readonly nextAnniversaryDate?: string | null;
+            readonly yearsAtNextAnniversary?: number | null;
         };
         "ContactDate-contact.read": {
             readonly id?: number;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+            readonly yearsPassed?: number | null;
+            /** Format: date-time */
+            readonly nextAnniversaryDate?: string | null;
+            readonly yearsAtNextAnniversary?: number | null;
         };
         "ContactDate-contact_date.create_contact_date.update": {
             /**
@@ -1232,31 +1316,35 @@ export interface components {
         };
         "ContactDate-contact_date.read": {
             readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            contact?: string | null;
+            contact?: components["schemas"]["Contact-contact_date.read"] | null;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+            readonly yearsPassed?: number | null;
+            /** Format: date-time */
+            readonly nextAnniversaryDate?: string | null;
+            readonly yearsAtNextAnniversary?: number | null;
         };
         "ContactDate.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+            readonly yearsPassed?: number | null;
+            /** Format: date-time */
+            readonly nextAnniversaryDate?: string | null;
+            readonly yearsAtNextAnniversary?: number | null;
         };
         "ContactDate.jsonld-contact_date.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            contact?: string | null;
+            contact?: components["schemas"]["Contact.jsonld-contact_date.read"] | null;
             /** Format: date-time */
             date?: string | null;
             text?: string | null;
+            readonly yearsPassed?: number | null;
+            /** Format: date-time */
+            readonly nextAnniversaryDate?: string | null;
+            readonly yearsAtNextAnniversary?: number | null;
         };
         "ContactEmailAdress-contact.create": {
             value?: string | null;
@@ -1402,11 +1490,7 @@ export interface components {
             readonly id?: number;
             family?: string | null;
             given?: string | null;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            contact?: string | null;
+            contact?: components["schemas"]["Contact-contact_name.read"] | null;
         };
         "ContactName.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -1417,11 +1501,7 @@ export interface components {
             readonly id?: number;
             family?: string | null;
             given?: string | null;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            contact?: string | null;
+            contact?: components["schemas"]["Contact.jsonld-contact_name.read"] | null;
         };
         "ContactOrganization-contact.create": {
             name?: string | null;
@@ -1480,11 +1560,7 @@ export interface components {
         };
         "ContactOrganization-contact_organization.read": {
             readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            contact?: string | null;
+            contact?: components["schemas"]["Contact-contact_organization.read"] | null;
             name?: string | null;
             department?: string | null;
             title?: string | null;
@@ -1509,11 +1585,7 @@ export interface components {
         };
         "ContactOrganization.jsonld-contact_organization.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            contact?: string | null;
+            contact?: components["schemas"]["Contact.jsonld-contact_organization.read"] | null;
             name?: string | null;
             department?: string | null;
             title?: string | null;
@@ -2088,6 +2160,10 @@ export interface operations {
             query?: {
                 /** @description The collection page number */
                 page?: number;
+                "contactGroups.groupResource"?: string;
+                "contactGroups.groupResource[]"?: string[];
+                /** @description Search across name, email, phone number, and organization name */
+                search?: string;
             };
             header?: never;
             path?: never;
@@ -2749,11 +2825,346 @@ export interface operations {
             };
         };
     };
+    api_contact_biographies_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactBiography collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactBiography.jsonld-contact_biography.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactBiography-contact_biography.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_biographies_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactBiography resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactBiography-contact_biography.create_contact_biography.update"];
+                "application/json": components["schemas"]["ContactBiography-contact_biography.create_contact_biography.update"];
+            };
+        };
+        responses: {
+            /** @description ContactBiography resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactBiography.jsonld-contact_biography.read"];
+                    "application/json": components["schemas"]["ContactBiography-contact_biography.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_biographies_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactBiography identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactBiography resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactBiography.jsonld-contact_biography.read"];
+                    "application/json": components["schemas"]["ContactBiography-contact_biography.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_biographies_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactBiography identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactBiography resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactBiography-contact_biography.create_contact_biography.update"];
+                "application/json": components["schemas"]["ContactBiography-contact_biography.create_contact_biography.update"];
+            };
+        };
+        responses: {
+            /** @description ContactBiography resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactBiography.jsonld-contact_biography.read"];
+                    "application/json": components["schemas"]["ContactBiography-contact_biography.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_biographies_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactBiography identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactBiography resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_biographies_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactBiography identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactBiography resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactBiography-contact_biography.create_contact_biography.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactBiography resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactBiography.jsonld-contact_biography.read"];
+                    "application/json": components["schemas"]["ContactBiography-contact_biography.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
     api_contact_dates_get_collection: {
         parameters: {
             query?: {
                 /** @description The collection page number */
                 page?: number;
+                /** @description Sort by upcoming anniversary date (pass asc/desc) */
+                upcomingAnniversary?: string;
             };
             header?: never;
             path?: never;

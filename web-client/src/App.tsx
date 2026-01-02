@@ -11,6 +11,7 @@ import DashboardLayout from './features/layout/DashboardLayout'
 import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
+import HomePage from './pages/HomePage'
 
 import { useAuth } from '@/hooks/useAuth'
 
@@ -45,6 +46,10 @@ export default function App() {
           children: [
             {
               path: '/',
+              element: <HomePage />,
+            },
+            {
+              path: '/contacts',
               element: <ContactsPage />,
             },
             {

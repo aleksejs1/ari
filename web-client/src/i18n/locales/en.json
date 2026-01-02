@@ -9,7 +9,8 @@
       "auditLogs": "Audit Logs",
       "googleImport": "Google Import",
       "groups": "Groups",
-      "manageGroups": "Manage Groups"
+      "manageGroups": "Manage Groups",
+      "home": "Home"
     }
   },
   "auth": {
@@ -298,5 +299,12 @@
     "cityRequired": "City is required",
     "postalCodeRequired": "Postal code is required",
     "biographyRequired": "Biography text is required"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "upcomingAnniversaries": "Upcoming Anniversaries",
+    "noUpcoming": "No upcoming anniversaries found.",
+    "yearsCount": "{{count}} years",
+    "yearsCount_one": "{{count}} year"
   }
 }

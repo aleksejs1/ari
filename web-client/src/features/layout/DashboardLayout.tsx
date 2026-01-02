@@ -1,4 +1,13 @@
-import { Users, LogOut, History, Bell, Download, ChevronDown, ChevronRight } from 'lucide-react'
+import {
+  Users,
+  LogOut,
+  History,
+  Bell,
+  Download,
+  ChevronDown,
+  ChevronRight,
+  LayoutDashboard,
+} from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
@@ -26,6 +35,13 @@ export default function DashboardLayout() {
         <nav className="space-y-2 px-4">
           <Link
             to="/"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <LayoutDashboard className="h-5 w-5" />
+            <span>{t('app.navigation.home', 'Home')}</span>
+          </Link>
+          <Link
+            to="/contacts"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Users className="h-5 w-5" />
@@ -66,7 +82,7 @@ export default function DashboardLayout() {
                 {groups?.map((group) => (
                   <Link
                     key={group['@id']}
-                    to={`/?group=${group['@id']}`}
+                    to={`/contacts?group=${group['@id']}`}
                     className="block truncate rounded-lg px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     {group.name}

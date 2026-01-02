@@ -4,12 +4,15 @@ import type { components } from './schema'
 
 import { formatApiDate } from '@/lib/utils'
 
-export type Contact = components['schemas']['Contact.jsonld-contact.read']
+export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
+  displayName?: string
+}
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read'] & {
   yearsPassed?: number | null
   nextAnniversaryDate?: string | null
   yearsAtNextAnniversary?: number | null
+  contact?: Contact
 }
 
 export type ContactPhoneNumber = components['schemas']['ContactPhoneNumber.jsonld-contact.read']

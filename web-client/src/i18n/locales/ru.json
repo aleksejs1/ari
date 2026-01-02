@@ -9,7 +9,8 @@
       "auditLogs": "Логи аудита",
       "googleImport": "Импорт из Google",
       "groups": "Группы",
-      "manageGroups": "Управление группами"
+      "manageGroups": "Управление группами",
+      "home": "Главная"
     }
   },
   "auth": {
@@ -298,5 +299,15 @@
     "cityRequired": "Город обязателен",
     "postalCodeRequired": "Почтовый индекс обязателен",
     "biographyRequired": "Текст биографии обязателен"
+  },
+  "dashboard": {
+    "title": "Рабочий стол",
+    "upcomingAnniversaries": "Ближайшие годовщины",
+    "noUpcoming": "Ближайших годовщин не найдено.",
+    "yearsCount_zero": "{{count}} лет",
+    "yearsCount_one": "{{count}} год",
+    "yearsCount_few": "{{count}} года",
+    "yearsCount_many": "{{count}} лет",
+    "yearsCount_other": "{{count}} лет"
   }
 }
