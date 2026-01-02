@@ -108,4 +108,51 @@ class ContactDate implements TenantAwareInterface
 
         return $this;
     }
+
+    #[Groups(['contact:read', 'contact:create', 'contact_date:read'])]
+    public function getYearsPassed(): ?int
+    {
+        if (null === $this->date) {
+            return null;
+        }
+
+        $now = new \DateTime('today');
+
+        return $this->date->diff($now)->y;
+    }
+
+    #[Groups(['contact:read', 'contact:create', 'contact_date:read'])]
+    #[Context(normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
+    public function getNextAnniversaryDate(): ?\DateTimeImmutable
+    {
+        if (null === $this->date) {
+            return null;
+        }
+
+        $today = new \DateTime('today');
+        $currentYear = (int) $today->format('Y');
+        $month = (int) $this->date->format('m');
+        $day = (int) $this->date->format('d');
+
+        $anniversaryThisYear = new \DateTime();
+        $anniversaryThisYear->setDate($currentYear, $month, $day);
+        $anniversaryThisYear->setTime(0, 0, 0);
+
+        if ($anniversaryThisYear < $today) {
+            $anniversaryThisYear->modify('+1 year');
+        }
+
+        return \DateTimeImmutable::createFromMutable($anniversaryThisYear);
+    }
+
+    #[Groups(['contact:read', 'contact:create', 'contact_date:read'])]
+    public function getYearsAtNextAnniversary(): ?int
+    {
+        $next = $this->getNextAnniversaryDate();
+        if (null === $next || null === $this->date) {
+            return null;
+        }
+
+        return $this->date->diff($next)->y;
+    }
 }

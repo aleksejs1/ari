@@ -225,4 +225,62 @@ class ContactDateApiTest extends ApiTestCase
 
         self::assertResponseStatusCodeSame(400);
     }
+
+    public function testAnniversaryCalculations(): void
+    {
+        $client = static::createClient();
+        $today = new \DateTime('today');
+
+        // 1. Fixed date relative to now (5 years ago)
+        $fiveYearsAgo = (clone $today)->modify('-5 years');
+
+        $response = $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => $fiveYearsAgo->format('Y-m-d'),
+                'text' => 'Today Anniversary',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $data = $response->toArray();
+        self::assertArrayHasKey('yearsPassed', $data);
+        self::assertEquals(5, $data['yearsPassed']);
+        self::assertEquals($today->format('Y-m-d'), $data['nextAnniversaryDate']); // Should be today
+        self::assertEquals(5, $data['yearsAtNextAnniversary']);
+
+        // 2. Date is tomorrow (anniversary not passed yet) - 5 years ago + 1 day
+        $futureDateInYear = (clone $today)->modify('-5 years')->modify('+1 day');
+
+        $response = $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => $futureDateInYear->format('Y-m-d'),
+                'text' => 'Future Anniversary',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        $data = $response->toArray();
+        self::assertEquals(4, $data['yearsPassed']);
+        $expectedNext = (clone $today)->modify('+1 day')->format('Y-m-d');
+        self::assertEquals($expectedNext, $data['nextAnniversaryDate']);
+        self::assertEquals(5, $data['yearsAtNextAnniversary']);
+
+        // 3. Date was yesterday (anniversary passed) - 5 years ago - 1 day
+        $pastDateInYear = (clone $today)->modify('-5 years')->modify('-1 day');
+
+        $response = $client->request('POST', '/api/contact_dates', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'date' => $pastDateInYear->format('Y-m-d'),
+                'text' => 'Past Anniversary',
+                'contact' => $this->contactIri,
+            ],
+        ]);
+        $data = $response->toArray();
+        self::assertEquals(5, $data['yearsPassed']);
+        $expectedNext = (clone $today)->modify('+1 year')->modify('-1 day')->format('Y-m-d');
+        self::assertEquals($expectedNext, $data['nextAnniversaryDate']);
+        self::assertEquals(6, $data['yearsAtNextAnniversary']);
+    }
 }
