@@ -11,6 +11,7 @@ import { ContactFormEmail } from './ContactFormEmail'
 import { ContactFormNames } from './ContactFormNames'
 import { ContactFormOrganization } from './ContactFormOrganization'
 import { ContactFormPhone } from './ContactFormPhone'
+import { ContactFormRelations } from './ContactFormRelations'
 import { ContactFormSync } from './ContactFormSync'
 import { ContactGroupSelect } from './ContactGroupSelect'
 
@@ -119,6 +120,18 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     type: z.string().min(1, t('validation.typeRequired')),
   })
 
+  const contactRelationSchema = z.object({
+    id: z.string().optional(),
+    '@id': z.string().optional(),
+    '@type': z.string().optional(),
+    relatedContact: z.union([
+      z.string(),
+      // eslint-disable-next-line sonarjs/deprecation
+      z.object({ '@id': z.string() }).passthrough(),
+    ]),
+    type: z.string().min(1, t('validation.typeRequired')),
+  })
+
   const contactSchema = z.object({
     contactNames: z.array(contactNameSchema).min(1, t('validation.atLeastOneNameRequired')),
     contactDates: z.array(contactDateSchema),
@@ -128,6 +141,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     contactOrganizations: z.array(contactOrganizationSchema).optional(),
     contactGroups: z.array(contactGroupSchema).optional(),
     contactBiographies: z.array(contactBiographySchema).optional(),
+    contactRelations: z.array(contactRelationSchema).optional(),
   })
 
   const form = useForm<ContactFormValues>({
@@ -141,6 +155,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       contactOrganizations: [],
       contactGroups: [],
       contactBiographies: [],
+      contactRelations: [],
     },
   })
 
@@ -171,7 +186,16 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
 
   const handleFormSubmit = async (data: ContactFormValues) => {
     const contactGroups = await processContactGroups(data.contactGroups)
-    onSubmit({ ...data, contactGroups })
+
+    const contactRelations = data.contactRelations?.map((relation) => ({
+      ...relation,
+      relatedContact:
+        typeof relation.relatedContact === 'object'
+          ? relation.relatedContact['@id']
+          : relation.relatedContact,
+    }))
+
+    onSubmit({ ...data, contactGroups, contactRelations })
   }
 
   return (
@@ -183,6 +207,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         <ContactFormAddress />
         <ContactFormBiography />
         <ContactFormOrganization />
+        <ContactFormRelations />
         <ContactFormSync />
 
         {/* Groups Section */}

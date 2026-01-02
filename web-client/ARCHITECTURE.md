@@ -27,7 +27,7 @@ src/
 ├── contexts/        # Global React Contexts (e.g., AuthContext)
 ├── features/        # Business features (The core of the application)
 │   ├── auth/        # Login, Register pages and logic
-│   ├── contacts/    # Contact management (List, Details, Forms)
+│   ├── contacts/    # Contact management (List, Details, Forms, Relations)
 │   ├── dashboard/   # Dashboard widgets and layout
 │   ├── groups/      # Contact groups management
 │   ├── ...          # Other feature modules

@@ -6,6 +6,7 @@ import { formatApiDate } from '@/lib/utils'
 
 export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
   displayName?: string
+  contactRelations?: ContactRelation[]
 }
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read'] & {
@@ -25,6 +26,13 @@ export type NotificationSubscription =
 export type ContactGroup = components['schemas']['ContactGroup.jsonld-contact.read']
 export type ContactOrganization = components['schemas']['ContactOrganization.jsonld-contact.read']
 export type ContactBiography = components['schemas']['ContactBiography.jsonld-contact.read']
+export interface ContactRelation {
+  id?: string
+  '@id'?: string
+  '@type'?: string
+  relatedContact: string | Contact
+  type: string
+}
 
 export type Group = components['schemas']['Group.jsonld-group.read']
 
@@ -121,6 +129,14 @@ export const contactBiographySchema = z.object({
   type: z.string().min(1),
 })
 
+export const contactRelationSchema = z.object({
+  id: z.string().optional(),
+  '@id': z.string().optional(),
+  '@type': z.string().optional(),
+  relatedContact: z.union([z.string(), z.object({ id: z.string().optional(), '@id': z.string() })]),
+  type: z.string().min(1),
+})
+
 export const contactSchema = z.object({
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
@@ -130,6 +146,7 @@ export const contactSchema = z.object({
   contactGroups: z.array(contactGroupSchema).optional(),
   contactOrganizations: z.array(contactOrganizationSchema).optional(),
   contactBiographies: z.array(contactBiographySchema).optional(),
+  contactRelations: z.array(contactRelationSchema).optional(),
 })
 
 export type ContactFormValues = z.infer<typeof contactSchema>

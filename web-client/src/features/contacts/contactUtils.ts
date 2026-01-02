@@ -78,5 +78,12 @@ export function mapContactToFormValues(contact: Contact): ContactFormValues {
       value: b.value ?? '',
       type: b.type ?? '',
     })),
+    contactRelations: (contact.contactRelations ?? []).map((r) => ({
+      id: r.id?.toString(),
+      '@id': r['@id'],
+      '@type': 'ContactRelation',
+      relatedContact: r.relatedContact,
+      type: r.type,
+    })),
   }
 }
