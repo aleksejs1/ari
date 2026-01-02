@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
@@ -92,5 +92,44 @@ describe('SimilarContactsWidget', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(5)
     expect(screen.getByText('Contact 1')).toBeInTheDocument()
     expect(screen.queryByText('Contact 6')).not.toBeInTheDocument()
+  })
+
+  it('hides "Add Relation" button if already related', () => {
+    const mockContacts = [{ '@id': '/api/contacts/2', displayName: 'Jane' }]
+    const existingRelations = [{ relatedContact: '/api/contacts/2', type: 'friend' }]
+
+    mockUseSimilarContacts.mockReturnValue({
+      data: mockContacts,
+      isLoading: false,
+      error: null,
+    })
+
+    render(
+      <MemoryRouter>
+        <SimilarContactsWidget contactId="1" existingRelations={existingRelations} />
+      </MemoryRouter>,
+    )
+
+    expect(screen.queryByTitle('contacts.addRelation')).not.toBeInTheDocument()
+  })
+
+  it('opens dialog when "Add Relation" is clicked', () => {
+    const mockContacts = [{ '@id': '/api/contacts/2', displayName: 'Jane' }]
+    mockUseSimilarContacts.mockReturnValue({
+      data: mockContacts,
+      isLoading: false,
+      error: null,
+    })
+
+    const { getByTitle, getByText } = render(
+      <MemoryRouter>
+        <SimilarContactsWidget contactId="1" />
+      </MemoryRouter>,
+    )
+
+    const addButton = getByTitle('contacts.addRelation')
+    fireEvent.click(addButton)
+
+    expect(getByText('contacts.addRelation Jane')).toBeInTheDocument()
   })
 })
