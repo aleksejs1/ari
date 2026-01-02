@@ -73,6 +73,24 @@ describe('useContacts Utils', () => {
     expect(pagination.hasNext).toBe(true)
     expect(pagination.hasPrevious).toBe(true)
   })
+
+  it('getHydraPagination handles missing view and totalItems', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = {} as any
+    const pagination = getHydraPagination(data, 1)
+    expect(pagination.totalItems).toBe(0)
+    expect(pagination.totalPages).toBe(0)
+    expect(pagination.hasNext).toBe(false)
+    expect(pagination.hasPrevious).toBe(false)
+  })
+
+  it('getHydraPagination calculates hasNext based on pages', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = { totalItems: 60 } as any
+    // Page 1 of 2. hasNext should be true because totalPages (2) > page (1)
+    const pagination = getHydraPagination(data, 1)
+    expect(pagination.hasNext).toBe(true)
+  })
 })
 
 describe('useContacts Hooks', () => {
@@ -124,6 +142,30 @@ describe('useContacts Hooks', () => {
       await result.current.mutateAsync({ contactNames: [], contactDates: [] })
       expect(api.post).toHaveBeenCalledWith('/contacts', expect.any(Object))
     })
+
+    it('invalidates queries on success', async () => {
+      const queryClient = new QueryClient()
+      const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries')
+      const setQueryDataSpy = vi.spyOn(queryClient, 'setQueryData')
+
+      vi.mocked(api.post).mockResolvedValue({ data: { id: 100 } })
+
+      const { result } = renderHook(() => useCreateContact(), {
+        wrapper: ({ children }) => (
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        ),
+      })
+
+      await result.current.mutateAsync({ contactNames: [] })
+
+      await waitFor(() => {
+        expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts'] })
+        expect(setQueryDataSpy).toHaveBeenCalledWith(
+          ['contacts', '100'],
+          expect.objectContaining({ id: 100 }),
+        )
+      })
+    })
   })
 
   describe('useUpdateContact', () => {
@@ -141,6 +183,29 @@ describe('useContacts Hooks', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await result.current.mutateAsync({ id: '/api/contacts/1', data: { contactNames: [] } as any })
       expect(api.put).toHaveBeenCalledWith('/contacts/1', expect.any(Object))
+    })
+
+    it('invalidates queries on success', async () => {
+      const queryClient = new QueryClient()
+      const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries')
+      const setQueryDataSpy = vi.spyOn(queryClient, 'setQueryData')
+
+      vi.mocked(api.put).mockResolvedValue({ data: { id: 1 } })
+
+      const { result } = renderHook(() => useUpdateContact(), {
+        wrapper: ({ children }) => (
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        ),
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await result.current.mutateAsync({ id: '/api/contacts/1', data: {} as any })
+
+      await waitFor(() => {
+        expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts'] })
+        expect(setQueryDataSpy).toHaveBeenCalledWith(['contacts', '1'], expect.any(Object))
+        expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts', '1', 'timeline'] })
+      })
     })
   })
 
@@ -171,6 +236,26 @@ describe('useContacts Hooks', () => {
         '/contact_dates',
         expect.objectContaining({ date: '2023-01-01' }),
       )
+    })
+
+    it('invalidates queries on success', async () => {
+      const queryClient = new QueryClient()
+      const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries')
+
+      vi.mocked(api.post).mockResolvedValue({ data: {} })
+
+      const { result } = renderHook(() => useCreateContactDate(), {
+        wrapper: ({ children }) => (
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        ),
+      })
+
+      await result.current.mutateAsync({ date: '2023-01-01', contact: '/api/contacts/1' })
+
+      await waitFor(() => {
+        expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts'] })
+        expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts', '1', 'timeline'] })
+      })
     })
   })
 

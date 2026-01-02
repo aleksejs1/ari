@@ -11,6 +11,13 @@ vi.mock('../useContacts', () => ({
   useGroups: vi.fn(),
 }))
 
+// Mock NotificationSubscriptions to avoid implementation details and API calls
+vi.mock('./NotificationSubscriptions', () => ({
+  NotificationSubscriptions: ({ entityId }: { entityId: number }) => (
+    <div data-testid="subs">{`Subs: ${entityId}`}</div>
+  ),
+}))
+
 describe('ContactForm Synchronization', () => {
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,5 +95,34 @@ describe('ContactForm Synchronization', () => {
     await waitFor(() => {
       expect(screen.getByPlaceholderText('contacts.givenName')).toHaveValue('JOHN')
     })
+  })
+})
+
+describe('<ContactFormSync />', () => {
+  it('renders notification subscriptions for existing dates', async () => {
+    const { FormProvider, useForm } = await import('react-hook-form')
+    const { ContactFormSync } = await import('./ContactFormSync')
+
+    const Wrapper = () => {
+      const methods = useForm({
+        defaultValues: {
+          contactDates: [
+            { text: 'Birthday', date: '2000-01-01', '@id': '/api/dates/123' },
+            { text: 'Anniversary', date: '2020-01-01' }, // New date, no Real ID
+          ],
+        },
+      })
+      return (
+        <FormProvider {...methods}>
+          <ContactFormSync />
+        </FormProvider>
+      )
+    }
+
+    render(<Wrapper />)
+
+    expect(screen.getByTestId('subs')).toHaveTextContent('Subs: 123')
+    // Should not render for the second one (no real ID)
+    expect(screen.getAllByTestId('subs')).toHaveLength(1)
   })
 })
