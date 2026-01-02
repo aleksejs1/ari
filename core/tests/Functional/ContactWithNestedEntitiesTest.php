@@ -824,4 +824,89 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $relInDb = $em->find(\App\Entity\ContactRelation::class, $rel->getId());
         self::assertNull($relInDb, 'The ContactRelation entity should be deleted from DB');
     }
+
+    public function testPromoteReverseRelationToForwardViaPut(): void
+    {
+        $client = static::createClient();
+        $container = self::getContainer();
+        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+
+        // 1. Setup: Contact A and Contact B
+        $contactA = new Contact();
+        $contactA->setUser($user);
+        $em->persist($contactA);
+
+        $contactB = new Contact();
+        $contactB->setUser($user);
+        $em->persist($contactB);
+
+        // Relation: A is Father of B (A owns the relation)
+        $relAB = new \App\Entity\ContactRelation($contactA);
+        $relAB->setPerson($contactB);
+        $relAB->setType('Father');
+        $contactA->addContactRelation($relAB);
+        $em->persist($relAB);
+        $em->flush();
+
+        $contactAId = (string) $contactA->getId();
+        $contactBId = (string) $contactB->getId();
+        $originalRelId = $relAB->getId();
+
+        // 2. Verify B sees it as reverse relation (in API it would show as Son/Child)
+        // From B's perspective, A is the person.
+        $em->refresh($contactA);
+        $em->refresh($contactB);
+        self::assertCount(1, $contactB->getContactRelations(), 'B should see 1 relation (reverse)');
+        self::assertCount(1, $contactA->getContactRelations(), 'A should see 1 relation (forward)');
+
+        // 3. PUT B with contactRelations: [{"relatedContact": "/api/contacts/A", "type": "Son"}]
+        // This is what the web client would do if they "edit" the relation on B's page.
+        $response = $client->request('PUT', '/api/contacts/' . $contactBId, [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'contactRelations' => [
+                    [
+                        'relatedContact' => '/api/contacts/' . $contactAId,
+                        'type' => 'Son',
+                    ]
+                ],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+
+        // B should now have 1 forward relation
+        self::assertCount(1, $data['contactRelations']);
+        self::assertEquals('Son', $data['contactRelations'][0]['type']);
+        self::assertStringContainsString(
+            '/api/contacts/' . $contactAId,
+            $data['contactRelations'][0]['relatedContact']
+        );
+
+        // 4. Verify in DB
+        $em->clear();
+        $reloadedA = $em->find(Contact::class, $contactAId);
+        $reloadedB = $em->find(Contact::class, $contactBId);
+        self::assertInstanceOf(Contact::class, $reloadedA);
+        self::assertInstanceOf(Contact::class, $reloadedB);
+
+        // B now owns the relation
+        $bRelations = $reloadedB->getContactRelationsCollection();
+        self::assertCount(1, $bRelations, 'B should have 1 relation');
+        $firstRel = $bRelations->first();
+        self::assertInstanceOf(\App\Entity\ContactRelation::class, $firstRel);
+        self::assertEquals('Son', $firstRel->getType());
+
+        // A should have NO forward relations anymore
+        self::assertCount(0, $reloadedA->getContactRelationsCollection(), 'A should have 0 FORWARD relations');
+
+        // The original relation should be gone (because we cleared reverse relations on B and orphanRemoval is on)
+        $oldRel = $em->find(\App\Entity\ContactRelation::class, $originalRelId);
+        self::assertNull($oldRel, 'The original relation (A->B) should be deleted');
+    }
 }
