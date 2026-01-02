@@ -112,7 +112,7 @@ class ContactApiTest extends ApiTestCase
             ],
             'contactDates' => [
                 [
-                    'date' => '2023-01-01T00:00:00+00:00',
+                    'date' => '2023-01-01',
                     'text' => 'Birthday',
                 ],
             ],

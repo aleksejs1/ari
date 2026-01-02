@@ -14,7 +14,9 @@ use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: ContactDateRepository::class)]
 #[ApiResource(
@@ -44,6 +46,7 @@ class ContactDate implements TenantAwareInterface
     private ?Contact $contact = null;
 
     #[Groups(['contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
+    #[Context(normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $date = null;
 

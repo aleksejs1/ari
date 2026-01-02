@@ -46,7 +46,7 @@ class AuditLogSubscriber
             if ($this->shouldLog($entity)) {
                 assert($entity instanceof TenantAwareInterface);
                 $changeSet = $uow->getEntityChangeSet($entity);
-                $filteredChangeSet = $this->filterChangeSet($changeSet);
+                $filteredChangeSet = $this->filterChangeSet($changeSet, $entity);
 
                 if ($filteredChangeSet !== []) {
                     $this->logChange($em, $entity, 'UPDATE', $filteredChangeSet);
@@ -220,7 +220,18 @@ class AuditLogSubscriber
         $snapshot = [];
 
         foreach ($metadata->getFieldNames() as $fieldName) {
-            $snapshot[$fieldName] = $metadata->getFieldValue($entity, $fieldName);
+            $value = $metadata->getFieldValue($entity, $fieldName);
+
+            if (
+                $entity instanceof \App\Entity\ContactDate
+                && 'date' === $fieldName
+                && $value instanceof \DateTimeInterface
+            ) {
+                // For ContactDate, we only care about the date part (Y-m-d)
+                $snapshot[$fieldName] = $value->format('Y-m-d');
+            } else {
+                $snapshot[$fieldName] = $value;
+            }
         }
 
         foreach ($metadata->getAssociationNames() as $assocName) {
@@ -240,15 +251,22 @@ class AuditLogSubscriber
      *
      * @return array<string, mixed>
      */
-    private function filterChangeSet(array $changeSet): array
+    private function filterChangeSet(array $changeSet, ?object $entity = null): array
     {
         foreach ($changeSet as $field => $values) {
             [$old, $new] = $values;
 
             if ($old instanceof \DateTimeInterface && $new instanceof \DateTimeInterface) {
-                // Compare timestamps to ignore timezone differences (e.g. UTC vs +00:00)
-                if ($old->format('U') === $new->format('U')) {
-                    unset($changeSet[$field]);
+                if ($entity instanceof \App\Entity\ContactDate && 'date' === $field) {
+                    // For ContactDate, ignore time changes
+                    if ($old->format('Y-m-d') === $new->format('Y-m-d')) {
+                        unset($changeSet[$field]);
+                    }
+                } else {
+                    // Compare timestamps to ignore timezone differences (e.g. UTC vs +00:00)
+                    if ($old->format('U') === $new->format('U')) {
+                        unset($changeSet[$field]);
+                    }
                 }
             }
         }

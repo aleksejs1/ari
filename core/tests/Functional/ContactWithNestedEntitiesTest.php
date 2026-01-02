@@ -181,11 +181,11 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertJsonContains([
             'contactDates' => [
                 [
-                    'date' => '1990-05-15T00:00:00+00:00',
+                    'date' => '1990-05-15',
                     'text' => 'Birthday',
                 ],
                 [
-                    'date' => '2023-06-01T00:00:00+00:00',
+                    'date' => '2023-06-01',
                     'text' => 'Anniversary',
                 ],
             ],
@@ -373,7 +373,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
             ],
             'contactDates' => [
                 [
-                    'date' => '2024-12-25T00:00:00+00:00',
+                    'date' => '2024-12-25',
                     'text' => 'Christmas',
                 ],
             ],
@@ -525,7 +525,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
             ],
             'contactDates' => [
                 [
-                    'date' => '2025-01-01T00:00:00+00:00',
+                    'date' => '2025-01-01',
                     'text' => 'New Year',
                 ],
             ],
