@@ -32,6 +32,7 @@ export interface ContactRelation {
   '@type'?: string
   relatedContact: string | Contact
   type: string
+  displayName?: string
 }
 
 export type Group = components['schemas']['Group.jsonld-group.read']
@@ -135,6 +136,7 @@ export const contactRelationSchema = z.object({
   '@type': z.string().optional(),
   relatedContact: z.union([z.string(), z.object({ id: z.string().optional(), '@id': z.string() })]),
   type: z.string().min(1),
+  displayName: z.string().optional(),
 })
 
 export const contactSchema = z.object({

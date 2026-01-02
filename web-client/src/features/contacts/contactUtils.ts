@@ -84,6 +84,7 @@ export function mapContactToFormValues(contact: Contact): ContactFormValues {
       '@type': 'ContactRelation',
       relatedContact: r.relatedContact,
       type: r.type,
+      displayName: r.displayName,
     })),
   }
 }

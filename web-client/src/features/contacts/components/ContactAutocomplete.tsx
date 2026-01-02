@@ -13,12 +13,14 @@ interface ContactAutocompleteProps {
   value?: string | Contact
   onChange: (value: string | Contact) => void
   excludeContactId?: string
+  initialLabel?: string
 }
 
 export function ContactAutocomplete({
   value,
   onChange,
   excludeContactId,
+  initialLabel,
 }: ContactAutocompleteProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -36,6 +38,9 @@ export function ContactAutocomplete({
     const found = contacts.find((c) => c['@id'] === value)
     if (found) {
       return found
+    }
+    if (value && initialLabel) {
+      return { '@id': value, displayName: initialLabel } as Contact
     }
     return value ? ({ '@id': value } as Contact) : null
   }

@@ -130,6 +130,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
       z.object({ '@id': z.string() }).passthrough(),
     ]),
     type: z.string().min(1, t('validation.typeRequired')),
+    displayName: z.string().optional(),
   })
 
   const contactSchema = z.object({

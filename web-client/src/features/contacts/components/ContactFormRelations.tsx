@@ -27,7 +27,7 @@ const PREDEFINED_RELATIONS = [
 
 export function ContactFormRelations() {
   const { t } = useTranslation()
-  const { control } = useFormContext<ContactFormValues>()
+  const { control, getValues } = useFormContext<ContactFormValues>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'contactRelations',
@@ -41,7 +41,7 @@ export function ContactFormRelations() {
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => append({ relatedContact: '', type: '' })}
+          onClick={() => append({ relatedContact: '', type: '', displayName: '' })}
         >
           <Plus className="mr-2 h-4 w-4" />
           {t('contacts.addRelation')}
@@ -60,6 +60,7 @@ export function ContactFormRelations() {
                       <ContactAutocomplete
                         value={formField.value}
                         onChange={formField.onChange}
+                        initialLabel={getValues(`contactRelations.${index}.displayName`)}
                         // exclude contact itself? need ID from context or something, but form values might have it
                       />
                     </FormControl>
