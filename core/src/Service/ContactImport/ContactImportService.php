@@ -43,78 +43,262 @@ class ContactImportService
 
     public function update(Contact $contact, ContactImportDto $dto): Contact
     {
-        $contact->getContactNames()->clear();
-        foreach ($dto->names as $nameDto) {
-            $contactName = new ContactName();
-            $contactName->setGiven($nameDto->given);
-            $contactName->setFamily($nameDto->family);
-            $contact->addContactName($contactName);
-        }
+        $this->syncCollection(
+            $contact->getContactNames(),
+            $dto->names,
+            function (ContactName $entity, $dto) {
+                return $entity->getGiven() === $dto->given && $entity->getFamily() === $dto->family;
+            },
+            function (ContactName $entity, $dto) {
+                $entity->setGiven($dto->given);
+                $entity->setFamily($dto->family);
+            },
+            function ($dto) {
+                $entity = new ContactName();
+                $entity->setGiven($dto->given);
+                $entity->setFamily($dto->family);
+                return $entity;
+            }
+        );
 
-        $contact->getContactDates()->clear();
-        foreach ($dto->dates as $dateDto) {
-            $contactDate = new ContactDate();
-            $contactDate->setDate(
-                $dateDto->date instanceof \DateTime ? $dateDto->date : \DateTime::createFromInterface($dateDto->date)
-            );
-            $contactDate->setText($dateDto->text);
-            $contact->addContactDate($contactDate);
-        }
+        $this->syncCollection(
+            $contact->getContactDates(),
+            $dto->dates,
+            function (ContactDate $entity, $dto) {
+                $dateDto = $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date);
+                $entityDate = $entity->getDate();
 
-        $contact->getContactEmailAdresses()->clear();
-        foreach ($dto->emails as $emailDto) {
-            $contactEmail = new ContactEmailAdress();
-            $contactEmail->setValue($emailDto->value);
-            $contactEmail->setType($emailDto->type);
-            $contact->addContactEmailAdress($contactEmail);
-        }
+                return null !== $entityDate
+                    && $entityDate->format('Y-m-d') === $dateDto->format('Y-m-d')
+                    && $entity->getText() === $dto->text;
+            },
+            function (ContactDate $entity, $dto) {
+                $entity->setDate(
+                    $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date)
+                );
+                $entity->setText($dto->text);
+            },
+            function ($dto) {
+                $entity = new ContactDate();
+                $entity->setDate(
+                    $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date)
+                );
+                $entity->setText($dto->text);
+                return $entity;
+            }
+        );
 
-        $contact->getPhoneNumbers()->clear();
-        foreach ($dto->phones as $phoneDto) {
-            $contactPhone = new ContactPhoneNumber();
-            $contactPhone->setValue($phoneDto->value);
-            $contactPhone->setType($phoneDto->type);
-            $contact->addPhoneNumber($contactPhone);
-        }
+        $this->syncCollection(
+            $contact->getContactEmailAdresses(),
+            $dto->emails,
+            function (ContactEmailAdress $entity, $dto) {
+                return $entity->getValue() === $dto->value && $entity->getType() === $dto->type;
+            },
+            function (ContactEmailAdress $entity, $dto) {
+                $entity->setValue($dto->value);
+                $entity->setType($dto->type);
+            },
+            function ($dto) {
+                $entity = new ContactEmailAdress();
+                $entity->setValue($dto->value);
+                $entity->setType($dto->type);
+                return $entity;
+            }
+        );
 
-        $contact->getContactAddresses()->clear();
-        foreach ($dto->addresses as $addressDto) {
-            $contactAddress = new ContactAddress();
-            $contactAddress->setStreet($addressDto->street);
-            $contactAddress->setStreetExtended($addressDto->streetExtended);
-            $contactAddress->setCity($addressDto->city);
-            $contactAddress->setRegion($addressDto->region);
-            $contactAddress->setPostalCode($addressDto->postalCode);
-            $contactAddress->setCountry($addressDto->country);
-            $contactAddress->setCountryCode($addressDto->countryCode);
-            $contactAddress->setType($addressDto->type);
-            $contact->addContactAddress($contactAddress);
-        }
+        $this->syncCollection(
+            $contact->getPhoneNumbers(),
+            $dto->phones,
+            function (ContactPhoneNumber $entity, $dto) {
+                return $entity->getValue() === $dto->value && $entity->getType() === $dto->type;
+            },
+            function (ContactPhoneNumber $entity, $dto) {
+                $entity->setValue($dto->value);
+                $entity->setType($dto->type);
+            },
+            function ($dto) {
+                $entity = new ContactPhoneNumber();
+                $entity->setValue($dto->value);
+                $entity->setType($dto->type);
+                return $entity;
+            }
+        );
 
-        $contact->getContactOrganizations()->clear();
-        foreach ($dto->organizations as $orgDto) {
-            $contactOrg = new ContactOrganization();
-            $contactOrg->setName($orgDto->name);
-            $contactOrg->setDepartment($orgDto->department);
-            $contactOrg->setTitle($orgDto->title);
-            $contactOrg->setJobDescription($orgDto->jobDescription);
-            $contactOrg->setType($orgDto->type);
-            $contactOrg->setStartDate($orgDto->startDate);
-            $contactOrg->setEndDate($orgDto->endDate);
-            $contact->addContactOrganization($contactOrg);
-        }
+        $this->syncCollection(
+            $contact->getContactAddresses(),
+            $dto->addresses,
+            function (ContactAddress $entity, $dto) {
+                return $entity->getStreet() === $dto->street
+                    && $entity->getStreetExtended() === $dto->streetExtended
+                    && $entity->getCity() === $dto->city
+                    && $entity->getRegion() === $dto->region
+                    && $entity->getPostalCode() === $dto->postalCode
+                    && $entity->getCountry() === $dto->country
+                    && $entity->getCountryCode() === $dto->countryCode
+                    && $entity->getType() === $dto->type;
+            },
+            function (ContactAddress $entity, $dto) {
+                $entity->setStreet($dto->street);
+                $entity->setStreetExtended($dto->streetExtended);
+                $entity->setCity($dto->city);
+                $entity->setRegion($dto->region);
+                $entity->setPostalCode($dto->postalCode);
+                $entity->setCountry($dto->country);
+                $entity->setCountryCode($dto->countryCode);
+                $entity->setType($dto->type);
+            },
+            function ($dto) {
+                $entity = new ContactAddress();
+                $entity->setStreet($dto->street);
+                $entity->setStreetExtended($dto->streetExtended);
+                $entity->setCity($dto->city);
+                $entity->setRegion($dto->region);
+                $entity->setPostalCode($dto->postalCode);
+                $entity->setCountry($dto->country);
+                $entity->setCountryCode($dto->countryCode);
+                $entity->setType($dto->type);
+                return $entity;
+            }
+        );
 
-        $contact->getContactBiographies()->clear();
-        foreach ($dto->biographies as $bioDto) {
-            $contactBio = new ContactBiography();
-            $contactBio->setValue($bioDto->value);
-            $contactBio->setType($bioDto->type);
-            $contact->addContactBiography($contactBio);
-        }
+        $this->syncCollection(
+            $contact->getContactOrganizations(),
+            $dto->organizations,
+            function (ContactOrganization $entity, $dto) {
+                $datesMatch = true;
+
+                $entityStartDate = $entity->getStartDate();
+                $dtoStartDate = $dto->startDate;
+                if (($entityStartDate === null) !== ($dtoStartDate === null)) {
+                    $datesMatch = false;
+                } elseif ($entityStartDate !== null && $dtoStartDate !== null) {
+                    if ($entityStartDate->format('Y-m-d') !== $dtoStartDate->format('Y-m-d')) {
+                        $datesMatch = false;
+                    }
+                }
+
+                if ($datesMatch) {
+                    $entityEndDate = $entity->getEndDate();
+                    $dtoEndDate = $dto->endDate;
+                    if (($entityEndDate === null) !== ($dtoEndDate === null)) {
+                        $datesMatch = false;
+                    } elseif ($entityEndDate !== null && $dtoEndDate !== null) {
+                        if ($entityEndDate->format('Y-m-d') !== $dtoEndDate->format('Y-m-d')) {
+                            $datesMatch = false;
+                        }
+                    }
+                }
+
+                return $datesMatch
+                    && $entity->getName() === $dto->name
+                    && $entity->getDepartment() === $dto->department
+                    && $entity->getTitle() === $dto->title
+                    && $entity->getJobDescription() === $dto->jobDescription
+                    && $entity->getType() === $dto->type;
+            },
+            function (ContactOrganization $entity, $dto) {
+                $entity->setName($dto->name);
+                $entity->setDepartment($dto->department);
+                $entity->setTitle($dto->title);
+                $entity->setJobDescription($dto->jobDescription);
+                $entity->setType($dto->type);
+                $entity->setStartDate($dto->startDate);
+                $entity->setEndDate($dto->endDate);
+            },
+            function ($dto) {
+                $entity = new ContactOrganization();
+                $entity->setName($dto->name);
+                $entity->setDepartment($dto->department);
+                $entity->setTitle($dto->title);
+                $entity->setJobDescription($dto->jobDescription);
+                $entity->setType($dto->type);
+                $entity->setStartDate($dto->startDate);
+                $entity->setEndDate($dto->endDate);
+                return $entity;
+            }
+        );
+
+        $this->syncCollection(
+            $contact->getContactBiographies(),
+            $dto->biographies,
+            function (ContactBiography $entity, $dto) {
+                return $entity->getValue() === $dto->value && $entity->getType() === $dto->type;
+            },
+            function (ContactBiography $entity, $dto) {
+                $entity->setValue($dto->value);
+                $entity->setType($dto->type);
+            },
+            function ($dto) {
+                $entity = new ContactBiography();
+                $entity->setValue($dto->value);
+                $entity->setType($dto->type);
+                return $entity;
+            }
+        );
 
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
 
         return $contact;
+    }
+
+    /**
+     * @template T of object
+     * @template D of object
+     * @param \Doctrine\Common\Collections\Collection<int, T> $collection
+     * @param array<D> $dtos
+     * @param callable(T, D): bool $isEqual
+     * @param callable(T, D): void $update
+     * @param callable(D): T $create
+     */
+    private function syncCollection(
+        \Doctrine\Common\Collections\Collection $collection,
+        array $dtos,
+        callable $isEqual,
+        callable $update,
+        callable $create
+    ): void {
+        $existingItems = $collection->toArray();
+        $unmatchedDtos = [];
+
+        // 1. Find exact matches
+        foreach ($dtos as $dto) {
+            $found = false;
+            foreach ($existingItems as $key => $entity) {
+                if ($isEqual($entity, $dto)) {
+                    $found = true;
+                    unset($existingItems[$key]); // Remove from pool so it's not matched again
+                    break;
+                }
+            }
+            if (!$found) {
+                $unmatchedDtos[] = $dto;
+            }
+        }
+
+        // $existingItems now contains items to be removed OR recycled
+        // $unmatchedDtos contains items to be added OR recycled into existingItems
+
+        // 2. Recycle/Update matching one-by-one
+        // We re-index existing keys to iterate easily
+        $existingItems = array_values($existingItems);
+
+        foreach ($unmatchedDtos as $dto) {
+            if ([] !== $existingItems) {
+                // Recycle an existing entity
+                $entity = array_shift($existingItems);
+                $update($entity, $dto);
+                // We don't need to add it to collection as it is already there
+            } else {
+                // Create new
+                $newEntity = $create($dto);
+                $collection->add($newEntity);
+            }
+        }
+
+        // 3. Remove remaining
+        foreach ($existingItems as $entityToRemove) {
+            $collection->removeElement($entityToRemove);
+        }
     }
 }

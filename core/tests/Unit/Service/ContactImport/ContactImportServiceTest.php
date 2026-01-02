@@ -10,6 +10,7 @@ use App\Dto\ContactImportDto;
 use App\Dto\ContactNameDto;
 use App\Dto\ContactOrganizationDto;
 use App\Dto\ContactPhoneDto;
+use App\Entity\Contact;
 use App\Entity\ContactAddress;
 use App\Entity\ContactBiography;
 use App\Entity\ContactDate;
@@ -138,5 +139,54 @@ final class ContactImportServiceTest extends TestCase
         $result = $this->service->import($dto, $user);
 
         self::assertNull($result);
+    }
+    public function testUpdateRecyclesEntities(): void
+    {
+        $contact = new Contact();
+        $originalName = new ContactName();
+        $originalName->setGiven('OldGiven');
+        $originalName->setFamily('OldFamily');
+        $contact->addContactName($originalName);
+
+        $dto = new ContactImportDto(
+            names: [new ContactNameDto('NewFamily', 'NewGiven')],
+        );
+
+        $this->entityManager->expects(self::once())->method('persist');
+        $this->entityManager->expects(self::once())->method('flush');
+
+        $this->service->update($contact, $dto);
+
+        self::assertCount(1, $contact->getContactNames());
+        $updatedName = $contact->getContactNames()->first();
+
+        // Key assertion: The existing entity should be reused/updated, not replaced.
+        self::assertSame($originalName, $updatedName, 'The existing entity should be reused/updated, not replaced.');
+        self::assertEquals('NewGiven', $updatedName->getGiven());
+        self::assertEquals('NewFamily', $updatedName->getFamily());
+    }
+
+    public function testUpdateDoesNothingIfMatch(): void
+    {
+        $contact = new Contact();
+        $originalName = new ContactName();
+        $originalName->setGiven('Given');
+        $originalName->setFamily('Family');
+        $contact->addContactName($originalName);
+
+        $dto = new ContactImportDto(
+            names: [new ContactNameDto('Family', 'Given')],
+        );
+
+        $this->entityManager->expects(self::once())->method('persist');
+        $this->entityManager->expects(self::once())->method('flush');
+
+        $this->service->update($contact, $dto);
+
+        self::assertCount(1, $contact->getContactNames());
+        $currentName = $contact->getContactNames()->first();
+
+        self::assertSame($originalName, $currentName);
+        self::assertEquals('Given', $currentName->getGiven());
     }
 }
