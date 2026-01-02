@@ -41,6 +41,8 @@
     "title": "Контакты",
     "loading": "Загрузка контактов...",
     "error": "Ошибка загрузки контактов.",
+    "contactInfo": "Контактная информация",
+    "professional": "Профессиональная информация",
     "create": "Создать контакт",
     "name": "Имя",
     "edit": "Редактировать",
@@ -63,6 +65,7 @@
     "birthday": "День рождения",
     "noDates": "Даты не добавлены",
     "nextAnniversary": "Следующая годовщина",
+    "organization": "Организация",
     "phoneNumbers": "Номера телефонов",
     "addPhoneNumber": "Добавить номер",
     "phoneNumber": "Номер телефона",
@@ -125,6 +128,7 @@
       "title": "История",
       "noHistory": "История отсутствует",
       "timeline": "История активности",
+      "failedToLoadTimeline": "Не удалось загрузить историю",
       "actions": {
         "Contact": {
           "INSERT": "Контакт создан",
@@ -204,7 +208,10 @@
     "viewDetails": "Открыть",
     "noResults": "Ничего не найдено.",
     "create": "Создать",
-    "search": "Поиск"
+    "search": "Поиск",
+    "unknown": "Неизвестно",
+    "loading": "Загрузка...",
+    "noName": "Без имени"
   },
   "groups": {
     "title": "Группы контактов",
@@ -213,7 +220,8 @@
     "fields": {
       "name": "Название",
       "color": "Цвет"
-    }
+    },
+    "deleteConfirmation": "Вы уверены, что хотите удалить эту группу?"
   },
   "pagination": {
     "previous": "Назад",
@@ -301,7 +309,6 @@
   },
   "errors": {
     "failedToLoadContact": "Не удалось загрузить контакт",
-    "failedToLoadTimeline": "Не удалось загрузить историю",
     "failedToLoadLogs": "Не удалось загрузить логи аудита",
     "failedToLoadGroups": "Не удалось загрузить группы."
   },

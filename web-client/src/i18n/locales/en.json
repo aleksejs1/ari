@@ -41,6 +41,8 @@
     "title": "Contacts",
     "loading": "Loading contacts...",
     "error": "Error loading contacts.",
+    "contactInfo": "Contact Information",
+    "professional": "Professional Information",
     "create": "Create Contact",
     "name": "Name",
     "edit": "Edit",
@@ -63,6 +65,7 @@
     "birthday": "Birthday",
     "noDates": "No dates added.",
     "nextAnniversary": "Next Anniversary",
+    "organization": "Organization",
     "phoneNumbers": "Phone Numbers",
     "addPhoneNumber": "Add Phone Number",
     "phoneNumber": "Phone Number",
@@ -125,6 +128,7 @@
       "title": "History",
       "noHistory": "No history available",
       "timeline": "Activity History",
+      "failedToLoadTimeline": "Failed to load history",
       "actions": {
         "Contact": {
           "INSERT": "Contact created",
@@ -204,7 +208,10 @@
     "viewDetails": "View details",
     "noResults": "No results found.",
     "create": "Create",
-    "search": "Search"
+    "search": "Search",
+    "unknown": "Unknown",
+    "loading": "Loading...",
+    "noName": "No Name"
   },
   "groups": {
     "title": "Contact Groups",
@@ -213,7 +220,8 @@
     "fields": {
       "name": "Name",
       "color": "Color"
-    }
+    },
+    "deleteConfirmation": "Are you sure you want to delete this group?"
   },
   "pagination": {
     "previous": "Previous",
@@ -301,7 +309,6 @@
   },
   "errors": {
     "failedToLoadContact": "Failed to load contact",
-    "failedToLoadTimeline": "Failed to load history",
     "failedToLoadLogs": "Failed to load audit logs",
     "failedToLoadGroups": "Failed to load groups."
   },
