@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { ContactForm } from './components/ContactForm'
 import { ContactTimeline } from './components/ContactTimeline'
+import { ContactView } from './components/ContactView'
 import { mapContactToFormValues } from './contactUtils'
 import { useContact, useUpdateContact, useDeleteContact } from './useContacts'
 
@@ -28,6 +29,7 @@ export default function ContactDetailsPage() {
   const updateMutation = useUpdateContact()
   const deleteMutation = useDeleteContact()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   if (isLoading) {
     return (
@@ -52,6 +54,7 @@ export default function ContactDetailsPage() {
     try {
       if (contact['@id']) {
         await updateMutation.mutateAsync({ id: contact['@id'], data })
+        setIsEditing(false)
       }
     } catch (error) {
       console.error('Failed to update contact', error)
@@ -72,10 +75,22 @@ export default function ContactDetailsPage() {
   return (
     <div className="container mx-auto max-w-3xl space-y-6 py-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={async () => {
+            if (isEditing) {
+              setIsEditing(false)
+            } else {
+              await navigate(-1)
+            }
+          }}
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="flex-1 text-2xl font-bold">{t('contacts.details')}</h1>
+        <h1 className="flex-1 text-2xl font-bold">
+          {isEditing ? t('contacts.editContact') : t('contacts.details')}
+        </h1>
         <Button
           variant="destructive"
           size="sm"
@@ -87,18 +102,22 @@ export default function ContactDetailsPage() {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('contacts.editContact')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ContactForm
-            defaultValues={defaultValues}
-            onSubmit={handleSubmit}
-            isSubmitting={updateMutation.isPending}
-          />
-        </CardContent>
-      </Card>
+      {isEditing ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('contacts.editContact')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ContactForm
+              defaultValues={defaultValues}
+              onSubmit={handleSubmit}
+              isSubmitting={updateMutation.isPending}
+            />
+          </CardContent>
+        </Card>
+      ) : (
+        <ContactView contact={contact} onEdit={() => setIsEditing(true)} />
+      )}
 
       <Card>
         <CardHeader>

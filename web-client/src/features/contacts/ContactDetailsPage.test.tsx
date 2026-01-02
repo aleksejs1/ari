@@ -10,10 +10,27 @@ import { type Contact, type ContactFormValues } from '@/types/models'
 
 // Mock components to avoid complex rendering in unit test
 vi.mock('./components/ContactForm', () => ({
-  ContactForm: () => <div data-testid="contact-form">Contact Form</div>,
+  ContactForm: ({ onSubmit }: { onSubmit: () => void }) => (
+    <div data-testid="contact-form">
+      Contact Form
+      <button onClick={onSubmit} data-testid="submit-form">
+        Submit
+      </button>
+    </div>
+  ),
 }))
 vi.mock('./components/ContactTimeline', () => ({
   ContactTimeline: () => <div data-testid="contact-timeline">Contact Timeline</div>,
+}))
+vi.mock('./components/ContactView', () => ({
+  ContactView: ({ onEdit }: { onEdit: () => void }) => (
+    <div data-testid="contact-view">
+      Contact View
+      <button onClick={onEdit} data-testid="edit-button">
+        Edit
+      </button>
+    </div>
+  ),
 }))
 
 describe('ContactDetailsPage', () => {
@@ -39,12 +56,11 @@ describe('ContactDetailsPage', () => {
       </MemoryRouter>,
     )
 
-    // Check for spinner or loading text (in our case it's a Loader2 icon which might not have text,
-    // but the container is there. Let's check for "contact-form" NOT being there)
     expect(screen.queryByTestId('contact-form')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('contact-view')).not.toBeInTheDocument()
   })
 
-  it('renders data correctly', async () => {
+  it('renders view mode by default', async () => {
     vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
       isLoading: false,
       data: {
@@ -80,8 +96,63 @@ describe('ContactDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('contacts.details')).toBeInTheDocument()
-      expect(screen.getByTestId('contact-form')).toBeInTheDocument()
+      expect(screen.getByTestId('contact-view')).toBeInTheDocument()
+      expect(screen.queryByTestId('contact-form')).not.toBeInTheDocument()
     })
+  })
+
+  it('can toggle to edit mode and back', async () => {
+    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
+      isLoading: false,
+      data: {
+        id: 1,
+        '@id': '/api/contacts/1',
+        contactNames: [],
+        contactDates: [],
+      },
+      error: null,
+    } as unknown as UseQueryResult<Contact>)
+
+    vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue({
+      isPending: false,
+      mutateAsync: vi.fn(),
+    } as unknown as UseMutationResult<
+      unknown,
+      Error,
+      { id: string; data: ContactFormValues },
+      unknown
+    >)
+
+    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
+      {} as UseMutationResult<void, Error, string, unknown>,
+    )
+
+    render(
+      <MemoryRouter initialEntries={['/contacts/1']}>
+        <Routes>
+          <Route path="/contacts/:id" element={<ContactDetailsPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    // Switch to Edit Mode
+    fireEvent.click(screen.getByTestId('edit-button'))
+    // There are two "Edit Contact" texts: one in header, one in CardTitle
+    expect(screen.getAllByText('contacts.editContact')).toHaveLength(2)
+    expect(screen.getByTestId('contact-form')).toBeInTheDocument()
+    expect(screen.queryByTestId('contact-view')).not.toBeInTheDocument()
+
+    // Switch back via header back button (which now toggles edit mode inside the component)
+    // Note: The back button in the header simply has an ArrowLeft icon.
+    // In our test, we need to find it. It's the first button in the header.
+    // Or we can find by the ArrowLeft icon if we mock it, or just find the button by role.
+    const buttons = screen.getAllByRole('button')
+    // Button 0 is Back, Button 1 is Delete (in header)
+    fireEvent.click(buttons[0])
+
+    expect(screen.getByText('contacts.details')).toBeInTheDocument()
+    expect(screen.getByTestId('contact-view')).toBeInTheDocument()
+    expect(screen.queryByTestId('contact-form')).not.toBeInTheDocument()
   })
 
   it('renders error state', () => {
@@ -148,11 +219,6 @@ describe('ContactDetailsPage', () => {
     expect(screen.getByText('contacts.deleteConfirmTitle')).toBeInTheDocument()
 
     // Confirm delete
-    // Note: The dialog has two buttons with "common.delete" text (one to open, one to confirm)
-    // The one in the dialog is the second one usually, or we can look inside the dialog
-    // A better approach is to use getAllByText and pick the last one, or rely on the dialog implementation details.
-    // However, Shadcn Dialog renders in a portal.
-    // Let's assume the first button is still there, and the second one is in the dialog.
     const deleteButtons = screen.getAllByText('common.delete')
     if (deleteButtons[1]) {
       fireEvent.click(deleteButtons[1])
