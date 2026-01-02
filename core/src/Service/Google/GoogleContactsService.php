@@ -7,6 +7,8 @@ use App\Dto\ContactImportDto;
 use App\Dto\ContactNameDto;
 use App\Entity\TokenStorage;
 use App\Entity\User;
+use App\Repository\ImportMappingRepository;
+use App\Entity\ImportMapping;
 use App\Repository\TokenStorageRepository;
 use App\Service\ContactImport\ContactImportService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +20,7 @@ class GoogleContactsService
 
     public function __construct(
         private readonly TokenStorageRepository $tokenStorageRepository,
+        private readonly ImportMappingRepository $importMappingRepository,
         private readonly GoogleOAuthService $oauthService,
         private readonly HttpClientInterface $httpClient,
         private readonly ContactImportService $contactImportService,
@@ -53,6 +56,11 @@ class GoogleContactsService
         }
 
         foreach ($data['connections'] as $connection) {
+            $resourceName = $connection['resourceName'] ?? null;
+            if (null === $resourceName) {
+                continue;
+            }
+
             $names = [];
             if (isset($connection['names'])) {
                 foreach ($connection['names'] as $nameParam) {
@@ -96,8 +104,30 @@ class GoogleContactsService
                 dates: $dates
             );
 
-            if (null !== $this->contactImportService->import($dto, $user)) {
-                ++$importedCount;
+            $mapping = $this->importMappingRepository->findOneBy([
+                'type' => 'google',
+                'externalId' => $resourceName,
+                'user' => $user,
+            ]);
+
+            if (null !== $mapping) {
+                $contact = $mapping->getContact();
+                if (null !== $contact) {
+                    $this->contactImportService->update($contact, $dto);
+                    ++$importedCount;
+                }
+            } else {
+                $contact = $this->contactImportService->import($dto, $user);
+                if (null !== $contact) {
+                    $mapping = new ImportMapping();
+                    $mapping->setType('google');
+                    $mapping->setExternalId($resourceName);
+                    $mapping->setContact($contact);
+                    $mapping->setUser($user);
+                    $this->entityManager->persist($mapping);
+                    $this->entityManager->flush();
+                    ++$importedCount;
+                }
             }
         }
 

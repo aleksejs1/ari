@@ -33,6 +33,12 @@ class ContactImportService
         $contact = new Contact();
         $contact->setUser($user);
 
+        return $this->update($contact, $dto);
+    }
+
+    public function update(Contact $contact, ContactImportDto $dto): Contact
+    {
+        $contact->getContactNames()->clear();
         foreach ($dto->names as $nameDto) {
             $contactName = new ContactName();
             $contactName->setGiven($nameDto->given);
@@ -40,6 +46,7 @@ class ContactImportService
             $contact->addContactName($contactName);
         }
 
+        $contact->getContactDates()->clear();
         foreach ($dto->dates as $dateDto) {
             $contactDate = new ContactDate();
             $contactDate->setDate(

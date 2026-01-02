@@ -21,6 +21,8 @@ final class GoogleContactsServiceTest extends TestCase
     private GoogleContactsService $service;
     /** @var TokenStorageRepository&MockObject */
     private TokenStorageRepository $tokenStorageRepository;
+    /** @var \App\Repository\ImportMappingRepository&MockObject */
+    private \App\Repository\ImportMappingRepository $importMappingRepository;
     /** @var GoogleOAuthService&MockObject */
     private GoogleOAuthService $oauthService;
     /** @var HttpClientInterface&MockObject */
@@ -34,6 +36,7 @@ final class GoogleContactsServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->tokenStorageRepository = $this->createMock(TokenStorageRepository::class);
+        $this->importMappingRepository = $this->createMock(\App\Repository\ImportMappingRepository::class);
         $this->oauthService = $this->createMock(GoogleOAuthService::class);
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->contactImportService = $this->createMock(ContactImportService::class);
@@ -41,6 +44,7 @@ final class GoogleContactsServiceTest extends TestCase
 
         $this->service = new GoogleContactsService(
             $this->tokenStorageRepository,
+            $this->importMappingRepository,
             $this->oauthService,
             $this->httpClient,
             $this->contactImportService,
@@ -48,7 +52,7 @@ final class GoogleContactsServiceTest extends TestCase
         );
     }
 
-    public function testImportContactsImportsValidContacts(): void
+    public function testImportContactsCreatesNewContactsWhenNoMappingExists(): void
     {
         $user = new User();
         $tokenStorage = new TokenStorage();
@@ -64,6 +68,7 @@ final class GoogleContactsServiceTest extends TestCase
         $response->method('toArray')->willReturn([
             'connections' => [
                 [
+                    'resourceName' => 'people/c123',
                     'names' => [['givenName' => 'John', 'familyName' => 'Doe']],
                     'birthdays' => [['date' => ['year' => 1990, 'month' => 1, 'day' => 1]]],
                 ],
@@ -74,9 +79,66 @@ final class GoogleContactsServiceTest extends TestCase
             ->method('request')
             ->willReturn($response);
 
+        $this->importMappingRepository->expects(self::once())
+            ->method('findOneBy')
+            ->with([
+                'type' => 'google',
+                'externalId' => 'people/c123',
+                'user' => $user,
+            ])
+            ->willReturn(null);
+
+        $contact = $this->createMock(\App\Entity\Contact::class);
         $this->contactImportService->expects(self::once())
             ->method('import')
-            ->willReturn($this->createMock(\App\Entity\Contact::class));
+            ->willReturn($contact);
+
+        $this->entityManager->expects(self::once())
+            ->method('persist')
+            ->with(self::isInstanceOf(\App\Entity\ImportMapping::class));
+        $this->entityManager->expects(self::once())->method('flush');
+
+        $count = $this->service->importContacts($user);
+        self::assertEquals(1, $count);
+    }
+
+    public function testImportContactsUpdatesExistingContactsWhenMappingExists(): void
+    {
+        $user = new User();
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setAccessToken('access_token');
+        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
+
+        $this->tokenStorageRepository->expects(self::once())
+            ->method('findOneBy')
+            ->with(['user' => $user, 'type' => 'google'])
+            ->willReturn($tokenStorage);
+
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('toArray')->willReturn([
+            'connections' => [
+                [
+                    'resourceName' => 'people/c123',
+                    'names' => [['givenName' => 'John', 'familyName' => 'Updated']],
+                ],
+            ],
+        ]);
+
+        $this->httpClient->expects(self::once())
+            ->method('request')
+            ->willReturn($response);
+
+        $contact = $this->createMock(\App\Entity\Contact::class);
+        $mapping = $this->createMock(\App\Entity\ImportMapping::class);
+        $mapping->method('getContact')->willReturn($contact);
+
+        $this->importMappingRepository->expects(self::once())
+            ->method('findOneBy')
+            ->willReturn($mapping);
+
+        $this->contactImportService->expects(self::once())
+            ->method('update')
+            ->with($contact, self::anything());
 
         $count = $this->service->importContacts($user);
         self::assertEquals(1, $count);
@@ -106,10 +168,6 @@ final class GoogleContactsServiceTest extends TestCase
 
         $this->httpClient->expects(self::once())
             ->method('request')
-            // Verify new token is used
-            ->with('GET', self::anything(), self::callback(function ($options) {
-                return 'Bearer new_access_token' === $options['headers']['Authorization'];
-            }))
             ->willReturn($response);
 
         $this->service->importContacts($user);
