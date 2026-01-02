@@ -20,10 +20,12 @@ use App\Entity\Traits\ContactGroupsTrait;
 use App\Entity\Traits\ContactNamesTrait;
 use App\Entity\Traits\ContactOrganizationsTrait;
 use App\Entity\Traits\ContactPhoneNumbersTrait;
+use App\Entity\Traits\ContactRelationsTrait;
 use App\Repository\ContactRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -66,6 +68,7 @@ class Contact implements TenantAwareInterface
     use ContactGroupsTrait;
     use ContactOrganizationsTrait;
     use ContactBiographiesTrait;
+    use ContactRelationsTrait;
 
     #[Groups(['contact:read'])]
     #[ORM\Id]
@@ -77,6 +80,8 @@ class Contact implements TenantAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+
+
     public function __construct()
     {
         $this->contactNames = new ArrayCollection();
@@ -87,6 +92,8 @@ class Contact implements TenantAwareInterface
         $this->contactGroups = new ArrayCollection();
         $this->contactOrganizations = new ArrayCollection();
         $this->contactBiographies = new ArrayCollection();
+        $this->contactRelations = new ArrayCollection();
+        $this->reverseContactRelations = new ArrayCollection();
     }
 
     public function setUser(?User $user): static

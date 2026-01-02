@@ -1,0 +1,155 @@
+<?php
+
+namespace App\Entity\Traits;
+
+use App\Entity\ContactRelation;
+use App\Entity\ContactBiography; // Assumed for gender check
+use App\Entity\Contact;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+trait ContactRelationsTrait
+{
+    /**
+     * @var Collection<int, ContactRelation>
+     */
+    #[Groups(['contact:read', 'contact:create'])]
+    #[ORM\OneToMany(
+        targetEntity: ContactRelation::class,
+        mappedBy: 'contact',
+        orphanRemoval: true,
+        cascade: ['persist']
+    )]
+    private Collection $contactRelations;
+
+    /**
+     * @var Collection<int, ContactRelation>
+     * Note: This side is not persisted directly as a collection in ContactRelation usually unless mapped.
+     * We map it in ContactRelation as 'person' with inversedBy='reverseContactRelations' to make this work efficiently.
+     */
+    #[ORM\OneToMany(targetEntity: ContactRelation::class, mappedBy: 'person')]
+    private Collection $reverseContactRelations;
+
+    /**
+     * @return Collection<int, ContactRelation>
+     */
+    public function getContactRelations(): Collection
+    {
+        // Start with direct relations
+        $allRelations = new ArrayCollection($this->contactRelations->toArray());
+
+        // Add reverse relations with inverted type
+        foreach ($this->reverseContactRelations as $reverseRelation) {
+            $invertedType = $this->invertRelationType($reverseRelation->getType(), $this);
+
+            // Create a virtual relation object for display
+            $virtualRelation = new ContactRelation();
+            // We set the ID to null or we could potentially set it to the original ID to allow tracking?
+            // Better to leave ID null or not expose it if it confuses the frontend,
+            // OR expose the original ID but be careful about updates.
+            // For now, let's just create a representation.
+            // Users usually update relations via the owner, so this virtual one is read-only.
+
+            $virtualRelation->setContact($this); // The current contact is the "owner" in this view
+            $virtualRelation->setPerson($reverseRelation->getContact()); // The other person is the original owner
+            $virtualRelation->setType($invertedType);
+
+            // We can't easily set the mapped ID because it's private and generated.
+            // But for read-only purposes this is fine.
+
+            $allRelations->add($virtualRelation);
+        }
+
+        return $allRelations;
+    }
+
+    public function addContactRelation(ContactRelation $contactRelation): static
+    {
+        if (!$this->contactRelations->contains($contactRelation)) {
+            $this->contactRelations->add($contactRelation);
+            $contactRelation->setContact($this);
+            $contactRelation->setTenant($this->getTenant());
+        }
+
+        return $this;
+    }
+
+    public function removeContactRelation(ContactRelation $contactRelation): static
+    {
+        if ($this->contactRelations->removeElement($contactRelation)) {
+            // set the owning side to null (unless already changed)
+            if ($contactRelation->getContact() === $this) {
+                $contactRelation->setContact(null);
+            }
+        }
+
+        return $this;
+    }
+
+    private function invertRelationType(?string $type, Contact $me): string
+    {
+        if (null === $type) {
+            return 'Related';
+        }
+
+        $type = mb_strtolower($type);
+
+        // Basic map
+        $map = [
+            'husband' => 'Wife',
+            'wife' => 'Husband',
+            'spouse' => 'Spouse',
+            'brother' => 'Sibling', // Sibling fallback, refined below
+            'sister' => 'Sibling',
+            'sibling' => 'Sibling',
+        ];
+
+        // Parent/Child logic
+        if (in_array($type, ['father', 'mother', 'parent'], true)) {
+            return $this->getGenderedTerm($me, 'Son', 'Daughter', 'Child');
+        }
+
+        // Child/Parent logic
+        if (in_array($type, ['son', 'daughter', 'child'], true)) {
+             // If I am the parent, return Parent (or Father/Mother if we knew my gender)
+             return $this->getGenderedTerm($me, 'Father', 'Mother', 'Parent');
+        }
+
+        if (isset($map[$type])) {
+            // Refine Sibling
+            if ($map[$type] === 'Sibling') {
+                return $this->getGenderedTerm($me, 'Brother', 'Sister', 'Sibling');
+            }
+             // Refine Spouse
+            if ($map[$type] === 'Spouse') { // If it was generic spouse, try to be specific? No, keep generic.
+                 return 'Spouse';
+            }
+            return $map[$type];
+        }
+
+        return 'Related (' . $type . ')';
+    }
+
+    private function getGenderedTerm(
+        Contact $contact,
+        string $maleTerm,
+        string $femaleTerm,
+        string $neutralTerm
+    ): string {
+        // Try to find gender in biographies
+        foreach ($contact->getContactBiographies() as $bio) {
+            if (mb_strtolower($bio->getType() ?? '') === 'gender') {
+                $val = mb_strtolower($bio->getValue() ?? '');
+                if ($val === 'male' || $val === 'm') {
+                    return $maleTerm;
+                }
+                if ($val === 'female' || $val === 'f') {
+                    return $femaleTerm;
+                }
+            }
+        }
+        return $neutralTerm;
+    }
+}

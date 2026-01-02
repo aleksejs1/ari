@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ContactWithNestedEntitiesTest extends ApiTestCase
 {
-    protected static ?bool $alwaysBootKernel = true;
+    protected static ?bool $alwaysBootKernel = false;
 
     private string $token;
     private string $userUuid;
@@ -58,6 +58,13 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
     public function testCreateContactWithNestedEntities(): void
     {
         $client = static::createClient();
+
+        // Create a contact to relate to
+        $relatedContactResponse = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => ['contactNames' => [['given' => 'Related']]],
+        ]);
+        $relatedContactIri = $relatedContactResponse->toArray()['@id'];
 
         // Attempt to create Contact with embedded ContactNames and ContactDates
         $response = $client->request('POST', '/api/contacts', [
@@ -133,6 +140,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'value' => 'Value 2',
                     ],
                 ],
+                'contactRelations' => [
+                    [
+                        'person' => $relatedContactIri,
+                        'type' => 'Friend',
+                    ],
+                ],
             ],
         ]);
 
@@ -162,6 +175,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
 
         self::assertArrayHasKey('contactBiographies', $data);
         self::assertCount(2, $data['contactBiographies']);
+
+        self::assertArrayHasKey('contactRelations', $data);
+        self::assertCount(1, $data['contactRelations']);
 
         // Verify the names
         self::assertJsonContains([
@@ -219,6 +235,11 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                     'value' => 'Value 2',
                 ],
             ],
+            'contactRelations' => [
+                [
+                    'type' => 'Friend',
+                ],
+            ],
         ]);
 
         // Additional verification: fetch the contact and verify persistence
@@ -247,6 +268,13 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
     public function testPutContactWithNestedEntities(): void
     {
         $client = static::createClient();
+
+        // Create a contact to relate to
+        $relatedContactResponse = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => ['contactNames' => [['given' => 'Related']]],
+        ]);
+        $relatedContactIri = $relatedContactResponse->toArray()['@id'];
 
         // 1. Create initial Contact with one name and one date
         $response = $client->request('POST', '/api/contacts', [
@@ -343,6 +371,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'value' => 'New Value',
                     ],
                 ],
+                'contactRelations' => [
+                    [
+                        'person' => $relatedContactIri,
+                        'type' => 'New Relation',
+                    ],
+                ],
             ],
         ]);
 
@@ -359,6 +393,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(1, $data['contactEmailAdresses']);
         self::assertCount(1, $data['contactOrganizations']);
         self::assertCount(1, $data['contactBiographies']);
+        self::assertCount(1, $data['contactRelations']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -406,6 +441,11 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                     'value' => 'New Value',
                 ],
             ],
+            'contactRelations' => [
+                [
+                    'type' => 'New Relation',
+                ],
+            ],
         ]);
 
         // Verify Audit Log for the PUT operation (Removal of old entities and Insert of new ones)
@@ -443,6 +483,13 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
     public function testPatchContactWithNestedEntities(): void
     {
         $client = static::createClient();
+
+        // Create a contact to relate to
+        $relatedContactResponse = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => ['contactNames' => [['given' => 'Related']]],
+        ]);
+        $relatedContactIri = $relatedContactResponse->toArray()['@id'];
 
         // 1. Create empty Contact
         $response = $client->request('POST', '/api/contacts', [
@@ -499,6 +546,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                         'value' => 'Patch Value',
                     ],
                 ],
+                'contactRelations' => [
+                    [
+                        'person' => $relatedContactIri,
+                        'type' => 'Patch Relation',
+                    ],
+                ],
             ],
         ]);
 
@@ -515,6 +568,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(1, $data['contactEmailAdresses']);
         self::assertCount(1, $data['contactOrganizations']);
         self::assertCount(1, $data['contactBiographies']);
+        self::assertCount(1, $data['contactRelations']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -556,6 +610,11 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 [
                     'type' => 'Patch Bio',
                     'value' => 'Patch Value',
+                ],
+            ],
+            'contactRelations' => [
+                [
+                    'type' => 'Patch Relation',
                 ],
             ],
         ]);
