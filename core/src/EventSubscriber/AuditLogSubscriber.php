@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Entity\AuditLog;
 use App\Entity\User;
 use App\Security\TenantAwareInterface;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -93,23 +94,34 @@ class AuditLogSubscriber
                 if (null !== $auditLog->getId()) {
                     $em = $args->getObjectManager();
 
-                    // Also check for owner ID if it wasn't set (e.g. cascaded persist)
+                // Also check for owner ID if it wasn't set (e.g. cascaded persist)
                     $ownerEntityId = $auditLog->getOwnerEntityId();
-                    if (null === $ownerEntityId && null !== $auditLog->getOwnerEntityType()) {
+                    $ownerEntityType = $auditLog->getOwnerEntityType();
+
+                    // If owner ID is missing, try to resolve it again
+                    if (null === $ownerEntityId) {
                         if (method_exists($entity, 'getContact')) {
                             $contact = $entity->getContact();
                             if (is_object($contact) && method_exists($contact, 'getId')) {
                                 $ownerEntityId = $contact->getId();
-                                $auditLog->setOwnerEntityId($ownerEntityId);
+                                if (null !== $ownerEntityId) {
+                                    $auditLog->setOwnerEntityId($ownerEntityId);
+                                    if (null === $ownerEntityType) {
+                                        $ownerEntityType = ClassUtils::getClass($contact);
+                                        $auditLog->setOwnerEntityType($ownerEntityType);
+                                    }
+                                }
                             }
                         }
                     }
 
                     $em->getConnection()->executeStatement(
-                        'UPDATE audit_log SET entity_id = ?, owner_entity_id = ?, snapshot_after = ? WHERE id = ?',
+                        'UPDATE audit_log SET entity_id = ?, owner_entity_id = ?, ' .
+                        'owner_entity_type = ?, snapshot_after = ? WHERE id = ?',
                         [
                             $entityId,
                             $ownerEntityId,
+                            $ownerEntityType,
                             json_encode($auditLog->getSnapshotAfter()),
                             $auditLog->getId(),
                         ]
@@ -175,7 +187,7 @@ class AuditLogSubscriber
         ?array $snapshotAfter = null,
     ): AuditLog {
         $auditLog = new AuditLog();
-        $auditLog->setEntityType(get_class($entity));
+        $auditLog->setEntityType(ClassUtils::getClass($entity));
 
         // Set tenant from the entity being audited
         $auditLog->setTenant($entity->getTenant());
@@ -189,7 +201,7 @@ class AuditLogSubscriber
         if (method_exists($entity, 'getContact')) {
             $contact = $entity->getContact();
             if (is_object($contact) && method_exists($contact, 'getId')) {
-                $auditLog->setOwnerEntityType(get_class($contact));
+                $auditLog->setOwnerEntityType(ClassUtils::getClass($contact));
                 $auditLog->setOwnerEntityId($contact->getId());
             }
         }
