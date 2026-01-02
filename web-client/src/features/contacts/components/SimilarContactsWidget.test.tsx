@@ -9,6 +9,10 @@ import { SimilarContactsWidget } from './SimilarContactsWidget'
 // Mock the hook
 vi.mock('../useContacts', () => ({
   useSimilarContacts: vi.fn(),
+  useCreateContactRelation: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
 }))
 
 describe('SimilarContactsWidget', () => {

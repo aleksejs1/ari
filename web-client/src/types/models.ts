@@ -35,6 +35,21 @@ export interface ContactRelation {
   displayName?: string
 }
 
+export const PREDEFINED_RELATIONS = [
+  'husband',
+  'wife',
+  'spouse',
+  'brother',
+  'sister',
+  'sibling',
+  'son',
+  'daughter',
+  'child',
+  'father',
+  'mother',
+  'parent',
+]
+
 export type Group = components['schemas']['Group.jsonld-group.read']
 
 // Zod Schemas for Forms

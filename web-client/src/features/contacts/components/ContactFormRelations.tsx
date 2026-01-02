@@ -8,22 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { type ContactFormValues } from '@/types/models'
-
-const PREDEFINED_RELATIONS = [
-  'husband',
-  'wife',
-  'spouse',
-  'brother',
-  'sister',
-  'sibling',
-  'son',
-  'daughter',
-  'child',
-  'father',
-  'mother',
-  'parent',
-]
+import { type ContactFormValues, PREDEFINED_RELATIONS } from '@/types/models'
 
 export function ContactFormRelations() {
   const { t } = useTranslation()

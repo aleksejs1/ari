@@ -129,7 +129,12 @@ export default function ContactDetailsPage() {
         </CardContent>
       </Card>
 
-      {!!contact['@id'] && <SimilarContactsWidget contactId={contact['@id']} />}
+      {!!contact['@id'] && (
+        <SimilarContactsWidget
+          contactId={contact['@id']}
+          existingRelations={contact.contactRelations}
+        />
+      )}
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
