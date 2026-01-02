@@ -34,6 +34,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
     denormalizationContext: ['groups' => ['contact:create']]
 )]
 #[Get(security: "is_granted('CONTACT_VIEW', object)")]
+#[Get(
+    uriTemplate: '/contacts/{id}/similar',
+    name: 'contact_similar',
+    provider: 'App\State\ContactSimilarProvider'
+)]
 #[GetCollection]
 #[Put(
     security: "is_granted('CONTACT_EDIT', object)",
