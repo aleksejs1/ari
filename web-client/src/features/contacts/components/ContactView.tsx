@@ -1,6 +1,7 @@
 import { Briefcase, Calendar, FileText, Mail, MapPin, Pencil, Phone, Users } from 'lucide-react'
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -183,6 +184,59 @@ const BiographyCard = ({ contact }: { contact: Contact }) => {
   )
 }
 
+const RelationsCard = ({ contact }: { contact: Contact }) => {
+  const { t } = useTranslation()
+  if (!contact.contactRelations || contact.contactRelations.length === 0) {
+    return null
+  }
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{t('contacts.relations')}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        {contact.contactRelations.map((relation, i) => {
+          const relatedId =
+            typeof relation.relatedContact === 'string'
+              ? relation.relatedContact.split('/').pop()
+              : relation.relatedContact?.['@id']?.split('/').pop()
+
+          const label = t(`contacts.relationTypes.${relation.type}`, {
+            defaultValue: relation.type,
+          })
+          const name =
+            relation.displayName ||
+            (typeof relation.relatedContact === 'object'
+              ? relation.relatedContact.displayName
+              : '') ||
+            t('common.unknown')
+
+          return (
+            <div key={i} className="flex items-start gap-3 py-2">
+              <div className="mt-1 rounded-md bg-muted p-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-xs font-medium text-muted-foreground">{label}</p>
+                {relatedId ? (
+                  <Link
+                    to={`/contacts/${relatedId}`}
+                    className="text-sm font-medium leading-none text-primary hover:underline"
+                  >
+                    {name}
+                  </Link>
+                ) : (
+                  <p className="text-sm font-medium leading-none">{name}</p>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </CardContent>
+    </Card>
+  )
+}
+
 export function ContactView({ contact, onEdit }: ContactViewProps) {
   const { t } = useTranslation()
 
@@ -203,6 +257,7 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
         <ProfessionalCard contact={contact} />
         <DatesCard contact={contact} />
         <UpcomingDatesCard contact={contact} />
+        <RelationsCard contact={contact} />
         <BiographyCard contact={contact} />
       </div>
     </div>
