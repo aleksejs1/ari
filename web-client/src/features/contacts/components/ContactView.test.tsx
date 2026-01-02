@@ -75,6 +75,9 @@ const mockContact: Contact = {
     {
       date: '2000-01-01T00:00:00Z',
       text: 'Birthday',
+      yearsPassed: 24,
+      nextAnniversaryDate: '2024-01-01',
+      yearsAtNextAnniversary: 25,
       '@id': 'date-1',
       '@type': 'ContactDate',
     },
@@ -101,6 +104,7 @@ describe('ContactView', () => {
     expect(screen.getByText('Acme Corp')).toBeInTheDocument()
     expect(screen.getByText('Friends')).toBeInTheDocument()
     expect(screen.getByText('A short bio')).toBeInTheDocument()
+    expect(screen.getByText(/25/)).toBeInTheDocument() // Check for anniversary year
   })
 
   it('calls onEdit when edit button is clicked', () => {

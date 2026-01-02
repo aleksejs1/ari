@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatApiDate } from '@/lib/utils'
+import { formatLocalizedDate } from '@/lib/utils'
 import type { Contact } from '@/types/models'
 
 interface ContactViewProps {
@@ -106,7 +106,7 @@ const ProfessionalCard = ({ contact }: { contact: Contact }) => {
 }
 
 const DatesCard = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   if (!contact.contactDates || contact.contactDates.length === 0) {
     return null
   }
@@ -121,7 +121,42 @@ const DatesCard = ({ contact }: { contact: Contact }) => {
             key={i}
             icon={Calendar}
             label={date.text}
-            value={date.date ? formatApiDate(new Date(date.date)) : ''}
+            value={(() => {
+              if (!date.date) {
+                return ''
+              }
+              const formattedDate = formatLocalizedDate(date.date, i18n.language)
+              return date.yearsPassed ? `${formattedDate} (${date.yearsPassed})` : formattedDate
+            })()}
+          />
+        ))}
+      </CardContent>
+    </Card>
+  )
+}
+
+const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
+  const { t, i18n } = useTranslation()
+  const upcomingDates = contact.contactDates?.filter((d) => d.nextAnniversaryDate)
+
+  if (!upcomingDates || upcomingDates.length === 0) {
+    return null
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{t('contacts.nextAnniversary')}</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        {upcomingDates.map((date, i) => (
+          <DisplayItem
+            key={i}
+            icon={Calendar}
+            label={date.text}
+            value={`${formatLocalizedDate(date.nextAnniversaryDate ?? '', i18n.language)} (${
+              date.yearsAtNextAnniversary
+            })`}
           />
         ))}
       </CardContent>
@@ -167,6 +202,7 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
         <ContactInfoCard contact={contact} />
         <ProfessionalCard contact={contact} />
         <DatesCard contact={contact} />
+        <UpcomingDatesCard contact={contact} />
         <BiographyCard contact={contact} />
       </div>
     </div>

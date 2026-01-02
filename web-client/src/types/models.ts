@@ -6,7 +6,12 @@ import { formatApiDate } from '@/lib/utils'
 
 export type Contact = components['schemas']['Contact.jsonld-contact.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
-export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read']
+export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read'] & {
+  yearsPassed?: number | null
+  nextAnniversaryDate?: string | null
+  yearsAtNextAnniversary?: number | null
+}
+
 export type ContactPhoneNumber = components['schemas']['ContactPhoneNumber.jsonld-contact.read']
 export type ContactEmailAdress = components['schemas']['ContactEmailAdress.jsonld-contact.read']
 export type ContactAddress = components['schemas']['ContactAddress.jsonld-contact.read']
