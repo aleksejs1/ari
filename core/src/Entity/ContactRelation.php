@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -61,6 +62,7 @@ class ContactRelation implements TenantAwareInterface
         'contact_relation:create',
         'contact_relation:update'
     ])]
+    #[SerializedName('relatedContact')]
     #[ApiProperty(readableLink: false)]
     #[ORM\ManyToOne(inversedBy: 'reverseContactRelations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -77,6 +79,13 @@ class ContactRelation implements TenantAwareInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getContact(): ?Contact
@@ -113,5 +122,12 @@ class ContactRelation implements TenantAwareInterface
         $this->person = $person;
 
         return $this;
+    }
+
+    #[Groups(['contact:read', 'contact_relation:read'])]
+    #[SerializedName('displayName')]
+    public function getRelatedDisplayName(): string
+    {
+        return $this->person?->getDisplayName() ?? 'Unknown Contact';
     }
 }

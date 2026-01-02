@@ -117,10 +117,11 @@ class ContactProcessor implements ProcessorInterface
                     'addContactBiography',
                     true
                 );
+                $existing->getReverseContactRelationsCollection()->clear();
                 $this->handleCollection(
                     $existing,
                     $data->getContactRelations(),
-                    $existing->getContactRelations(),
+                    $existing->getContactRelationsCollection(),
                     'addContactRelation',
                     true
                 );

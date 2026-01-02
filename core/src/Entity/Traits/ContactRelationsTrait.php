@@ -29,7 +29,12 @@ trait ContactRelationsTrait
      * Note: This side is not persisted directly as a collection in ContactRelation usually unless mapped.
      * We map it in ContactRelation as 'person' with inversedBy='reverseContactRelations' to make this work efficiently.
      */
-    #[ORM\OneToMany(targetEntity: ContactRelation::class, mappedBy: 'person')]
+    #[ORM\OneToMany(
+        targetEntity: ContactRelation::class,
+        mappedBy: 'person',
+        orphanRemoval: true,
+        cascade: ['persist']
+    )]
     private Collection $reverseContactRelations;
 
     /**
@@ -42,7 +47,14 @@ trait ContactRelationsTrait
 
         // Add reverse relations with inverted type
         foreach ($this->reverseContactRelations as $reverseRelation) {
-            $invertedType = $this->invertRelationType($reverseRelation->getType(), $this);
+            $contact = $reverseRelation->getContact();
+            if (null === $contact) {
+                continue;
+            }
+            $invertedType = $this->invertRelationType(
+                $reverseRelation->getType(),
+                $contact
+            );
 
             // Create a virtual relation object for display
             $virtualRelation = new ContactRelation();
@@ -56,13 +68,29 @@ trait ContactRelationsTrait
             $virtualRelation->setPerson($reverseRelation->getContact()); // The other person is the original owner
             $virtualRelation->setType($invertedType);
 
-            // We can't easily set the mapped ID because it's private and generated.
-            // But for read-only purposes this is fine.
+            // We set the ID to the original ID to allow usage in IRI generation.
+            $virtualRelation->setId($reverseRelation->getId());
 
             $allRelations->add($virtualRelation);
         }
 
         return $allRelations;
+    }
+
+    /**
+     * @return Collection<int, ContactRelation>
+     */
+    public function getContactRelationsCollection(): Collection
+    {
+        return $this->contactRelations;
+    }
+
+    /**
+     * @return Collection<int, ContactRelation>
+     */
+    public function getReverseContactRelationsCollection(): Collection
+    {
+        return $this->reverseContactRelations;
     }
 
     public function addContactRelation(ContactRelation $contactRelation): static

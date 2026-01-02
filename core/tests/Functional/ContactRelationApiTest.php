@@ -75,7 +75,7 @@ class ContactRelationApiTest extends ApiTestCase
             'auth_bearer' => $this->token,
             'json' => [
                 'contact' => $this->contactIri1,
-                'person' => $this->contactIri2,
+                'relatedContact' => $this->contactIri2,
                 'type' => 'Friend',
             ],
         ]);
@@ -87,7 +87,7 @@ class ContactRelationApiTest extends ApiTestCase
         // Use regex for contact IRI since we might have full path or relative
         // Standard API Platform returns IRIs
         self::assertStringContainsString($this->contactIri1, $data['contact']);
-        self::assertStringContainsString($this->contactIri2, $data['person']);
+        self::assertStringContainsString($this->contactIri2, $data['relatedContact']);
     }
 
     public function testGetContactRelations(): void

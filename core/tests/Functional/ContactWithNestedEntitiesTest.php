@@ -4,6 +4,7 @@ namespace App\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
+use App\Entity\Contact;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContactWithNestedEntitiesTest extends ApiTestCase
@@ -677,5 +678,150 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
 
         self::assertContains('New Nested Group', $groupNames);
         self::assertContains('Existing Group', $groupNames);
+    }
+    public function testCreateContactWithNestedRelationUsingRelatedContact(): void
+    {
+        $client = static::createClient();
+        $container = self::getContainer();
+        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
+
+        // Find the user created in setUp
+        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+
+        // Create a separate contact to be related
+        $relatedContact = new Contact();
+        $relatedContact->setUser($user);
+        $em->persist($relatedContact);
+        $em->flush();
+        $relatedContactIri = '/api/contacts/' . (string) $relatedContact->getId();
+
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'contactRelations' => [
+                    [
+                        'relatedContact' => $relatedContactIri,
+                        'type' => 'sister',
+                    ]
+                ],
+            ],
+        ]);
+
+        self::assertResponseStatusCodeSame(201);
+        $data = $response->toArray();
+        self::assertArrayHasKey('contactRelations', $data);
+        self::assertCount(1, $data['contactRelations']);
+        self::assertEquals('sister', $data['contactRelations'][0]['type']);
+        // Verify relatedContact is set and returned (as relatedContact key due to SerializedName)
+        self::assertStringContainsString($relatedContactIri, $data['contactRelations'][0]['relatedContact']);
+    }
+
+    public function testDeleteContactRelationsViaPut(): void
+    {
+        $client = static::createClient();
+        $container = self::getContainer();
+        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+
+        // 1. Create a contact with a relation
+        $relatedContact = new Contact();
+        $relatedContact->setUser($user);
+        $em->persist($relatedContact);
+
+        $mainContact = new Contact();
+        $mainContact->setUser($user);
+        $em->persist($mainContact);
+
+        $rel = new \App\Entity\ContactRelation($mainContact);
+        $rel->setPerson($relatedContact);
+        $rel->setType('Friend');
+        $mainContact->addContactRelation($rel);
+        $em->persist($rel);
+        $em->flush();
+
+        $mainContactId = (string) $mainContact->getId();
+
+        // Assert it exists
+        self::assertCount(1, $mainContact->getContactRelations());
+
+        // 2. PUT with empty relations
+        $response = $client->request('PUT', '/api/contacts/' . $mainContactId, [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'displayName' => 'Updated Name',
+                'contactRelations' => [],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertArrayHasKey('contactRelations', $data);
+        self::assertCount(0, $data['contactRelations'], 'Contact relations should be empty after PUT');
+
+        // 3. Verify in DB
+        $em->clear();
+        $reloaded = $em->find(Contact::class, $mainContactId);
+        self::assertInstanceOf(Contact::class, $reloaded);
+        self::assertCount(0, $reloaded->getContactRelations(), 'DB should have 0 relations for this contact');
+    }
+
+    public function testDeleteReverseContactRelationsViaPut(): void
+    {
+        $client = static::createClient();
+        $container = self::getContainer();
+        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+
+        // 1. Create a relation owned by B, where A is the person
+        $contactB = new Contact();
+        $contactB->setUser($user);
+        $em->persist($contactB);
+
+        $contactA = new Contact();
+        $contactA->setUser($user);
+        $em->persist($contactA);
+
+        $rel = new \App\Entity\ContactRelation($contactB);
+        $rel->setPerson($contactA);
+        $rel->setType('Sibling');
+        $contactB->addContactRelation($rel);
+        $em->persist($rel);
+        $em->flush();
+        $em->refresh($contactA);
+
+        $contactAId = (string) $contactA->getId();
+
+        // Assert A sees the relation (reverse)
+        self::assertCount(1, $contactA->getContactRelations());
+
+        // 2. PUT A with empty relations
+        $response = $client->request('PUT', '/api/contacts/' . $contactAId, [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'contactRelations' => [],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertCount(0, $data['contactRelations'], 'Contact relations should be empty after PUT on A');
+
+        // 3. Verify in DB
+        $em->clear();
+        $reloadedA = $em->find(Contact::class, $contactAId);
+        self::assertInstanceOf(Contact::class, $reloadedA);
+        self::assertCount(0, $reloadedA->getContactRelations(), 'DB should have 0 relations for contact A');
+
+        // Verify it was really deleted (not just detached)
+        $relInDb = $em->find(\App\Entity\ContactRelation::class, $rel->getId());
+        self::assertNull($relInDb, 'The ContactRelation entity should be deleted from DB');
     }
 }
