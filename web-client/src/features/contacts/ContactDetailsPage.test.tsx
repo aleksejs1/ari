@@ -32,6 +32,9 @@ vi.mock('./components/ContactView', () => ({
     </div>
   ),
 }))
+vi.mock('./components/SimilarContactsWidget', () => ({
+  SimilarContactsWidget: () => <div data-testid="similar-contacts">Similar Contacts</div>,
+}))
 
 describe('ContactDetailsPage', () => {
   it('renders loading state', () => {

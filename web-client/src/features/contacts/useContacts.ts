@@ -181,3 +181,22 @@ export function useCreateGroup() {
     },
   })
 }
+
+export function useSimilarContacts(id: string) {
+  return useQuery({
+    queryKey: ['contacts', id, 'similar'],
+    queryFn: async () => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      // The endpoint is /api/contacts/{id}/similar.
+      // If id is numeric "1", url should be "/contacts/1/similar".
+      // If id is "/api/contacts/1", url (substring) is "/contacts/1".
+      // Then append "/similar".
+      const fullUrl = `${url}/similar`
+      const response = await api.get<HydraCollection<Contact>>(fullUrl)
+      // User noted that keys might lack "hydra:" prefix.
+      // getHydraMember parses "member" key, which matches the "no prefix" scenario.
+      return getHydraMember(response.data)
+    },
+    enabled: !!id,
+  })
+}

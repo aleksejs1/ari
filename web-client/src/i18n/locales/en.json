@@ -45,6 +45,7 @@
     "name": "Name",
     "edit": "Edit",
     "editContact": "Edit Contact",
+    "similarContacts": "Similar Contacts",
     "delete": "Delete",
     "deleteConfirmTitle": "Delete Contact",
     "deleteConfirm": "Are you sure you want to delete this contact?",

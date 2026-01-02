@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ContactForm } from './components/ContactForm'
 import { ContactTimeline } from './components/ContactTimeline'
 import { ContactView } from './components/ContactView'
+import { SimilarContactsWidget } from './components/SimilarContactsWidget'
 import { mapContactToFormValues } from './contactUtils'
 import { useContact, useUpdateContact, useDeleteContact } from './useContacts'
 
@@ -127,6 +128,8 @@ export default function ContactDetailsPage() {
           {contact.id ? <ContactTimeline contactId={contact.id.toString()} /> : null}
         </CardContent>
       </Card>
+
+      {!!contact['@id'] && <SimilarContactsWidget contactId={contact['@id']} />}
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
