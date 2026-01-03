@@ -345,6 +345,7 @@
     "upcomingAnniversaries": "Upcoming Anniversaries",
     "noUpcoming": "No upcoming anniversaries found.",
     "yearsCount": "{{count}} years",
-    "yearsCount_one": "{{count}} year"
+    "yearsCount_one": "{{count}} year",
+    "recentAuditLogs": "Recent Activity"
   }
 }

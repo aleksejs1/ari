@@ -348,6 +348,7 @@
     "yearsCount_one": "{{count}} год",
     "yearsCount_few": "{{count}} года",
     "yearsCount_many": "{{count}} лет",
-    "yearsCount_other": "{{count}} лет"
+    "yearsCount_other": "{{count}} лет",
+    "recentAuditLogs": "Последняя активность"
   }
 }
