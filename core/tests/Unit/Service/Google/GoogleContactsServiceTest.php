@@ -209,4 +209,64 @@ final class GoogleContactsServiceTest extends TestCase
 
         self::assertEquals('new_access_token', $tokenStorage->getAccessToken());
     }
+
+    public function testImportContactsHandlesPagination(): void
+    {
+        $user = new User();
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setAccessToken('access_token');
+        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
+
+        $this->tokenStorageRepository->method('findOneBy')->willReturn($tokenStorage);
+
+        $groupsResponse1 = $this->createMock(ResponseInterface::class);
+        $groupsResponse1->method('toArray')->willReturn([
+            'contactGroups' => [['resourceName' => 'contactGroups/g1', 'formattedName' => 'Group 1']],
+            'nextPageToken' => 'next_group_token',
+        ]);
+        $groupsResponse2 = $this->createMock(ResponseInterface::class);
+        $groupsResponse2->method('toArray')->willReturn([
+            'contactGroups' => [['resourceName' => 'contactGroups/g2', 'formattedName' => 'Group 2']],
+        ]);
+
+        $contactsResponse1 = $this->createMock(ResponseInterface::class);
+        $contactsResponse1->method('toArray')->willReturn([
+            'connections' => [['resourceName' => 'people/c1', 'names' => [['givenName' => 'C1']]]],
+            'nextPageToken' => 'next_contact_token',
+        ]);
+        $contactsResponse2 = $this->createMock(ResponseInterface::class);
+        $contactsResponse2->method('toArray')->willReturn([
+            'connections' => [['resourceName' => 'people/c2', 'names' => [['givenName' => 'C2']]]],
+        ]);
+
+        $this->httpClient->expects(self::exactly(4))
+            ->method('request')
+            ->willReturnCallback(function (
+                string $method,
+                string $url,
+                array $options
+            ) use (
+                $groupsResponse1,
+                $groupsResponse2,
+                $contactsResponse1,
+                $contactsResponse2
+            ) {
+                if (str_contains($url, 'contactGroups')) {
+                    $nextGroup = isset($options['query']['pageToken'])
+                        && $options['query']['pageToken'] === 'next_group_token';
+                    return $nextGroup ? $groupsResponse2 : $groupsResponse1;
+                }
+                $nextContact = isset($options['query']['pageToken'])
+                    && $options['query']['pageToken'] === 'next_contact_token';
+                return $nextContact ? $contactsResponse2 : $contactsResponse1;
+            });
+
+        $contact = $this->createMock(\App\Entity\Contact::class);
+        $this->contactImportService->method('import')->willReturn($contact);
+        $this->importMappingRepository->method('findOneBy')->willReturn(null);
+
+        $count = $this->service->importContacts($user);
+
+        self::assertEquals(2, $count);
+    }
 }
