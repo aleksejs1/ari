@@ -66,6 +66,20 @@ class UserPrefApiTest extends AbstractApiTestCase
         self::assertEquals('mm/dd/yyyy', $data['value']); // Default
     }
 
+    public function testGetDefaultFavouriteGroupName(): void
+    {
+        $client = static::createClient();
+
+        $response = $client->request('GET', '/api/user_prefs/favourite_group_name', [
+            'auth_bearer' => $this->token,
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertEquals('favourite_group_name', $data['type']);
+        self::assertEquals('favourite', $data['value']); // Default
+    }
+
     public function testUpdateLanguage(): void
     {
         $client = static::createClient();
@@ -114,6 +128,31 @@ class UserPrefApiTest extends AbstractApiTestCase
         ]);
          $data = $response->toArray();
         self::assertEquals('dd.mm.yyyy', $data['value']);
+    }
+
+    public function testUpdateFavouriteGroupName(): void
+    {
+        $client = static::createClient();
+
+        // 1. Update to 'My Favourites'
+        $response = $client->request('PATCH', '/api/user_prefs/favourite_group_name', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'favourite_group_name',
+                'value' => 'My Favourites',
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertEquals('My Favourites', $data['value']);
+
+        // 2. persist check
+        $response = $client->request('GET', '/api/user_prefs/favourite_group_name', [
+            'auth_bearer' => $this->token,
+        ]);
+         $data = $response->toArray();
+        self::assertEquals('My Favourites', $data['value']);
     }
 
     public function testInvalidTypeReturns404(): void

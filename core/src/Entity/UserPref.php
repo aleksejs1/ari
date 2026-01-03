@@ -62,15 +62,18 @@ class UserPref implements TenantAwareInterface
 
     public const TYPE_LANGUAGE = 'language';
     public const TYPE_DATE_FORMAT = 'dateFormat';
+    public const TYPE_FAVOURITE_GROUP_NAME = 'favourite_group_name';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
         self::TYPE_DATE_FORMAT,
+        self::TYPE_FAVOURITE_GROUP_NAME,
     ];
 
     public const DEFAULTS = [
         self::TYPE_LANGUAGE => 'en',
         self::TYPE_DATE_FORMAT => 'mm/dd/yyyy',
+        self::TYPE_FAVOURITE_GROUP_NAME => 'favourite',
     ];
 
     #[ORM\Id]
@@ -107,6 +110,10 @@ class UserPref implements TenantAwareInterface
                     ->atPath('value')
                     ->addViolation();
             }
+        } elseif ($this->type === self::TYPE_FAVOURITE_GROUP_NAME) {
+            // Any string is allowed, so no strict validation needed other than type check if necessary,
+            // but the property is string type hint.
+            // If empty string is not allowed, we could check that, but requirement says "any string".
         }
     }
 

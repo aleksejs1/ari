@@ -13,10 +13,13 @@ class UserPrefTest extends TestCase
     {
         self::assertEquals('language', UserPref::TYPE_LANGUAGE);
         self::assertEquals('dateFormat', UserPref::TYPE_DATE_FORMAT);
+        self::assertEquals('favourite_group_name', UserPref::TYPE_FAVOURITE_GROUP_NAME);
         self::assertContains(UserPref::TYPE_LANGUAGE, UserPref::ALLOWED_TYPES);
         self::assertContains(UserPref::TYPE_DATE_FORMAT, UserPref::ALLOWED_TYPES);
+        self::assertContains(UserPref::TYPE_FAVOURITE_GROUP_NAME, UserPref::ALLOWED_TYPES);
         self::assertEquals('en', UserPref::DEFAULTS[UserPref::TYPE_LANGUAGE]);
         self::assertEquals('mm/dd/yyyy', UserPref::DEFAULTS[UserPref::TYPE_DATE_FORMAT]);
+        self::assertEquals('favourite', UserPref::DEFAULTS[UserPref::TYPE_FAVOURITE_GROUP_NAME]);
     }
 
     public function testGettersSetters(): void
@@ -97,5 +100,26 @@ class UserPrefTest extends TestCase
         $builder->expects($this->once())->method('addViolation');
 
         $pref3->validateValue($context3);
+    }
+
+    public function testValidationFavouriteGroupName(): void
+    {
+        // Valid 'Custom Name'
+        $pref = new UserPref();
+        $pref->setType(UserPref::TYPE_FAVOURITE_GROUP_NAME);
+        $pref->setValue('Custom Name');
+
+        $context = $this->createMock(ExecutionContextInterface::class);
+        $context->expects($this->never())->method('buildViolation');
+        $pref->validateValue($context);
+
+        // Valid 'Another Name'
+        $pref2 = new UserPref();
+        $pref2->setType(UserPref::TYPE_FAVOURITE_GROUP_NAME);
+        $pref2->setValue('Another Name');
+
+        $context2 = $this->createMock(ExecutionContextInterface::class);
+        $context2->expects($this->never())->method('buildViolation');
+        $pref2->validateValue($context2);
     }
 }
