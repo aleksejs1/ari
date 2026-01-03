@@ -580,6 +580,62 @@ export interface paths {
         patch: operations["api_contact_phone_numbers_id_patch"];
         trace?: never;
     };
+    "/api/contact_relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactRelation resources.
+         * @description Retrieves the collection of ContactRelation resources.
+         */
+        get: operations["api_contact_relations_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactRelation resource.
+         * @description Creates a ContactRelation resource.
+         */
+        post: operations["api_contact_relations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_relations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactRelation resource.
+         * @description Retrieves a ContactRelation resource.
+         */
+        get: operations["api_contact_relations_id_get"];
+        /**
+         * Replaces the ContactRelation resource.
+         * @description Replaces the ContactRelation resource.
+         */
+        put: operations["api_contact_relations_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactRelation resource.
+         * @description Removes the ContactRelation resource.
+         */
+        delete: operations["api_contact_relations_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactRelation resource.
+         * @description Updates the ContactRelation resource.
+         */
+        patch: operations["api_contact_relations_id_patch"];
+        trace?: never;
+    };
     "/api/contacts/{id}/timeline": {
         parameters: {
             query?: never;
@@ -928,6 +984,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/user_prefs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of UserPref resources.
+         * @description Retrieves the collection of UserPref resources.
+         */
+        get: operations["api_user_prefs_get_collection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/user_prefs/{type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a UserPref resource.
+         * @description Retrieves a UserPref resource.
+         */
+        get: operations["api_user_prefs_type_get"];
+        /**
+         * Replaces the UserPref resource.
+         * @description Replaces the UserPref resource.
+         */
+        put: operations["api_user_prefs_type_put"];
+        post?: never;
+        /**
+         * Removes the UserPref resource.
+         * @description Removes the UserPref resource.
+         */
+        delete: operations["api_user_prefs_type_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the UserPref resource.
+         * @description Updates the UserPref resource.
+         */
+        patch: operations["api_user_prefs_type_patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1096,6 +1204,7 @@ export interface components {
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
             contactBiographies?: components["schemas"]["ContactBiography-contact.create"][];
+            contactRelations?: components["schemas"]["ContactRelation-contact.create"][];
         };
         "Contact-contact.create.jsonMergePatch": {
             contactNames?: components["schemas"]["ContactName-contact.create"][];
@@ -1106,6 +1215,7 @@ export interface components {
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
             contactBiographies?: components["schemas"]["ContactBiography-contact.create"][];
+            contactRelations?: components["schemas"]["ContactRelation-contact.create"][];
         };
         "Contact-contact.read": {
             readonly id?: number;
@@ -1117,6 +1227,7 @@ export interface components {
             contactGroups?: components["schemas"]["ContactGroup-contact.read"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.read"][];
             contactBiographies?: components["schemas"]["ContactBiography-contact.read"][];
+            contactRelations?: components["schemas"]["ContactRelation-contact.read"][];
             readonly displayName?: string;
         };
         "Contact-contact_date.read": {
@@ -1138,6 +1249,7 @@ export interface components {
             contactGroups?: components["schemas"]["ContactGroup.jsonld-contact.read"][];
             contactOrganizations?: components["schemas"]["ContactOrganization.jsonld-contact.read"][];
             contactBiographies?: components["schemas"]["ContactBiography.jsonld-contact.read"][];
+            contactRelations?: components["schemas"]["ContactRelation.jsonld-contact.read"][];
             readonly displayName?: string;
         };
         "Contact.jsonld-contact_date.read": components["schemas"]["HydraItemBaseSchema"] & {
@@ -1668,6 +1780,86 @@ export interface components {
             contact?: string | null;
             type?: string | null;
         };
+        "ContactRelation-contact.create": {
+            type?: string | null;
+            relatedContact?: components["schemas"]["Contact-contact.create"];
+        };
+        "ContactRelation-contact.read": {
+            readonly id?: number;
+            type?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            relatedContact?: string;
+            readonly displayName?: string;
+        };
+        "ContactRelation-contact_relation.create_contact_relation.update": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            relatedContact?: string;
+        };
+        "ContactRelation-contact_relation.create_contact_relation.update.jsonMergePatch": {
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            relatedContact?: string;
+        };
+        "ContactRelation-contact_relation.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            relatedContact?: string;
+            readonly displayName?: string;
+        };
+        "ContactRelation.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            type?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            relatedContact?: string;
+            readonly displayName?: string;
+        };
+        "ContactRelation.jsonld-contact_relation.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            type?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            relatedContact?: string;
+            readonly displayName?: string;
+        };
         ContactTimeline: {
             id?: number;
             logs?: components["schemas"]["Collection"];
@@ -1892,6 +2084,26 @@ export interface components {
         "User.jsonld-user.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             uuid?: string;
+        };
+        "UserPref-user_pref.create_user_pref.update": {
+            /** @enum {string} */
+            type?: "language" | "dateFormat";
+            value?: string | null;
+        };
+        "UserPref-user_pref.create_user_pref.update.jsonMergePatch": {
+            /** @enum {string} */
+            type?: "language" | "dateFormat";
+            value?: string | null;
+        };
+        "UserPref-user_pref.read": {
+            /** @enum {string} */
+            type?: "language" | "dateFormat";
+            value?: string | null;
+        };
+        "UserPref.jsonld-user_pref.read": components["schemas"]["HydraItemBaseSchema"] & {
+            /** @enum {string} */
+            type?: "language" | "dateFormat";
+            value?: string | null;
         };
         Token: {
             readonly token?: string;
@@ -5224,6 +5436,339 @@ export interface operations {
             };
         };
     };
+    api_contact_relations_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactRelation collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactRelation.jsonld-contact_relation.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactRelation-contact_relation.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_relations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactRelation resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactRelation-contact_relation.create_contact_relation.update"];
+                "application/json": components["schemas"]["ContactRelation-contact_relation.create_contact_relation.update"];
+            };
+        };
+        responses: {
+            /** @description ContactRelation resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactRelation.jsonld-contact_relation.read"];
+                    "application/json": components["schemas"]["ContactRelation-contact_relation.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_relations_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactRelation identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactRelation resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactRelation.jsonld-contact_relation.read"];
+                    "application/json": components["schemas"]["ContactRelation-contact_relation.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_relations_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactRelation identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactRelation resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactRelation-contact_relation.create_contact_relation.update"];
+                "application/json": components["schemas"]["ContactRelation-contact_relation.create_contact_relation.update"];
+            };
+        };
+        responses: {
+            /** @description ContactRelation resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactRelation.jsonld-contact_relation.read"];
+                    "application/json": components["schemas"]["ContactRelation-contact_relation.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_relations_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactRelation identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactRelation resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_relations_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactRelation identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactRelation resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactRelation-contact_relation.create_contact_relation.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactRelation resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactRelation.jsonld-contact_relation.read"];
+                    "application/json": components["schemas"]["ContactRelation-contact_relation.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
     get_contact_timeline: {
         parameters: {
             query?: never;
@@ -6538,6 +7083,279 @@ export interface operations {
                     "application/ld+json": components["schemas"]["Error.jsonld"];
                     "application/problem+json": components["schemas"]["Error"];
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_user_prefs_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description UserPref collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["UserPref.jsonld-user_pref.read"][];
+                    };
+                    "application/json": components["schemas"]["UserPref-user_pref.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_user_prefs_type_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UserPref identifier */
+                type: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description UserPref resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["UserPref.jsonld-user_pref.read"];
+                    "application/json": components["schemas"]["UserPref-user_pref.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_user_prefs_type_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UserPref identifier */
+                type: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated UserPref resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["UserPref-user_pref.create_user_pref.update"];
+                "application/json": components["schemas"]["UserPref-user_pref.create_user_pref.update"];
+            };
+        };
+        responses: {
+            /** @description UserPref resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["UserPref.jsonld-user_pref.read"];
+                    "application/json": components["schemas"]["UserPref-user_pref.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_user_prefs_type_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UserPref identifier */
+                type: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description UserPref resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_user_prefs_type_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UserPref identifier */
+                type: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated UserPref resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["UserPref-user_pref.create_user_pref.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description UserPref resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["UserPref.jsonld-user_pref.read"];
+                    "application/json": components["schemas"]["UserPref-user_pref.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };

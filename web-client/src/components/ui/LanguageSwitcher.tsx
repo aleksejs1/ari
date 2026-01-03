@@ -1,24 +1,32 @@
-import { useTranslation } from 'react-i18next'
+import { Globe } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from '@/components/ui/dropdown-menu'
+import { useUserPrefs } from '@/hooks/useUserPrefs'
 
 export function LanguageSwitcher() {
-  const { i18n } = useTranslation()
-
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'ru' : 'en'
-    void i18n.changeLanguage(newLang)
-  }
+  const { language, setLanguage } = useUserPrefs()
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={toggleLanguage}
-      className="w-full justify-start gap-2"
-    >
-      <span className="text-lg">{i18n.language === 'en' ? '🇷🇺' : '🇺🇸'}</span>
-      <span>{i18n.language === 'en' ? 'Rus' : 'Eng'}</span>
-    </Button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Globe className="h-[1.2rem] w-[1.2rem]" />
+          <span className="sr-only">Toggle language</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuRadioGroup value={language} onValueChange={(val) => void setLanguage(val)}>
+          <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="ru">Русский</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

@@ -51,7 +51,7 @@ describe('ContactDateInlineEdit', () => {
     const textInput = screen.getByLabelText('contacts.dateLabel')
 
     expect(dateInput).toBeInTheDocument()
-    expect(dateInput).toHaveValue('1990-01-01')
+    expect(dateInput).toHaveValue('01/01/1990')
     expect(textInput).toHaveValue('Birthday')
   })
 
@@ -71,7 +71,7 @@ describe('ContactDateInlineEdit', () => {
     const textInput = screen.getByLabelText('contacts.dateLabel')
 
     await userEvent.clear(dateInput)
-    await userEvent.type(dateInput, '2000-05-05')
+    await userEvent.type(dateInput, '05/05/2000')
 
     await userEvent.clear(textInput)
     await userEvent.type(textInput, 'Anniversary')

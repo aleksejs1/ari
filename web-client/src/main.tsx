@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 
 import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthContext'
+import { UserPrefsProvider } from './hooks/useUserPrefs'
 import './index.css'
 import './lib/i18n'
 
@@ -18,7 +19,9 @@ createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <App />
+        <UserPrefsProvider>
+          <App />
+        </UserPrefsProvider>
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>,

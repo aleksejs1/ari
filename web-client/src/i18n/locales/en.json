@@ -10,8 +10,16 @@
       "googleImport": "Google Import",
       "groups": "Groups",
       "manageGroups": "Manage Groups",
-      "home": "Home"
+      "home": "Home",
+      "settings": "Settings"
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languageDescription": "Select your preferred language.",
+    "dateFormat": "Date Format",
+    "dateFormatDescription": "Select how dates should be displayed."
   },
   "auth": {
     "login": "Login",

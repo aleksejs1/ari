@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatLocalizedDate } from '@/lib/utils'
+import { useUserPrefs } from '@/hooks/useUserPrefs'
 import type { Contact } from '@/types/models'
 
 interface ContactViewProps {
@@ -107,7 +107,8 @@ const ProfessionalCard = ({ contact }: { contact: Contact }) => {
 }
 
 const DatesCard = ({ contact }: { contact: Contact }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const { formatDate } = useUserPrefs()
   if (!contact.contactDates || contact.contactDates.length === 0) {
     return null
   }
@@ -126,7 +127,7 @@ const DatesCard = ({ contact }: { contact: Contact }) => {
               if (!date.date) {
                 return ''
               }
-              const formattedDate = formatLocalizedDate(date.date, i18n.language)
+              const formattedDate = formatDate(date.date)
               return date.yearsPassed ? `${formattedDate} (${date.yearsPassed})` : formattedDate
             })()}
           />
@@ -137,7 +138,8 @@ const DatesCard = ({ contact }: { contact: Contact }) => {
 }
 
 const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const { formatDate } = useUserPrefs()
   const upcomingDates = contact.contactDates?.filter((d) => d.nextAnniversaryDate)
 
   if (!upcomingDates || upcomingDates.length === 0) {
@@ -155,9 +157,7 @@ const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
             key={i}
             icon={Calendar}
             label={date.text}
-            value={`${formatLocalizedDate(date.nextAnniversaryDate ?? '', i18n.language)} (${
-              date.yearsAtNextAnniversary
-            })`}
+            value={`${formatDate(date.nextAnniversaryDate ?? '')} (${date.yearsAtNextAnniversary})`}
           />
         ))}
       </CardContent>

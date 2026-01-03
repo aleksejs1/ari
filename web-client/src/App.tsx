@@ -12,6 +12,7 @@ import NotificationChannelsPage from './features/notification-channels/Notificat
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import HomePage from './pages/HomePage'
+import SettingsPage from './pages/Settings'
 
 import { useAuth } from '@/hooks/useAuth'
 
@@ -75,6 +76,10 @@ export default function App() {
             {
               path: '/google-import',
               element: <GoogleImportPage />,
+            },
+            {
+              path: '/settings',
+              element: <SettingsPage />,
             },
           ],
         },

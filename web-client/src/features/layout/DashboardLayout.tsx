@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronRight,
   LayoutDashboard,
+  Settings,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -105,6 +106,13 @@ export default function DashboardLayout() {
           >
             <Download className="h-5 w-5" />
             <span>{t('app.navigation.googleImport')}</span>
+          </Link>
+          <Link
+            to="/settings"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Settings className="h-5 w-5" />
+            <span>{t('app.navigation.settings')}</span>
           </Link>
         </nav>
         <div className="mt-auto space-y-2 border-t p-4 dark:border-gray-700">

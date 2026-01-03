@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { NotificationSubscriptions } from './NotificationSubscriptions'
 
 import { Button } from '@/components/ui/button'
+import { DateInput } from '@/components/ui/DateInput'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { formatApiDate } from '@/lib/utils'
@@ -60,11 +61,10 @@ export function ContactFormSync() {
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormControl>
-                      {/* Simple text input for date for now, could be DatePicker */}
-                      <Input
-                        type="date"
+                      <DateInput
                         {...field}
-                        value={field.value ? field.value.split('T')[0] : ''}
+                        value={field.value ? String(field.value).split('T')[0] : ''}
+                        onChange={(date) => field.onChange(date)}
                       />
                     </FormControl>
                     <FormMessage />

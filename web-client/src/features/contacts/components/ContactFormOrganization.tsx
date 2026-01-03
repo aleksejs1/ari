@@ -3,6 +3,7 @@ import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
+import { DateInput } from '@/components/ui/DateInput'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -132,11 +133,11 @@ export function ContactFormOrganization() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        type="date"
+                      <DateInput
                         placeholder={t('contacts.organizationStartDate')}
                         {...field}
                         value={field.value ? String(field.value).split('T')[0] : ''}
+                        onChange={(date) => field.onChange(date)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -149,11 +150,11 @@ export function ContactFormOrganization() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        type="date"
+                      <DateInput
                         placeholder={t('contacts.organizationEndDate')}
                         {...field}
                         value={field.value ? String(field.value).split('T')[0] : ''}
+                        onChange={(date) => field.onChange(date)}
                       />
                     </FormControl>
                     <FormMessage />

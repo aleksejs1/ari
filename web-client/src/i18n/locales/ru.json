@@ -10,8 +10,16 @@
       "googleImport": "Импорт из Google",
       "groups": "Группы",
       "manageGroups": "Управление группами",
-      "home": "Главная"
+      "home": "Главная",
+      "settings": "Настройки"
     }
+  },
+  "settings": {
+    "title": "Настройки",
+    "language": "Язык",
+    "languageDescription": "Выберите предпочитаемый язык.",
+    "dateFormat": "Формат даты",
+    "dateFormatDescription": "Выберите формат отображения дат."
   },
   "auth": {
     "login": "Вход",

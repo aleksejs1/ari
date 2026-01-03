@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { InlineEditTrigger } from './InlineEditTrigger'
 
 import { Button } from '@/components/ui/button'
+import { DateInput } from '@/components/ui/DateInput'
 import {
   Dialog,
   DialogContent,
@@ -42,7 +43,11 @@ export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateI
   }
 
   const handleSave = () => {
-    onUpdate({ ...date, date: formatApiDate(dateValue), text })
+    onUpdate({
+      ...date,
+      date: dateValue ? formatApiDate(dateValue) : undefined,
+      text,
+    })
     setOpen(false)
   }
 
@@ -56,10 +61,9 @@ export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateI
   const formContent = (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <Input
-          type="date"
+        <DateInput
           value={dateValue}
-          onChange={(e) => setDateValue(e.target.value)}
+          onChange={(d) => setDateValue(d || '')}
           className="h-8 flex-1"
           aria-label={t('contacts.date')}
         />
