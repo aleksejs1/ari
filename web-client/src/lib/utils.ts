@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { clsx, type ClassValue } from 'clsx'
 import { format, type Locale } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
@@ -28,4 +29,45 @@ export function formatLocalizedDate(
 
 export function formatLocalizedDateTime(date: string | Date | number, language = 'en'): string {
   return formatLocalizedDate(date, language, 'PPP p')
+}
+
+export function parseLocalizedDate(input: string, dateFormat: string): string | null {
+  if (!input.trim()) {
+    return null
+  }
+
+  const parts = input.split(/[./-]/)
+  if (parts.length !== 3) {
+    return null
+  }
+
+  let day, month, year
+
+  if (dateFormat === 'dd.mm.yyyy') {
+    day = parseInt(parts[0], 10)
+    month = parseInt(parts[1], 10)
+    year = parseInt(parts[2], 10)
+  } else {
+    // mm/dd/yyyy
+    month = parseInt(parts[0], 10)
+    day = parseInt(parts[1], 10)
+    year = parseInt(parts[2], 10)
+  }
+
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {
+    return null
+  }
+  if (month < 1 || month > 12) {
+    return null
+  }
+  if (day < 1 || day > 31) {
+    return null
+  }
+  if (year < 1000 || year > 9999) {
+    return null
+  }
+
+  const iso = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+  const d = new Date(iso)
+  return isNaN(d.getTime()) ? null : iso
 }
