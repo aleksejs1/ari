@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { vi, beforeEach, describe, expect, it } from 'vitest'
 
 import { useContactFavorite } from '../hooks/useContactFavorite'
@@ -121,21 +122,34 @@ describe('ContactView', () => {
 
   it('renders contact information correctly', () => {
     const onEdit = vi.fn()
-    render(<ContactView contact={mockContact} onEdit={onEdit} />)
+    render(
+      <MemoryRouter>
+        <ContactView contact={mockContact} onEdit={onEdit} />
+      </MemoryRouter>,
+    )
 
     expect(screen.getByText('John Doe')).toBeInTheDocument()
     expect(screen.getByText('+1234567890')).toBeInTheDocument()
     expect(screen.getByText('john@example.com')).toBeInTheDocument()
     expect(screen.getByText(/123 Main St/)).toBeInTheDocument()
     expect(screen.getByText('Acme Corp')).toBeInTheDocument()
-    expect(screen.getByText('Friends')).toBeInTheDocument()
+
+    // Check for group badge in header
+    const groupLink = screen.getByRole('link', { name: 'Friends' })
+    expect(groupLink).toBeInTheDocument()
+    expect(groupLink).toHaveAttribute('href', '/contacts?group=group-1')
+
     expect(screen.getByText('A short bio')).toBeInTheDocument()
     expect(screen.getByText(/25/)).toBeInTheDocument() // Check for anniversary year
   })
 
   it('calls onEdit when edit button is clicked', () => {
     const onEdit = vi.fn()
-    render(<ContactView contact={mockContact} onEdit={onEdit} />)
+    render(
+      <MemoryRouter>
+        <ContactView contact={mockContact} onEdit={onEdit} />
+      </MemoryRouter>,
+    )
 
     fireEvent.click(screen.getByText('common.edit'))
     expect(onEdit).toHaveBeenCalledTimes(1)

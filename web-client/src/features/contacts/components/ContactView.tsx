@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom'
 
 import { useContactFavorite } from '../hooks/useContactFavorite'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
@@ -114,19 +115,6 @@ const ProfessionalCard = ({ contact }: { contact: Contact }) => {
             label={org.type || t('contacts.organization')}
             value={org.name}
             subValue={[org.title, org.department].filter(Boolean).join(' - ')}
-          />
-        ))}
-        {contact.contactGroups?.map((group, i) => (
-          <DisplayItem
-            key={i}
-            icon={Users}
-            value={
-              typeof group.groupResource === 'object' &&
-              group.groupResource !== null &&
-              'name' in group.groupResource
-                ? group.groupResource.name
-                : ''
-            }
           />
         ))}
       </CardContent>
@@ -293,6 +281,33 @@ const RelationsCard = ({ contact }: { contact: Contact }) => {
   )
 }
 
+const getGroupFilterValue = (
+  groupResource: Contact['contactGroups'][number]['groupResource'],
+): string | null => {
+  if (typeof groupResource === 'string') {
+    return groupResource
+  }
+  if (
+    typeof groupResource === 'object' &&
+    groupResource !== null &&
+    '@id' in groupResource &&
+    typeof groupResource['@id'] === 'string'
+  ) {
+    return groupResource['@id']
+  }
+  return null
+}
+
+const getGroupName = (groupResource: Contact['contactGroups'][number]['groupResource']): string => {
+  if (typeof groupResource === 'string') {
+    return groupResource.split('/').pop() || groupResource
+  }
+  if (typeof groupResource === 'object' && groupResource !== null && 'name' in groupResource) {
+    return groupResource.name
+  }
+  return ''
+}
+
 export function ContactView({ contact, onEdit }: ContactViewProps) {
   const { t } = useTranslation()
   const { isContactFavorite, toggleFavorite } = useContactFavorite()
@@ -300,16 +315,39 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-2xl font-bold">
-          {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
-          <Star
-            className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 ${
-              isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
-            }`}
-            onClick={() => toggleFavorite(contact)}
-          />
-        </h1>
+      <div className="flex items-start justify-between">
+        <div className="space-y-2">
+          <h1 className="flex items-center gap-2 text-2xl font-bold">
+            {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
+            <Star
+              className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 ${
+                isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
+              }`}
+              onClick={() => toggleFavorite(contact)}
+            />
+          </h1>
+          {!!contact.contactGroups && contact.contactGroups.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {contact.contactGroups.map((group, i) => {
+                const filterValue = getGroupFilterValue(group.groupResource)
+                const name = getGroupName(group.groupResource)
+                if (!name) {
+                  return null
+                }
+
+                return (
+                  <Link
+                    key={i}
+                    to={filterValue ? `/contacts?group=${encodeURIComponent(filterValue)}` : '#'}
+                    className="hover:opacity-80"
+                  >
+                    <Badge variant="secondary">{name}</Badge>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </div>
         <Button onClick={onEdit} className="gap-2">
           <Pencil className="h-4 w-4" />
           {t('common.edit')}
