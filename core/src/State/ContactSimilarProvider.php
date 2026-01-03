@@ -37,46 +37,62 @@ class ContactSimilarProvider implements ProviderInterface
             throw new NotFoundHttpException('Contact not found.');
         }
 
-        // Get the surname (family name)
-        // We take the verified "display name" logic or just the first name available?
-        // The requirement says "surname of the current contact".
+        $criteria = [];
+        $parameters = [];
 
+        // 1. Surname logic
         $surname = null;
-        // Priority to names
         $nameEntity = $contact->getContactNames()->first();
         if ($nameEntity instanceof ContactName) {
             $surname = $nameEntity->getFamily();
         }
 
-        if (null === $surname || '' === $surname || strlen($surname) <= 2) {
-             // If no surname or too short, return empty or exact matches?
-             // Requirement: "beginning of surname is surname without last 2 chars"
-             // If surname is "Li" (2 chars), prefix is "" (empty).
-             // Returning all contacts when prefix is empty is probably not what is wanted.
-             // Let's return empty list for now for safety if surname is too short to form a prefix.
-             return [];
+        if (null !== $surname && '' !== $surname && strlen($surname) > 2) {
+            $prefix = mb_substr($surname, 0, -2);
+            if ('' !== $prefix) {
+                $criteria[] = 'cn.family LIKE :prefix';
+                $parameters['prefix'] = $prefix . '%';
+            }
         }
 
-        $prefix = mb_substr($surname, 0, -2);
-
-        if ('' === $prefix) {
-             return [];
+        // 2. Organization logic
+        $orgEntity = $contact->getContactOrganizations()->first();
+        if ($orgEntity instanceof \App\Entity\ContactOrganization) {
+            $orgName = $orgEntity->getName();
+            if (null !== $orgName && '' !== $orgName) {
+                $criteria[] = 'co.name = :orgName';
+                $parameters['orgName'] = $orgName;
+            }
         }
 
-        $contactId = $contact->getId();
-        if (null === $contactId) {
+        if ([] === $criteria) {
             return [];
         }
 
-        return $this->entityManager->createQueryBuilder()
+        // 3. Exclude IDs (Self + Relations)
+        $excludeIds = [$contact->getId()];
+
+        // getContactRelations() returns both direct and reverse relations (inverted)
+        foreach ($contact->getContactRelations() as $relation) {
+            $person = $relation->getPerson();
+            if (null !== $person) {
+                $excludeIds[] = $person->getId();
+            }
+        }
+
+        $qb = $this->entityManager->createQueryBuilder()
             ->select('c')
             ->from(Contact::class, 'c')
-            ->innerJoin('c.contactNames', 'cn')
-            ->andWhere('cn.family LIKE :prefix')
-            ->andWhere('c.id != :excludeId')
-            ->setParameter('prefix', $prefix . '%')
-            ->setParameter('excludeId', $contactId)
-            ->getQuery()
-            ->getResult();
+            ->leftJoin('c.contactNames', 'cn')
+            ->leftJoin('c.contactOrganizations', 'co')
+            ->andWhere(implode(' OR ', $criteria))
+            ->andWhere('c.id NOT IN (:excludeIds)')
+            ->setParameter('excludeIds', $excludeIds);
+
+        foreach ($parameters as $key => $value) {
+            $qb->setParameter($key, $value);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -144,4 +144,98 @@ class ContactSimilarApiTest extends ApiTestCase
 
         return $contactIri;
     }
+
+    private function createContactWithOrganization(
+        \ApiPlatform\Symfony\Bundle\Test\Client $client,
+        string $orgName,
+        string $surname = 'Test'
+    ): string {
+        // Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // Add Name
+        $client->request('POST', '/api/contact_names', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'family' => $surname,
+                'given' => 'Test',
+                'contact' => $contactIri,
+            ],
+        ]);
+
+        // Add Organization
+        $client->request('POST', '/api/contact_organizations', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'name' => $orgName,
+                'contact' => $contactIri,
+            ],
+        ]);
+
+        return $contactIri;
+    }
+
+    public function testFindSimilarContactsByOrganization(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create main contact "Acme"
+        $acme1 = $this->createContactWithOrganization($client, 'Acme Corp', 'Smith');
+
+        // 2. Create similar contact (diff surname, same org)
+        $acme2 = $this->createContactWithOrganization($client, 'Acme Corp', 'Jones');
+
+        // 3. Create non-similar contact
+        $other = $this->createContactWithOrganization($client, 'Other Corp', 'Brown');
+
+        // 4. Request similar for acme1
+        $response = $client->request('GET', $acme1 . '/similar', [
+            'auth_bearer' => $this->token,
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $items = $response->toArray()['member'];
+
+        // Should find acme2 because of organization
+        $ids = array_map(fn($item) => $item['@id'], $items);
+        self::assertContains($acme2, $ids);
+        self::assertNotContains($other, $ids);
+    }
+
+    public function testExcludeRelatedContacts(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create two similar contacts (same surname prefix)
+        $c1 = $this->createContactWithSurname($client, 'Petrov');
+        $c2 = $this->createContactWithSurname($client, 'Petrova');
+
+        // Verify they are similar initially
+        $response = $client->request('GET', $c1 . '/similar', [
+            'auth_bearer' => $this->token,
+        ]);
+        $ids = array_map(fn($item) => $item['@id'], $response->toArray()['member']);
+        self::assertContains($c2, $ids);
+
+        // 2. Add relation between them
+        $client->request('POST', '/api/contact_relations', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'contact' => $c1,
+                'relatedContact' => $c2,
+                'type' => 'colleague'
+            ],
+        ]);
+
+        // 3. Verify they are NO LONGER similar
+        $response = $client->request('GET', $c1 . '/similar', [
+            'auth_bearer' => $this->token,
+        ]);
+        $ids = array_map(fn($item) => $item['@id'], $response->toArray()['member']);
+        self::assertNotContains($c2, $ids);
+    }
 }
