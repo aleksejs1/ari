@@ -37,7 +37,6 @@ export default function ContactsPage() {
   }
 
   const { data, isLoading, isPlaceholderData, isError } = useContacts(page, { group, search })
-  const deleteMutation = useDeleteContact()
   const { t } = useTranslation()
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -51,12 +50,6 @@ export default function ContactsPage() {
   const handleEdit = (contact: Contact) => {
     setSelectedContact(contact)
     setIsSheetOpen(true)
-  }
-
-  const handleDelete = async (contact: Contact) => {
-    if (confirm(t('contacts.deleteConfirm')) && contact['@id']) {
-      await deleteMutation.mutateAsync(contact['@id'])
-    }
   }
 
   const handleUpdateDateMutation = useUpdateContactDate()
@@ -101,7 +94,6 @@ export default function ContactsPage() {
           <ContactsTable
             data={contacts}
             onEdit={handleEdit}
-            onDelete={handleDelete}
             onUpdateDate={handleUpdateDate}
             onDeleteDate={handleDeleteDate}
           />

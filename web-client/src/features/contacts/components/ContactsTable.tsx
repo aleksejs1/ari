@@ -30,7 +30,6 @@ import {
 interface ContactsTableProps {
   data: Contact[]
   onEdit: (contact: Contact) => void
-  onDelete: (contact: Contact) => void
   onUpdateDate: (contact: Contact, date: ContactDate) => void
   onDeleteDate: (contact: Contact, date: ContactDate) => void
 }
@@ -74,13 +73,7 @@ const ContactsTableGroupCell = ({
   )
 }
 
-export function ContactsTable({
-  data,
-  onEdit,
-  onDelete,
-  onUpdateDate,
-  onDeleteDate,
-}: ContactsTableProps) {
+export function ContactsTable({ data, onEdit, onUpdateDate, onDeleteDate }: ContactsTableProps) {
   'use no memo'
   const onExchangeDate = onUpdateDate
   const { t } = useTranslation()
@@ -207,20 +200,11 @@ export function ContactsTable({
         id: 'actions',
         header: t('common.actions'),
         cell: ({ row }) => {
-          return <ContactsTableActions contact={row.original} onEdit={onEdit} onDelete={onDelete} />
+          return <ContactsTableActions contact={row.original} onEdit={onEdit} />
         },
       },
     ],
-    [
-      t,
-      onExchangeDate,
-      onDeleteDate,
-      onEdit,
-      onDelete,
-      groups,
-      onToggleFavorite,
-      isContactFavorite,
-    ],
+    [t, onExchangeDate, onDeleteDate, onEdit, groups, onToggleFavorite, isContactFavorite],
   )
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({

@@ -46,17 +46,15 @@ vi.mock('./components/ContactsHeader', () => ({
 interface MockTableProps {
   data: Contact[]
   onEdit: (contact: Contact) => void
-  onDelete: (contact: Contact) => void
 }
 
 vi.mock('./components/ContactsTable', () => ({
-  ContactsTable: ({ data, onEdit, onDelete }: MockTableProps) => (
+  ContactsTable: ({ data, onEdit }: MockTableProps) => (
     <div data-testid="table">
       {data.map((c) => (
         <div key={c['@id']}>
           {c.contactNames?.[0]?.given}
           <button onClick={() => onEdit(c)}>Edit</button>
-          <button onClick={() => onDelete(c)}>Delete</button>
         </div>
       ))}
     </div>
@@ -152,15 +150,6 @@ describe('ContactsPage', () => {
     // Open Create
     fireEvent.click(screen.getByText('Create'))
     expect(screen.getByTestId('sheet')).toHaveTextContent('Open')
-
-    // Delete
-    // Mock confirm
-    vi.stubGlobal('confirm', () => true)
-    fireEvent.click(screen.getByText('Delete'))
-
-    await waitFor(() => {
-      expect(mockMutateAsync).toHaveBeenCalledWith('/api/contacts/1')
-    })
   })
 
   it('updates search filter when search input changes', async () => {

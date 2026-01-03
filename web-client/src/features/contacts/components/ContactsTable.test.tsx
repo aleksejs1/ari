@@ -64,13 +64,7 @@ describe('ContactsTable', () => {
   it('renders empty state', () => {
     render(
       <MemoryRouter>
-        <ContactsTable
-          data={[]}
-          onEdit={vi.fn()}
-          onDelete={vi.fn()}
-          onUpdateDate={vi.fn()}
-          onDeleteDate={vi.fn()}
-        />
+        <ContactsTable data={[]} onEdit={vi.fn()} onUpdateDate={vi.fn()} onDeleteDate={vi.fn()} />
       </MemoryRouter>,
     )
     expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
@@ -82,7 +76,6 @@ describe('ContactsTable', () => {
         <ContactsTable
           data={mockData}
           onEdit={vi.fn()}
-          onDelete={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
         />
@@ -117,7 +110,6 @@ describe('ContactsTable', () => {
         <ContactsTable
           data={mockDataWithGroups}
           onEdit={vi.fn()}
-          onDelete={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
         />
@@ -129,14 +121,12 @@ describe('ContactsTable', () => {
 
   it('triggers actions', () => {
     const onEdit = vi.fn()
-    const onDelete = vi.fn()
 
     render(
       <MemoryRouter>
         <ContactsTable
           data={mockData}
           onEdit={onEdit}
-          onDelete={onDelete}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
         />
@@ -150,12 +140,10 @@ describe('ContactsTable', () => {
 
     // Let's get all edit buttons by label and filter them
     const allEditButtons = screen.getAllByLabelText('common.edit')
-    const allDeleteButtons = screen.getAllByLabelText('common.delete')
 
     // The first contact has:
     // - 1 edit button in the  dates column (inline edit for date)
     // - 1 edit button in the actions column
-    // - 1 delete button in the actions column
     // So allEditButtons[0] is the date inline edit, allEditButtons[1] is the first contact's action edit
 
     // For safety, let's click the last edit button of first two, which should be actions
@@ -164,22 +152,15 @@ describe('ContactsTable', () => {
     const actionEditButton = allEditButtons.find((button) =>
       button.closest('div')?.className.includes('flex justify-end'),
     )
-    const actionDeleteButton = allDeleteButtons.find((button) =>
-      button.closest('div')?.className.includes('flex justify-end'),
-    )
 
     expect(actionEditButton).toBeTruthy()
-    expect(actionDeleteButton).toBeTruthy()
 
-    if (!actionEditButton || !actionDeleteButton) {
-      throw new Error('Action buttons not found')
+    if (!actionEditButton) {
+      throw new Error('Action edit button not found')
     }
 
     fireEvent.click(actionEditButton)
     expect(onEdit).toHaveBeenCalledWith(mockData[0])
-
-    fireEvent.click(actionDeleteButton)
-    expect(onDelete).toHaveBeenCalledWith(mockData[0])
   })
 
   it('navigates on row click', () => {
@@ -188,7 +169,6 @@ describe('ContactsTable', () => {
         <ContactsTable
           data={mockData}
           onEdit={vi.fn()}
-          onDelete={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
         />
@@ -208,7 +188,6 @@ describe('ContactsTable', () => {
         <ContactsTable
           data={mockData}
           onEdit={vi.fn()}
-          onDelete={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
         />
