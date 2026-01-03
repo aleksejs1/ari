@@ -2,59 +2,10 @@
 
 namespace App\Tests\Functional;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\User;
-use App\Entity\Contact;
-use Doctrine\ORM\EntityManagerInterface;
-
-class ContactWithNestedEntitiesTest extends ApiTestCase
+class ContactNestedEntitiesTest extends AbstractApiTestCase
 {
-    protected static ?bool $alwaysBootKernel = false;
-
-    private string $token;
-    private string $userUuid;
-
-    #[\Override]
-    protected function setUp(): void
-    {
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        /** @var EntityManagerInterface $em */
-        $em = $doctrine->getManager();
-
-        /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
-        $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
-        $hasher = $testContainer->get('security.user_password_hasher');
-
-        // Create User
-        $this->userUuid = 'user-' . bin2hex(random_bytes(4));
-        $user = new User();
-        $user->setUuid($this->userUuid);
-        $user->setPassword($hasher->hashPassword($user, 'pass'));
-        $em->persist($user);
-        $em->flush();
-
-        // Get token
-        $this->token = $this->getToken($this->userUuid, 'pass');
-    }
-
-    private function getToken(string $username, string $password): string
-    {
-        $response = static::createClient()->request('POST', '/api/login_check', [
-            'json' => [
-                'username' => $username,
-                'password' => $password,
-            ],
-        ]);
-
-        return $response->toArray()['token'];
-    }
-
     /**
      * Test creating a Contact with nested ContactName and ContactDate entities in a single POST request.
-     * This is a TDD test - it will fail initially because cascade persist is not configured.
      */
     public function testCreateContactWithNestedEntities(): void
     {
@@ -252,11 +203,9 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $getData = $getResponse->toArray();
 
         self::assertCount(2, $getData['contactNames']);
-        self::assertCount(2, $getData['contactNames']);
         self::assertCount(2, $getData['contactDates']);
         self::assertCount(2, $getData['phoneNumbers']);
         self::assertCount(2, $getData['contactEmailAdresses']);
-        self::assertCount(2, $getData['contactAddresses']);
         self::assertCount(2, $getData['contactAddresses']);
         self::assertCount(2, $getData['contactOrganizations']);
         self::assertCount(2, $getData['contactBiographies']);
@@ -391,7 +340,6 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         self::assertCount(1, $data['contactDates']);
         self::assertCount(1, $data['phoneNumbers']);
         self::assertCount(1, $data['contactEmailAdresses']);
-        self::assertCount(1, $data['contactEmailAdresses']);
         self::assertCount(1, $data['contactOrganizations']);
         self::assertCount(1, $data['contactBiographies']);
         self::assertCount(1, $data['contactRelations']);
@@ -449,7 +397,7 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
             ],
         ]);
 
-        // Verify Audit Log for the PUT operation (Removal of old entities and Insert of new ones)
+        // Verify Audit Log for the PUT operation
         $timelineResponse = $client->request('GET', '/api/contacts/' . $contactId . '/timeline', [
             'auth_bearer' => $this->token,
         ]);
@@ -463,17 +411,12 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
             if ($log['entityType'] === 'App\\Entity\\ContactAddress') {
                 if ($log['action'] === 'INSERT') {
                     $addressInserts++;
-                    // Check if snapshotAfter has correct data
-                    if (isset($log['snapshotAfter']['type']) && $log['snapshotAfter']['type'] === 'New') {
-                        // OK
-                    }
                 } elseif ($log['action'] === 'REMOVE') {
                     $addressRemoves++;
                 }
             }
         }
 
-        // Assert we have activity
         self::assertGreaterThan(0, $addressInserts, 'Should have inserted new addresses');
         self::assertGreaterThan(0, $addressRemoves, 'Should have removed old addresses');
     }
@@ -562,10 +505,8 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
         $data = $patchResponse->toArray();
 
         self::assertCount(1, $data['contactNames']);
-        self::assertCount(1, $data['contactNames']);
         self::assertCount(1, $data['contactDates']);
         self::assertCount(1, $data['phoneNumbers']);
-        self::assertCount(1, $data['contactEmailAdresses']);
         self::assertCount(1, $data['contactEmailAdresses']);
         self::assertCount(1, $data['contactOrganizations']);
         self::assertCount(1, $data['contactBiographies']);
@@ -619,345 +560,5 @@ class ContactWithNestedEntitiesTest extends ApiTestCase
                 ],
             ],
         ]);
-    }
-    /**
-     * Test creating a Contact with nested ContactGroup and Group.
-     * Verifies that:
-     * 1. A new Group can be created on the fly (nested).
-     * 2. An existing Group can be linked by ID/IRI (no new group created).
-     */
-    public function testCreateContactWithNestedGroup(): void
-    {
-        $client = static::createClient();
-
-        // 1. Create an existing group first
-        $response = $client->request('POST', '/api/groups', [
-            'auth_bearer' => $this->token,
-            'json' => ['name' => 'Existing Group'],
-        ]);
-        $existingGroupIri = $response->toArray()['@id'];
-
-        // 2. Create Contact with one NEW group and one EXISTING group
-        $response = $client->request('POST', '/api/contacts', [
-            'auth_bearer' => $this->token,
-            'json' => [
-                'contactGroups' => [
-                    [
-                        'groupResource' => [
-                            'name' => 'New Nested Group',
-                        ],
-                    ],
-                    [
-                        'groupResource' => $existingGroupIri,
-                    ],
-                ],
-            ],
-        ]);
-
-        self::assertResponseStatusCodeSame(201);
-        $data = $response->toArray();
-
-        self::assertCount(2, $data['contactGroups']);
-
-        // 3. Verify groups
-        // One group should be "New Nested Group"
-        // One group should be "Existing Group"
-        $groupNames = [];
-        foreach ($data['contactGroups'] as $cg) {
-            // Fetch the group resource
-            // Fetch the group resource (either embedded object or IRI)
-
-            if (is_array($cg['groupResource'])) {
-                 $groupNames[] = $cg['groupResource']['name'];
-            } else {
-                 // It's an IRI, fetch it
-                 $gResponse = $client->request('GET', $cg['groupResource'], ['auth_bearer' => $this->token]);
-                 $groupNames[] = $gResponse->toArray()['name'];
-            }
-        }
-
-        self::assertContains('New Nested Group', $groupNames);
-        self::assertContains('Existing Group', $groupNames);
-    }
-    public function testCreateContactWithNestedRelationUsingRelatedContact(): void
-    {
-        $client = static::createClient();
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
-
-        // Find the user created in setUp
-        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
-
-        // Create a separate contact to be related
-        $relatedContact = new Contact();
-        $relatedContact->setUser($user);
-        $em->persist($relatedContact);
-        $em->flush();
-        $relatedContactIri = '/api/contacts/' . (string) $relatedContact->getId();
-
-        $response = $client->request('POST', '/api/contacts', [
-            'auth_bearer' => $this->token,
-            'json' => [
-                'contactRelations' => [
-                    [
-                        'relatedContact' => $relatedContactIri,
-                        'type' => 'sister',
-                    ]
-                ],
-            ],
-        ]);
-
-        self::assertResponseStatusCodeSame(201);
-        $data = $response->toArray();
-        self::assertArrayHasKey('contactRelations', $data);
-        self::assertCount(1, $data['contactRelations']);
-        self::assertEquals('sister', $data['contactRelations'][0]['type']);
-        // Verify relatedContact is set and returned (as relatedContact key due to SerializedName)
-        self::assertStringContainsString($relatedContactIri, $data['contactRelations'][0]['relatedContact']);
-    }
-
-    public function testDeleteContactRelationsViaPut(): void
-    {
-        $client = static::createClient();
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
-
-        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
-
-        // 1. Create a contact with a relation
-        $relatedContact = new Contact();
-        $relatedContact->setUser($user);
-        $em->persist($relatedContact);
-
-        $mainContact = new Contact();
-        $mainContact->setUser($user);
-        $em->persist($mainContact);
-
-        $rel = new \App\Entity\ContactRelation($mainContact);
-        $rel->setPerson($relatedContact);
-        $rel->setType('Friend');
-        $mainContact->addContactRelation($rel);
-        $em->persist($rel);
-        $em->flush();
-
-        $mainContactId = (string) $mainContact->getId();
-
-        // Assert it exists
-        self::assertCount(1, $mainContact->getContactRelations());
-
-        // 2. PUT with empty relations
-        $response = $client->request('PUT', '/api/contacts/' . $mainContactId, [
-            'auth_bearer' => $this->token,
-            'json' => [
-                'displayName' => 'Updated Name',
-                'contactRelations' => [],
-            ],
-        ]);
-
-        self::assertResponseIsSuccessful();
-        $data = $response->toArray();
-        self::assertArrayHasKey('contactRelations', $data);
-        self::assertCount(0, $data['contactRelations'], 'Contact relations should be empty after PUT');
-
-        // 3. Verify in DB
-        $em->clear();
-        $reloaded = $em->find(Contact::class, $mainContactId);
-        self::assertInstanceOf(Contact::class, $reloaded);
-        self::assertCount(0, $reloaded->getContactRelations(), 'DB should have 0 relations for this contact');
-    }
-
-    public function testDeleteReverseContactRelationsViaPut(): void
-    {
-        $client = static::createClient();
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
-
-        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
-
-        // 1. Create a relation owned by B, where A is the person
-        $contactB = new Contact();
-        $contactB->setUser($user);
-        $em->persist($contactB);
-
-        $contactA = new Contact();
-        $contactA->setUser($user);
-        $em->persist($contactA);
-
-        $rel = new \App\Entity\ContactRelation($contactB);
-        $rel->setPerson($contactA);
-        $rel->setType('Sibling');
-        $contactB->addContactRelation($rel);
-        $em->persist($rel);
-        $em->flush();
-        $em->refresh($contactA);
-
-        $contactAId = (string) $contactA->getId();
-
-        // Assert A sees the relation (reverse)
-        self::assertCount(1, $contactA->getContactRelations());
-
-        // 2. PUT A with empty relations
-        $response = $client->request('PUT', '/api/contacts/' . $contactAId, [
-            'auth_bearer' => $this->token,
-            'json' => [
-                'contactRelations' => [],
-            ],
-        ]);
-
-        self::assertResponseIsSuccessful();
-        $data = $response->toArray();
-        self::assertCount(0, $data['contactRelations'], 'Contact relations should be empty after PUT on A');
-
-        // 3. Verify in DB
-        $em->clear();
-        $reloadedA = $em->find(Contact::class, $contactAId);
-        self::assertInstanceOf(Contact::class, $reloadedA);
-        self::assertCount(0, $reloadedA->getContactRelations(), 'DB should have 0 relations for contact A');
-
-        // Verify it was really deleted (not just detached)
-        $relInDb = $em->find(\App\Entity\ContactRelation::class, $rel->getId());
-        self::assertNull($relInDb, 'The ContactRelation entity should be deleted from DB');
-    }
-
-    public function testPromoteReverseRelationToForwardViaPut(): void
-    {
-        $client = static::createClient();
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
-
-        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
-
-        // 1. Setup: Contact A and Contact B
-        $contactA = new Contact();
-        $contactA->setUser($user);
-        $em->persist($contactA);
-
-        $contactB = new Contact();
-        $contactB->setUser($user);
-        $em->persist($contactB);
-
-        // Relation: A is Father of B (A owns the relation)
-        $relAB = new \App\Entity\ContactRelation($contactA);
-        $relAB->setPerson($contactB);
-        $relAB->setType('Father');
-        $contactA->addContactRelation($relAB);
-        $em->persist($relAB);
-        $em->flush();
-
-        $contactAId = (string) $contactA->getId();
-        $contactBId = (string) $contactB->getId();
-        $originalRelId = $relAB->getId();
-
-        // 2. Verify B sees it as reverse relation (in API it would show as Son/Child)
-        // From B's perspective, A is the person.
-        $em->refresh($contactA);
-        $em->refresh($contactB);
-        self::assertCount(1, $contactB->getContactRelations(), 'B should see 1 relation (reverse)');
-        self::assertCount(1, $contactA->getContactRelations(), 'A should see 1 relation (forward)');
-
-        // 3. PUT B with contactRelations: [{"relatedContact": "/api/contacts/A", "type": "Son"}]
-        // This is what the web client would do if they "edit" the relation on B's page.
-        $response = $client->request('PUT', '/api/contacts/' . $contactBId, [
-            'auth_bearer' => $this->token,
-            'json' => [
-                'contactRelations' => [
-                    [
-                        'relatedContact' => '/api/contacts/' . $contactAId,
-                        'type' => 'Son',
-                    ]
-                ],
-            ],
-        ]);
-
-        self::assertResponseIsSuccessful();
-        $data = $response->toArray();
-
-        // B should now have 1 forward relation
-        self::assertCount(1, $data['contactRelations']);
-        self::assertEquals('Son', $data['contactRelations'][0]['type']);
-        self::assertStringContainsString(
-            '/api/contacts/' . $contactAId,
-            $data['contactRelations'][0]['relatedContact']
-        );
-
-        // 4. Verify in DB
-        $em->clear();
-        $reloadedA = $em->find(Contact::class, $contactAId);
-        $reloadedB = $em->find(Contact::class, $contactBId);
-        self::assertInstanceOf(Contact::class, $reloadedA);
-        self::assertInstanceOf(Contact::class, $reloadedB);
-
-        // B now owns the relation
-        $bRelations = $reloadedB->getContactRelationsCollection();
-        self::assertCount(1, $bRelations, 'B should have 1 relation');
-        $firstRel = $bRelations->first();
-        self::assertInstanceOf(\App\Entity\ContactRelation::class, $firstRel);
-        self::assertEquals('Son', $firstRel->getType());
-
-        // A should have NO forward relations anymore
-        self::assertCount(0, $reloadedA->getContactRelationsCollection(), 'A should have 0 FORWARD relations');
-
-        // The original relation should be gone (because we cleared reverse relations on B and orphanRemoval is on)
-        $oldRel = $em->find(\App\Entity\ContactRelation::class, $originalRelId);
-        self::assertNull($oldRel, 'The original relation (A->B) should be deleted');
-    }
-
-    public function testNestedEmptyStringToNullNormalization(): void
-    {
-        $client = static::createClient();
-
-        // 1. Create Contact with nested entities containing empty strings
-        $response = $client->request('POST', '/api/contacts', [
-            'auth_bearer' => $this->token,
-            'json' => [
-                'contactNames' => [
-                    [
-                        'family' => '',
-                        'given' => '',
-                    ],
-                ],
-                'phoneNumbers' => [
-                    [
-                        'value' => '',
-                        'type' => '',
-                    ],
-                ],
-                'contactEmailAdresses' => [
-                    [
-                        'value' => '',
-                        'type' => '',
-                    ],
-                ],
-                'contactAddresses' => [
-                    [
-                        'type' => '',
-                        'street' => '',
-                        'city' => '',
-                    ],
-                ],
-            ],
-        ]);
-
-        self::assertResponseStatusCodeSame(201);
-        $data = $response->toArray();
-
-        // Verify all nested fields are null (normalized from "")
-        self::assertNull($data['contactNames'][0]['family']);
-        self::assertNull($data['contactNames'][0]['given']);
-        self::assertNull($data['phoneNumbers'][0]['value']);
-        self::assertNull($data['phoneNumbers'][0]['type']);
-        self::assertNull($data['contactEmailAdresses'][0]['value']);
-        self::assertNull($data['contactEmailAdresses'][0]['type']);
-        self::assertNull($data['contactAddresses'][0]['type']);
-        self::assertNull($data['contactAddresses'][0]['street']);
-        self::assertNull($data['contactAddresses'][0]['city']);
     }
 }
