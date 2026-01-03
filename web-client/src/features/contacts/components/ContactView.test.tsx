@@ -1,5 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { vi } from 'vitest'
+import { vi, beforeEach, describe, expect, it } from 'vitest'
+
+import { useContactFavorite } from '../hooks/useContactFavorite'
 
 import { ContactView } from './ContactView'
 
@@ -9,6 +11,11 @@ import { type Contact } from '@/types/models'
 // Mock useUserPrefs hook
 vi.mock('@/hooks/useUserPrefs.hook', () => ({
   useUserPrefs: vi.fn(),
+}))
+
+// Mock useContactFavorite hook
+vi.mock('../hooks/useContactFavorite', () => ({
+  useContactFavorite: vi.fn(),
 }))
 
 // Mock icons to avoid rendering issues
@@ -22,6 +29,7 @@ vi.mock('lucide-react', () => ({
   Calendar: () => <span data-testid="icon-calendar">Calendar</span>,
   FileText: () => <span data-testid="icon-filetext">FileText</span>,
   User: () => <span data-testid="icon-user">User</span>,
+  Star: () => <span data-testid="icon-star">Star</span>,
 }))
 
 const mockContact: Contact = {
@@ -100,10 +108,14 @@ const mockContact: Contact = {
 
 describe('ContactView', () => {
   beforeEach(() => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+    vi.mocked(useUserPrefs).mockReturnValue({
+      formatDate: (date: string) => date,
       language: 'en',
       dateFormat: 'mm/dd/yyyy',
+    } as unknown as ReturnType<typeof useUserPrefs>)
+    vi.mocked(useContactFavorite).mockReturnValue({
+      isContactFavorite: vi.fn().mockReturnValue(false),
+      toggleFavorite: vi.fn(),
     })
   })
 

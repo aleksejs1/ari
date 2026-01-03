@@ -1,7 +1,19 @@
-import { Briefcase, Calendar, FileText, Mail, MapPin, Pencil, Phone, Users } from 'lucide-react'
+import {
+  Briefcase,
+  Calendar,
+  FileText,
+  Mail,
+  MapPin,
+  Pencil,
+  Phone,
+  Star,
+  Users,
+} from 'lucide-react'
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+
+import { useContactFavorite } from '../hooks/useContactFavorite'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -283,12 +295,20 @@ const RelationsCard = ({ contact }: { contact: Contact }) => {
 
 export function ContactView({ contact, onEdit }: ContactViewProps) {
   const { t } = useTranslation()
+  const { isContactFavorite, toggleFavorite } = useContactFavorite()
+  const isFavorite = isContactFavorite(contact)
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
+        <h1 className="flex items-center gap-2 text-2xl font-bold">
           {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
+          <Star
+            className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 ${
+              isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
+            }`}
+            onClick={() => toggleFavorite(contact)}
+          />
         </h1>
         <Button onClick={onEdit} className="gap-2">
           <Pencil className="h-4 w-4" />

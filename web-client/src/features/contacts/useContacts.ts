@@ -115,6 +115,29 @@ export function useUpdateContact() {
   })
 }
 
+export function usePatchContact() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<Contact> }) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      const response = await api.patch(url, data, {
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+      })
+      return response.data
+    },
+    onSuccess: (updatedContact, variables) => {
+      const id = variables.id.split('/').pop()
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (id) {
+        queryClient.setQueryData(['contacts', id], updatedContact)
+        void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
+      }
+    },
+  })
+}
+
 export function useDeleteContact() {
   const queryClient = useQueryClient()
   return useMutation({

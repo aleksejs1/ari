@@ -12,6 +12,9 @@ import type { Contact } from '@/types/models'
 // Mock useContacts
 vi.mock('../useContacts', () => ({
   useGroups: vi.fn(),
+  useUpdateContact: vi.fn().mockReturnValue({ mutate: vi.fn() }),
+  useCreateGroup: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+  usePatchContact: vi.fn().mockReturnValue({ mutate: vi.fn() }),
 }))
 
 // Mock useUserPrefs
@@ -196,5 +199,25 @@ describe('ContactsTable', () => {
     expect(row).toBeInTheDocument()
     fireEvent.click(row as Element)
     expect(mockNavigate).toHaveBeenCalledWith('/contacts/1')
+  })
+
+  it('regression: navigates to correct URL without spaces', () => {
+    // This test ensures that the URL does not contain extra spaces, which was a reported bug.
+    render(
+      <MemoryRouter>
+        <ContactsTable
+          data={mockData}
+          onEdit={vi.fn()}
+          onDelete={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+        />
+      </MemoryRouter>,
+    )
+
+    const row = screen.getByText('Alice Smith').closest('tr')
+    fireEvent.click(row as Element)
+    expect(mockNavigate).toHaveBeenCalledWith('/contacts/1')
+    expect(mockNavigate).not.toHaveBeenCalledWith('/ contacts / 1 ')
   })
 })

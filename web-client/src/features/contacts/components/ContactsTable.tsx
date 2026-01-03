@@ -1,8 +1,10 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useMemo } from 'react'
+import { Star } from 'lucide-react'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
+import { useContactFavorite } from '../hooks/useContactFavorite'
 import { useGroups } from '../useContacts'
 
 import { ContactsTableActions } from './ContactsTableActions'
@@ -84,9 +86,36 @@ export function ContactsTable({
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { data: groups } = useGroups()
+  const { toggleFavorite, isContactFavorite } = useContactFavorite()
+
+  const onToggleFavorite = useCallback(
+    async (contact: Contact, e: React.MouseEvent) => {
+      e.stopPropagation()
+      await toggleFavorite(contact)
+    },
+    [toggleFavorite],
+  )
 
   const columns = useMemo<ColumnDef<Contact>[]>(
     () => [
+      {
+        id: 'favorite',
+        header: '',
+        cell: ({ row }) => {
+          const isFavorite = isContactFavorite(row.original)
+          return (
+            <div className="flex items-center justify-center">
+              <Star
+                className={`h-4 w-4 cursor-pointer transition-transform hover:scale-110 ${
+                  isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
+                }`}
+                onClick={(e) => onToggleFavorite(row.original, e)}
+              />
+            </div>
+          )
+        },
+        size: 40,
+      },
       {
         accessorKey: 'contactNames',
         header: t('contacts.name'),
@@ -182,7 +211,16 @@ export function ContactsTable({
         },
       },
     ],
-    [t, onExchangeDate, onDeleteDate, onEdit, onDelete, groups],
+    [
+      t,
+      onExchangeDate,
+      onDeleteDate,
+      onEdit,
+      onDelete,
+      groups,
+      onToggleFavorite,
+      isContactFavorite,
+    ],
   )
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
