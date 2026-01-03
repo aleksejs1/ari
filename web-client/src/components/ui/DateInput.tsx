@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { format } from 'date-fns'
+import { format, parseISO, isValid } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
+import { useIMask } from 'react-imask'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -17,21 +18,28 @@ interface DateInputProps extends Omit<InputProps, 'value' | 'onChange'> {
 
 export function DateInput({ value, onChange, className, ...props }: DateInputProps) {
   const { dateFormat, formatDate } = useUserPrefs()
-  const [inputValue, setInputValue] = useState('')
 
-  // Sync internal state with external value
-  useEffect(() => {
-    if (value) {
-      setInputValue(formatDate(value))
-    } else {
-      setInputValue('')
-    }
-  }, [value, dateFormat, formatDate])
+  // Determine mask pattern
+  const maskPattern = dateFormat === 'dd.mm.yyyy' ? '00.00.0000' : '00/00/0000'
 
+  const { ref, setValue: setMaskValue } = useIMask({
+    mask: maskPattern,
+    lazy: true,
+    overwrite: true,
+    autofix: true,
+    onAccept: (val) => {
+      const isoDate = parseLocalizedDate(val, dateFormat)
+      if (isoDate && onChange) {
+        onChange(isoDate)
+      } else if (!val && onChange) {
+        onChange(null)
+      }
+    },
+  })
+
+  // Also handle native onChange for better testability and fallback
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
-    setInputValue(val)
-
     const isoDate = parseLocalizedDate(val, dateFormat)
     if (isoDate && onChange) {
       onChange(isoDate)
@@ -40,18 +48,40 @@ export function DateInput({ value, onChange, className, ...props }: DateInputPro
     }
   }
 
+  // Parse current value for Calendar
+  const parsedValue = useMemo(() => {
+    if (!value) {
+      return undefined
+    }
+    const d = typeof value === 'string' ? parseISO(value) : value
+    return isValid(d) ? d : undefined
+  }, [value])
+
+  // Month for controlled navigation in Calendar
+  const [month, setMonth] = useState<Date | undefined>(parsedValue)
+
+  // Sync internal state with external value
+  useEffect(() => {
+    if (value) {
+      setMaskValue(formatDate(value))
+
+      const d = typeof value === 'string' ? parseISO(value) : value
+      if (isValid(d)) {
+        setMonth(d)
+      }
+    } else {
+      setMaskValue('')
+    }
+  }, [value, dateFormat, formatDate, setMaskValue])
+
   const handleCalendarSelect = (date: Date | undefined) => {
     if (!date) {
       return
     }
 
-    // ISO format for internal value and API
     const iso = format(date, 'yyyy-MM-dd')
+    setMaskValue(formatDate(iso))
 
-    // Update local input state with user-preferred format
-    setInputValue(formatDate(iso))
-
-    // Trigger external change handler
     if (onChange) {
       onChange(iso)
     }
@@ -60,9 +90,9 @@ export function DateInput({ value, onChange, className, ...props }: DateInputPro
   return (
     <div className={cn('relative', className)}>
       <Input
+        ref={ref as React.RefObject<HTMLInputElement>}
         type="text"
         placeholder={dateFormat.toLowerCase()}
-        value={inputValue}
         onChange={handleChange}
         className="pr-10"
         {...props}
@@ -80,7 +110,9 @@ export function DateInput({ value, onChange, className, ...props }: DateInputPro
         <PopoverContent className="w-auto p-0" align="end">
           <Calendar
             mode="single"
-            selected={value ? new Date(value) : undefined}
+            selected={parsedValue}
+            month={month}
+            onMonthChange={setMonth}
             onSelect={handleCalendarSelect}
             captionLayout="dropdown-buttons"
             startMonth={new Date(1900, 0)}

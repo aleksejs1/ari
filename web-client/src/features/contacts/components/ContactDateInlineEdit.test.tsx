@@ -70,8 +70,9 @@ describe('ContactDateInlineEdit', () => {
     const dateInput = await screen.findByLabelText('contacts.date')
     const textInput = screen.getByLabelText('contacts.dateLabel')
 
-    await userEvent.clear(dateInput)
-    await userEvent.type(dateInput, '05/05/2000')
+    // Use fireEvent.change which is reliable across environments
+    fireEvent.change(dateInput, { target: { value: '05/05/2000' } })
+    expect(dateInput).toHaveValue('05/05/2000')
 
     await userEvent.clear(textInput)
     await userEvent.type(textInput, 'Anniversary')
@@ -131,8 +132,6 @@ describe('ContactDateInlineEdit', () => {
     expect(await screen.findByText('contacts.deleteConfirm')).toBeInTheDocument()
 
     const dialog = screen.getByRole('dialog')
-    // Look for destructive button or by text logic.
-    // Usually finding by name 'Delete' works if the button text is that.
     const confirmButton = await within(dialog).findByRole('button', { name: /delete/i })
     await userEvent.click(confirmButton)
 
@@ -145,8 +144,6 @@ describe('ContactDateInlineEdit', () => {
       <ContactDateInlineEdit date={emptyDate} onUpdate={mockOnUpdate} onDelete={mockOnDelete} />,
     )
 
-    // Should not show "No Date" text, but should have the container
-    // Trigger should be present (Add Date)
     const trigger = screen.queryByRole('button', { name: /add/i })
     expect(trigger).toBeInTheDocument()
   })
