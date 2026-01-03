@@ -19,7 +19,10 @@
     "language": "Language",
     "languageDescription": "Select your preferred language.",
     "dateFormat": "Date Format",
-    "dateFormatDescription": "Select how dates should be displayed."
+    "dateFormatDescription": "Select how dates should be displayed.",
+    "favouriteGroupName": "Favorite Group Name",
+    "favouriteGroupNameDescription": "The name of the group used for favorite contacts.",
+    "groupName": "Group Name"
   },
   "auth": {
     "login": "Login",

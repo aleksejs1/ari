@@ -19,7 +19,10 @@
     "language": "Язык",
     "languageDescription": "Выберите предпочитаемый язык.",
     "dateFormat": "Формат даты",
-    "dateFormatDescription": "Выберите формат отображения дат."
+    "dateFormatDescription": "Выберите формат отображения дат.",
+    "favouriteGroupName": "Название группы избранного",
+    "favouriteGroupNameDescription": "Название группы, используемой для избранных контактов.",
+    "groupName": "Название группы"
   },
   "auth": {
     "login": "Вход",

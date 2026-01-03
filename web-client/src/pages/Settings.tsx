@@ -1,13 +1,22 @@
 import { useTranslation } from 'react-i18next'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 export default function SettingsPage() {
   const { t } = useTranslation()
-  const { language, dateFormat, setLanguage, setDateFormat, isLoading } = useUserPrefs()
+  const {
+    language,
+    dateFormat,
+    favouriteGroupName,
+    setLanguage,
+    setDateFormat,
+    setFavouriteGroupName,
+    isLoading,
+  } = useUserPrefs()
 
   if (isLoading) {
     return <div>{t('app.loading')}</div>
@@ -61,6 +70,24 @@ export default function SettingsPage() {
                 <Label htmlFor="format-eu">DD.MM.YYYY (31.12.2024)</Label>
               </div>
             </RadioGroup>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.favouriteGroupName')}</CardTitle>
+            <CardDescription>{t('settings.favouriteGroupNameDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="fav-group-name">{t('settings.groupName')}</Label>
+              <Input
+                type="text"
+                id="fav-group-name"
+                value={favouriteGroupName}
+                onChange={(e) => setFavouriteGroupName(e.target.value)}
+              />
+            </div>
           </CardContent>
         </Card>
       </div>

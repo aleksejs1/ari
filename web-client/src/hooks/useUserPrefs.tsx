@@ -8,7 +8,7 @@ import { api } from '@/lib/axios'
 import type { components } from '@/types/schema'
 
 type UserPref = components['schemas']['UserPref.jsonld-user_pref.read']
-type UserPrefType = 'language' | 'dateFormat'
+type UserPrefType = 'language' | 'dateFormat' | 'favourite_group_name'
 
 export function UserPrefsProvider({ children }: { children: ReactNode }) {
   const { i18n } = useTranslation()
@@ -30,6 +30,8 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
   // Derive language and dateFormat from prefs (no separate state needed)
   const language = prefs?.find((p) => p.type === 'language')?.value || 'en'
   const dateFormat = prefs?.find((p) => p.type === 'dateFormat')?.value || 'mm/dd/yyyy'
+  const favouriteGroupName =
+    prefs?.find((p) => p.type === 'favourite_group_name')?.value || 'favourites'
 
   // Sync i18n language when derived language changes
   useEffect(() => {
@@ -78,6 +80,10 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
     await savePrefMutation.mutateAsync({ type: 'dateFormat', value: format })
   }
 
+  const setFavouriteGroupName = async (name: string) => {
+    await savePrefMutation.mutateAsync({ type: 'favourite_group_name', value: name })
+  }
+
   const formatDate = (date: Date | string | null | undefined): string => {
     if (!date) {
       return ''
@@ -103,8 +109,10 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
       value={{
         language,
         dateFormat,
+        favouriteGroupName,
         setLanguage,
         setDateFormat,
+        setFavouriteGroupName,
         formatDate,
         isLoading,
       }}

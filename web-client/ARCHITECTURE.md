@@ -50,7 +50,7 @@ src/
 - **Authentication**: JWT-based authentication handled via `AuthContext` and Axios interceptors in `src/lib/axios.ts`.
 - **User Preferences**: Global preferences (language, date format) are managed via `useUserPrefs` hook and persisted to backend.
 - **Validation**: All forms use Zod schemas defined in `src/types/models.ts` or co-located with forms ensures type safety between API and UI.
-- **Favorites**: Contact favorites are managed via a special `favourites` group (auto-created if missing).
+- **Favorites**: Contact favorites are managed via a special group (default `favourites`, configurable in User Settings).
 
 ## Development Commands
 
