@@ -205,6 +205,38 @@ const BiographyCard = ({ contact }: { contact: Contact }) => {
   )
 }
 
+const getRelatedContactId = (relatedContact: unknown): string | undefined => {
+  if (typeof relatedContact === 'string') {
+    return relatedContact.split('/').pop()
+  }
+  if (
+    typeof relatedContact === 'object' &&
+    relatedContact !== null &&
+    '@id' in relatedContact &&
+    typeof relatedContact['@id'] === 'string'
+  ) {
+    return relatedContact['@id'].split('/').pop()
+  }
+  return undefined
+}
+
+const getRelatedContactName = (
+  relation: NonNullable<Contact['contactRelations']>[number],
+  t: (key: string, options?: { defaultValue?: string }) => string,
+): string => {
+  if (relation.displayName) {
+    return relation.displayName
+  }
+  if (
+    typeof relation.relatedContact === 'object' &&
+    relation.relatedContact !== null &&
+    relation.relatedContact.displayName
+  ) {
+    return relation.relatedContact.displayName
+  }
+  return t('common.unknown')
+}
+
 const RelationsCard = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()
   if (!contact.contactRelations || contact.contactRelations.length === 0) {
@@ -217,29 +249,11 @@ const RelationsCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactRelations.map((relation, i) => {
-          let relatedId: string | undefined
-          if (typeof relation.relatedContact === 'string') {
-            relatedId = relation.relatedContact.split('/').pop()
-          } else if (
-            typeof relation.relatedContact === 'object' &&
-            relation.relatedContact?.['@id']
-          ) {
-            relatedId = relation.relatedContact['@id'].split('/').pop()
-          } else {
-            relatedId = undefined
-          }
-
+          const relatedId = getRelatedContactId(relation.relatedContact)
           const label = t(`contacts.relationTypes.${relation.type}`, {
             defaultValue: relation.type,
           })
-          const name =
-            relation.displayName ||
-            (typeof relation.relatedContact === 'object' &&
-            relation.relatedContact !== null &&
-            'displayName' in relation.relatedContact
-              ? relation.relatedContact.displayName
-              : undefined) ||
-            t('common.unknown')
+          const name = getRelatedContactName(relation, t)
 
           return (
             <div key={i} className="flex items-start gap-3 py-2">
