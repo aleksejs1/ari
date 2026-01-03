@@ -101,6 +101,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Group::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $groups;
 
+    /**
+     * @var Collection<int, UserPref>
+     */
+    #[ORM\OneToMany(targetEntity: UserPref::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userPrefs;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -109,6 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->notificationSubscriptions = new ArrayCollection();
         $this->tokenStorages = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->userPrefs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -375,6 +382,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($group->getUser() === $this) {
                 $group->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserPref>
+     */
+    public function getUserPrefs(): Collection
+    {
+        return $this->userPrefs;
+    }
+
+    public function addUserPref(UserPref $userPref): static
+    {
+        if (!$this->userPrefs->contains($userPref)) {
+            $this->userPrefs->add($userPref);
+            $userPref->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserPref(UserPref $userPref): static
+    {
+        if ($this->userPrefs->removeElement($userPref)) {
+            // set the owning side to null (unless already changed)
+            if ($userPref->getUser() === $this) {
+                $userPref->setUser(null);
             }
         }
 

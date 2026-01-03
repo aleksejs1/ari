@@ -1,0 +1,48 @@
+<?php
+
+namespace App\State;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use App\Entity\User;
+use App\Entity\UserPref;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+/**
+ * @implements ProcessorInterface<UserPref, UserPref>
+ */
+class UserPrefProcessor implements ProcessorInterface
+{
+    /**
+     * @param ProcessorInterface<UserPref, UserPref> $persistProcessor
+     */
+    public function __construct(
+        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
+        private readonly ProcessorInterface $persistProcessor,
+        private readonly Security $security,
+    ) {
+    }
+
+    /**
+     * @psalm-suppress MethodSignatureMismatch
+     */
+    #[\Override]
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
+    {
+        /** @phpstan-ignore-next-line */
+        if ($data instanceof UserPref) {
+            $user = $this->security->getUser();
+            if ($user instanceof User) {
+                if ($data->getUser() === null) {
+                    $data->setUser($user);
+                }
+                if ($data->getTenant() === null) {
+                    $data->setTenant($user);
+                }
+            }
+        }
+
+        return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+    }
+}
