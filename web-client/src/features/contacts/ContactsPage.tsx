@@ -12,11 +12,12 @@ import {
   useUpdateContactDate,
   useCreateContactDate,
   useUpdateContactGroups,
+  useUpdateContactEmails,
   getHydraMember,
   getHydraPagination,
 } from './useContacts'
 
-import { type Contact, type ContactDate } from '@/types/models'
+import { type Contact, type ContactDate, type ContactEmailAdress } from '@/types/models'
 
 export default function ContactsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -57,6 +58,7 @@ export default function ContactsPage() {
   const handleCreateDateMutation = useCreateContactDate()
   const handleDeleteDateMutation = useDeleteContact()
   const handleUpdateGroupsMutation = useUpdateContactGroups()
+  const handleUpdateEmailsMutation = useUpdateContactEmails()
 
   const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
     if (date['@id']) {
@@ -87,6 +89,39 @@ export default function ContactsPage() {
     })
   }
 
+  const handleUpdateEmail = async (contact: Contact, email: ContactEmailAdress) => {
+    if (!contact['@id']) {
+      return
+    }
+
+    let newEmails = [...(contact.contactEmailAdresses || [])]
+    if (email['@id']) {
+      // Update existing
+      newEmails = newEmails.map((e) => (e['@id'] === email['@id'] ? email : e))
+    } else {
+      // Create new
+      newEmails.push(email)
+    }
+
+    await handleUpdateEmailsMutation.mutateAsync({
+      contactId: contact['@id'],
+      emails: newEmails,
+    })
+  }
+
+  const handleDeleteEmail = async (contact: Contact, email: ContactEmailAdress) => {
+    if (!contact['@id'] || !email['@id']) {
+      return
+    }
+
+    const newEmails = (contact.contactEmailAdresses || []).filter((e) => e['@id'] !== email['@id'])
+
+    await handleUpdateEmailsMutation.mutateAsync({
+      contactId: contact['@id'],
+      emails: newEmails,
+    })
+  }
+
   if (isLoading && !isPlaceholderData) {
     return <div>{t('contacts.loading')}</div>
   }
@@ -109,6 +144,8 @@ export default function ContactsPage() {
             onUpdateDate={handleUpdateDate}
             onDeleteDate={handleDeleteDate}
             onUpdateGroups={handleUpdateGroups}
+            onUpdateEmail={handleUpdateEmail}
+            onDeleteEmail={handleDeleteEmail}
           />
         </div>
 

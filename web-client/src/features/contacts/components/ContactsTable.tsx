@@ -10,6 +10,7 @@ import { useGroups } from '../useContacts'
 import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
 import { ContactsTableActions } from './ContactsTableActions'
 import { ContactsTableDates } from './ContactsTableDates'
+import { ContactsTableEmails } from './ContactsTableEmails'
 
 import {
   Table,
@@ -33,6 +34,8 @@ interface ContactsTableProps {
   onUpdateDate: (contact: Contact, date: ContactDate) => void
   onDeleteDate: (contact: Contact, date: ContactDate) => void
   onUpdateGroups: (contact: Contact, groupIds: string[]) => void
+  onUpdateEmail: (contact: Contact, email: ContactEmailAdress) => void
+  onDeleteEmail: (contact: Contact, email: ContactEmailAdress) => void
 }
 
 export function ContactsTable({
@@ -41,6 +44,8 @@ export function ContactsTable({
   onUpdateDate,
   onDeleteDate,
   onUpdateGroups,
+  onUpdateEmail,
+  onDeleteEmail,
 }: ContactsTableProps) {
   'use no memo'
   const onExchangeDate = onUpdateDate
@@ -123,16 +128,12 @@ export function ContactsTable({
         cell: ({ row }) => {
           const emails = (row.original.contactEmailAdresses || []) as ContactEmailAdress[]
           return (
-            <div className="flex flex-col gap-1">
-              {emails.map((email, i) => (
-                <div key={i} className="flex flex-col leading-tight">
-                  <span className="text-sm font-medium">{email.value}</span>
-                  {!!email.type && (
-                    <span className="text-[10px] text-muted-foreground">{email.type}</span>
-                  )}
-                </div>
-              ))}
-            </div>
+            <ContactsTableEmails
+              contact={row.original}
+              emails={emails}
+              onUpdateEmail={onUpdateEmail}
+              onDeleteEmail={onDeleteEmail}
+            />
           )
         },
       },
@@ -182,6 +183,8 @@ export function ContactsTable({
       onToggleFavorite,
       isContactFavorite,
       onUpdateGroups,
+      onUpdateEmail,
+      onDeleteEmail,
     ],
   )
   // eslint-disable-next-line react-hooks/incompatible-library

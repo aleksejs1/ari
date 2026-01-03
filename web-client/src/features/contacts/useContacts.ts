@@ -244,6 +244,40 @@ export function useUpdateContactGroups() {
   })
 }
 
+export function useUpdateContactEmails() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({
+      contactId,
+      emails,
+    }: {
+      contactId: string
+      emails: ContactEmailAdress[]
+    }) => {
+      const url = contactId.startsWith('/api') ? contactId.substring(4) : contactId
+      const response = await api.patch(
+        url,
+        {
+          contactEmailAdresses: emails,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json',
+          },
+        },
+      )
+      return response.data
+    },
+    onSuccess: (_, variables) => {
+      const id = variables.contactId.split('/').pop()
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (id) {
+        void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
+      }
+    },
+  })
+}
+
 export function useSimilarContacts(id: string) {
   return useQuery({
     queryKey: ['contacts', id, 'similar'],
