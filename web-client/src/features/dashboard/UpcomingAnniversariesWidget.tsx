@@ -1,3 +1,4 @@
+import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -14,7 +15,10 @@ export default function UpcomingAnniversariesWidget() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.upcomingAnniversaries')}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Calendar className="h-5 w-5 text-blue-500" />
+            {t('dashboard.upcomingAnniversaries')}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center p-4">
@@ -29,7 +33,10 @@ export default function UpcomingAnniversariesWidget() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.upcomingAnniversaries')}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Calendar className="h-5 w-5 text-blue-500" />
+            {t('dashboard.upcomingAnniversaries')}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-red-500">{t('contacts.error')}</div>
@@ -41,7 +48,10 @@ export default function UpcomingAnniversariesWidget() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('dashboard.upcomingAnniversaries')}</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Calendar className="h-5 w-5 text-blue-500" />
+          {t('dashboard.upcomingAnniversaries')}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {!anniversaries || anniversaries.length === 0 ? (
