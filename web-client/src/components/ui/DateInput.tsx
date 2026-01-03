@@ -39,21 +39,8 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
 
     // Combine refs
     const combinedRef = (node: HTMLInputElement) => {
-      // Handle maskRef (can be object or function)
-      if (typeof maskRef === 'function') {
-        maskRef(node)
-      } else if (maskRef) {
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/immutability */
-        ;(maskRef as any).current = node
-      }
-
-      // Handle forwardedRef
-      if (typeof forwardedRef === 'function') {
-        forwardedRef(node)
-      } else if (forwardedRef) {
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/immutability */
-        ;(forwardedRef as any).current = node
-      }
+      assignRef(maskRef, node)
+      assignRef(forwardedRef, node)
     }
 
     // Also handle native onChange for better testability and fallback
@@ -152,3 +139,16 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
   },
 )
 DateInput.displayName = 'DateInput'
+
+function assignRef<T>(
+  // eslint-disable-next-line sonarjs/deprecation
+  ref: React.MutableRefObject<T | null> | ((instance: T | null) => void) | null | undefined,
+  value: T | null,
+) {
+  if (typeof ref === 'function') {
+    ref(value)
+  } else if (ref) {
+    // eslint-disable-next-line sonarjs/deprecation
+    ;(ref as React.MutableRefObject<T | null>).current = value
+  }
+}

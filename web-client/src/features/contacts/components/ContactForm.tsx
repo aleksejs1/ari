@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type Resolver } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { useCreateGroup } from '../useContacts'
 
@@ -12,13 +11,13 @@ import { ContactFormNames } from './ContactFormNames'
 import { ContactFormOrganization } from './ContactFormOrganization'
 import { ContactFormPhone } from './ContactFormPhone'
 import { ContactFormRelations } from './ContactFormRelations'
+import { getContactSchema } from './ContactFormSchemas'
 import { ContactFormSync } from './ContactFormSync'
 import { ContactGroupSelect } from './ContactGroupSelect'
 
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { formatApiDate } from '@/lib/utils'
-import { type ContactFormValues } from '@/types/models'
+import { type ContactFormValues, type Group } from '@/types/models'
 
 interface ContactFormProps {
   defaultValues?: ContactFormValues
@@ -35,7 +34,7 @@ const enforceMin = <T,>(arr: T[] | undefined, defaultItem: T): T[] => {
 
 const processContactGroups = async (
   groups: ContactFormValues['contactGroups'],
-  createGroup: (data: { name: string }) => Promise<any>,
+  createGroup: (data: { name: string }) => Promise<Group>,
 ) => {
   const processed: { groupResource: string }[] = []
   if (!groups) {
@@ -80,14 +79,8 @@ const cleanContactData = (data: ContactFormValues) => {
       o.startDate ||
       o.endDate,
   )
-  const contactAddresses = data.contactAddresses.filter(
-    (a) =>
-      a.street?.trim() ||
-      a.streetExtended?.trim() ||
-      a.city?.trim() ||
-      a.region?.trim() ||
-      a.postalCode?.trim() ||
-      a.country?.trim(),
+  const contactAddresses = data.contactAddresses.filter((a) =>
+    [a.street, a.streetExtended, a.city, a.region, a.postalCode, a.country].some((v) => v?.trim()),
   )
   const contactDates = data.contactDates.filter((d) => d.text.trim() !== '' && d.date !== '')
 
@@ -103,160 +96,54 @@ const cleanContactData = (data: ContactFormValues) => {
   }
 }
 
+const getContactFormDefaultValues = (
+  t: (key: string) => string,
+  defaultValues?: ContactFormValues,
+): ContactFormValues => {
+  const d = defaultValues ?? {}
+
+  return {
+    ...d,
+    contactNames: d.contactNames?.length ? d.contactNames : [{ given: '', family: '' }],
+    contactDates: enforceMin(d.contactDates, {
+      text: t('contacts.birthday'),
+      date: '',
+    }),
+    phoneNumbers: enforceMin(d.phoneNumbers, { value: '', type: 'Mobile' }),
+    contactEmailAdresses: enforceMin(d.contactEmailAdresses, {
+      value: '',
+      type: 'Personal',
+    }),
+    contactAddresses: enforceMin(d.contactAddresses, {
+      type: 'Home',
+      street: '',
+      city: '',
+      postalCode: '',
+      country: '',
+    }),
+    contactOrganizations: enforceMin(d.contactOrganizations, {
+      name: '',
+      title: '',
+      department: '',
+      type: 'Work',
+      jobDescription: '',
+      startDate: '',
+      endDate: '',
+    }),
+    contactGroups: d.contactGroups || [],
+    contactBiographies: enforceMin(d.contactBiographies, { value: '', type: 'Bio' }),
+    contactRelations: d.contactRelations || [],
+  }
+}
+
 export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
   const { t } = useTranslation()
 
-  const contactNameSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    given: z.string().min(1, t('validation.firstNameRequired')),
-    family: z.string().optional(),
-  })
-
-  // Relaxed validations for auto-added fields
-  const contactDateSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    date: z
-      .string()
-      .or(z.date())
-      .transform((d) => (d === '' ? '' : formatApiDate(d))),
-    text: z.string(),
-  })
-
-  const contactPhoneNumberSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    value: z.string(),
-    type: z.string().min(1, t('validation.typeRequired')),
-  })
-
-  const contactEmailAdressSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    /* eslint-disable sonarjs/deprecation */
-    value: z.string().refine((val) => val === '' || z.string().email().safeParse(val).success, {
-      message: t('validation.invalidEmail'),
-    }),
-    /* eslint-enable sonarjs/deprecation */ type: z.string().min(1, t('validation.typeRequired')),
-  })
-
-  const contactAddressSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    type: z.string().min(1, t('validation.typeRequired')),
-    street: z.string().optional().nullable(),
-    streetExtended: z.string().optional().nullable(),
-    city: z.string().optional().nullable(),
-    region: z.string().optional().nullable(),
-    postalCode: z.string().optional().nullable(),
-    country: z.string().optional().nullable(),
-    countryCode: z.string().optional().nullable(),
-    contactCode: z.string().optional().nullable(),
-  })
-
-  const contactOrganizationSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    name: z.string().optional().nullable(),
-    title: z.string().optional().nullable(),
-    department: z.string().optional().nullable(),
-    description: z.string().optional().nullable(),
-    jobDescription: z.string().optional().nullable(),
-    startDate: z
-      .string()
-      .or(z.date())
-      .optional()
-      .nullable()
-      .transform((d) => (d ? formatApiDate(d) : null)),
-    endDate: z
-      .string()
-      .or(z.date())
-      .optional()
-      .nullable()
-      .transform((d) => (d ? formatApiDate(d) : null)),
-    type: z.string().optional().nullable(),
-  })
-
-  const contactGroupSchema = z.object({
-    groupResource: z.union([z.string(), z.object({ name: z.string() })]),
-  })
-
-  const contactBiographySchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    value: z.string(),
-    type: z.string().min(1, t('validation.typeRequired')),
-  })
-
-  const contactRelationSchema = z.object({
-    id: z.string().optional(),
-    '@id': z.string().optional(),
-    '@type': z.string().optional(),
-    relatedContact: z.union([
-      z.string(),
-      // eslint-disable-next-line sonarjs/deprecation
-      z.object({ '@id': z.string() }).passthrough(),
-    ]),
-    type: z.string().min(1, t('validation.typeRequired')),
-    displayName: z.string().optional(),
-  })
-
-  const contactSchema = z.object({
-    contactNames: z.array(contactNameSchema).min(1, t('validation.atLeastOneNameRequired')),
-    contactDates: z.array(contactDateSchema),
-    phoneNumbers: z.array(contactPhoneNumberSchema),
-    contactEmailAdresses: z.array(contactEmailAdressSchema),
-    contactAddresses: z.array(contactAddressSchema),
-    contactOrganizations: z.array(contactOrganizationSchema).optional(),
-    contactGroups: z.array(contactGroupSchema).optional(),
-    contactBiographies: z.array(contactBiographySchema).optional(),
-    contactRelations: z.array(contactRelationSchema).optional(),
-  })
+  const contactSchema = getContactSchema(t)
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema) as unknown as Resolver<ContactFormValues>,
-    values: {
-      ...defaultValues,
-      contactNames: defaultValues?.contactNames?.length
-        ? defaultValues.contactNames
-        : [{ given: '', family: '' }],
-      contactDates: enforceMin(defaultValues?.contactDates, {
-        text: t('contacts.birthday'),
-        date: '',
-      }),
-      phoneNumbers: enforceMin(defaultValues?.phoneNumbers, { value: '', type: 'Mobile' }),
-      contactEmailAdresses: enforceMin(defaultValues?.contactEmailAdresses, {
-        value: '',
-        type: 'Personal',
-      }),
-      contactAddresses: enforceMin(defaultValues?.contactAddresses, {
-        type: 'Home',
-        street: '',
-        city: '',
-        postalCode: '',
-        country: '',
-      }),
-      contactOrganizations: enforceMin(defaultValues?.contactOrganizations, {
-        name: '',
-        title: '',
-        department: '',
-        type: 'Work',
-        jobDescription: '',
-        startDate: '',
-        endDate: '',
-      }),
-      contactGroups: defaultValues?.contactGroups || [],
-      contactBiographies: enforceMin(defaultValues?.contactBiographies, { value: '', type: 'Bio' }),
-      contactRelations: defaultValues?.contactRelations || [],
-    },
+    values: getContactFormDefaultValues(t, defaultValues),
   })
 
   const { mutateAsync: createGroup } = useCreateGroup()
