@@ -100,6 +100,15 @@ class ContactProcessor implements ProcessorInterface
                         if (null !== $group && null === $group->getUser()) {
                             $group->setUser($owner->getTenant());
                         }
+                    },
+                    // Matcher: Return true if same Group Resource
+                    function ($incoming, $existing) {
+                        $incomingGroup = $incoming->getGroupResource();
+                        $existingGroup = $existing->getGroupResource();
+
+                        return null !== $incomingGroup &&
+                               null !== $existingGroup &&
+                               $incomingGroup->getId() === $existingGroup->getId();
                     }
                 );
 
@@ -171,6 +180,8 @@ class ContactProcessor implements ProcessorInterface
      * @param string $addMethod
      * @param bool $isPut
      * @param (callable(T, Contact): void)|null $extraLogic
+     * @param (callable(T, T): bool)|null $matcher Logic to match incoming item with existing item.
+     *                                             If provided, smart update is performed.
      */
     private function handleCollection(
         Contact $owner,
@@ -178,9 +189,81 @@ class ContactProcessor implements ProcessorInterface
         ?\Doctrine\Common\Collections\Collection $targetCollection,
         string $addMethod,
         bool $isPut,
-        ?callable $extraLogic = null
+        ?callable $extraLogic = null,
+        ?callable $matcher = null
     ): void {
-        if ($isPut && null !== $targetCollection) {
+        if ($isPut && null !== $targetCollection && null !== $matcher) {
+             // Smart Update Logic
+             $itemsArr = is_array($items) ? $items : iterator_to_array($items);
+
+             // 1. Identify items to remove (in target but not in items)
+             // We iterate target backwards to safely remove
+            foreach ($targetCollection->toArray() as $existingItem) {
+                $found = false;
+                foreach ($itemsArr as $incomingItem) {
+                    if ($matcher($incomingItem, $existingItem)) {
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $targetCollection->removeElement($existingItem);
+                }
+            }
+
+             // 2. Identify items to add or update
+            foreach ($itemsArr as $incomingItem) {
+                $match = null;
+                foreach ($targetCollection as $existingItem) {
+                    if ($matcher($incomingItem, $existingItem)) {
+                        $match = $existingItem;
+                        break;
+                    }
+                }
+
+                if (null !== $match) {
+                    // Case 1: ID was provided, so Incoming IS the Existing item (Identity Map)
+                    if ($match === $incomingItem) {
+                        // Serializer might have pointed it to the detached $data object.
+                        // We must ensure it points to the managed $owner.
+                        if (method_exists($match, 'setContact')) {
+                            $match->setContact($owner);
+                        }
+                    } else {
+                        // Case 2: ID missing (or different instance). Incoming is new/garbage.
+                        // Check for pollution: Refreshing the Group entity to discard in-memory additions
+                        if (method_exists($incomingItem, 'getGroupResource')) {
+                            $groupRes = $incomingItem->getGroupResource();
+                            if ($groupRes && $this->entityManager->contains($groupRes)) {
+                                 $this->entityManager->refresh($groupRes);
+                            }
+                        }
+                        // Detach the garbage item
+                        $this->entityManager->detach($incomingItem);
+                    }
+
+                    // Run extra logic on the MATCH
+                    if (null !== $extraLogic) {
+                        $extraLogic($match, $owner);
+                    }
+                } else {
+                    // Add new
+                    if (method_exists($incomingItem, 'setContact')) {
+                        $incomingItem->setContact($owner);
+                    }
+                    if ($incomingItem instanceof \App\Security\TenantAwareInterface) {
+                        $incomingItem->setTenant($owner->getTenant());
+                    }
+                    if (null !== $extraLogic) {
+                        $extraLogic($incomingItem, $owner);
+                    }
+
+                    /** @phpstan-ignore method.dynamicName */
+                    $owner->$addMethod($incomingItem);
+                }
+            }
+        } elseif ($isPut && null !== $targetCollection) {
+            // Conventional "Clear and Replace"
             $targetCollection->clear();
             foreach ($items as $item) {
                 if (method_exists($item, 'setContact')) {
