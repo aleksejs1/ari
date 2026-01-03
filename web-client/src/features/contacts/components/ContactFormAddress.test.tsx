@@ -11,6 +11,13 @@ vi.mock('../useContacts', () => ({
   useGroups: vi.fn(),
 }))
 
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: () => ({
+    dateFormat: 'yyyy-MM-dd',
+    formatDate: (date: Date | string) => String(date),
+  }),
+}))
+
 describe('ContactForm Addresses', () => {
   beforeEach(() => {
     vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as unknown as ReturnType<
@@ -22,7 +29,7 @@ describe('ContactForm Addresses', () => {
   it('adds and removes address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    fireEvent.click(screen.getByText('contacts.addAddress'))
+    // fireEvent.click(screen.getByText('contacts.addAddress'))
 
     await waitFor(() => {
       expect(screen.getAllByPlaceholderText('contacts.addressStreet')).toHaveLength(1)
@@ -51,7 +58,7 @@ describe('ContactForm Addresses', () => {
       target: { value: 'John' },
     })
 
-    fireEvent.click(screen.getByText('contacts.addAddress'))
+    // fireEvent.click(screen.getByText('contacts.addAddress'))
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText('contacts.addressStreet')).toBeInTheDocument()
@@ -92,10 +99,15 @@ describe('ContactForm Addresses', () => {
   it('validates mandatory address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    fireEvent.click(screen.getByText('contacts.addAddress'))
+    // fireEvent.click(screen.getByText('contacts.addAddress'))
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText('contacts.addressTypePlaceholder')).toBeInTheDocument()
+    })
+
+    // Fill a value so the address is not filtered out as empty
+    fireEvent.change(screen.getByPlaceholderText('contacts.addressStreet'), {
+      target: { value: 'Something' },
     })
 
     // Clear the default 'Home' type to trigger validation

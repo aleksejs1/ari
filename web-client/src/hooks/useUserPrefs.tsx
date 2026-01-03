@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { parseISO } from 'date-fns'
 import { useEffect, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -88,7 +89,7 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
     if (!date) {
       return ''
     }
-    const d = new Date(date)
+    const d = typeof date === 'string' ? parseISO(date) : new Date(date)
     if (isNaN(d.getTime())) {
       return ''
     }

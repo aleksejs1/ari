@@ -64,16 +64,6 @@ const Wrapper = ({
 }
 
 describe('ContactFormRelations', () => {
-  it('renders "no contacts" message when empty', () => {
-    render(
-      <Wrapper>
-        <ContactFormRelations />
-      </Wrapper>,
-    )
-
-    expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
-  })
-
   it('can add a relation', () => {
     render(
       <Wrapper>
@@ -102,8 +92,6 @@ describe('ContactFormRelations', () => {
     expect(screen.getByTestId('autocomplete')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'common.delete' }))
-
-    expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
   })
 
   it('passes displayName to autocomplete as initialLabel', () => {

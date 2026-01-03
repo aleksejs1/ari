@@ -1,6 +1,6 @@
 import { format, parseISO, isValid } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, forwardRef } from 'react'
 import { useIMask } from 'react-imask'
 
 import { Button } from '@/components/ui/button'
@@ -15,115 +15,140 @@ interface DateInputProps extends Omit<InputProps, 'value' | 'onChange'> {
   onChange?: (date: string | null) => void // Returns ISO date string (YYYY-MM-DD) or null
 }
 
-export function DateInput({ value, onChange, className, ...props }: DateInputProps) {
-  const { dateFormat, formatDate } = useUserPrefs()
+export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
+  ({ value, onChange, className, ...props }, forwardedRef) => {
+    const { dateFormat, formatDate } = useUserPrefs()
 
-  // Determine mask pattern
-  const maskPattern = dateFormat === 'dd.mm.yyyy' ? '00.00.0000' : '00/00/0000'
+    // Determine mask pattern
+    const maskPattern = dateFormat === 'dd.mm.yyyy' ? '00.00.0000' : '00/00/0000'
 
-  const { ref, setValue: setMaskValue } = useIMask({
-    mask: maskPattern,
-    lazy: true,
-    overwrite: true,
-    autofix: true,
-    onAccept: (val: string) => {
+    const { ref: maskRef, setValue: setMaskValue } = useIMask({
+      mask: maskPattern,
+      lazy: true,
+      overwrite: true,
+      autofix: true,
+      onAccept: (val: string) => {
+        const isoDate = parseLocalizedDate(val, dateFormat)
+        if (isoDate && onChange) {
+          onChange(isoDate)
+        } else if (!val && onChange) {
+          onChange(null)
+        }
+      },
+    })
+
+    // Combine refs
+    const combinedRef = (node: HTMLInputElement) => {
+      // Handle maskRef (can be object or function)
+      if (typeof maskRef === 'function') {
+        maskRef(node)
+      } else if (maskRef) {
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/immutability */
+        ;(maskRef as any).current = node
+      }
+
+      // Handle forwardedRef
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(node)
+      } else if (forwardedRef) {
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/immutability */
+        ;(forwardedRef as any).current = node
+      }
+    }
+
+    // Also handle native onChange for better testability and fallback
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value
       const isoDate = parseLocalizedDate(val, dateFormat)
       if (isoDate && onChange) {
         onChange(isoDate)
       } else if (!val && onChange) {
         onChange(null)
       }
-    },
-  })
-
-  // Also handle native onChange for better testability and fallback
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    const isoDate = parseLocalizedDate(val, dateFormat)
-    if (isoDate && onChange) {
-      onChange(isoDate)
-    } else if (!val && onChange) {
-      onChange(null)
-    }
-  }
-
-  // Parse current value for Calendar
-  const parsedValue = useMemo(() => {
-    if (!value) {
-      return undefined
-    }
-    const d = typeof value === 'string' ? parseISO(value) : value
-    return isValid(d) ? d : undefined
-  }, [value])
-
-  // Month for controlled navigation in Calendar
-  const [month, setMonth] = useState<Date | undefined>(parsedValue)
-
-  // Sync month state with value during render to avoid cascading renders in useEffect
-  const [prevValue, setPrevValue] = useState(value)
-  if (value !== prevValue) {
-    setPrevValue(value)
-    if (parsedValue) {
-      setMonth(parsedValue)
-    }
-  }
-
-  // Sync internal state with external value
-  useEffect(() => {
-    if (value) {
-      setMaskValue(formatDate(value))
-    } else {
-      setMaskValue('')
-    }
-  }, [value, formatDate, setMaskValue])
-
-  const handleCalendarSelect = (date: Date | undefined) => {
-    if (!date) {
-      return
     }
 
-    const iso = format(date, 'yyyy-MM-dd')
-    setMaskValue(formatDate(iso))
+    // Parse current value for Calendar
+    const parsedValue = useMemo(() => {
+      if (!value) {
+        return undefined
+      }
+      const d = typeof value === 'string' ? parseISO(value) : value
+      return isValid(d) ? d : undefined
+    }, [value])
 
-    if (onChange) {
-      onChange(iso)
+    // Month for controlled navigation in Calendar
+    const [month, setMonth] = useState<Date | undefined>(parsedValue)
+
+    // Sync month state with value during render to avoid cascading renders in useEffect
+    const [prevValue, setPrevValue] = useState(value)
+    if (value !== prevValue) {
+      setPrevValue(value)
+      if (parsedValue) {
+        setMonth(parsedValue)
+      }
     }
-  }
 
-  return (
-    <div className={cn('relative', className)}>
-      <Input
-        ref={ref as React.RefObject<HTMLInputElement>}
-        type="text"
-        placeholder={dateFormat.toLowerCase()}
-        onChange={handleChange}
-        className="pr-10"
-        {...props}
-      />
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0 h-full w-10 text-muted-foreground hover:bg-transparent hover:text-foreground"
-          >
-            <CalendarIcon className="h-4 w-4" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
-          <Calendar
-            mode="single"
-            selected={parsedValue}
-            month={month}
-            onMonthChange={setMonth}
-            onSelect={handleCalendarSelect}
-            captionLayout="dropdown"
-            startMonth={new Date(1900, 0)}
-            endMonth={new Date()}
-            title="Calendar"
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  )
-}
+    // Sync internal state with external value
+    useEffect(() => {
+      if (value) {
+        setMaskValue(formatDate(value))
+      } else {
+        setMaskValue('')
+      }
+    }, [value, formatDate, setMaskValue])
+
+    const handleCalendarSelect = (date: Date | undefined) => {
+      if (!date) {
+        return
+      }
+
+      // Format as ISO for the form value
+      const iso = format(date, 'yyyy-MM-dd')
+
+      // Update the mask visually immediately using the date object to avoid timezone issues
+      setMaskValue(formatDate(date))
+
+      if (onChange) {
+        onChange(iso)
+      }
+    }
+
+    return (
+      <div className={cn('relative', className)}>
+        <Input
+          ref={combinedRef}
+          type="text"
+          placeholder={dateFormat.toLowerCase()}
+          onChange={handleChange}
+          className="pr-10"
+          {...props}
+        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full w-10 text-muted-foreground hover:bg-transparent hover:text-foreground"
+            >
+              <CalendarIcon className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="single"
+              selected={parsedValue}
+              month={month}
+              onMonthChange={setMonth}
+              onSelect={handleCalendarSelect}
+              captionLayout="dropdown"
+              startMonth={new Date(1900, 0)}
+              endMonth={new Date()}
+              title="Calendar"
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    )
+  },
+)
+DateInput.displayName = 'DateInput'

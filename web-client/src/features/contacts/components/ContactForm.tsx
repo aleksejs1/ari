@@ -26,6 +26,83 @@ interface ContactFormProps {
   isSubmitting?: boolean
 }
 
+const enforceMin = <T,>(arr: T[] | undefined, defaultItem: T): T[] => {
+  if (!arr || arr.length === 0) {
+    return [defaultItem]
+  }
+  return arr
+}
+
+const processContactGroups = async (
+  groups: ContactFormValues['contactGroups'],
+  createGroup: (data: { name: string }) => Promise<any>,
+) => {
+  const processed: { groupResource: string }[] = []
+  if (!groups) {
+    return processed
+  }
+
+  for (const group of groups) {
+    if (typeof group.groupResource === 'object' && group.groupResource.name) {
+      try {
+        const newGroup = await createGroup({ name: group.groupResource.name })
+        if (newGroup['@id']) {
+          processed.push({ groupResource: newGroup['@id'] })
+        }
+      } catch {
+        // ignore
+      }
+    } else if (typeof group.groupResource === 'string') {
+      processed.push({ groupResource: group.groupResource })
+    }
+  }
+  return processed
+}
+
+const cleanContactData = (data: ContactFormValues) => {
+  const contactRelations = data.contactRelations?.map((relation) => ({
+    ...relation,
+    relatedContact:
+      typeof relation.relatedContact === 'object'
+        ? relation.relatedContact['@id']
+        : relation.relatedContact,
+  }))
+
+  const phoneNumbers = data.phoneNumbers.filter((p) => p.value.trim() !== '')
+  const contactEmailAdresses = data.contactEmailAdresses.filter((e) => e.value.trim() !== '')
+  const contactBiographies = data.contactBiographies?.filter((b) => b.value.trim() !== '')
+  const contactOrganizations = data.contactOrganizations?.filter(
+    (o) =>
+      o.name?.trim() ||
+      o.title?.trim() ||
+      o.department?.trim() ||
+      o.jobDescription?.trim() ||
+      o.startDate ||
+      o.endDate,
+  )
+  const contactAddresses = data.contactAddresses.filter(
+    (a) =>
+      a.street?.trim() ||
+      a.streetExtended?.trim() ||
+      a.city?.trim() ||
+      a.region?.trim() ||
+      a.postalCode?.trim() ||
+      a.country?.trim(),
+  )
+  const contactDates = data.contactDates.filter((d) => d.text.trim() !== '' && d.date !== '')
+
+  return {
+    ...data,
+    contactRelations,
+    phoneNumbers,
+    contactEmailAdresses,
+    contactBiographies,
+    contactOrganizations,
+    contactAddresses,
+    contactDates,
+  }
+}
+
 export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
   const { t } = useTranslation()
 
@@ -37,6 +114,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     family: z.string().optional(),
   })
 
+  // Relaxed validations for auto-added fields
   const contactDateSchema = z.object({
     id: z.string().optional(),
     '@id': z.string().optional(),
@@ -44,15 +122,15 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     date: z
       .string()
       .or(z.date())
-      .transform((d) => formatApiDate(d)),
-    text: z.string().min(1, t('validation.labelRequired')),
+      .transform((d) => (d === '' ? '' : formatApiDate(d))),
+    text: z.string(),
   })
 
   const contactPhoneNumberSchema = z.object({
     id: z.string().optional(),
     '@id': z.string().optional(),
     '@type': z.string().optional(),
-    value: z.string().min(1, t('validation.phoneNumberRequired')),
+    value: z.string(),
     type: z.string().min(1, t('validation.typeRequired')),
   })
 
@@ -61,12 +139,10 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     '@id': z.string().optional(),
     '@type': z.string().optional(),
     /* eslint-disable sonarjs/deprecation */
-    value: z
-      .string()
-      .min(1, t('validation.emailRequired'))
-      .email({ message: t('validation.invalidEmail') }),
-    /* eslint-enable sonarjs/deprecation */
-    type: z.string().min(1, t('validation.typeRequired')),
+    value: z.string().refine((val) => val === '' || z.string().email().safeParse(val).success, {
+      message: t('validation.invalidEmail'),
+    }),
+    /* eslint-enable sonarjs/deprecation */ type: z.string().min(1, t('validation.typeRequired')),
   })
 
   const contactAddressSchema = z.object({
@@ -116,7 +192,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
     id: z.string().optional(),
     '@id': z.string().optional(),
     '@type': z.string().optional(),
-    value: z.string().min(1, t('validation.biographyRequired')),
+    value: z.string(),
     type: z.string().min(1, t('validation.typeRequired')),
   })
 
@@ -147,56 +223,52 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema) as unknown as Resolver<ContactFormValues>,
-    values: defaultValues || {
-      contactNames: [{ given: '', family: '' }],
-      contactDates: [],
-      phoneNumbers: [],
-      contactEmailAdresses: [],
-      contactAddresses: [],
-      contactOrganizations: [],
-      contactGroups: [],
-      contactBiographies: [],
-      contactRelations: [],
+    values: {
+      ...defaultValues,
+      contactNames: defaultValues?.contactNames?.length
+        ? defaultValues.contactNames
+        : [{ given: '', family: '' }],
+      contactDates: enforceMin(defaultValues?.contactDates, {
+        text: t('contacts.birthday'),
+        date: '',
+      }),
+      phoneNumbers: enforceMin(defaultValues?.phoneNumbers, { value: '', type: 'Mobile' }),
+      contactEmailAdresses: enforceMin(defaultValues?.contactEmailAdresses, {
+        value: '',
+        type: 'Personal',
+      }),
+      contactAddresses: enforceMin(defaultValues?.contactAddresses, {
+        type: 'Home',
+        street: '',
+        city: '',
+        postalCode: '',
+        country: '',
+      }),
+      contactOrganizations: enforceMin(defaultValues?.contactOrganizations, {
+        name: '',
+        title: '',
+        department: '',
+        type: 'Work',
+        jobDescription: '',
+        startDate: '',
+        endDate: '',
+      }),
+      contactGroups: defaultValues?.contactGroups || [],
+      contactBiographies: enforceMin(defaultValues?.contactBiographies, { value: '', type: 'Bio' }),
+      contactRelations: defaultValues?.contactRelations || [],
     },
   })
 
   const { mutateAsync: createGroup } = useCreateGroup()
 
-  const processContactGroups = async (groups?: ContactFormValues['contactGroups']) => {
-    const processed: { groupResource: string }[] = []
-    if (!groups) {
-      return processed
-    }
-
-    for (const group of groups) {
-      if (typeof group.groupResource === 'object' && group.groupResource.name) {
-        try {
-          const newGroup = await createGroup({ name: group.groupResource.name })
-          if (newGroup['@id']) {
-            processed.push({ groupResource: newGroup['@id'] })
-          }
-        } catch {
-          // ignore
-        }
-      } else if (typeof group.groupResource === 'string') {
-        processed.push({ groupResource: group.groupResource })
-      }
-    }
-    return processed
-  }
-
   const handleFormSubmit = async (data: ContactFormValues) => {
-    const contactGroups = await processContactGroups(data.contactGroups)
+    const contactGroups = await processContactGroups(data.contactGroups, createGroup)
+    const cleanedData = cleanContactData(data)
 
-    const contactRelations = data.contactRelations?.map((relation) => ({
-      ...relation,
-      relatedContact:
-        typeof relation.relatedContact === 'object'
-          ? relation.relatedContact['@id']
-          : relation.relatedContact,
-    }))
-
-    onSubmit({ ...data, contactGroups, contactRelations })
+    onSubmit({
+      ...cleanedData,
+      contactGroups,
+    })
   }
 
   return (

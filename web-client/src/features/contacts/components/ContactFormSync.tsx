@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { DateInput } from '@/components/ui/DateInput'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { formatApiDate } from '@/lib/utils'
 import { type ContactFormValues } from '@/types/models'
 
 export function ContactFormSync() {
@@ -32,9 +31,7 @@ export function ContactFormSync() {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() =>
-            appendDate({ text: t('contacts.birthday'), date: formatApiDate(new Date()) })
-          }
+          onClick={() => appendDate({ text: t('contacts.birthday'), date: '' })}
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
         </Button>

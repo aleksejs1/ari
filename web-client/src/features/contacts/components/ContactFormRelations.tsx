@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { ContactAutocomplete } from './ContactAutocomplete'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { type ContactFormValues, PREDEFINED_RELATIONS } from '@/types/models'
@@ -19,20 +18,19 @@ export function ContactFormRelations() {
   })
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{t('contacts.relations')}</CardTitle>
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-medium">{t('contacts.relations')}</h3>
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={() => append({ relatedContact: '', type: '', displayName: '' })}
         >
-          <Plus className="mr-2 h-4 w-4" />
-          {t('contacts.addRelation')}
+          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addRelation')}
         </Button>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      </div>
+      <div className="space-y-4">
         {fields.map((field, index) => (
           <div key={field.id} className="flex flex-col gap-4 sm:flex-row sm:items-start">
             <div className="flex-1 space-y-2">
@@ -90,18 +88,13 @@ export function ContactFormRelations() {
               size="icon"
               className="mt-2 shrink-0 sm:mt-0"
               onClick={() => remove(index)}
+              aria-label={t('common.delete')}
             >
-              <Trash2 className="h-4 w-4 text-destructive" />
-              <span className="sr-only">{t('common.delete')}</span>
+              <Trash2 className="h-4 w-4 text-red-500" />
             </Button>
           </div>
         ))}
-        {fields.length === 0 && (
-          <div className="text-center text-sm text-muted-foreground">
-            {t('contacts.noContacts')}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

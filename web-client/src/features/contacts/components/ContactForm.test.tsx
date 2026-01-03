@@ -17,6 +17,13 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: () => ({
+    dateFormat: 'yyyy-MM-dd',
+    formatDate: (date: Date | string) => String(date),
+  }),
+}))
+
 describe('ContactForm', () => {
   // Setup default mocks
   beforeEach(() => {
