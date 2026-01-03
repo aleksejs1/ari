@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { formatApiDate } from '@/lib/utils'
 import { type ContactDate } from '@/types/models'
 
@@ -26,6 +27,7 @@ interface ContactDateInlineEditProps {
 
 export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateInlineEditProps) {
   const { t } = useTranslation()
+  const { formatDate } = useUserPrefs()
   const [open, setOpen] = useState(false)
 
   const initialDate = date.date ? new Date(date.date).toISOString().split('T')[0] : ''
@@ -134,9 +136,7 @@ export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateI
       popoverContent={formContent}
     >
       <>
-        <span className="font-medium">
-          {date.date ? new Date(date.date).toLocaleDateString() : ''}
-        </span>
+        <span className="font-medium">{date.date ? formatDate(date.date) : ''}</span>
         <span className="text-gray-500">({date.text ?? t('contacts.noLabel')})</span>
       </>
     </InlineEditTrigger>

@@ -6,11 +6,17 @@ import { useGroups } from '../useContacts'
 
 import { ContactsTable } from './ContactsTable'
 
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact } from '@/types/models'
 
 // Mock useContacts
 vi.mock('../useContacts', () => ({
   useGroups: vi.fn(),
+}))
+
+// Mock useUserPrefs
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
 }))
 
 // Mock useNavigate
@@ -26,6 +32,9 @@ vi.mock('react-router-dom', async () => {
 describe('ContactsTable', () => {
   beforeEach(() => {
     vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+    })
   })
 
   const mockData: Contact[] = [
