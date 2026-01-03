@@ -205,6 +205,45 @@ export function useCreateGroup() {
   })
 }
 
+export function useUpdateContactGroups() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ contactId, groupIds }: { contactId: string; groupIds: string[] }) => {
+      // We can't batch update groups easily with the current API structure if it's strict REST.
+      // However, usually we might update the contact entity itself with the new list of groups.
+      // Assuming the contact entity allows writing to `contactGroups` or similar, OR we have to manage relations.
+      //
+      // If the backend expects an array of group IRIs to replace the current set:
+      // PUT /contacts/{id} { contactGroups: [ "iri1", "iri2" ] }
+      //
+      // Let's assume the backend supports updating the contactGroups collection on the contact resource.
+
+      const url = contactId.startsWith('/api') ? contactId.substring(4) : contactId
+
+      // Use PATCH with merge-patch+json to avoid overwriting other fields.
+      const response = await api.patch(
+        url,
+        {
+          contactGroups: groupIds.map((id) => ({ groupResource: id })),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json',
+          },
+        },
+      )
+      return response.data
+    },
+    onSuccess: (_, variables) => {
+      const id = variables.contactId.split('/').pop()
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (id) {
+        void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
+      }
+    },
+  })
+}
+
 export function useSimilarContacts(id: string) {
   return useQuery({
     queryKey: ['contacts', id, 'similar'],

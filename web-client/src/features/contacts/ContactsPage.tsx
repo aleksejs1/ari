@@ -11,6 +11,7 @@ import {
   useDeleteContact,
   useUpdateContactDate,
   useCreateContactDate,
+  useUpdateContactGroups,
   getHydraMember,
   getHydraPagination,
 } from './useContacts'
@@ -55,6 +56,7 @@ export default function ContactsPage() {
   const handleUpdateDateMutation = useUpdateContactDate()
   const handleCreateDateMutation = useCreateContactDate()
   const handleDeleteDateMutation = useDeleteContact()
+  const handleUpdateGroupsMutation = useUpdateContactGroups()
 
   const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
     if (date['@id']) {
@@ -73,6 +75,16 @@ export default function ContactsPage() {
       return
     }
     await handleDeleteDateMutation.mutateAsync(date['@id'])
+  }
+
+  const handleUpdateGroups = async (contact: Contact, groupIds: string[]) => {
+    if (!contact['@id']) {
+      return
+    }
+    await handleUpdateGroupsMutation.mutateAsync({
+      contactId: contact['@id'],
+      groupIds,
+    })
   }
 
   if (isLoading && !isPlaceholderData) {
@@ -96,6 +108,7 @@ export default function ContactsPage() {
             onEdit={handleEdit}
             onUpdateDate={handleUpdateDate}
             onDeleteDate={handleDeleteDate}
+            onUpdateGroups={handleUpdateGroups}
           />
         </div>
 

@@ -64,7 +64,13 @@ describe('ContactsTable', () => {
   it('renders empty state', () => {
     render(
       <MemoryRouter>
-        <ContactsTable data={[]} onEdit={vi.fn()} onUpdateDate={vi.fn()} onDeleteDate={vi.fn()} />
+        <ContactsTable
+          data={[]}
+          onEdit={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
+        />
       </MemoryRouter>,
     )
     expect(screen.getByText('contacts.noContacts')).toBeInTheDocument()
@@ -78,6 +84,7 @@ describe('ContactsTable', () => {
           onEdit={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -112,6 +119,7 @@ describe('ContactsTable', () => {
           onEdit={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -129,6 +137,7 @@ describe('ContactsTable', () => {
           onEdit={onEdit}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -171,6 +180,7 @@ describe('ContactsTable', () => {
           onEdit={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -190,6 +200,7 @@ describe('ContactsTable', () => {
           onEdit={vi.fn()}
           onUpdateDate={vi.fn()}
           onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
         />
       </MemoryRouter>,
     )
