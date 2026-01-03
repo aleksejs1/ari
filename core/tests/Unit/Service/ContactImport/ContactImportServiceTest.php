@@ -201,4 +201,68 @@ final class ContactImportServiceTest extends TestCase
         self::assertSame($originalName, $currentName);
         self::assertEquals('Given', $currentName->getGiven());
     }
+
+    public function testImportSetsContactAndTenantOnNewEntities(): void
+    {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $service = new ContactImportService([], $entityManager);
+
+        $user = new User();
+        // Set ID via reflection to simulate a persisted user
+        $reflection = new \ReflectionProperty(User::class, 'id');
+        $reflection->setValue($user, 12345);
+
+        $contact = new Contact();
+        $contact->setUser($user);
+
+        $dto = new ContactImportDto(
+            names: [new ContactNameDto('Vance', 'Eleanor')],
+            dates: [new ContactDateDto(new \DateTime('2023-01-01'), 'Birthday')],
+            emails: [new ContactEmailDto('eleanor@example.com', 'home')],
+            phones: [new ContactPhoneDto('555-0199', 'home')],
+            addresses: [new ContactAddressDto(street: '123 Hill House')],
+            organizations: [new ContactOrganizationDto(name: 'Paranormal Investigators')],
+            biographies: [new ContactBiographyDto(value: 'Interested in psychic phenomena')]
+        );
+
+        $entityManager->expects(self::once())->method('persist');
+        $entityManager->expects(self::once())->method('flush');
+
+        $service->update($contact, $dto);
+
+        $name = $contact->getContactNames()->first();
+        self::assertInstanceOf(ContactName::class, $name);
+        self::assertNotNull($name->getContact(), 'ContactName should have a contact set');
+        self::assertSame($user, $name->getTenant(), 'ContactName should have the correct tenant');
+
+        $date = $contact->getContactDates()->first();
+        self::assertInstanceOf(ContactDate::class, $date);
+        self::assertNotNull($date->getContact(), 'ContactDate should have a contact set');
+        self::assertSame($user, $date->getTenant(), 'ContactDate should have the correct tenant');
+
+        $email = $contact->getContactEmailAdresses()->first();
+        self::assertInstanceOf(ContactEmailAdress::class, $email);
+        self::assertNotNull($email->getContact(), 'ContactEmailAdress should have a contact set');
+        self::assertSame($user, $email->getTenant(), 'ContactEmailAdress should have the correct tenant');
+
+        $phone = $contact->getPhoneNumbers()->first();
+        self::assertInstanceOf(ContactPhoneNumber::class, $phone);
+        self::assertNotNull($phone->getContact(), 'ContactPhoneNumber should have a contact set');
+        self::assertSame($user, $phone->getTenant(), 'ContactPhoneNumber should have the correct tenant');
+
+        $address = $contact->getContactAddresses()->first();
+        self::assertInstanceOf(ContactAddress::class, $address);
+        self::assertNotNull($address->getContact(), 'ContactAddress should have a contact set');
+        self::assertSame($user, $address->getTenant(), 'ContactAddress should have the correct tenant');
+
+        $org = $contact->getContactOrganizations()->first();
+        self::assertInstanceOf(ContactOrganization::class, $org);
+        self::assertNotNull($org->getContact(), 'ContactOrganization should have a contact set');
+        self::assertSame($user, $org->getTenant(), 'ContactOrganization should have the correct tenant');
+
+        $bio = $contact->getContactBiographies()->first();
+        self::assertInstanceOf(ContactBiography::class, $bio);
+        self::assertNotNull($bio->getContact(), 'ContactBiography should have a contact set');
+        self::assertSame($user, $bio->getTenant(), 'ContactBiography should have the correct tenant');
+    }
 }

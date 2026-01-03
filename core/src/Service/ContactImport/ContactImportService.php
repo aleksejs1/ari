@@ -53,8 +53,8 @@ class ContactImportService
                 $entity->setGiven($dto->given);
                 $entity->setFamily($dto->family);
             },
-            function ($dto) {
-                $entity = new ContactName();
+            function ($dto) use ($contact) {
+                $entity = new ContactName($contact);
                 $entity->setGiven($dto->given);
                 $entity->setFamily($dto->family);
                 return $entity;
@@ -78,8 +78,8 @@ class ContactImportService
                 );
                 $entity->setText($dto->text);
             },
-            function ($dto) {
-                $entity = new ContactDate();
+            function ($dto) use ($contact) {
+                $entity = new ContactDate($contact);
                 $entity->setDate(
                     $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date)
                 );
@@ -98,8 +98,8 @@ class ContactImportService
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
             },
-            function ($dto) {
-                $entity = new ContactEmailAdress();
+            function ($dto) use ($contact) {
+                $entity = new ContactEmailAdress($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
                 return $entity;
@@ -116,8 +116,8 @@ class ContactImportService
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
             },
-            function ($dto) {
-                $entity = new ContactPhoneNumber();
+            function ($dto) use ($contact) {
+                $entity = new ContactPhoneNumber($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
                 return $entity;
@@ -147,8 +147,8 @@ class ContactImportService
                 $entity->setCountryCode($dto->countryCode);
                 $entity->setType($dto->type);
             },
-            function ($dto) {
-                $entity = new ContactAddress();
+            function ($dto) use ($contact) {
+                $entity = new ContactAddress($contact);
                 $entity->setStreet($dto->street);
                 $entity->setStreetExtended($dto->streetExtended);
                 $entity->setCity($dto->city);
@@ -205,8 +205,8 @@ class ContactImportService
                 $entity->setStartDate($dto->startDate);
                 $entity->setEndDate($dto->endDate);
             },
-            function ($dto) {
-                $entity = new ContactOrganization();
+            function ($dto) use ($contact) {
+                $entity = new ContactOrganization($contact);
                 $entity->setName($dto->name);
                 $entity->setDepartment($dto->department);
                 $entity->setTitle($dto->title);
@@ -228,8 +228,8 @@ class ContactImportService
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
             },
-            function ($dto) {
-                $entity = new ContactBiography();
+            function ($dto) use ($contact) {
+                $entity = new ContactBiography($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
                 return $entity;
