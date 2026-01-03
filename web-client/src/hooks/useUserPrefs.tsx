@@ -33,7 +33,6 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
     queryFn: async () => {
       const response = await api.get('/user_prefs')
       // Handle the "bug" where hydra:member might be just member
-      // @ts-expect-error - Response type mismatch workaround
       const items = response.data['hydra:member'] || response.data.member || []
       return items as UserPref[]
     },

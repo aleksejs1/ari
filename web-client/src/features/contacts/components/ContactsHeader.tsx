@@ -14,20 +14,20 @@ interface ContactsHeaderProps {
 export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHeaderProps) {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState(search)
+  const [prevSearch, setPrevSearch] = useState(search)
+  const [isFocused, setIsFocused] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Sync from prop (URL) to local state, but ONLY if not focused
   // This handles the "Back button" or external navigation case without interrupting typing
-  // Sync from prop (URL) to local state, but ONLY if not focused
-  // This handles the "Back button" or external navigation case without interrupting typing
-  useEffect(() => {
+  if (search !== prevSearch) {
+    setPrevSearch(search)
     // Check focus to ensure we don't overwrite user typing if URL updates (though we debounce URL updates)
     // We only update if the input is NOT focused.
-    if (document.activeElement !== inputRef.current) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!isFocused) {
       setInputValue(search)
     }
-  }, [search])
+  }
 
   // Debounce the local input changes up to the parent
   useEffect(() => {
@@ -54,6 +54,8 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
             placeholder={t('common.search')}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             className="pl-8"
           />
         </div>

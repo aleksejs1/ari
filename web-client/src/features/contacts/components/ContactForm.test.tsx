@@ -20,10 +20,10 @@ vi.mock('react-i18next', () => ({
 describe('ContactForm', () => {
   // Setup default mocks
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as unknown as ReturnType<
+      typeof useCreateGroup
+    >)
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
   })
 
   it('renders correctly with default values', () => {
@@ -54,8 +54,7 @@ describe('ContactForm', () => {
     const onSubmit = vi.fn()
     vi.mocked(useCreateGroup).mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({ '@id': '/api/groups/new', id: 999 }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as unknown as any)
+    } as unknown as ReturnType<typeof useCreateGroup>)
 
     render(<ContactForm onSubmit={onSubmit} />)
 
@@ -72,8 +71,9 @@ describe('ContactForm', () => {
     const onSubmit = vi.fn()
     // Mock CreateGroup to return a valid group ID if called
     const mutateAsync = vi.fn().mockResolvedValue({ '@id': '/api/groups/101' })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync } as unknown as any)
+    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync } as unknown as ReturnType<
+      typeof useCreateGroup
+    >)
 
     render(<ContactForm onSubmit={onSubmit} />)
 

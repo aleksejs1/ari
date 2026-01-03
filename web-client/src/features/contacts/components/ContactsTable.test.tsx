@@ -25,8 +25,7 @@ vi.mock('react-router-dom', async () => {
 
 describe('ContactsTable', () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
   })
 
   const mockData: Contact[] = [
@@ -86,8 +85,8 @@ describe('ContactsTable', () => {
 
   it('renders group pills', () => {
     vi.mocked(useGroups).mockReturnValue({
-      data: [{ '@id': '/api/groups/1', name: 'Work' }],
-    } as unknown as UseQueryResult<unknown, unknown>)
+      data: [{ '@id': '/api/groups/1', '@type': 'Group', name: 'Work' }],
+    } as unknown as ReturnType<typeof useGroups>)
 
     const mockDataWithGroups: Contact[] = [
       {

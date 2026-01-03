@@ -20,10 +20,10 @@ vi.mock('./NotificationSubscriptions', () => ({
 
 describe('ContactForm Synchronization', () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+    vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as unknown as ReturnType<
+      typeof useCreateGroup
+    >)
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
   })
 
   it('updates form values and IDs when props change after save', async () => {

@@ -23,7 +23,7 @@ export type NotificationChannel =
   components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 export type NotificationSubscription =
   components['schemas']['NotificationSubscription.jsonld-notification_subscription.read']
-export type ContactGroup = components['schemas']['ContactGroup.jsonld-contact.read']
+export type ContactGroup = z.infer<typeof contactGroupSchema>
 export type ContactOrganization = components['schemas']['ContactOrganization.jsonld-contact.read']
 export type ContactBiography = components['schemas']['ContactBiography.jsonld-contact.read']
 export interface ContactRelation {
