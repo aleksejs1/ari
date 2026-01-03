@@ -1,31 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '@/hooks/useAuth'
+import { UserPrefsContext } from '@/hooks/useUserPrefsContext'
 import { api } from '@/lib/axios'
 import type { components } from '@/types/schema'
 
 type UserPref = components['schemas']['UserPref.jsonld-user_pref.read']
 type UserPrefType = 'language' | 'dateFormat'
 
-interface UserPrefsContextType {
-  language: string
-  dateFormat: string
-  setLanguage: (lang: string) => Promise<void>
-  setDateFormat: (format: string) => Promise<void>
-  formatDate: (date: Date | string | null | undefined) => string
-  isLoading: boolean
-}
-
-const UserPrefsContext = createContext<UserPrefsContextType | null>(null)
-
 export function UserPrefsProvider({ children }: { children: ReactNode }) {
   const { i18n } = useTranslation()
   const { isAuthenticated } = useAuth()
   const queryClient = useQueryClient()
-  const [language, setInternalLanguage] = useState<string>('en')
-  const [dateFormat, setInternalDateFormat] = useState<string>('mm/dd/yyyy')
 
   // Fetch prefs
   const { data: prefs, isLoading } = useQuery({
@@ -39,22 +27,14 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
     enabled: isAuthenticated,
   })
 
-  // Apply prefs when loaded
-  useEffect(() => {
-    if (prefs) {
-      const langPref = prefs.find((p) => p.type === 'language')
-      const datePref = prefs.find((p) => p.type === 'dateFormat')
+  // Derive language and dateFormat from prefs (no separate state needed)
+  const language = prefs?.find((p) => p.type === 'language')?.value || 'en'
+  const dateFormat = prefs?.find((p) => p.type === 'dateFormat')?.value || 'mm/dd/yyyy'
 
-      if (langPref?.value && langPref.value !== language) {
-        setInternalLanguage(langPref.value)
-        void i18n.changeLanguage(langPref.value)
-      }
-      if (datePref?.value) {
-        setInternalDateFormat(datePref.value)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefs, i18n])
+  // Sync i18n language when derived language changes
+  useEffect(() => {
+    void i18n.changeLanguage(language)
+  }, [language, i18n])
 
   // Helpers to find existing pref ID
   const getPrefId = (type: UserPrefType) => {
@@ -90,13 +70,11 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
   })
 
   const setLanguage = async (lang: string) => {
-    setInternalLanguage(lang)
     await i18n.changeLanguage(lang)
     await savePrefMutation.mutateAsync({ type: 'language', value: lang })
   }
 
   const setDateFormat = async (format: string) => {
-    setInternalDateFormat(format)
     await savePrefMutation.mutateAsync({ type: 'dateFormat', value: format })
   }
 
@@ -134,13 +112,4 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
       {children}
     </UserPrefsContext.Provider>
   )
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export function useUserPrefs() {
-  const context = useContext(UserPrefsContext)
-  if (!context) {
-    throw new Error('useUserPrefs must be used within a UserPrefsProvider')
-  }
-  return context
 }

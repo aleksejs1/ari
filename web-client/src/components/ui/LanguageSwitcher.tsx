@@ -8,7 +8,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu'
-import { useUserPrefs } from '@/hooks/useUserPrefs'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useUserPrefs()

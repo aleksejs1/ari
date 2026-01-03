@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Input, type InputProps } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { useUserPrefs } from '@/hooks/useUserPrefs'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { cn, parseLocalizedDate } from '@/lib/utils'
 
 interface DateInputProps extends Omit<InputProps, 'value' | 'onChange'> {

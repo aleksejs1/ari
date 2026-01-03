@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useUserPrefs } from '@/hooks/useUserPrefs'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact } from '@/types/models'
 
 interface ContactViewProps {
@@ -50,16 +50,26 @@ const ContactInfoCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.phoneNumbers?.map((phone, i) => (
-          <DisplayItem key={i} icon={Phone} label={phone.type} value={phone.value} />
+          <DisplayItem
+            key={i}
+            icon={Phone}
+            label={phone.type ?? undefined}
+            value={phone.value ?? undefined}
+          />
         ))}
         {contact.contactEmailAdresses?.map((email, i) => (
-          <DisplayItem key={i} icon={Mail} label={email.type} value={email.value} />
+          <DisplayItem
+            key={i}
+            icon={Mail}
+            label={email.type ?? undefined}
+            value={email.value ?? undefined}
+          />
         ))}
         {contact.contactAddresses?.map((address, i) => (
           <DisplayItem
             key={i}
             icon={MapPin}
-            label={address.type}
+            label={address.type ?? undefined}
             value={[
               address.street,
               address.streetExtended,
@@ -98,7 +108,13 @@ const ProfessionalCard = ({ contact }: { contact: Contact }) => {
           <DisplayItem
             key={i}
             icon={Users}
-            value={typeof group.groupResource === 'object' ? group.groupResource?.name : ''}
+            value={
+              typeof group.groupResource === 'object' &&
+              group.groupResource !== null &&
+              'name' in group.groupResource
+                ? group.groupResource.name
+                : ''
+            }
           />
         ))}
       </CardContent>
@@ -122,7 +138,7 @@ const DatesCard = ({ contact }: { contact: Contact }) => {
           <DisplayItem
             key={i}
             icon={Calendar}
-            label={date.text}
+            label={date.text ?? undefined}
             value={(() => {
               if (!date.date) {
                 return ''
@@ -156,7 +172,7 @@ const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
           <DisplayItem
             key={i}
             icon={Calendar}
-            label={date.text}
+            label={date.text ?? undefined}
             value={`${formatDate(date.nextAnniversaryDate ?? '')} (${date.yearsAtNextAnniversary})`}
           />
         ))}
@@ -177,7 +193,12 @@ const BiographyCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactBiographies.map((bio, i) => (
-          <DisplayItem key={i} icon={FileText} label={bio.type} value={bio.value} />
+          <DisplayItem
+            key={i}
+            icon={FileText}
+            label={bio.type ?? undefined}
+            value={bio.value ?? undefined}
+          />
         ))}
       </CardContent>
     </Card>
@@ -196,19 +217,28 @@ const RelationsCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactRelations.map((relation, i) => {
-          const relatedId =
-            typeof relation.relatedContact === 'string'
-              ? relation.relatedContact.split('/').pop()
-              : relation.relatedContact?.['@id']?.split('/').pop()
+          let relatedId: string | undefined
+          if (typeof relation.relatedContact === 'string') {
+            relatedId = relation.relatedContact.split('/').pop()
+          } else if (
+            typeof relation.relatedContact === 'object' &&
+            relation.relatedContact?.['@id']
+          ) {
+            relatedId = relation.relatedContact['@id'].split('/').pop()
+          } else {
+            relatedId = undefined
+          }
 
           const label = t(`contacts.relationTypes.${relation.type}`, {
             defaultValue: relation.type,
           })
           const name =
             relation.displayName ||
-            (typeof relation.relatedContact === 'object'
+            (typeof relation.relatedContact === 'object' &&
+            relation.relatedContact !== null &&
+            'displayName' in relation.relatedContact
               ? relation.relatedContact.displayName
-              : '') ||
+              : undefined) ||
             t('common.unknown')
 
           return (

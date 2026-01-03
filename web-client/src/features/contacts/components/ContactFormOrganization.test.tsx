@@ -4,7 +4,13 @@ import { describe, it, expect, vi } from 'vitest'
 
 import { ContactFormOrganization } from './ContactFormOrganization'
 
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type ContactFormValues } from '@/types/models'
+
+// Mock useUserPrefs hook
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
+}))
 
 // Mock translations
 vi.mock('react-i18next', () => ({
@@ -30,6 +36,14 @@ const Wrapper = ({
 }
 
 describe('ContactFormOrganization', () => {
+  beforeAll(() => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+    })
+  })
+
   it('renders empty state', () => {
     render(
       <Wrapper>

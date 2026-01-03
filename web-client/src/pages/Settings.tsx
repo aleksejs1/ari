@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useUserPrefs } from '@/hooks/useUserPrefs'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 export default function SettingsPage() {
   const { t } = useTranslation()

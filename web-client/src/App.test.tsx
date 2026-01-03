@@ -1,12 +1,35 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 import App from './App'
 import { AuthProvider } from './contexts/AuthContext'
+import { UserPrefsProvider } from './hooks/useUserPrefs'
+import { useUserPrefs } from './hooks/useUserPrefs.hook'
+
+// Mock useUserPrefs hook but keep UserPrefsProvider
+vi.mock('./hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
+}))
+
+// Import UserPrefsProvider from the actual module (not mocked)
+vi.mock('./hooks/useUserPrefs', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+  }
+})
 
 describe('App Smoke Test', () => {
   it('renders login page by default', () => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+      setLanguage: vi.fn(),
+      setDateFormat: vi.fn(),
+    })
+
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -18,7 +41,9 @@ describe('App Smoke Test', () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <App />
+          <UserPrefsProvider>
+            <App />
+          </UserPrefsProvider>
         </AuthProvider>
       </QueryClientProvider>,
     )

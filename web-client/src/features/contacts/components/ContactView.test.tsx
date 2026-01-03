@@ -3,7 +3,13 @@ import { vi } from 'vitest'
 
 import { ContactView } from './ContactView'
 
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Contact } from '@/types/models'
+
+// Mock useUserPrefs hook
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
+}))
 
 // Mock icons to avoid rendering issues
 vi.mock('lucide-react', () => ({
@@ -93,6 +99,14 @@ const mockContact: Contact = {
 }
 
 describe('ContactView', () => {
+  beforeEach(() => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+    })
+  })
+
   it('renders contact information correctly', () => {
     const onEdit = vi.fn()
     render(<ContactView contact={mockContact} onEdit={onEdit} />)

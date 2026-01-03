@@ -8,10 +8,15 @@ const TEST_DIFFERENT_PASSWORD = crypto.randomUUID()
 import RegisterPage from './RegisterPage'
 
 import { useAuth } from '@/hooks/useAuth'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { api } from '@/lib/axios'
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),
+}))
+
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
 }))
 
 vi.mock('@/lib/axios', () => ({
@@ -33,6 +38,13 @@ describe('RegisterPage', () => {
   const login = vi.fn()
 
   beforeEach(() => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+      setLanguage: vi.fn(),
+      setDateFormat: vi.fn(),
+    })
     vi.mocked(useAuth).mockReturnValue({
       login,
       user: null,

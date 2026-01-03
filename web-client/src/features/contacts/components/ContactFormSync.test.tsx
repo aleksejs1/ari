@@ -5,6 +5,13 @@ import { useCreateGroup, useGroups } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
 
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+
+// Mock useUserPrefs hook
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
+}))
+
 // Mock useContacts
 vi.mock('../useContacts', () => ({
   useCreateGroup: vi.fn(),
@@ -20,6 +27,11 @@ vi.mock('./NotificationSubscriptions', () => ({
 
 describe('ContactForm Synchronization', () => {
   beforeEach(() => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+    })
     vi.mocked(useCreateGroup).mockReturnValue({ mutateAsync: vi.fn() } as unknown as ReturnType<
       typeof useCreateGroup
     >)
@@ -99,6 +111,14 @@ describe('ContactForm Synchronization', () => {
 })
 
 describe('<ContactFormSync />', () => {
+  beforeAll(() => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+    })
+  })
+
   it('renders notification subscriptions for existing dates', async () => {
     const { FormProvider, useForm } = await import('react-hook-form')
     const { ContactFormSync } = await import('./ContactFormSync')

@@ -5,6 +5,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
 import { type ContactDate } from '@/types/models'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+
+// Mock useUserPrefs hook
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
+}))
 
 describe('ContactDateInlineEdit', () => {
   const mockDate: ContactDate = {
@@ -19,6 +25,17 @@ describe('ContactDateInlineEdit', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => {
+        const d = new Date(date)
+        const month = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        const year = d.getFullYear()
+        return `${month}/${day}/${year}`
+      },
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+    })
   })
 
   it('renders date and label correctly', () => {

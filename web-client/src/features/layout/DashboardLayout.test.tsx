@@ -7,6 +7,7 @@ import DashboardLayout from './DashboardLayout'
 
 import { useGroups } from '@/features/groups/useGroups'
 import { useAuth } from '@/hooks/useAuth'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Group } from '@/types/models'
 
 vi.mock('@/features/groups/useGroups', () => ({
@@ -17,7 +18,21 @@ vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),
 }))
 
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
+  useUserPrefs: vi.fn(),
+}))
+
 describe('DashboardLayout', () => {
+  beforeAll(() => {
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+      setLanguage: vi.fn(),
+      setDateFormat: vi.fn(),
+    })
+  })
+
   it('renders layout elements correctly', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: { uuid: 'test-user' },

@@ -3,11 +3,11 @@ import { describe, it, expect, vi } from 'vitest'
 
 import SettingsPage from './Settings'
 
-import { useUserPrefs } from '@/hooks/useUserPrefs'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 // Mock the hook
-vi.mock('@/hooks/useUserPrefs', async () => {
-  const actual = await vi.importActual('@/hooks/useUserPrefs')
+vi.mock('@/hooks/useUserPrefs.hook', async () => {
+  const actual = await vi.importActual('@/hooks/useUserPrefs.hook')
   return {
     ...actual,
     useUserPrefs: vi.fn(),
