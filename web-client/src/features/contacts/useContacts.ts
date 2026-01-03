@@ -146,7 +146,7 @@ export function useUpdateContactDate() {
 export function useCreateContactDate() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: Partial<ContactDate> & { contact: string }) => {
+    mutationFn: async (data: Omit<Partial<ContactDate>, 'contact'> & { contact: string }) => {
       const response = await api.post('/contact_dates', data)
       return response.data
     },

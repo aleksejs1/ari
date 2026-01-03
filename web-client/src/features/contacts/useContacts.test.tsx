@@ -14,9 +14,11 @@ import {
   useCreateGroup,
   getHydraMember,
   getHydraPagination,
+  type HydraCollection,
 } from './useContacts'
 
 import { api } from '@/lib/axios'
+import { type ContactFormValues } from '@/types/models'
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -42,16 +44,22 @@ vi.mock('@/lib/axios', () => ({
   },
 }))
 
+const MOCK_CONTACT_DATA: ContactFormValues = {
+  contactNames: [{ given: 'John', family: 'Doe' }],
+  contactDates: [],
+  phoneNumbers: [],
+  contactEmailAdresses: [],
+  contactAddresses: [],
+}
+
 describe('useContacts Utils', () => {
   it('getHydraMember returns array', () => {
     expect(getHydraMember()).toEqual([])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(getHydraMember({ member: [1] } as any)).toEqual([1])
+    expect(getHydraMember({ member: [1] } as HydraCollection<number>)).toEqual([1])
   })
 
   it('getHydraPagination calculates correctly', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = { totalItems: 60 } as unknown as any
+    const data = { member: [], totalItems: 60 } as HydraCollection<unknown>
     const pagination = getHydraPagination(data, 1)
     expect(pagination.totalItems).toBe(60)
     expect(pagination.totalPages).toBe(2)
@@ -67,16 +75,14 @@ describe('useContacts Utils', () => {
     const data = {
       totalItems: 60,
       view: { next: '/api?page=2', previous: '/api?page=1' },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any
+    } as HydraCollection<unknown>
     const pagination = getHydraPagination(data, 2)
     expect(pagination.hasNext).toBe(true)
     expect(pagination.hasPrevious).toBe(true)
   })
 
   it('getHydraPagination handles missing view and totalItems', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = {} as any
+    const data = { member: [] } as HydraCollection<unknown>
     const pagination = getHydraPagination(data, 1)
     expect(pagination.totalItems).toBe(0)
     expect(pagination.totalPages).toBe(0)
@@ -85,8 +91,7 @@ describe('useContacts Utils', () => {
   })
 
   it('getHydraPagination calculates hasNext based on pages', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = { totalItems: 60 } as any
+    const data = { member: [], totalItems: 60 } as HydraCollection<unknown>
     // Page 1 of 2. hasNext should be true because totalPages (2) > page (1)
     const pagination = getHydraPagination(data, 1)
     expect(pagination.hasNext).toBe(true)
@@ -139,7 +144,7 @@ describe('useContacts Hooks', () => {
     it('creates contact successfully', async () => {
       vi.mocked(api.post).mockResolvedValue({ data: { id: 1 } })
       const { result } = renderHook(() => useCreateContact(), { wrapper: createWrapper() })
-      await result.current.mutateAsync({ contactNames: [], contactDates: [] })
+      await result.current.mutateAsync(MOCK_CONTACT_DATA)
       expect(api.post).toHaveBeenCalledWith('/contacts', expect.any(Object))
     })
 
@@ -156,7 +161,7 @@ describe('useContacts Hooks', () => {
         ),
       })
 
-      await result.current.mutateAsync({ contactNames: [] })
+      await result.current.mutateAsync(MOCK_CONTACT_DATA)
 
       await waitFor(() => {
         expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts'] })
@@ -172,16 +177,14 @@ describe('useContacts Hooks', () => {
     it('updates contact successfully with simple ID', async () => {
       vi.mocked(api.put).mockResolvedValue({ data: { id: 1 } })
       const { result } = renderHook(() => useUpdateContact(), { wrapper: createWrapper() })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await result.current.mutateAsync({ id: '1', data: { contactNames: [] } as any })
+      await result.current.mutateAsync({ id: '1', data: MOCK_CONTACT_DATA })
       expect(api.put).toHaveBeenCalledWith('1', expect.any(Object))
     })
 
     it('updates contact successfully with IRI', async () => {
       vi.mocked(api.put).mockResolvedValue({ data: { id: 1 } })
       const { result } = renderHook(() => useUpdateContact(), { wrapper: createWrapper() })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await result.current.mutateAsync({ id: '/api/contacts/1', data: { contactNames: [] } as any })
+      await result.current.mutateAsync({ id: '/api/contacts/1', data: MOCK_CONTACT_DATA })
       expect(api.put).toHaveBeenCalledWith('/contacts/1', expect.any(Object))
     })
 
@@ -198,8 +201,7 @@ describe('useContacts Hooks', () => {
         ),
       })
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await result.current.mutateAsync({ id: '/api/contacts/1', data: {} as any })
+      await result.current.mutateAsync({ id: '/api/contacts/1', data: MOCK_CONTACT_DATA })
 
       await waitFor(() => {
         expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['contacts'] })
