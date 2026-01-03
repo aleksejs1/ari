@@ -12,6 +12,7 @@ class ContactImportDto
      * @param ContactAddressDto[] $addresses
      * @param ContactOrganizationDto[] $organizations
      * @param ContactBiographyDto[] $biographies
+     * @param \App\Entity\Group[] $groups
      */
     public function __construct(
         public readonly array $names = [],
@@ -21,6 +22,7 @@ class ContactImportDto
         public readonly array $addresses = [],
         public readonly array $organizations = [],
         public readonly array $biographies = [],
+        public readonly array $groups = [],
     ) {
     }
 }

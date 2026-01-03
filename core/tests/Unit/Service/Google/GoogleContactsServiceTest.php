@@ -64,39 +64,55 @@ final class GoogleContactsServiceTest extends TestCase
             ->with(['user' => $user, 'type' => 'google'])
             ->willReturn($tokenStorage);
 
-        $response = $this->createMock(ResponseInterface::class);
-        $response->method('toArray')->willReturn([
+        $groupsResponse = $this->createMock(ResponseInterface::class);
+        $groupsResponse->method('toArray')->willReturn([
+            'contactGroups' => [
+                ['resourceName' => 'contactGroups/g1', 'formattedName' => 'Group 1'],
+            ],
+        ]);
+
+        $contactsResponse = $this->createMock(ResponseInterface::class);
+        $contactsResponse->method('toArray')->willReturn([
             'connections' => [
                 [
                     'resourceName' => 'people/c123',
                     'names' => [['givenName' => 'John', 'familyName' => 'Doe']],
                     'birthdays' => [['date' => ['year' => 1990, 'month' => 1, 'day' => 1]]],
+                    'memberships' => [
+                        ['contactGroupMembership' => ['contactGroupResourceName' => 'contactGroups/g1']],
+                    ],
                 ],
             ],
         ]);
 
-        $this->httpClient->expects(self::once())
+        $this->httpClient->expects(self::exactly(2))
             ->method('request')
-            ->willReturn($response);
+            ->willReturnCallback(function (string $method, string $url) use ($groupsResponse, $contactsResponse) {
+                if (str_contains($url, 'contactGroups')) {
+                    return $groupsResponse;
+                }
+                return $contactsResponse;
+            });
 
-        $this->importMappingRepository->expects(self::once())
+        $this->importMappingRepository->expects(self::exactly(2))
             ->method('findOneBy')
-            ->with([
-                'type' => 'google',
-                'externalId' => 'people/c123',
-                'user' => $user,
-            ])
-            ->willReturn(null);
+            ->willReturnMap([
+                [['type' => 'google_group', 'externalId' => 'contactGroups/g1', 'user' => $user], null],
+                [['type' => 'google', 'externalId' => 'people/c123', 'user' => $user], null],
+            ]);
 
         $contact = $this->createMock(\App\Entity\Contact::class);
         $this->contactImportService->expects(self::once())
             ->method('import')
             ->willReturn($contact);
 
-        $this->entityManager->expects(self::once())
+        $this->entityManager->expects(self::exactly(3))
             ->method('persist')
-            ->with(self::isInstanceOf(\App\Entity\ImportMapping::class));
-        $this->entityManager->expects(self::once())->method('flush');
+            ->with(self::logicalOr(
+                self::isInstanceOf(\App\Entity\Group::class),
+                self::isInstanceOf(\App\Entity\ImportMapping::class)
+            ));
+        $this->entityManager->expects(self::exactly(2))->method('flush');
 
         $count = $this->service->importContacts($user);
         self::assertEquals(1, $count);
@@ -114,8 +130,11 @@ final class GoogleContactsServiceTest extends TestCase
             ->with(['user' => $user, 'type' => 'google'])
             ->willReturn($tokenStorage);
 
-        $response = $this->createMock(ResponseInterface::class);
-        $response->method('toArray')->willReturn([
+        $groupsResponse = $this->createMock(ResponseInterface::class);
+        $groupsResponse->method('toArray')->willReturn(['contactGroups' => []]);
+
+        $contactsResponse = $this->createMock(ResponseInterface::class);
+        $contactsResponse->method('toArray')->willReturn([
             'connections' => [
                 [
                     'resourceName' => 'people/c123',
@@ -124,9 +143,14 @@ final class GoogleContactsServiceTest extends TestCase
             ],
         ]);
 
-        $this->httpClient->expects(self::once())
+        $this->httpClient->expects(self::exactly(2))
             ->method('request')
-            ->willReturn($response);
+            ->willReturnCallback(function (string $method, string $url) use ($groupsResponse, $contactsResponse) {
+                if (str_contains($url, 'contactGroups')) {
+                    return $groupsResponse;
+                }
+                return $contactsResponse;
+            });
 
         $contact = $this->createMock(\App\Entity\Contact::class);
         $mapping = $this->createMock(\App\Entity\ImportMapping::class);
@@ -134,11 +158,14 @@ final class GoogleContactsServiceTest extends TestCase
 
         $this->importMappingRepository->expects(self::once())
             ->method('findOneBy')
+            ->with(['type' => 'google', 'externalId' => 'people/c123', 'user' => $user])
             ->willReturn($mapping);
 
         $this->contactImportService->expects(self::once())
             ->method('update')
             ->with($contact, self::anything());
+
+        $this->entityManager->expects(self::once())->method('flush'); // from importGroups
 
         $count = $this->service->importContacts($user);
         self::assertEquals(1, $count);
@@ -161,14 +188,22 @@ final class GoogleContactsServiceTest extends TestCase
             ->with('refresh_token')
             ->willReturn(['access_token' => 'new_access_token', 'expires_in' => 3600]);
 
-        $this->entityManager->expects(self::once())->method('flush');
+        $groupsResponse = $this->createMock(ResponseInterface::class);
+        $groupsResponse->method('toArray')->willReturn(['contactGroups' => []]);
 
-        $response = $this->createMock(ResponseInterface::class);
-        $response->method('toArray')->willReturn(['connections' => []]);
+        $contactsResponse = $this->createMock(ResponseInterface::class);
+        $contactsResponse->method('toArray')->willReturn(['connections' => []]);
 
-        $this->httpClient->expects(self::once())
+        $this->httpClient->expects(self::exactly(2))
             ->method('request')
-            ->willReturn($response);
+            ->willReturnCallback(function (string $method, string $url) use ($groupsResponse, $contactsResponse) {
+                if (str_contains($url, 'contactGroups')) {
+                    return $groupsResponse;
+                }
+                return $contactsResponse;
+            });
+
+        $this->entityManager->expects(self::exactly(2))->method('flush'); // 1 from refresh, 1 from importGroups
 
         $this->service->importContacts($user);
 

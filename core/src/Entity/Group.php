@@ -43,7 +43,7 @@ class Group implements TenantAwareInterface
 {
     use TenantAwareTrait;
 
-    #[Groups(['group:read'])]
+    #[Groups(['group:read', 'contact:read', 'contact_group:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,7 +53,14 @@ class Group implements TenantAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[Groups(['group:read', 'group:create', 'contact:create', 'contact_group:create'])]
+    #[Groups([
+        'group:read',
+        'group:create',
+        'contact:read',
+        'contact_group:read',
+        'contact:create',
+        'contact_group:create'
+    ])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

@@ -18,7 +18,7 @@ class ImportMapping implements TenantAwareInterface
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
@@ -28,8 +28,12 @@ class ImportMapping implements TenantAwareInterface
     private ?string $externalId = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Contact $contact = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Group $group = null;
 
     public function getId(): ?int
     {
@@ -81,6 +85,18 @@ class ImportMapping implements TenantAwareInterface
     public function setContact(?Contact $contact): static
     {
         $this->contact = $contact;
+
+        return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?Group $group): static
+    {
+        $this->group = $group;
 
         return $this;
     }

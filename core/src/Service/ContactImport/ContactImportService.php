@@ -8,9 +8,11 @@ use App\Entity\ContactAddress;
 use App\Entity\ContactBiography;
 use App\Entity\ContactDate;
 use App\Entity\ContactEmailAdress;
+use App\Entity\ContactGroup;
 use App\Entity\ContactName;
 use App\Entity\ContactOrganization;
 use App\Entity\ContactPhoneNumber;
+use App\Entity\Group;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -232,6 +234,23 @@ class ContactImportService
                 $entity = new ContactBiography($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
+                return $entity;
+            }
+        );
+
+        $this->syncCollection(
+            $contact->getContactGroups(),
+            $dto->groups,
+            function (ContactGroup $entity, Group $dtoGroup) {
+                return $entity->getGroupResource() === $dtoGroup;
+            },
+            function (ContactGroup $entity, Group $_dtoGroup) {
+                // Nothing to update
+            },
+            function (Group $dtoGroup) use ($contact) {
+                $entity = new ContactGroup($contact);
+                $entity->setGroupResource($dtoGroup);
+
                 return $entity;
             }
         );

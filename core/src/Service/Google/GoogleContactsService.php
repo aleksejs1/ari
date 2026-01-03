@@ -22,6 +22,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class GoogleContactsService
 {
     private const PEOPLE_API_URL = 'https://people.googleapis.com/v1/people/me/connections';
+    private const GROUPS_API_URL = 'https://people.googleapis.com/v1/contactGroups';
 
     public function __construct(
         private readonly TokenStorageRepository $tokenStorageRepository,
@@ -42,13 +43,15 @@ class GoogleContactsService
         }
 
         $accessToken = $this->getValidAccessToken($tokenStorage);
+        $groupsMap = $this->importGroups($user, $accessToken);
 
         $response = $this->httpClient->request('GET', self::PEOPLE_API_URL, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
             ],
             'query' => [
-                'personFields' => 'names,birthdays,emailAddresses,phoneNumbers,addresses,organizations,biographies',
+                'personFields' => 'names,birthdays,emailAddresses,phoneNumbers,' .
+                    'addresses,organizations,biographies,memberships',
                 'pageSize' => 1000,
             ],
         ]);
@@ -184,6 +187,16 @@ class GoogleContactsService
                 }
             }
 
+            $contactGroups = [];
+            if (isset($connection['memberships'])) {
+                foreach ($connection['memberships'] as $membership) {
+                    $groupResourceName = $membership['contactGroupMembership']['contactGroupResourceName'] ?? null;
+                    if ($groupResourceName && isset($groupsMap[$groupResourceName])) {
+                        $contactGroups[] = $groupsMap[$groupResourceName];
+                    }
+                }
+            }
+
             $dto = new ContactImportDto(
                 names: $names,
                 dates: $dates,
@@ -191,7 +204,8 @@ class GoogleContactsService
                 phones: $phones,
                 addresses: $addresses,
                 organizations: $organizations,
-                biographies: $biographies
+                biographies: $biographies,
+                groups: $contactGroups
             );
 
             $mapping = $this->importMappingRepository->findOneBy([
@@ -244,5 +258,64 @@ class GoogleContactsService
         $this->entityManager->flush();
 
         return (string) $tokenStorage->getAccessToken();
+    }
+
+    /**
+     * @return array<string, \App\Entity\Group>
+     */
+    private function importGroups(User $user, string $accessToken): array
+    {
+        $response = $this->httpClient->request('GET', self::GROUPS_API_URL, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+            ],
+        ]);
+
+        $data = $response->toArray();
+        $groupsMap = [];
+
+        if (!isset($data['contactGroups'])) {
+            return [];
+        }
+
+        foreach ($data['contactGroups'] as $groupData) {
+            $resourceName = $groupData['resourceName'] ?? null;
+            $name = $groupData['formattedName'] ?? $groupData['name'] ?? null;
+
+            if (null === $resourceName || null === $name) {
+                continue;
+            }
+
+            $mapping = $this->importMappingRepository->findOneBy([
+                'type' => 'google_group',
+                'externalId' => $resourceName,
+                'user' => $user,
+            ]);
+
+            $group = $mapping?->getGroup();
+            if (null !== $group) {
+                $group->setName($name);
+            } else {
+                $group = new \App\Entity\Group();
+                $group->setUser($user);
+                $group->setName($name);
+                $this->entityManager->persist($group);
+
+                if (null === $mapping) {
+                    $mapping = new ImportMapping();
+                    $mapping->setType('google_group');
+                    $mapping->setExternalId($resourceName);
+                    $mapping->setUser($user);
+                }
+                $mapping->setGroup($group);
+                $this->entityManager->persist($mapping);
+            }
+
+            $groupsMap[$resourceName] = $group;
+        }
+
+        $this->entityManager->flush();
+
+        return $groupsMap;
     }
 }

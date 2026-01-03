@@ -98,7 +98,7 @@ class ContactGroupApiTest extends ApiTestCase
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
             'contact' => $contactIri,
-            'groupResource' => $groupIri,
+            'groupResource' => ['@id' => $groupIri],
         ]);
 
         // 5. Delete ContactGroup

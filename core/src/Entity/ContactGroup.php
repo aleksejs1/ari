@@ -39,12 +39,12 @@ class ContactGroup implements TenantAwareInterface
 
     #[Groups(['contact_group:read', 'contact_group:create'])]
     #[ORM\ManyToOne(inversedBy: 'contactGroups')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Contact $contact = null;
 
     #[Groups(['contact:read', 'contact:create', 'contact_group:read', 'contact_group:create', 'contact_group:update'])]
     #[ORM\ManyToOne(inversedBy: 'contactGroups', cascade: ['persist'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Group $groupResource = null;
 
     public function __construct(?Contact $contact = null)
