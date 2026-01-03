@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { format, parseISO, isValid } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useEffect, useState, useMemo } from 'react'
@@ -27,7 +26,7 @@ export function DateInput({ value, onChange, className, ...props }: DateInputPro
     lazy: true,
     overwrite: true,
     autofix: true,
-    onAccept: (val) => {
+    onAccept: (val: string) => {
       const isoDate = parseLocalizedDate(val, dateFormat)
       if (isoDate && onChange) {
         onChange(isoDate)
@@ -60,19 +59,23 @@ export function DateInput({ value, onChange, className, ...props }: DateInputPro
   // Month for controlled navigation in Calendar
   const [month, setMonth] = useState<Date | undefined>(parsedValue)
 
+  // Sync month state with value during render to avoid cascading renders in useEffect
+  const [prevValue, setPrevValue] = useState(value)
+  if (value !== prevValue) {
+    setPrevValue(value)
+    if (parsedValue) {
+      setMonth(parsedValue)
+    }
+  }
+
   // Sync internal state with external value
   useEffect(() => {
     if (value) {
       setMaskValue(formatDate(value))
-
-      const d = typeof value === 'string' ? parseISO(value) : value
-      if (isValid(d)) {
-        setMonth(d)
-      }
     } else {
       setMaskValue('')
     }
-  }, [value, dateFormat, formatDate, setMaskValue])
+  }, [value, formatDate, setMaskValue])
 
   const handleCalendarSelect = (date: Date | undefined) => {
     if (!date) {
@@ -114,7 +117,7 @@ export function DateInput({ value, onChange, className, ...props }: DateInputPro
             month={month}
             onMonthChange={setMonth}
             onSelect={handleCalendarSelect}
-            captionLayout="dropdown-buttons"
+            captionLayout="dropdown"
             startMonth={new Date(1900, 0)}
             endMonth={new Date()}
             title="Calendar"
