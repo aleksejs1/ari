@@ -60,7 +60,7 @@ class Group implements TenantAwareInterface
     /**
      * @var Collection<int, ContactGroup>
      */
-    #[ORM\OneToMany(targetEntity: ContactGroup::class, mappedBy: 'groupResource', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ContactGroup::class, mappedBy: 'groupResource')]
     private Collection $contactGroups;
 
     public function __construct()
