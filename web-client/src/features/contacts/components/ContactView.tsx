@@ -14,15 +14,23 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { useContactFavorite } from '../hooks/useContactFavorite'
-import { useCreateContactPhone, useDeleteContactPhone, useUpdateContactPhone } from '../useContacts'
+import {
+  useCreateContactEmail,
+  useCreateContactPhone,
+  useDeleteContactEmail,
+  useDeleteContactPhone,
+  useUpdateContactEmail,
+  useUpdateContactPhone,
+} from '../useContacts'
 
+import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
 import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import type { Contact, ContactPhoneNumber } from '@/types/models'
+import type { Contact, ContactEmailAdress, ContactPhoneNumber } from '@/types/models'
 
 interface ContactViewProps {
   contact: Contact
@@ -61,10 +69,14 @@ const ContactInfoCard = ({
   contact,
   onUpdatePhone,
   onDeletePhone,
+  onUpdateEmail,
+  onDeleteEmail,
 }: {
   contact: Contact
   onUpdatePhone: (phone: ContactPhoneNumber) => void
   onDeletePhone: (phone: ContactPhoneNumber) => void
+  onUpdateEmail: (email: ContactEmailAdress) => void
+  onDeleteEmail: (email: ContactEmailAdress) => void
 }) => {
   const { t } = useTranslation()
   return (
@@ -90,12 +102,20 @@ const ContactInfoCard = ({
           </ContactPhoneInlineEdit>
         ))}
         {contact.contactEmailAdresses?.map((email, i) => (
-          <DisplayItem
+          <ContactEmailInlineEdit
             key={i}
-            icon={Mail}
-            label={email.type ?? undefined}
-            value={email.value ?? undefined}
-          />
+            email={email}
+            onUpdate={onUpdateEmail}
+            onDelete={() => onDeleteEmail(email)}
+            hideAddButton
+            className="h-auto w-full"
+          >
+            <DisplayItem
+              icon={Mail}
+              label={email.type ?? undefined}
+              value={email.value ?? undefined}
+            />
+          </ContactEmailInlineEdit>
         ))}
         {contact.contactAddresses?.map((address, i) => (
           <DisplayItem
@@ -360,6 +380,34 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
     await handleDeletePhoneMutation.mutateAsync(phone['@id'])
   }
 
+  const handleCreateEmailMutation = useCreateContactEmail()
+  const handleUpdateEmailMutation = useUpdateContactEmail()
+  const handleDeleteEmailMutation = useDeleteContactEmail()
+
+  const handleUpdateEmail = async (email: ContactEmailAdress) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (email['@id']) {
+      await handleUpdateEmailMutation.mutateAsync({
+        id: email['@id'],
+        data: email,
+      })
+    } else {
+      await handleCreateEmailMutation.mutateAsync({
+        ...email,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteEmail = async (email: ContactEmailAdress) => {
+    if (!email['@id']) {
+      return
+    }
+    await handleDeleteEmailMutation.mutateAsync(email['@id'])
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -406,6 +454,8 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           contact={contact}
           onUpdatePhone={handleUpdatePhone}
           onDeletePhone={handleDeletePhone}
+          onUpdateEmail={handleUpdateEmail}
+          onDeleteEmail={handleDeleteEmail}
         />
         <ProfessionalCard contact={contact} />
         <DatesCard contact={contact} />

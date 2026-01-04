@@ -27,6 +27,9 @@ vi.mock('../useContacts', () => ({
   useCreateContactPhone: vi.fn(() => ({ mutateAsync: vi.fn() })),
   useUpdateContactPhone: vi.fn(() => ({ mutateAsync: vi.fn() })),
   useDeleteContactPhone: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useCreateContactEmail: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useUpdateContactEmail: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useDeleteContactEmail: vi.fn(() => ({ mutateAsync: vi.fn() })),
 }))
 
 // Mock icons to avoid rendering issues
