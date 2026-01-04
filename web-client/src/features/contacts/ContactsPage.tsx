@@ -12,7 +12,9 @@ import {
   useUpdateContactDate,
   useCreateContactDate,
   useUpdateContactGroups,
-  useUpdateContactEmails,
+  useCreateContactEmail,
+  useUpdateContactEmail,
+  useDeleteContactEmail,
   getHydraMember,
   getHydraPagination,
 } from './useContacts'
@@ -58,7 +60,10 @@ export default function ContactsPage() {
   const handleCreateDateMutation = useCreateContactDate()
   const handleDeleteDateMutation = useDeleteContact()
   const handleUpdateGroupsMutation = useUpdateContactGroups()
-  const handleUpdateEmailsMutation = useUpdateContactEmails()
+
+  const handleCreateEmailMutation = useCreateContactEmail()
+  const handleUpdateEmailMutation = useUpdateContactEmail()
+  const handleDeleteEmailMutation = useDeleteContactEmail()
 
   const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
     if (date['@id']) {
@@ -94,32 +99,27 @@ export default function ContactsPage() {
       return
     }
 
-    let newEmails = [...(contact.contactEmailAdresses || [])]
     if (email['@id']) {
       // Update existing
-      newEmails = newEmails.map((e) => (e['@id'] === email['@id'] ? email : e))
+      await handleUpdateEmailMutation.mutateAsync({
+        id: email['@id'],
+        data: email,
+      })
     } else {
       // Create new
-      newEmails.push(email)
+      await handleCreateEmailMutation.mutateAsync({
+        ...email,
+        contact: contact['@id'],
+      })
     }
-
-    await handleUpdateEmailsMutation.mutateAsync({
-      contactId: contact['@id'],
-      emails: newEmails,
-    })
   }
 
-  const handleDeleteEmail = async (contact: Contact, email: ContactEmailAdress) => {
-    if (!contact['@id'] || !email['@id']) {
+  const handleDeleteEmail = async (_contact: Contact, email: ContactEmailAdress) => {
+    if (!email['@id']) {
       return
     }
 
-    const newEmails = (contact.contactEmailAdresses || []).filter((e) => e['@id'] !== email['@id'])
-
-    await handleUpdateEmailsMutation.mutateAsync({
-      contactId: contact['@id'],
-      emails: newEmails,
-    })
+    await handleDeleteEmailMutation.mutateAsync(email['@id'])
   }
 
   if (isLoading && !isPlaceholderData) {

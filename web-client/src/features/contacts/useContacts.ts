@@ -244,36 +244,53 @@ export function useUpdateContactGroups() {
   })
 }
 
-export function useUpdateContactEmails() {
+export function useCreateContactEmail() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({
-      contactId,
-      emails,
-    }: {
-      contactId: string
-      emails: ContactEmailAdress[]
-    }) => {
-      const url = contactId.startsWith('/api') ? contactId.substring(4) : contactId
-      const response = await api.patch(
-        url,
-        {
-          contactEmailAdresses: emails,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/merge-patch+json',
-          },
-        },
-      )
+    mutationFn: async (
+      data: Omit<Partial<ContactEmailAdress>, 'contact'> & { contact: string },
+    ) => {
+      const response = await api.post('/contact_email_adresses', data)
       return response.data
     },
     onSuccess: (_, variables) => {
-      const id = variables.contactId.split('/').pop()
+      const contactId = variables.contact.split('/').pop()
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
-      if (id) {
-        void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
+      if (contactId) {
+        void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
       }
+    },
+  })
+}
+
+export function useUpdateContactEmail() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<ContactEmailAdress> }) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      const response = await api.patch(url, data, {
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+      })
+      return response.data
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+    },
+  })
+}
+
+// eslint-disable-next-line sonarjs/no-identical-functions
+export function useDeleteContactEmail() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      await api.delete(url)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
   })
 }
