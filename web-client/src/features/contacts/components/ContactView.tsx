@@ -27,11 +27,15 @@ import {
   useUpdateContactPhone,
   useUpdateContactDate,
   useUpdateContactBiography,
+  useCreateContactOrganization,
+  useUpdateContactOrganization,
+  useDeleteContactOrganization,
 } from '../useContacts'
 
 import { ContactBioInlineEdit } from './ContactBioInlineEdit'
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
 import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
+import { ContactOrganizationInlineEdit } from './ContactOrganizationInlineEdit'
 import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
 
 import { Badge } from '@/components/ui/badge'
@@ -43,6 +47,7 @@ import type {
   ContactBiography,
   ContactDate,
   ContactEmailAdress,
+  ContactOrganization,
   ContactPhoneNumber,
 } from '@/types/models'
 
@@ -153,7 +158,15 @@ const ContactInfoCard = ({
   )
 }
 
-const ProfessionalCard = ({ contact }: { contact: Contact }) => {
+const ProfessionalCard = ({
+  contact,
+  onUpdateOrganization,
+  onDeleteOrganization,
+}: {
+  contact: Contact
+  onUpdateOrganization: (org: ContactOrganization) => void
+  onDeleteOrganization: (org: ContactOrganization) => void
+}) => {
   const { t } = useTranslation()
   return (
     <Card>
@@ -162,13 +175,21 @@ const ProfessionalCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactOrganizations?.map((org, i) => (
-          <DisplayItem
+          <ContactOrganizationInlineEdit
             key={i}
-            icon={Briefcase}
-            label={org.type || t('contacts.organization')}
-            value={org.name}
-            subValue={[org.title, org.department].filter(Boolean).join(' - ')}
-          />
+            organization={org}
+            onUpdate={onUpdateOrganization}
+            onDelete={() => onDeleteOrganization(org)}
+            hideAddButton
+            className="h-auto w-full"
+          >
+            <DisplayItem
+              icon={Briefcase}
+              label={org.type || t('contacts.organization')}
+              value={org.name}
+              subValue={[org.title, org.department].filter(Boolean).join(' - ')}
+            />
+          </ContactOrganizationInlineEdit>
         ))}
       </CardContent>
     </Card>
@@ -510,6 +531,34 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
     await handleDeleteBioMutation.mutateAsync(bio['@id'])
   }
 
+  const handleCreateOrganizationMutation = useCreateContactOrganization()
+  const handleUpdateOrganizationMutation = useUpdateContactOrganization()
+  const handleDeleteOrganizationMutation = useDeleteContactOrganization()
+
+  const handleUpdateOrganization = async (org: ContactOrganization) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (org['@id']) {
+      await handleUpdateOrganizationMutation.mutateAsync({
+        id: org['@id'],
+        data: org,
+      })
+    } else {
+      await handleCreateOrganizationMutation.mutateAsync({
+        ...org,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteOrganization = async (org: ContactOrganization) => {
+    if (!org['@id']) {
+      return
+    }
+    await handleDeleteOrganizationMutation.mutateAsync(org['@id'])
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -559,7 +608,11 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           onUpdateEmail={handleUpdateEmail}
           onDeleteEmail={handleDeleteEmail}
         />
-        <ProfessionalCard contact={contact} />
+        <ProfessionalCard
+          contact={contact}
+          onUpdateOrganization={handleUpdateOrganization}
+          onDeleteOrganization={handleDeleteOrganization}
+        />
         <DatesCard
           contact={contact}
           onUpdateDate={handleUpdateDate}

@@ -8,6 +8,7 @@ import type { Contact, ContactFormValues } from '@/types/models'
 // Re-export hooks to maintain backward compatibility (or just for convenience)
 export * from './hooks/useContactBios'
 export * from './hooks/useContactDates'
+export * from './hooks/useContactOrganizations'
 export * from './hooks/useContactEmails'
 export * from './hooks/useContactGroups'
 export * from './hooks/useContactNames'
