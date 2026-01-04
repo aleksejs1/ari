@@ -9,22 +9,50 @@ Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency,
 ---
 ## Demo video
 
-A short walkthrough of the current state of Ari:
+A short walkthrough of the system:
 
-▶️ https://youtu.be/wbgmbzlFlKQ
+▶️ https://youtu.be/w_B5qU3cid0
 
 ---
 ## Screenshots
 
-Here are some screenshots of the project as it currently looks:
+Here is how Ari looks today (January 2026):
 
-![Login Page](assets/ari_login_2.png)
-![Contact List](assets/ari_contact_list_2.png)
-![Contact Edit](assets/ari_contact_edit_2.png)
-![Audit Log](assets/ari_contact_timeline_2.png)
-![Google Import page](assets/ari_import_2.png)
-![Notification Channels confoguration](assets/ari_notification_channels_2.png)
-![Notifications in telegram](assets/ari_notifications_telegram_2.png)
+### Dashboard
+The new homepage features widgets for quick access to groups, upcoming anniversaries (birthdays, custom dates), and a timeline of recent activity across the system.
+![Dashboard](assets/ari_dashboard_3.png)
+
+### Contact List
+A paginated list of contacts with quick actions. Important dates and "Favorites" status are immediately visible.
+![Contact List](assets/ari_contact_list_3.png)
+
+### Search & Filtering
+Global search allows finding contacts by name or attributes instantly.
+![Contact Search](assets/ari_contact_search_3.png)
+
+### Group Management
+Contacts can be organized into groups, which are fully filterable via the sidebar. "Favorites" is implemented as a special, configurable group.
+![Contact Groups](assets/ari_contact_groups_3.png)
+
+### Contact Details
+A comprehensive view of a contact. This page aggregates contact info, professional details, dates, and relationships.
+![Contact Details](assets/ari_contact_3.png)
+
+### Inline Editing
+Most fields can be edited directly from the view mode without entering a separate form, streamlining daily usage.
+![Inline Editing](assets/ari_inline_edit_3.png)
+
+### Full Edit Mode & Relationships
+Complex data entry is handled via a dedicated form. This includes managing bidirectional relationships (e.g., husband/wife, parent/child) and organization details.
+![Edit Form](assets/ari_edit_form_3.png)
+
+### History & Context
+The system suggests similar contacts (e.g., by surname) to quickly build relationships. The audit log shows a human-readable history of changes for the specific contact.
+![Similar Contacts and History](assets/ari_similar_contacts_3.png)
+
+### User Settings
+Configure your preferences, including UI language, date formats, and system-wide settings like the default "Favorites" group.
+![Settings](assets/ari_settings_3.png)
 
 ---
 ## Why this exists
@@ -47,62 +75,63 @@ That is how Ari started.
 ---
 ## Core principles
 
-- **History-first**  
-    All meaningful changes are recorded. Losing context or history is not acceptable.
-- **Reliable notifications**  
-    Notifications are not a “nice to have” feature. They are part of the core value.
-- **Data ownership**  
-    You can self-host Ari and keep full control over your data.
-- **Open source by default**  
-    Transparency builds trust. All core logic is open and auditable.
-- **Privacy by design**  
-    No tracking, no dark patterns, no data extraction incentives.
-- **Monolith first, clean architecture**  
-    Start simple. Optimize and split only when the system proves it needs it.
+- **History-first** All meaningful changes are recorded. Losing context or history is not acceptable.
+- **Reliable notifications** Notifications are not a “nice to have” feature. They are part of the core value.
+- **Data ownership** You can self-host Ari and keep full control over your data.
+- **Open source by default** Transparency builds trust. All core logic is open and auditable.
+- **Privacy by design** No tracking, no dark patterns, no data extraction incentives.
+- **Monolith first, clean architecture** Start simple. Optimize and split only when the system proves it needs it.
 
 ---
 ## What exists today
 
-Ari is still an early-stage project, but it already provides **real, working functionality**.
+Ari has moved beyond a technical prototype into a **functional system** with a stable domain model.
 
 ### Core features
 
-- User authentication and strict data ownership
-- Contact management with a structured domain model:
-    - Contacts
-    - Multiple names per contact
-    - Multiple dates per contact (birthdays, anniversaries, custom dates)
+- **Dashboard**:
+    - Widget for upcoming anniversaries (sorted by date)
+    - Recent system activity stream
+    - Quick access to contact groups
+- **Contact Management**:
+    - **Rich Data**: Multiple names, emails, phone numbers, addresses, and organizations.
+    - **Relationships**: Bidirectional relationships between contacts (e.g., Parent ↔ Child) with duplicate prevention.
+    - **Grouping**: Tagging system with dedicated filtering pages and sidebar navigation.
+    - **Inline Editing**: Quick updates for fields directly on the contact card.
+    - **Similar Contacts**: Automatic detection of potential family members or duplicates.
 - **Audit log**:
-    - full history of contact lifecycle
-    - visibility into create, update, and delete operations
+    - Full history of the contact lifecycle (Create, Update, Delete).
+    - Human-readable timelines showing exactly *what* changed and *who* changed it.
+    - "Time travel" visibility into deleted data.
 - **Notification system**:
-    - configurable notification channels
-    - date-based notification subscriptions
-    - delivery log for sent notifications
-    - first implemented channel: **Telegram**
+    - Configurable notification channels (currently Telegram).
+    - Date-based subscriptions.
+- **Settings**:
+    - Multi-language support (English/Russian).
+    - Configurable date formats (MM/DD/YYYY vs DD.MM.YYYY).
+    - Custom "Favorites" group configuration.
 
 ### Integrations
 
-- **Google Contacts import** (basic, early version)
+- **Google Contacts import**:
+    - Imports core details, phones, emails, and addresses.
+    - Uses external IDs to prevent duplication on re-import.
 
 ### Web client
 
-- React-based UI with multi-language support
-- Contact list with create, edit, and delete flows
-- Audit log UI with pagination and filtering
-- Notification configuration via the UI
+- **React-based UI** with TanStack tooling for performance.
+- **Pagination** and **Search** for managing larger contact lists.
+- **Favorites** system for quick access to important people.
 
 ### Platform & quality
 
-- Dockerized development environment
-- Fully documented API (OpenAPI)
-- Extensive automated tests (backend and frontend)
-- Strict static analysis, linters, and format checks
+- Dockerized development environment.
+- Fully documented API (OpenAPI).
+- Extensive automated tests (backend and frontend).
+- Strict static analysis (SonarJS, Knip) to ensure maintainability.
 
-This is no longer just a technical foundation.  
-It is an **early but usable system**, still evolving and not yet production-ready.
-
-Some workflows are still rough, and parts of the system are intentionally over-engineered for correctness rather than UX polish.
+This is an **early but usable system**, still evolving. 
+Workflows are being polished, and parts of the system are intentionally over-engineered for correctness (history, consistency) rather than just UX speed.
 
 ---
 ## Architecture at a glance
@@ -114,15 +143,15 @@ Some workflows are still rough, and parts of the system are intentionally over-e
 - **API Platform** (OpenAPI-first)
 - **MariaDB**
 - Token-based authentication
-- Strict user data isolation at the Doctrine level (no accidental data leaks)
-- Audit logging via Doctrine event subscribers (history by default)
+- Strict user data isolation at the Doctrine level
+- Audit logging via Doctrine event subscribers
 
 ### Frontend
 
 - **React**
+- **TanStack Query / Router**
 - Multilingual UI
 - Typed API client generated from OpenAPI
-- Strict linting, static analysis, and automated tests
 
 ### Infrastructure
 
@@ -130,21 +159,18 @@ Some workflows are still rough, and parts of the system are intentionally over-e
 - Cron-based background jobs (notifications)
 - Designed for self-hosting from day one
 
-The architecture favors **clarity, correctness, and long-term maintainability** over early optimization or premature distribution.
-
 ---
 ## Project status & expectations
 
-Ari is an **early but functional project**.
+Ari is in an **active stabilization phase**.
 
-- This is a **solo-developed** project.
-- Development is active and happens at a sustainable pace.
-- The core architecture and data model are in place.
-- Key features such as contacts, audit logs, and notifications already exist and are working.
-- There are **no fixed deadlines**, and breaking changes are still possible.
+- The core architecture and data model are in place and expanding.
+- Key features (Contacts, Relations, History, Notifications) are functional.
+- The UI is becoming more coherent with the addition of dashboards, settings, and inline editing.
 
-Ari is **not production-ready yet**, and some areas require further work (performance, imports, self-hosting polish).  
-However, the project already delivers real value and is actively evolving.
+However, Ari is **not production-ready yet**:
+- Performance optimization for large datasets is ongoing.
+- Import queues are needed for massive Google Contact lists.
+- Breaking changes are still possible as the domain model matures.
 
-If you are looking for a polished, feature-complete CRM today, Ari is probably not for you.  
-If you care about **data reliability, transparent history, and trustworthy notifications**, and are comfortable with an evolving system — Ari may be worth following or experimenting with early.
+If you care about **data reliability, transparent history, and trustworthy notifications**, and are comfortable with an evolving system — Ari is worth following.
