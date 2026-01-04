@@ -19,6 +19,16 @@ vi.mock('../hooks/useContactFavorite', () => ({
   useContactFavorite: vi.fn(),
 }))
 
+// Mock useContacts hooks
+vi.mock('../useContacts', () => ({
+  useCreateContactName: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useUpdateContactName: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useDeleteContactName: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useCreateContactPhone: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useUpdateContactPhone: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useDeleteContactPhone: vi.fn(() => ({ mutateAsync: vi.fn() })),
+}))
+
 // Mock icons to avoid rendering issues
 vi.mock('lucide-react', () => ({
   Pencil: () => <span data-testid="icon-pencil">Pencil</span>,
@@ -31,6 +41,10 @@ vi.mock('lucide-react', () => ({
   FileText: () => <span data-testid="icon-filetext">FileText</span>,
   User: () => <span data-testid="icon-user">User</span>,
   Star: () => <span data-testid="icon-star">Star</span>,
+  Trash2: () => <span data-testid="icon-trash2">Trash2</span>,
+  Plus: () => <span data-testid="icon-plus">Plus</span>,
+  X: () => <span data-testid="icon-x">X</span>,
+  Check: () => <span data-testid="icon-check">Check</span>,
 }))
 
 const mockContact: Contact = {

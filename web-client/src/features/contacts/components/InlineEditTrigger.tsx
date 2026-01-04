@@ -13,6 +13,8 @@ interface InlineEditTriggerProps {
   label: string // e.g. "Name" or "Date" for aria-label
   open: boolean
   onOpenChange: (open: boolean) => void
+  hideAddButton?: boolean
+  className?: string
 }
 
 export function InlineEditTrigger({
@@ -22,11 +24,21 @@ export function InlineEditTrigger({
   label,
   open,
   onOpenChange,
+  hideAddButton,
+  className,
 }: InlineEditTriggerProps) {
   const { t } = useTranslation()
 
+  if (!isExistent && hideAddButton) {
+    return (
+      <div className={cn('group relative flex h-8 w-full items-center', className)}>
+        <div className="flex h-full w-full items-center gap-2 text-sm">{children}</div>
+      </div>
+    )
+  }
+
   return (
-    <div className="group relative flex h-8 w-full items-center">
+    <div className={cn('group relative flex h-8 w-full items-center', className)}>
       <div className="flex h-full w-full items-center gap-2 text-sm">
         {isExistent ? children : <span className="h-full w-full" />}
       </div>

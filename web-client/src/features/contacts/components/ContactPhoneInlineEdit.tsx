@@ -1,5 +1,5 @@
 import { Check, Trash2, X } from 'lucide-react'
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { InlineEditTrigger } from './InlineEditTrigger'
@@ -20,9 +20,19 @@ interface ContactPhoneInlineEditProps {
   phone: ContactPhoneNumber
   onUpdate: (phone: ContactPhoneNumber) => void
   onDelete: () => void
+  children?: ReactNode
+  hideAddButton?: boolean
+  className?: string
 }
 
-export function ContactPhoneInlineEdit({ phone, onUpdate, onDelete }: ContactPhoneInlineEditProps) {
+export function ContactPhoneInlineEdit({
+  phone,
+  onUpdate,
+  onDelete,
+  children,
+  hideAddButton,
+  className,
+}: ContactPhoneInlineEditProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 
@@ -129,11 +139,15 @@ export function ContactPhoneInlineEdit({ phone, onUpdate, onDelete }: ContactPho
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}
+      hideAddButton={hideAddButton}
+      className={className}
     >
-      <div className="flex flex-col leading-tight">
-        <span className="text-sm font-medium">{phone.value}</span>
-        {!!phone.type && <span className="text-[10px] text-muted-foreground">{phone.type}</span>}
-      </div>
+      {children || (
+        <div className="flex flex-col leading-tight">
+          <span className="text-sm font-medium">{phone.value}</span>
+          {!!phone.type && <span className="text-[10px] text-muted-foreground">{phone.type}</span>}
+        </div>
+      )}
     </InlineEditTrigger>
   )
 }

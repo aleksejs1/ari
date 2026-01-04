@@ -14,12 +14,15 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { useContactFavorite } from '../hooks/useContactFavorite'
+import { useCreateContactPhone, useDeleteContactPhone, useUpdateContactPhone } from '../useContacts'
+
+import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import type { Contact } from '@/types/models'
+import type { Contact, ContactPhoneNumber } from '@/types/models'
 
 interface ContactViewProps {
   contact: Contact
@@ -54,7 +57,15 @@ const DisplayItem = ({
   )
 }
 
-const ContactInfoCard = ({ contact }: { contact: Contact }) => {
+const ContactInfoCard = ({
+  contact,
+  onUpdatePhone,
+  onDeletePhone,
+}: {
+  contact: Contact
+  onUpdatePhone: (phone: ContactPhoneNumber) => void
+  onDeletePhone: (phone: ContactPhoneNumber) => void
+}) => {
   const { t } = useTranslation()
   return (
     <Card>
@@ -63,12 +74,20 @@ const ContactInfoCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.phoneNumbers?.map((phone, i) => (
-          <DisplayItem
+          <ContactPhoneInlineEdit
             key={i}
-            icon={Phone}
-            label={phone.type ?? undefined}
-            value={phone.value ?? undefined}
-          />
+            phone={phone}
+            onUpdate={onUpdatePhone}
+            onDelete={() => onDeletePhone(phone)}
+            hideAddButton
+            className="h-auto w-full"
+          >
+            <DisplayItem
+              icon={Phone}
+              label={phone.type ?? undefined}
+              value={phone.value ?? undefined}
+            />
+          </ContactPhoneInlineEdit>
         ))}
         {contact.contactEmailAdresses?.map((email, i) => (
           <DisplayItem
@@ -313,6 +332,34 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
   const { isContactFavorite, toggleFavorite } = useContactFavorite()
   const isFavorite = isContactFavorite(contact)
 
+  const handleCreatePhoneMutation = useCreateContactPhone()
+  const handleUpdatePhoneMutation = useUpdateContactPhone()
+  const handleDeletePhoneMutation = useDeleteContactPhone()
+
+  const handleUpdatePhone = async (phone: ContactPhoneNumber) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (phone['@id']) {
+      await handleUpdatePhoneMutation.mutateAsync({
+        id: phone['@id'],
+        data: phone,
+      })
+    } else {
+      await handleCreatePhoneMutation.mutateAsync({
+        ...phone,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeletePhone = async (phone: ContactPhoneNumber) => {
+    if (!phone['@id']) {
+      return
+    }
+    await handleDeletePhoneMutation.mutateAsync(phone['@id'])
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -355,7 +402,11 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <ContactInfoCard contact={contact} />
+        <ContactInfoCard
+          contact={contact}
+          onUpdatePhone={handleUpdatePhone}
+          onDeletePhone={handleDeletePhone}
+        />
         <ProfessionalCard contact={contact} />
         <DatesCard contact={contact} />
         <UpcomingDatesCard contact={contact} />
