@@ -1,47 +1,35 @@
-import {
-  Briefcase,
-  Calendar,
-  FileText,
-  Mail,
-  MapPin,
-  Pencil,
-  Phone,
-  Star,
-  Users,
-} from 'lucide-react'
-import type React from 'react'
+import { Pencil, Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { useContactFavorite } from '../hooks/useContactFavorite'
 import {
-  useCreateContactEmail,
-  useCreateContactPhone,
   useCreateContactBiography,
   useCreateContactDate,
-  useDeleteContactEmail,
-  useDeleteContactPhone,
-  useDeleteContactDate,
-  useDeleteContactBiography,
-  useUpdateContactEmail,
-  useUpdateContactPhone,
-  useUpdateContactDate,
-  useUpdateContactBiography,
+  useCreateContactEmail,
   useCreateContactOrganization,
-  useUpdateContactOrganization,
+  useCreateContactPhone,
+  useDeleteContactBiography,
+  useDeleteContactDate,
+  useDeleteContactEmail,
   useDeleteContactOrganization,
+  useDeleteContactPhone,
+  useUpdateContactBiography,
+  useUpdateContactDate,
+  useUpdateContactEmail,
+  useUpdateContactOrganization,
+  useUpdateContactPhone,
 } from '../useContacts'
 
-import { ContactBioInlineEdit } from './ContactBioInlineEdit'
-import { ContactDateInlineEdit } from './ContactDateInlineEdit'
-import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
-import { ContactOrganizationInlineEdit } from './ContactOrganizationInlineEdit'
-import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
+import { BiographyCard } from './cards/BiographyCard'
+import { ContactInfoCard } from './cards/ContactInfoCard'
+import { DatesCard } from './cards/DatesCard'
+import { ProfessionalCard } from './cards/ProfessionalCard'
+import { RelationsCard } from './cards/RelationsCard'
+import { UpcomingDatesCard } from './cards/UpcomingDatesCard'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useContactFavorite } from '@/features/contacts/hooks/useContactFavorite'
 import type {
   Contact,
   ContactBiography,
@@ -54,337 +42,6 @@ import type {
 interface ContactViewProps {
   contact: Contact
   onEdit: () => void
-}
-
-const DisplayItem = ({
-  icon: Icon,
-  label,
-  value,
-  subValue,
-}: {
-  icon: React.ElementType
-  label?: string
-  value?: string | null
-  subValue?: string | null
-}) => {
-  if (!value) {
-    return null
-  }
-  return (
-    <div className="flex items-start gap-3 py-2">
-      <div className="mt-1 rounded-md bg-muted p-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-      </div>
-      <div className="flex-1 space-y-1">
-        {!!label && <p className="text-xs font-medium text-muted-foreground">{label}</p>}
-        <p className="text-sm font-medium leading-none">{value}</p>
-        {!!subValue && <p className="text-sm text-muted-foreground">{subValue}</p>}
-      </div>
-    </div>
-  )
-}
-
-const ContactInfoCard = ({
-  contact,
-  onUpdatePhone,
-  onDeletePhone,
-  onUpdateEmail,
-  onDeleteEmail,
-}: {
-  contact: Contact
-  onUpdatePhone: (phone: ContactPhoneNumber) => void
-  onDeletePhone: (phone: ContactPhoneNumber) => void
-  onUpdateEmail: (email: ContactEmailAdress) => void
-  onDeleteEmail: (email: ContactEmailAdress) => void
-}) => {
-  const { t } = useTranslation()
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{t('contacts.contactInfo')}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {contact.phoneNumbers?.map((phone, i) => (
-          <ContactPhoneInlineEdit
-            key={i}
-            phone={phone}
-            onUpdate={onUpdatePhone}
-            onDelete={() => onDeletePhone(phone)}
-            hideAddButton
-            className="h-auto w-full"
-          >
-            <DisplayItem
-              icon={Phone}
-              label={phone.type ?? undefined}
-              value={phone.value ?? undefined}
-            />
-          </ContactPhoneInlineEdit>
-        ))}
-        {contact.contactEmailAdresses?.map((email, i) => (
-          <ContactEmailInlineEdit
-            key={i}
-            email={email}
-            onUpdate={onUpdateEmail}
-            onDelete={() => onDeleteEmail(email)}
-            hideAddButton
-            className="h-auto w-full"
-          >
-            <DisplayItem
-              icon={Mail}
-              label={email.type ?? undefined}
-              value={email.value ?? undefined}
-            />
-          </ContactEmailInlineEdit>
-        ))}
-        {contact.contactAddresses?.map((address, i) => (
-          <DisplayItem
-            key={i}
-            icon={MapPin}
-            label={address.type ?? undefined}
-            value={[
-              address.street,
-              address.streetExtended,
-              address.city,
-              address.region,
-              address.postalCode,
-              address.country,
-            ]
-              .filter(Boolean)
-              .join(', ')}
-          />
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
-const ProfessionalCard = ({
-  contact,
-  onUpdateOrganization,
-  onDeleteOrganization,
-}: {
-  contact: Contact
-  onUpdateOrganization: (org: ContactOrganization) => void
-  onDeleteOrganization: (org: ContactOrganization) => void
-}) => {
-  const { t } = useTranslation()
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{t('contacts.professional')}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {contact.contactOrganizations?.map((org, i) => (
-          <ContactOrganizationInlineEdit
-            key={i}
-            organization={org}
-            onUpdate={onUpdateOrganization}
-            onDelete={() => onDeleteOrganization(org)}
-            hideAddButton
-            className="h-auto w-full"
-          >
-            <DisplayItem
-              icon={Briefcase}
-              label={org.type || t('contacts.organization')}
-              value={org.name}
-              subValue={[org.title, org.department].filter(Boolean).join(' - ')}
-            />
-          </ContactOrganizationInlineEdit>
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
-const DatesCard = ({
-  contact,
-  onUpdateDate,
-  onDeleteDate,
-}: {
-  contact: Contact
-  onUpdateDate: (date: ContactDate) => void
-  onDeleteDate: (date: ContactDate) => void
-}) => {
-  const { t } = useTranslation()
-  const { formatDate } = useUserPrefs()
-  if (!contact.contactDates || contact.contactDates.length === 0) {
-    return null
-  }
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{t('contacts.dates')}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {contact.contactDates.map((date, i) => (
-          <ContactDateInlineEdit
-            key={i}
-            date={date}
-            onUpdate={onUpdateDate}
-            onDelete={() => onDeleteDate(date)}
-            hideAddButton
-            className="h-auto w-full"
-          >
-            <DisplayItem
-              icon={Calendar}
-              label={date.text ?? undefined}
-              value={(() => {
-                if (!date.date) {
-                  return ''
-                }
-                const formattedDate = formatDate(date.date)
-                return date.yearsPassed ? `${formattedDate} (${date.yearsPassed})` : formattedDate
-              })()}
-            />
-          </ContactDateInlineEdit>
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
-const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
-  const { formatDate } = useUserPrefs()
-  const upcomingDates = contact.contactDates?.filter((d) => d.nextAnniversaryDate)
-
-  if (!upcomingDates || upcomingDates.length === 0) {
-    return null
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{t('contacts.nextAnniversary')}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {upcomingDates.map((date, i) => (
-          <DisplayItem
-            key={i}
-            icon={Calendar}
-            label={date.text ?? undefined}
-            value={`${formatDate(date.nextAnniversaryDate ?? '')} (${date.yearsAtNextAnniversary})`}
-          />
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
-const BiographyCard = ({
-  contact,
-  onUpdateBio,
-  onDeleteBio,
-}: {
-  contact: Contact
-  onUpdateBio: (bio: ContactBiography) => void
-  onDeleteBio: (bio: ContactBiography) => void
-}) => {
-  const { t } = useTranslation()
-  if (!contact.contactBiographies || contact.contactBiographies.length === 0) {
-    return null
-  }
-  return (
-    <Card className="md:col-span-2">
-      <CardHeader>
-        <CardTitle className="text-base">{t('contacts.biography')}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {contact.contactBiographies.map((bio, i) => (
-          <ContactBioInlineEdit
-            key={i}
-            bio={bio}
-            onUpdate={onUpdateBio}
-            onDelete={() => onDeleteBio(bio)}
-            hideAddButton
-            className="h-auto w-full"
-          >
-            <DisplayItem
-              icon={FileText}
-              label={bio.type ?? undefined}
-              value={bio.value ?? undefined}
-            />
-          </ContactBioInlineEdit>
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
-const getRelatedContactId = (relatedContact: unknown): string | undefined => {
-  if (typeof relatedContact === 'string') {
-    return relatedContact.split('/').pop()
-  }
-  if (
-    typeof relatedContact === 'object' &&
-    relatedContact !== null &&
-    '@id' in relatedContact &&
-    typeof relatedContact['@id'] === 'string'
-  ) {
-    return relatedContact['@id'].split('/').pop()
-  }
-  return undefined
-}
-
-const getRelatedContactName = (
-  relation: NonNullable<Contact['contactRelations']>[number],
-  t: (key: string, options?: { defaultValue?: string }) => string,
-): string => {
-  if (relation.displayName) {
-    return relation.displayName
-  }
-  if (
-    typeof relation.relatedContact === 'object' &&
-    relation.relatedContact !== null &&
-    relation.relatedContact.displayName
-  ) {
-    return relation.relatedContact.displayName
-  }
-  return t('common.unknown')
-}
-
-const RelationsCard = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
-  if (!contact.contactRelations || contact.contactRelations.length === 0) {
-    return null
-  }
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{t('contacts.relations')}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {contact.contactRelations.map((relation, i) => {
-          const relatedId = getRelatedContactId(relation.relatedContact)
-          const label = t(`contacts.relationTypes.${relation.type}`, {
-            defaultValue: relation.type,
-          })
-          const name = getRelatedContactName(relation, t)
-
-          return (
-            <div key={i} className="flex items-start gap-3 py-2">
-              <div className="mt-1 rounded-md bg-muted p-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <div className="flex-1 space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">{label}</p>
-                {relatedId ? (
-                  <Link
-                    to={`/contacts/${relatedId}`}
-                    className="text-sm font-medium leading-none text-primary hover:underline"
-                  >
-                    {name}
-                  </Link>
-                ) : (
-                  <p className="text-sm font-medium leading-none">{name}</p>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </CardContent>
-    </Card>
-  )
 }
 
 const getGroupFilterValue = (
@@ -619,7 +276,6 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           onDeleteDate={handleDeleteDate}
         />
         <UpcomingDatesCard contact={contact} />
-        <RelationsCard contact={contact} />
         <RelationsCard contact={contact} />
         <BiographyCard
           contact={contact}
