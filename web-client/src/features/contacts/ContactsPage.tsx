@@ -15,11 +15,19 @@ import {
   useCreateContactEmail,
   useUpdateContactEmail,
   useDeleteContactEmail,
+  useCreateContactPhone,
+  useUpdateContactPhone,
+  useDeleteContactPhone,
   getHydraMember,
   getHydraPagination,
 } from './useContacts'
 
-import { type Contact, type ContactDate, type ContactEmailAdress } from '@/types/models'
+import {
+  type Contact,
+  type ContactDate,
+  type ContactEmailAdress,
+  type ContactPhoneNumber,
+} from '@/types/models'
 
 export default function ContactsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -64,6 +72,10 @@ export default function ContactsPage() {
   const handleCreateEmailMutation = useCreateContactEmail()
   const handleUpdateEmailMutation = useUpdateContactEmail()
   const handleDeleteEmailMutation = useDeleteContactEmail()
+
+  const handleCreatePhoneMutation = useCreateContactPhone()
+  const handleUpdatePhoneMutation = useUpdateContactPhone()
+  const handleDeletePhoneMutation = useDeleteContactPhone()
 
   const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
     if (date['@id']) {
@@ -122,6 +134,34 @@ export default function ContactsPage() {
     await handleDeleteEmailMutation.mutateAsync(email['@id'])
   }
 
+  const handleUpdatePhone = async (contact: Contact, phone: ContactPhoneNumber) => {
+    if (!contact['@id']) {
+      return
+    }
+
+    if (phone['@id']) {
+      // Update existing
+      await handleUpdatePhoneMutation.mutateAsync({
+        id: phone['@id'],
+        data: phone,
+      })
+    } else {
+      // Create new
+      await handleCreatePhoneMutation.mutateAsync({
+        ...phone,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeletePhone = async (_contact: Contact, phone: ContactPhoneNumber) => {
+    if (!phone['@id']) {
+      return
+    }
+
+    await handleDeletePhoneMutation.mutateAsync(phone['@id'])
+  }
+
   if (isLoading && !isPlaceholderData) {
     return <div>{t('contacts.loading')}</div>
   }
@@ -146,6 +186,8 @@ export default function ContactsPage() {
             onUpdateGroups={handleUpdateGroups}
             onUpdateEmail={handleUpdateEmail}
             onDeleteEmail={handleDeleteEmail}
+            onUpdatePhone={handleUpdatePhone}
+            onDeletePhone={handleDeletePhone}
           />
         </div>
 

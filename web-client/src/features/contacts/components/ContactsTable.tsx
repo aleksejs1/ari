@@ -11,6 +11,7 @@ import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
 import { ContactsTableActions } from './ContactsTableActions'
 import { ContactsTableDates } from './ContactsTableDates'
 import { ContactsTableEmails } from './ContactsTableEmails'
+import { ContactsTablePhones } from './ContactsTablePhones'
 
 import {
   Table,
@@ -36,6 +37,8 @@ interface ContactsTableProps {
   onUpdateGroups: (contact: Contact, groupIds: string[]) => void
   onUpdateEmail: (contact: Contact, email: ContactEmailAdress) => void
   onDeleteEmail: (contact: Contact, email: ContactEmailAdress) => void
+  onUpdatePhone: (contact: Contact, phone: ContactPhoneNumber) => void
+  onDeletePhone: (contact: Contact, phone: ContactPhoneNumber) => void
 }
 
 export function ContactsTable({
@@ -46,6 +49,8 @@ export function ContactsTable({
   onUpdateGroups,
   onUpdateEmail,
   onDeleteEmail,
+  onUpdatePhone,
+  onDeletePhone,
 }: ContactsTableProps) {
   'use no memo'
   const onExchangeDate = onUpdateDate
@@ -109,16 +114,12 @@ export function ContactsTable({
         cell: ({ row }) => {
           const phones = (row.original.phoneNumbers || []) as ContactPhoneNumber[]
           return (
-            <div className="flex flex-col gap-1">
-              {phones.map((phone, i) => (
-                <div key={i} className="flex flex-col leading-tight">
-                  <span className="text-sm font-medium">{phone.value}</span>
-                  {!!phone.type && (
-                    <span className="text-[10px] text-muted-foreground">{phone.type}</span>
-                  )}
-                </div>
-              ))}
-            </div>
+            <ContactsTablePhones
+              contact={row.original}
+              phones={phones}
+              onUpdatePhone={onUpdatePhone}
+              onDeletePhone={onDeletePhone}
+            />
           )
         },
       },
@@ -185,6 +186,8 @@ export function ContactsTable({
       onUpdateGroups,
       onUpdateEmail,
       onDeleteEmail,
+      onUpdatePhone,
+      onDeletePhone,
     ],
   )
   // eslint-disable-next-line react-hooks/incompatible-library
