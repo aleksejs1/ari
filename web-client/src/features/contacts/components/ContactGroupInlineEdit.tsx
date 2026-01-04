@@ -105,30 +105,41 @@ export function ContactGroupInlineEdit({ contact, groups, onUpdate }: ContactGro
     </div>
   )
 
+  const MAX_VISIBLE_GROUPS = 3
+  const userGroups = (contact.contactGroups || [])
+    .map((cg) => {
+      const groupIri =
+        typeof cg.groupResource === 'string'
+          ? cg.groupResource
+          : (cg.groupResource as { '@id'?: string })?.['@id']
+
+      if (!groupIri) {
+        return null
+      }
+
+      const group = groups.find((g) => g['@id'] === groupIri)
+      return group?.name || '...'
+    })
+    .filter(Boolean) as string[]
+
+  const visibleGroups = userGroups.slice(0, MAX_VISIBLE_GROUPS)
+  const hiddenCount = userGroups.length - MAX_VISIBLE_GROUPS
+
   const content = (
     <div className="flex flex-wrap gap-1">
-      {contact.contactGroups?.map((cg, i) => {
-        const groupIri =
-          typeof cg.groupResource === 'string'
-            ? cg.groupResource
-            : (cg.groupResource as { '@id'?: string })?.['@id']
-
-        if (!groupIri) {
-          return null
-        }
-
-        const group = groups.find((g) => g['@id'] === groupIri)
-        const label = group?.name || '...'
-
-        return (
-          <span
-            key={i}
-            className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
-          >
-            {label}
-          </span>
-        )
-      })}
+      {visibleGroups.map((label, i) => (
+        <span
+          key={i}
+          className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+        >
+          {label}
+        </span>
+      ))}
+      {hiddenCount > 0 && (
+        <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-600/10">
+          +{hiddenCount}
+        </span>
+      )}
     </div>
   )
 
