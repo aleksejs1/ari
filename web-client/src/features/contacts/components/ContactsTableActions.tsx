@@ -17,6 +17,7 @@ export function ContactsTableActions({ contact, onEdit }: ContactsTableActionsPr
       <Button
         variant="ghost"
         size="icon"
+        className="opacity-0 transition-opacity group-hover/row:opacity-100"
         onClick={(e) => {
           e.stopPropagation()
           onEdit(contact)

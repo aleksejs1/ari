@@ -225,7 +225,7 @@ export function ContactsTable({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="cursor-pointer"
+                className="group/row cursor-pointer"
                 onClick={() => navigate(`/contacts/${row.original.id}`)}
               >
                 {row.getVisibleCells().map((cell) => (
