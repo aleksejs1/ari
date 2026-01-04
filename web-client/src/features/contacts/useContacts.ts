@@ -174,6 +174,20 @@ export function useUpdateContactDate() {
   })
 }
 
+// eslint-disable-next-line sonarjs/no-identical-functions
+export function useDeleteContactDate() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      await api.delete(url)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+    },
+  })
+}
+
 export function useCreateContactDate() {
   const queryClient = useQueryClient()
   return useMutation({

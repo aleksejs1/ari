@@ -17,12 +17,16 @@ import { useContactFavorite } from '../hooks/useContactFavorite'
 import {
   useCreateContactEmail,
   useCreateContactPhone,
+  useCreateContactDate,
   useDeleteContactEmail,
   useDeleteContactPhone,
+  useDeleteContactDate,
   useUpdateContactEmail,
   useUpdateContactPhone,
+  useUpdateContactDate,
 } from '../useContacts'
 
+import { ContactDateInlineEdit } from './ContactDateInlineEdit'
 import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
 import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
 
@@ -30,7 +34,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import type { Contact, ContactEmailAdress, ContactPhoneNumber } from '@/types/models'
+import type { Contact, ContactDate, ContactEmailAdress, ContactPhoneNumber } from '@/types/models'
 
 interface ContactViewProps {
   contact: Contact
@@ -161,7 +165,15 @@ const ProfessionalCard = ({ contact }: { contact: Contact }) => {
   )
 }
 
-const DatesCard = ({ contact }: { contact: Contact }) => {
+const DatesCard = ({
+  contact,
+  onUpdateDate,
+  onDeleteDate,
+}: {
+  contact: Contact
+  onUpdateDate: (date: ContactDate) => void
+  onDeleteDate: (date: ContactDate) => void
+}) => {
   const { t } = useTranslation()
   const { formatDate } = useUserPrefs()
   if (!contact.contactDates || contact.contactDates.length === 0) {
@@ -174,18 +186,26 @@ const DatesCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactDates.map((date, i) => (
-          <DisplayItem
+          <ContactDateInlineEdit
             key={i}
-            icon={Calendar}
-            label={date.text ?? undefined}
-            value={(() => {
-              if (!date.date) {
-                return ''
-              }
-              const formattedDate = formatDate(date.date)
-              return date.yearsPassed ? `${formattedDate} (${date.yearsPassed})` : formattedDate
-            })()}
-          />
+            date={date}
+            onUpdate={onUpdateDate}
+            onDelete={() => onDeleteDate(date)}
+            hideAddButton
+            className="h-auto w-full"
+          >
+            <DisplayItem
+              icon={Calendar}
+              label={date.text ?? undefined}
+              value={(() => {
+                if (!date.date) {
+                  return ''
+                }
+                const formattedDate = formatDate(date.date)
+                return date.yearsPassed ? `${formattedDate} (${date.yearsPassed})` : formattedDate
+              })()}
+            />
+          </ContactDateInlineEdit>
         ))}
       </CardContent>
     </Card>
@@ -408,6 +428,34 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
     await handleDeleteEmailMutation.mutateAsync(email['@id'])
   }
 
+  const handleCreateDateMutation = useCreateContactDate()
+  const handleUpdateDateMutation = useUpdateContactDate()
+  const handleDeleteDateMutation = useDeleteContactDate()
+
+  const handleUpdateDate = async (date: ContactDate) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (date['@id']) {
+      await handleUpdateDateMutation.mutateAsync({
+        id: date['@id'],
+        data: date,
+      })
+    } else {
+      await handleCreateDateMutation.mutateAsync({
+        ...date,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteDate = async (date: ContactDate) => {
+    if (!date['@id']) {
+      return
+    }
+    await handleDeleteDateMutation.mutateAsync(date['@id'])
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -458,7 +506,11 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           onDeleteEmail={handleDeleteEmail}
         />
         <ProfessionalCard contact={contact} />
-        <DatesCard contact={contact} />
+        <DatesCard
+          contact={contact}
+          onUpdateDate={handleUpdateDate}
+          onDeleteDate={handleDeleteDate}
+        />
         <UpcomingDatesCard contact={contact} />
         <RelationsCard contact={contact} />
         <BiographyCard contact={contact} />

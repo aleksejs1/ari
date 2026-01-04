@@ -1,5 +1,5 @@
-import { Check, X, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { Check, Trash2, X } from 'lucide-react'
+import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { InlineEditTrigger } from './InlineEditTrigger'
@@ -23,9 +23,19 @@ interface ContactDateInlineEditProps {
   date: ContactDate
   onUpdate: (date: ContactDate) => void
   onDelete: () => void
+  children?: ReactNode
+  hideAddButton?: boolean
+  className?: string
 }
 
-export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateInlineEditProps) {
+export function ContactDateInlineEdit({
+  date,
+  onUpdate,
+  onDelete,
+  children,
+  hideAddButton,
+  className,
+}: ContactDateInlineEditProps) {
   const { t } = useTranslation()
   const { formatDate } = useUserPrefs()
   const [open, setOpen] = useState(false)
@@ -134,11 +144,15 @@ export function ContactDateInlineEdit({ date, onUpdate, onDelete }: ContactDateI
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}
+      hideAddButton={hideAddButton}
+      className={className}
     >
-      <>
-        <span className="font-medium">{date.date ? formatDate(date.date) : ''}</span>
-        <span className="text-gray-500">({date.text ?? t('contacts.noLabel')})</span>
-      </>
+      {children || (
+        <>
+          <span className="font-medium">{date.date ? formatDate(date.date) : ''}</span>
+          <span className="text-gray-500">({date.text ?? t('contacts.noLabel')})</span>
+        </>
+      )}
     </InlineEditTrigger>
   )
 }
