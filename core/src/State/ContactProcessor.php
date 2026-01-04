@@ -47,53 +47,51 @@ class ContactProcessor implements ProcessorInterface
 
         // For PUT operations on existing entities, we need to handle replacement semantics
         if ($isPut && isset($uriVariables['id'])) {
-            // Get the existing entity from database
             $existing = $this->entityManager->find(Contact::class, $uriVariables['id']);
 
             if (null !== $existing) {
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactNames(),
                     $existing->getContactNames(),
                     'addContactName',
-                    true
+                    null
                 );
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactDates(),
                     $existing->getContactDates(),
                     'addContactDate',
-                    true
+                    null
                 );
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getPhoneNumbers(),
                     $existing->getPhoneNumbers(),
                     'addPhoneNumber',
-                    true
+                    null
                 );
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactEmailAdresses(),
                     $existing->getContactEmailAdresses(),
                     'addContactEmailAdress',
-                    true
+                    null
                 );
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactAddresses(),
                     $existing->getContactAddresses(),
                     'addContactAddress',
-                    true
+                    null
                 );
 
                 // ContactGroup has extra logic
-                $this->handleCollection(
+                $this->handleSmartUpdate(
                     $existing,
                     $data->getContactGroups(),
                     $existing->getContactGroups(),
                     'addContactGroup',
-                    true,
                     function ($contactGroup, $owner) {
                          // Propagate tenant to nested Group if it's new
                         $group = $contactGroup->getGroupResource();
@@ -112,27 +110,27 @@ class ContactProcessor implements ProcessorInterface
                     }
                 );
 
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactOrganizations(),
                     $existing->getContactOrganizations(),
                     'addContactOrganization',
-                    true
+                    null
                 );
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactBiographies(),
                     $existing->getContactBiographies(),
                     'addContactBiography',
-                    true
+                    null
                 );
                 $existing->getReverseContactRelationsCollection()->clear();
-                $this->handleCollection(
+                $this->handleClearAndReplace(
                     $existing,
                     $data->getContactRelations(),
                     $existing->getContactRelationsCollection(),
                     'addContactRelation',
-                    true
+                    null
                 );
 
                 // Flush changes and return the existing entity
@@ -142,18 +140,15 @@ class ContactProcessor implements ProcessorInterface
             }
         } else {
             // For POST/PATCH operations, just link nested entities
-            $this->handleCollection($data, $data->getContactNames(), null, 'addContactName', false);
-            $this->handleCollection($data, $data->getContactDates(), null, 'addContactDate', false);
-            $this->handleCollection($data, $data->getPhoneNumbers(), null, 'addPhoneNumber', false);
-            $this->handleCollection($data, $data->getContactEmailAdresses(), null, 'addContactEmailAdress', false);
-            $this->handleCollection($data, $data->getContactAddresses(), null, 'addContactAddress', false);
+            $this->handleSimpleAdd($data, $data->getContactNames(), null);
+            $this->handleSimpleAdd($data, $data->getContactDates(), null);
+            $this->handleSimpleAdd($data, $data->getPhoneNumbers(), null);
+            $this->handleSimpleAdd($data, $data->getContactEmailAdresses(), null);
+            $this->handleSimpleAdd($data, $data->getContactAddresses(), null);
 
-            $this->handleCollection(
+            $this->handleSimpleAdd(
                 $data,
                 $data->getContactGroups(),
-                null,
-                'addContactGroup',
-                false,
                 function ($contactGroup, $owner) {
                      // Propagate tenant to nested Group if it's new
                     $group = $contactGroup->getGroupResource();
@@ -163,9 +158,9 @@ class ContactProcessor implements ProcessorInterface
                 }
             );
 
-            $this->handleCollection($data, $data->getContactOrganizations(), null, 'addContactOrganization', false);
-            $this->handleCollection($data, $data->getContactBiographies(), null, 'addContactBiography', false);
-            $this->handleCollection($data, $data->getContactRelations(), null, 'addContactRelation', false);
+            $this->handleSimpleAdd($data, $data->getContactOrganizations(), null);
+            $this->handleSimpleAdd($data, $data->getContactBiographies(), null);
+            $this->handleSimpleAdd($data, $data->getContactRelations(), null);
         }
 
         // Let the UserOwnerProcessor handle user assignment and main persistence
@@ -176,126 +171,249 @@ class ContactProcessor implements ProcessorInterface
      * @template T of object
      * @param Contact $owner
      * @param iterable<mixed, T> $items
-     * @param \Doctrine\Common\Collections\Collection<int, T>|null $targetCollection
+     * @param \Doctrine\Common\Collections\Collection<int, T> $targetCollection
      * @param string $addMethod
-     * @param bool $isPut
      * @param (callable(T, Contact): void)|null $extraLogic
-     * @param (callable(T, T): bool)|null $matcher Logic to match incoming item with existing item.
-     *                                             If provided, smart update is performed.
+     * @param (callable(T, T): bool) $matcher
      */
-    private function handleCollection(
+    private function handleSmartUpdate(
         Contact $owner,
         iterable $items,
-        ?\Doctrine\Common\Collections\Collection $targetCollection,
+        \Doctrine\Common\Collections\Collection $targetCollection,
         string $addMethod,
-        bool $isPut,
-        ?callable $extraLogic = null,
-        ?callable $matcher = null
+        ?callable $extraLogic,
+        callable $matcher
     ): void {
-        if ($isPut && null !== $targetCollection && null !== $matcher) {
-             // Smart Update Logic
-             $itemsArr = is_array($items) ? $items : iterator_to_array($items);
+        // Smart Update Logic
+        $itemsArr = is_array($items) ? $items : iterator_to_array($items);
 
-             // 1. Identify items to remove (in target but not in items)
-             // We iterate target backwards to safely remove
-            foreach ($targetCollection->toArray() as $existingItem) {
-                $found = false;
-                foreach ($itemsArr as $incomingItem) {
-                    if ($matcher($incomingItem, $existingItem)) {
-                        $found = true;
-                        break;
-                    }
+        // 1. Identify items to remove (in target but not in items)
+        // We iterate target backwards to safely remove
+        foreach ($targetCollection->toArray() as $existingItem) {
+            $found = false;
+            foreach ($itemsArr as $incomingItem) {
+                if ($matcher($incomingItem, $existingItem)) {
+                    $found = true;
+                    break;
                 }
-                if (!$found) {
-                    $targetCollection->removeElement($existingItem);
+            }
+            if (!$found) {
+                $targetCollection->removeElement($existingItem);
+            }
+        }
+
+        // 2. Identify items to add or update
+        foreach ($itemsArr as $incomingItem) {
+            $match = null;
+            foreach ($targetCollection as $existingItem) {
+                if ($matcher($incomingItem, $existingItem)) {
+                    $match = $existingItem;
+                    break;
                 }
             }
 
-             // 2. Identify items to add or update
-            foreach ($itemsArr as $incomingItem) {
-                $match = null;
-                foreach ($targetCollection as $existingItem) {
-                    if ($matcher($incomingItem, $existingItem)) {
-                        $match = $existingItem;
-                        break;
-                    }
-                }
-
-                if (null !== $match) {
-                    // Case 1: ID was provided, so Incoming IS the Existing item (Identity Map)
-                    if ($match === $incomingItem) {
-                        // Serializer might have pointed it to the detached $data object.
-                        // We must ensure it points to the managed $owner.
-                        if (method_exists($match, 'setContact')) {
-                            $match->setContact($owner);
-                        }
-                    } else {
-                        // Case 2: ID missing (or different instance). Incoming is new/garbage.
-                        // Check for pollution: Refreshing the Group entity to discard in-memory additions
-                        if (method_exists($incomingItem, 'getGroupResource')) {
-                            $groupRes = $incomingItem->getGroupResource();
-                            if ($groupRes && $this->entityManager->contains($groupRes)) {
-                                 $this->entityManager->refresh($groupRes);
-                            }
-                        }
-                        // Detach the garbage item
-                        $this->entityManager->detach($incomingItem);
-                    }
-
-                    // Run extra logic on the MATCH
-                    if (null !== $extraLogic) {
-                        $extraLogic($match, $owner);
+            if (null !== $match) {
+                // Case 1: ID was provided, so Incoming IS the Existing item (Identity Map)
+                if ($match === $incomingItem) {
+                    // Serializer might have pointed it to the detached $data object.
+                    // We must ensure it points to the managed $owner.
+                    if (method_exists($match, 'setContact')) {
+                        $match->setContact($owner);
                     }
                 } else {
-                    // Add new
-                    if (method_exists($incomingItem, 'setContact')) {
-                        $incomingItem->setContact($owner);
+                    // Case 2: ID missing (or different instance). Incoming is new/garbage.
+                    // Check for pollution: Refreshing the Group entity to discard in-memory additions
+                    if (method_exists($incomingItem, 'getGroupResource')) {
+                        $groupRes = $incomingItem->getGroupResource();
+                        if ($groupRes && $this->entityManager->contains($groupRes)) {
+                            $this->entityManager->refresh($groupRes);
+                        }
                     }
-                    if ($incomingItem instanceof \App\Security\TenantAwareInterface) {
-                        $incomingItem->setTenant($owner->getTenant());
-                    }
-                    if (null !== $extraLogic) {
-                        $extraLogic($incomingItem, $owner);
-                    }
-
-                    /** @phpstan-ignore method.dynamicName */
-                    $owner->$addMethod($incomingItem);
-                }
-            }
-        } elseif ($isPut && null !== $targetCollection) {
-            // Conventional "Clear and Replace"
-            $targetCollection->clear();
-            foreach ($items as $item) {
-                if (method_exists($item, 'setContact')) {
-                    $item->setContact($owner);
-                }
-                if ($item instanceof \App\Security\TenantAwareInterface) {
-                    $item->setTenant($owner->getTenant());
+                    // Detach the garbage item
+                    $this->entityManager->detach($incomingItem);
                 }
 
+                // Run extra logic on the MATCH
                 if (null !== $extraLogic) {
-                    $extraLogic($item, $owner);
+                    $extraLogic($match, $owner);
+                }
+            } else {
+                // Add new
+                if (method_exists($incomingItem, 'setContact')) {
+                    $incomingItem->setContact($owner);
+                }
+                if ($incomingItem instanceof \App\Security\TenantAwareInterface) {
+                    $incomingItem->setTenant($owner->getTenant());
+                }
+                if (null !== $extraLogic) {
+                    $extraLogic($incomingItem, $owner);
                 }
 
                 /** @phpstan-ignore method.dynamicName */
-                $owner->$addMethod($item);
+                $owner->$addMethod($incomingItem);
             }
-        } else {
-            foreach ($items as $item) {
-                if (method_exists($item, 'getContact') && method_exists($item, 'setContact')) {
-                    if (null === $item->getContact()) {
-                        $item->setContact($owner);
-                    }
+        }
+    }
+
+    /**
+     * @template T of object
+     * @param Contact $owner
+     * @param iterable<mixed, T> $items
+     * @param \Doctrine\Common\Collections\Collection<int, T> $targetCollection
+     * @param string $addMethod
+     * @param (callable(T, Contact): void)|null $extraLogic
+     */
+    private function handleClearAndReplace(
+        Contact $owner,
+        iterable $items,
+        \Doctrine\Common\Collections\Collection $targetCollection,
+        string $addMethod,
+        ?callable $extraLogic
+    ): void {
+        $itemsArr = is_array($items) ? $items : iterator_to_array($items);
+
+        // Special Case: Single Item Update (Incoming has no ID -> Update singleton existing)
+        if (1 === $targetCollection->count() && 1 === count($itemsArr)) {
+            $existingItem = $targetCollection->first();
+            $incomingItem = reset($itemsArr);
+
+            if (is_object($existingItem)) {
+                $incomingId = method_exists($incomingItem, 'getId') ? $incomingItem->getId() : null;
+
+                if (null === $incomingId) {
+                    // Update existing item with incoming data
+                    $this->updateEntityData($existingItem, $incomingItem);
+                    $this->prepareItem($owner, $existingItem, $extraLogic);
+
+                    return;
                 }
-                if ($item instanceof \App\Security\TenantAwareInterface) {
-                    if (null === $item->getTenant()) {
-                        $item->setTenant($owner->getTenant());
+            }
+        }
+
+        $incomingById = [];
+
+        foreach ($itemsArr as $item) {
+            if (method_exists($item, 'getId') && null !== $item->getId()) {
+                $incomingById[$item->getId()] = $item;
+            }
+        }
+
+        // 1. Remove items not present in incoming list
+        foreach ($targetCollection->toArray() as $existingItem) {
+            $existingId = method_exists($existingItem, 'getId') ? $existingItem->getId() : null;
+            if (null !== $existingId && !array_key_exists($existingId, $incomingById)) {
+                $targetCollection->removeElement($existingItem);
+            }
+        }
+
+        // 2. Update existing items or Add new items
+        foreach ($itemsArr as $incomingItem) {
+            $incomingId = method_exists($incomingItem, 'getId') ? $incomingItem->getId() : null;
+
+            if (null !== $incomingId) {
+                // Check if this ID exists in the target collection
+                $existingItem = null;
+                foreach ($targetCollection as $targetItem) {
+                    if (method_exists($targetItem, 'getId') && $targetItem->getId() === $incomingId) {
+                        $existingItem = $targetItem;
+                        break;
                     }
                 }
 
-                if (null !== $extraLogic) {
-                    $extraLogic($item, $owner);
+                if (null !== $existingItem) {
+                    // Update: If instances differ, copy data to existing instance
+                    if ($existingItem !== $incomingItem) {
+                        $this->updateEntityData($existingItem, $incomingItem);
+                    }
+                    $this->prepareItem($owner, $existingItem, $extraLogic);
+                } else {
+                    // Not found in target (rare for ClearAndReplace with ID), treat as add
+                    $this->prepareItem($owner, $incomingItem, $extraLogic);
+                    /** @phpstan-ignore method.dynamicName */
+                    $owner->$addMethod($incomingItem);
                 }
+            } else {
+                // No ID -> New item
+                $this->prepareItem($owner, $incomingItem, $extraLogic);
+                /** @phpstan-ignore method.dynamicName */
+                $owner->$addMethod($incomingItem);
+            }
+        }
+    }
+
+    /**
+     * @param object $target
+     * @param object $source
+     */
+    private function updateEntityData(object $target, object $source): void
+    {
+        $reflection = new \ReflectionClass($target);
+        $sourceReflection = new \ReflectionClass($source);
+
+        foreach ($reflection->getProperties() as $property) {
+            if ('id' === $property->getName()) {
+                continue;
+            }
+            if (!$sourceReflection->hasProperty($property->getName())) {
+                continue;
+            }
+
+            $sourceProp = $sourceReflection->getProperty($property->getName());
+            // $sourceProp->setAccessible(true);
+            // $property->setAccessible(true);
+
+            if ($sourceProp->isInitialized($source)) {
+                $value = $sourceProp->getValue($source);
+                $property->setValue($target, $value);
+            }
+        }
+    }
+
+    /**
+     * @template T of object
+     * @param Contact $owner
+     * @param T $item
+     * @param (callable(T, Contact): void)|null $extraLogic
+     */
+    private function prepareItem(Contact $owner, object $item, ?callable $extraLogic): void
+    {
+        if (method_exists($item, 'setContact')) {
+            $item->setContact($owner);
+        }
+        if ($item instanceof \App\Security\TenantAwareInterface) {
+            $item->setTenant($owner->getTenant());
+        }
+
+        if (null !== $extraLogic) {
+            $extraLogic($item, $owner);
+        }
+    }
+
+    /**
+     * @template T of object
+     * @param Contact $owner
+     * @param iterable<mixed, T> $items
+     * @param (callable(T, Contact): void)|null $extraLogic
+     */
+    private function handleSimpleAdd(
+        Contact $owner,
+        iterable $items,
+        ?callable $extraLogic
+    ): void {
+        foreach ($items as $item) {
+            if (method_exists($item, 'getContact') && method_exists($item, 'setContact')) {
+                if (null === $item->getContact()) {
+                    $item->setContact($owner);
+                }
+            }
+            if ($item instanceof \App\Security\TenantAwareInterface) {
+                if (null === $item->getTenant()) {
+                    $item->setTenant($owner->getTenant());
+                }
+            }
+
+            if (null !== $extraLogic) {
+                $extraLogic($item, $owner);
             }
         }
     }

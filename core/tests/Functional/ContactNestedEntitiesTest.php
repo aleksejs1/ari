@@ -346,11 +346,11 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
 
         self::assertJsonContains([
             'contactNames' => [
-                [
+                1 => [ // ID is because of Collections
                     'family' => 'Johnson',
                     'given' => 'Bob',
                 ],
-                [
+                2 => [ // ID is because of Collections
                     'family' => 'Johnson',
                     'given' => 'Bobby',
                 ],
@@ -406,6 +406,7 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
 
         $addressInserts = 0;
         $addressRemoves = 0;
+        $addressUpdates = 0;
 
         foreach ($logs as $log) {
             if ($log['entityType'] === 'App\\Entity\\ContactAddress') {
@@ -413,12 +414,15 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
                     $addressInserts++;
                 } elseif ($log['action'] === 'REMOVE') {
                     $addressRemoves++;
+                } elseif ($log['action'] === 'UPDATE') {
+                    $addressUpdates++;
                 }
             }
         }
 
-        self::assertGreaterThan(0, $addressInserts, 'Should have inserted new addresses');
-        self::assertGreaterThan(0, $addressRemoves, 'Should have removed old addresses');
+        self::assertEquals(1, $addressInserts, 'Should not have inserted new addresses');
+        self::assertEquals(0, $addressRemoves, 'Should not have removed old addresses');
+        self::assertEquals(1, $addressUpdates, 'Should not have updated old addresses');
     }
 
     /**
