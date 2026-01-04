@@ -18,6 +18,9 @@ import {
   useCreateContactPhone,
   useUpdateContactPhone,
   useDeleteContactPhone,
+  useCreateContactName,
+  useUpdateContactName,
+  useDeleteContactName,
   getHydraMember,
   getHydraPagination,
 } from './useContacts'
@@ -27,6 +30,7 @@ import {
   type ContactDate,
   type ContactEmailAdress,
   type ContactPhoneNumber,
+  type ContactName,
 } from '@/types/models'
 
 export default function ContactsPage() {
@@ -76,6 +80,10 @@ export default function ContactsPage() {
   const handleCreatePhoneMutation = useCreateContactPhone()
   const handleUpdatePhoneMutation = useUpdateContactPhone()
   const handleDeletePhoneMutation = useDeleteContactPhone()
+
+  const handleCreateNameMutation = useCreateContactName()
+  const handleUpdateNameMutation = useUpdateContactName()
+  const handleDeleteNameMutation = useDeleteContactName()
 
   const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
     if (date['@id']) {
@@ -162,6 +170,34 @@ export default function ContactsPage() {
     await handleDeletePhoneMutation.mutateAsync(phone['@id'])
   }
 
+  const handleUpdateName = async (contact: Contact, name: ContactName) => {
+    if (!contact['@id']) {
+      return
+    }
+
+    if (name['@id']) {
+      // Update existing
+      await handleUpdateNameMutation.mutateAsync({
+        id: name['@id'],
+        data: name,
+      })
+    } else {
+      // Create new
+      await handleCreateNameMutation.mutateAsync({
+        ...name,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteName = async (_contact: Contact, name: ContactName) => {
+    if (!name['@id']) {
+      return
+    }
+
+    await handleDeleteNameMutation.mutateAsync(name['@id'])
+  }
+
   if (isLoading && !isPlaceholderData) {
     return <div>{t('contacts.loading')}</div>
   }
@@ -188,6 +224,8 @@ export default function ContactsPage() {
             onDeleteEmail={handleDeleteEmail}
             onUpdatePhone={handleUpdatePhone}
             onDeletePhone={handleDeletePhone}
+            onUpdateName={handleUpdateName}
+            onDeleteName={handleDeleteName}
           />
         </div>
 

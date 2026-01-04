@@ -11,6 +11,7 @@ import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
 import { ContactsTableActions } from './ContactsTableActions'
 import { ContactsTableDates } from './ContactsTableDates'
 import { ContactsTableEmails } from './ContactsTableEmails'
+import { ContactsTableNames } from './ContactsTableNames'
 import { ContactsTablePhones } from './ContactsTablePhones'
 
 import {
@@ -39,6 +40,8 @@ interface ContactsTableProps {
   onDeleteEmail: (contact: Contact, email: ContactEmailAdress) => void
   onUpdatePhone: (contact: Contact, phone: ContactPhoneNumber) => void
   onDeletePhone: (contact: Contact, phone: ContactPhoneNumber) => void
+  onUpdateName: (contact: Contact, name: ContactName) => void
+  onDeleteName: (contact: Contact, name: ContactName) => void
 }
 
 export function ContactsTable({
@@ -51,6 +54,8 @@ export function ContactsTable({
   onDeleteEmail,
   onUpdatePhone,
   onDeletePhone,
+  onUpdateName,
+  onDeleteName,
 }: ContactsTableProps) {
   'use no memo'
   const onExchangeDate = onUpdateDate
@@ -96,15 +101,12 @@ export function ContactsTable({
             : [{ given: '', family: '' } as ContactName]
 
           return (
-            <div className="flex flex-col">
-              {names.map((name, i) => (
-                <div key={i} className="group flex items-center justify-between">
-                  <span className="font-medium text-primary">
-                    {name.given} {name.family}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <ContactsTableNames
+              contact={row.original}
+              names={names}
+              onUpdateName={onUpdateName}
+              onDeleteName={onDeleteName}
+            />
           )
         },
       },
@@ -188,6 +190,8 @@ export function ContactsTable({
       onDeleteEmail,
       onUpdatePhone,
       onDeletePhone,
+      onUpdateName,
+      onDeleteName,
     ],
   )
   // eslint-disable-next-line react-hooks/incompatible-library

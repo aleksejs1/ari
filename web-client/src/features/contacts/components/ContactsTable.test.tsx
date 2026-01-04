@@ -74,6 +74,8 @@ describe('ContactsTable', () => {
           onDeleteEmail={vi.fn()}
           onUpdatePhone={vi.fn()}
           onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -93,6 +95,8 @@ describe('ContactsTable', () => {
           onDeleteEmail={vi.fn()}
           onUpdatePhone={vi.fn()}
           onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -132,6 +136,8 @@ describe('ContactsTable', () => {
           onDeleteEmail={vi.fn()}
           onUpdatePhone={vi.fn()}
           onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -154,6 +160,8 @@ describe('ContactsTable', () => {
           onDeleteEmail={vi.fn()}
           onUpdatePhone={vi.fn()}
           onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
         />
       </MemoryRouter>,
     )
@@ -201,6 +209,8 @@ describe('ContactsTable', () => {
           onDeleteEmail={vi.fn()}
           onUpdatePhone={vi.fn()}
           onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
         />
       </MemoryRouter>,
     )
