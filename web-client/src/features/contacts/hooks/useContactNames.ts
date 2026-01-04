@@ -38,7 +38,6 @@ export function useUpdateContactName() {
   })
 }
 
-// eslint-disable-next-line sonarjs/no-identical-functions
 export function useDeleteContactName() {
   const queryClient = useQueryClient()
   return useMutation({

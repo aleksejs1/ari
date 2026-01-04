@@ -17,15 +17,19 @@ import { useContactFavorite } from '../hooks/useContactFavorite'
 import {
   useCreateContactEmail,
   useCreateContactPhone,
+  useCreateContactBiography,
   useCreateContactDate,
   useDeleteContactEmail,
   useDeleteContactPhone,
   useDeleteContactDate,
+  useDeleteContactBiography,
   useUpdateContactEmail,
   useUpdateContactPhone,
   useUpdateContactDate,
+  useUpdateContactBiography,
 } from '../useContacts'
 
+import { ContactBioInlineEdit } from './ContactBioInlineEdit'
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
 import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
 import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
@@ -34,7 +38,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import type { Contact, ContactDate, ContactEmailAdress, ContactPhoneNumber } from '@/types/models'
+import type {
+  Contact,
+  ContactBiography,
+  ContactDate,
+  ContactEmailAdress,
+  ContactPhoneNumber,
+} from '@/types/models'
 
 interface ContactViewProps {
   contact: Contact
@@ -240,7 +250,15 @@ const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
   )
 }
 
-const BiographyCard = ({ contact }: { contact: Contact }) => {
+const BiographyCard = ({
+  contact,
+  onUpdateBio,
+  onDeleteBio,
+}: {
+  contact: Contact
+  onUpdateBio: (bio: ContactBiography) => void
+  onDeleteBio: (bio: ContactBiography) => void
+}) => {
   const { t } = useTranslation()
   if (!contact.contactBiographies || contact.contactBiographies.length === 0) {
     return null
@@ -252,12 +270,20 @@ const BiographyCard = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactBiographies.map((bio, i) => (
-          <DisplayItem
+          <ContactBioInlineEdit
             key={i}
-            icon={FileText}
-            label={bio.type ?? undefined}
-            value={bio.value ?? undefined}
-          />
+            bio={bio}
+            onUpdate={onUpdateBio}
+            onDelete={() => onDeleteBio(bio)}
+            hideAddButton
+            className="h-auto w-full"
+          >
+            <DisplayItem
+              icon={FileText}
+              label={bio.type ?? undefined}
+              value={bio.value ?? undefined}
+            />
+          </ContactBioInlineEdit>
         ))}
       </CardContent>
     </Card>
@@ -456,6 +482,34 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
     await handleDeleteDateMutation.mutateAsync(date['@id'])
   }
 
+  const handleCreateBioMutation = useCreateContactBiography()
+  const handleUpdateBioMutation = useUpdateContactBiography()
+  const handleDeleteBioMutation = useDeleteContactBiography()
+
+  const handleUpdateBio = async (bio: ContactBiography) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (bio['@id']) {
+      await handleUpdateBioMutation.mutateAsync({
+        id: bio['@id'],
+        data: bio,
+      })
+    } else {
+      await handleCreateBioMutation.mutateAsync({
+        ...bio,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteBio = async (bio: ContactBiography) => {
+    if (!bio['@id']) {
+      return
+    }
+    await handleDeleteBioMutation.mutateAsync(bio['@id'])
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -513,7 +567,12 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
         />
         <UpcomingDatesCard contact={contact} />
         <RelationsCard contact={contact} />
-        <BiographyCard contact={contact} />
+        <RelationsCard contact={contact} />
+        <BiographyCard
+          contact={contact}
+          onUpdateBio={handleUpdateBio}
+          onDeleteBio={handleDeleteBio}
+        />
       </div>
     </div>
   )

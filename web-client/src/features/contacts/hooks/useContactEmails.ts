@@ -40,7 +40,6 @@ export function useUpdateContactEmail() {
   })
 }
 
-// eslint-disable-next-line sonarjs/no-identical-functions
 export function useDeleteContactEmail() {
   const queryClient = useQueryClient()
   return useMutation({
