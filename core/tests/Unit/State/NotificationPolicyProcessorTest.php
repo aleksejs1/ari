@@ -23,10 +23,11 @@ class NotificationPolicyProcessorTest extends TestCase
     {
         $em = $this->createMock(EntityManagerInterface::class);
         $tokenStorage = self::createStub(TokenStorageInterface::class);
+        $iriConverter = self::createStub(\ApiPlatform\Metadata\IriConverterInterface::class);
         $groupRepo = self::createStub(GroupRepository::class);
         $channelRepo = self::createStub(NotificationChannelRepository::class);
 
-        $processor = new NotificationPolicyProcessor($em, $tokenStorage);
+        $processor = new NotificationPolicyProcessor($em, $tokenStorage, $iriConverter);
 
         // Inputs
         $dto = new NotificationPolicyDto();

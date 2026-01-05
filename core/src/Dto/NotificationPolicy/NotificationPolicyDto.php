@@ -3,10 +3,24 @@
 namespace App\Dto\NotificationPolicy;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 
+#[ApiResource(
+    operations: [
+        new Get(uriTemplate: '/notification-policies/{id}')
+    ]
+)]
 class NotificationPolicyDto
 {
+    #[ApiProperty(identifier: true)]
+    #[Groups(['notification_policy:read'])]
+    public ?int $id = null;
+
     #[Assert\NotBlank]
+    #[Groups(['notification_policy:read'])]
     public ?string $name = null;
 
     /**
@@ -20,6 +34,7 @@ class NotificationPolicyDto
         ],
         allowMissingFields: true
     )]
+    #[Groups(['notification_policy:read'])]
     public ?array $targets = null;
 
     #[Assert\Callback]
@@ -44,6 +59,7 @@ class NotificationPolicyDto
      */
     #[Assert\NotNull]
     #[Assert\All([new Assert\NotBlank()])]
+    #[Groups(['notification_policy:read'])]
     public ?array $eventTypes = null;
 
     /**
@@ -60,5 +76,6 @@ class NotificationPolicyDto
             allowMissingFields: false
         )
     ])]
+    #[Groups(['notification_policy:read'])]
     public ?array $schedule = null;
 }

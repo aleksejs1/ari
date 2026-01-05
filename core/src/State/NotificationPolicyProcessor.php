@@ -4,6 +4,7 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Dto\NotificationPolicy\NotificationPolicyDto;
 use App\Entity\NotificationPolicy;
 use App\Entity\NotificationRule;
@@ -20,7 +21,8 @@ class NotificationPolicyProcessor implements ProcessorInterface
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private TokenStorageInterface $tokenStorage
+        private TokenStorageInterface $tokenStorage,
+        private IriConverterInterface $iriConverter
     ) {
     }
 
@@ -118,7 +120,17 @@ class NotificationPolicyProcessor implements ProcessorInterface
         $allChannelIds = array_unique($allChannelIds);
         $channels = [];
         foreach ($allChannelIds as $chId) {
-            $ch = $this->em->getRepository(\App\Entity\NotificationChannel::class)->find($chId);
+            $ch = null;
+            if (is_string($chId) && str_starts_with($chId, '/')) {
+                try {
+                    $ch = $this->iriConverter->getResourceFromIri($chId);
+                } catch (\Exception $e) {
+                    // Ignore invalid IRI
+                }
+            } else {
+                $ch = $this->em->getRepository(\App\Entity\NotificationChannel::class)->find($chId);
+            }
+
             if ($ch instanceof \App\Entity\NotificationChannel) {
                 $channels[$chId] = $ch;
             }
@@ -138,13 +150,28 @@ class NotificationPolicyProcessor implements ProcessorInterface
             $group = null;
 
             if ($targetType === 'group' && $targetId !== null) {
-                $group = $this->em->getRepository(\App\Entity\Group::class)->find($targetId);
+                $group = null;
+                if (is_string($targetId) && str_starts_with($targetId, '/')) {
+                    try {
+                        $group = $this->iriConverter->getResourceFromIri($targetId);
+                    } catch (\Exception $e) {
+                         // Fallback or ignore? Usually valid IRI required if it starts with /
+                    }
+                } else {
+                     $group = $this->em->getRepository(\App\Entity\Group::class)->find($targetId);
+                }
+
                 if (!$group instanceof \App\Entity\Group) {
                     continue;
                 }
             }
 
-            foreach ($dto->eventTypes ?? [] as $eventType) {
+            $loopEventTypes = $dto->eventTypes;
+            if ($loopEventTypes === null || count($loopEventTypes) === 0) {
+                $loopEventTypes = [null];
+            }
+
+            foreach ($loopEventTypes as $eventType) {
                 if (!is_array($dto->schedule)) {
                     continue;
                 }

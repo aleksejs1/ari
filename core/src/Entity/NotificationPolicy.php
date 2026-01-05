@@ -20,10 +20,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
             processor: 'App\State\NotificationPolicyProcessor'
         ),
         new \ApiPlatform\Metadata\Get(
-            uriTemplate: '/notification-policies/{id}'
+            uriTemplate: '/notification-policies/{id}',
+            output: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            provider: 'App\State\NotificationPolicyProvider'
         ),
         new \ApiPlatform\Metadata\GetCollection(
-            uriTemplate: '/notification-policies'
+            uriTemplate: '/notification-policies',
+            output: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            provider: 'App\State\NotificationPolicyProvider'
         ),
         new \ApiPlatform\Metadata\Put(
             uriTemplate: '/notification-policies/{id}',

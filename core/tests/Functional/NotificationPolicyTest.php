@@ -135,7 +135,11 @@ class NotificationPolicyTest extends AbstractApiTestCase
         // 3. Read (GET)
         $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
         self::assertResponseStatusCodeSame(200);
-        self::assertJsonContains(['name' => 'Original Policy']);
+        self::assertJsonContains([
+            'name' => 'Original Policy',
+            'targets' => ['type' => 'group'], // Check root level key
+            'schedule' => [['time' => '12:00']]
+        ]);
 
         // 4. Update (PUT)
         $updatePayload = $payload;
@@ -226,5 +230,99 @@ class NotificationPolicyTest extends AbstractApiTestCase
         self::assertEquals('all', $rule->getTargetType());
         self::assertNull($rule->getContactGroup());
         self::assertNull($rule->getContact());
+    }
+
+    public function testCreatePolicyWithEmptyEventTypes(): void
+    {
+        $client = static::createClient();
+
+        $channelResponse = $client->request('POST', '/api/notification_channels', [
+            'auth_bearer' => $this->token,
+            'json' => ['type' => 'email', 'config' => []],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $channelId = $channelResponse->toArray()['id'];
+
+        $payload = [
+            'name' => 'Empty EventTypes Policy',
+            'targets' => ['type' => 'all'],
+            'eventTypes' => [], // Empty array provided
+            'schedule' => [
+                [
+                    'offsetDays' => 0,
+                    'time' => '10:00',
+                    'channels' => [$channelId]
+                ]
+            ]
+        ];
+
+        $response = $client->request('POST', '/api/notification-policies', [
+            'auth_bearer' => $this->token,
+            'json' => $payload,
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $policyId = $response->toArray()['id'];
+
+        $doctrine = static::getContainer()->get('doctrine');
+        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+            throw new \RuntimeException('Doctrine not found');
+        }
+        $em = $doctrine->getManager();
+        $policy = $em->getRepository(NotificationPolicy::class)->find($policyId);
+        self::assertInstanceOf(NotificationPolicy::class, $policy);
+
+        self::assertCount(1, $policy->getNotificationRules());
+        $rule = $policy->getNotificationRules()->first();
+        self::assertInstanceOf(NotificationRule::class, $rule);
+        self::assertNull($rule->getEventType());
+    }
+
+    public function testDtoHasCorrectId(): void
+    {
+        $client = static::createClient();
+
+        $payload = [
+            'name' => 'ID Check Policy',
+            'targets' => ['type' => 'all'],
+            'eventTypes' => [],
+            'schedule' => []
+        ];
+
+        $response = $client->request('POST', '/api/notification-policies', [
+            'auth_bearer' => $this->token,
+            'json' => $payload,
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $policyId = $response->toArray()['id'];
+        $policyIri = $response->toArray()['@id'];
+
+        // Verify POST returned correct IRI (generated from Entity or DTO?)
+        // POST uses Processor, returns Entity which is output as DTO.
+        // If DTO output is enabled, serialization uses DTO.
+        // If Provider is only for GET, POST might still use Entity-to-DTO output?
+        // Actually, if output class is DTO, ApiPlatform converts Entity -> DTO.
+        // If no DataTransformer for Output, it might use property mapping.
+        // But I implemented Provider for GET. For POST, I haven't implemented Output Transformer.
+        // Wait, for POST, 'processor' is defined. It returns Entity.
+        // If 'output' is DTO, ApiPlatform tries to transform Entity to DTO.
+        // Since no transformer, it might rely on serializer/normalizer?
+        // Or if I set output=DTO on resource level (I did not, only on GET operations).
+        // Check NotificationPolicy.php:
+        // POST does NOT have output=DTO. It uses input=DTO, processor=Processor.
+        // So POST returns Entity. Entity defaults to @id based on Entity ID.
+        // So POST response should have correct ID.
+
+        // GET Request uses Provider -> DTO.
+        // DTO has identifier=true on $id.
+        // If $id is null, @id is genid.
+
+        $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
+        self::assertResponseStatusCodeSame(200);
+
+        // Assert @id matches /api/notification-policies/{id}
+        self::assertJsonContains([
+            '@id' => $policyIri,
+            'id' => $policyId
+        ]);
     }
 }
