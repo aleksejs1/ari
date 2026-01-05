@@ -124,18 +124,25 @@ class NotificationPolicyProcessor implements ProcessorInterface
             }
         }
 
-        // Iterate Logic
-        foreach ($targetIds as $targetId) {
-            $group = null;
-            // $contact = null; // If we support contact type later
+        // If type is 'all', we iterate once with null target.
+        // If type is 'group' or 'contact', iterate over targetIds.
+        $loopTargets = [];
+        if ($targetType === 'all') {
+            $loopTargets = [null];
+        } elseif (count($targetIds) > 0) {
+            $loopTargets = $targetIds;
+        }
 
-            if ($targetType === 'group') {
+        // Iterate Logic
+        foreach ($loopTargets as $targetId) {
+            $group = null;
+
+            if ($targetType === 'group' && $targetId !== null) {
                 $group = $this->em->getRepository(\App\Entity\Group::class)->find($targetId);
                 if (!$group instanceof \App\Entity\Group) {
-                    continue; // Or throw exception?
+                    continue;
                 }
             }
-            // Logic for 'contact' type could go here
 
             foreach ($dto->eventTypes ?? [] as $eventType) {
                 if (!is_array($dto->schedule)) {

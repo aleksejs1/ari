@@ -15,12 +15,29 @@ class NotificationPolicyDto
     #[Assert\NotNull]
     #[Assert\Collection(
         fields: [
-            'type' => new Assert\Choice(choices: ['group', 'contact']),
-            'ids' => new Assert\All([new Assert\NotBlank()])
+            'type' => new Assert\Choice(choices: ['group', 'contact', 'all']),
+            'ids' => new Assert\Optional([new Assert\All([new Assert\NotBlank()])])
         ],
-        allowMissingFields: false
+        allowMissingFields: true
     )]
     public ?array $targets = null;
+
+    #[Assert\Callback]
+    public function validateTargets(\Symfony\Component\Validator\Context\ExecutionContextInterface $context): void
+    {
+        if (!isset($this->targets['type'])) {
+            return;
+        }
+
+        $type = $this->targets['type'];
+        if ($type !== 'all') {
+            if (!isset($this->targets['ids']) || $this->targets['ids'] === []) {
+                $context->buildViolation('This value should not be blank.')
+                    ->atPath('targets[ids]')
+                    ->addViolation();
+            }
+        }
+    }
 
     /**
      * @var array<string>|null

@@ -175,4 +175,56 @@ class NotificationPolicyTest extends AbstractApiTestCase
         $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
         self::assertResponseStatusCodeSame(404);
     }
+    public function testCreateAllNotificationPolicy(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Channel
+        $channelResponse = $client->request('POST', '/api/notification_channels', [
+            'auth_bearer' => $this->token,
+            'json' => ['type' => 'email', 'config' => []],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $channelId = $channelResponse->toArray()['id'];
+
+        // 2. Create Policy with 'all'
+        $payload = [
+            'name' => 'All Policy',
+            'targets' => [
+                'type' => 'all'
+                // ids implied absent
+            ],
+            'eventTypes' => ['birthday'],
+            'schedule' => [
+                [
+                    'offsetDays' => 0,
+                    'time' => '10:00',
+                    'channels' => [$channelId]
+                ]
+            ]
+        ];
+
+        $response = $client->request('POST', '/api/notification-policies', [
+            'auth_bearer' => $this->token,
+            'json' => $payload,
+        ]);
+
+        self::assertResponseStatusCodeSame(201);
+        $policyId = $response->toArray()['id'];
+
+        $doctrine = static::getContainer()->get('doctrine');
+        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+            throw new \RuntimeException('Doctrine not found');
+        }
+        $em = $doctrine->getManager();
+        $policy = $em->getRepository(NotificationPolicy::class)->find($policyId);
+        self::assertInstanceOf(NotificationPolicy::class, $policy);
+        self::assertCount(1, $policy->getNotificationRules());
+
+        $rule = $policy->getNotificationRules()->first();
+        self::assertInstanceOf(NotificationRule::class, $rule);
+        self::assertEquals('all', $rule->getTargetType());
+        self::assertNull($rule->getContactGroup());
+        self::assertNull($rule->getContact());
+    }
 }
