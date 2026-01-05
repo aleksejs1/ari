@@ -96,4 +96,83 @@ class NotificationPolicyTest extends AbstractApiTestCase
         self::assertInstanceOf(NotificationChannel::class, $channel);
         self::assertEquals($channelId, $channel->getId());
     }
+
+    public function testCRUDOperations(): void
+    {
+        $client = static::createClient();
+
+        // 1. Setup Dependencies (Group & Channel)
+        $groupResponse = $client->request('POST', '/api/groups', [
+            'auth_bearer' => $this->token,
+            'json' => ['name' => 'CRUD Group'],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $groupId = $groupResponse->toArray()['id'];
+
+        $channelResponse = $client->request('POST', '/api/notification_channels', [
+            'auth_bearer' => $this->token,
+            'json' => ['type' => 'email', 'config' => []],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $channelId = $channelResponse->toArray()['id'];
+
+        // 2. Create (POST)
+        $payload = [
+            'name' => 'Original Policy',
+            'targets' => ['type' => 'group', 'ids' => [$groupId]],
+            'eventTypes' => ['birthday'],
+            'schedule' => [['offsetDays' => 0, 'time' => '12:00', 'channels' => [$channelId]]]
+        ];
+
+        $resp = $client->request('POST', '/api/notification-policies', [
+            'auth_bearer' => $this->token,
+            'json' => $payload,
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $policyId = $resp->toArray()['id'];
+        $policyIri = $resp->toArray()['@id'];
+
+        // 3. Read (GET)
+        $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
+        self::assertResponseStatusCodeSame(200);
+        self::assertJsonContains(['name' => 'Original Policy']);
+
+        // 4. Update (PUT)
+        $updatePayload = $payload;
+        $updatePayload['name'] = 'Updated Policy';
+        $updatePayload['schedule'][0]['time'] = '13:00';
+
+        $client->request('PUT', $policyIri, [
+            'auth_bearer' => $this->token,
+            'json' => $updatePayload,
+        ]);
+        self::assertResponseStatusCodeSame(200);
+        self::assertJsonContains(['name' => 'Updated Policy']);
+
+        // Verify update persisted (GET again)
+        $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
+        self::assertJsonContains(['name' => 'Updated Policy']);
+
+        // Verify Rules updated (via DB or implicit logic - DB check better)
+        $doctrine = static::getContainer()->get('doctrine');
+        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+            throw new \RuntimeException('Doctrine not found');
+        }
+        $entityManager = $doctrine->getManager();
+        $policy = $entityManager->getRepository(NotificationPolicy::class)->find($policyId);
+        self::assertInstanceOf(NotificationPolicy::class, $policy);
+        $entityManager->refresh($policy);
+        self::assertEquals('Updated Policy', $policy->getName());
+        $rule = $policy->getNotificationRules()->first();
+        self::assertInstanceOf(NotificationRule::class, $rule);
+        self::assertEquals('13:00', $rule->getOffsetTime());
+
+        // 5. Delete (DELETE)
+        $client->request('DELETE', $policyIri, ['auth_bearer' => $this->token]);
+        self::assertResponseStatusCodeSame(204);
+
+        // 6. Verify Delete (GET -> 404)
+        $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
+        self::assertResponseStatusCodeSame(404);
+    }
 }

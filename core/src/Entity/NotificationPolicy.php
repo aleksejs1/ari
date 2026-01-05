@@ -18,6 +18,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/notification-policies',
             input: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
             processor: 'App\State\NotificationPolicyProcessor'
+        ),
+        new \ApiPlatform\Metadata\Get(
+            uriTemplate: '/notification-policies/{id}'
+        ),
+        new \ApiPlatform\Metadata\GetCollection(
+            uriTemplate: '/notification-policies'
+        ),
+        new \ApiPlatform\Metadata\Put(
+            uriTemplate: '/notification-policies/{id}',
+            input: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            processor: 'App\State\NotificationPolicyProcessor'
+        ),
+        new \ApiPlatform\Metadata\Patch(
+            uriTemplate: '/notification-policies/{id}',
+            input: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            processor: 'App\State\NotificationPolicyProcessor'
+        ),
+        new \ApiPlatform\Metadata\Delete(
+            uriTemplate: '/notification-policies/{id}'
         )
     ],
     normalizationContext: ['groups' => ['notification_policy:read']],

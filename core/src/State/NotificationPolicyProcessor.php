@@ -27,9 +27,33 @@ class NotificationPolicyProcessor implements ProcessorInterface
     #[Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
-        $policy = new NotificationPolicy();
+        $policy = null;
+
+        // Try to fetch existing policy by ID for PUT/PATCH
+        if (($operation instanceof \ApiPlatform\Metadata\Put || $operation instanceof \ApiPlatform\Metadata\Patch)) {
+             $id = $uriVariables['id'] ?? null;
+            if ($id !== null) {
+                $policy = $this->em->getRepository(NotificationPolicy::class)->find($id);
+            }
+        }
+
+        // Fallback to previous_data if find failed (e.g. key mismatch) but usually uriVariables is reliable
+        if (!$policy instanceof NotificationPolicy) {
+             $prev = $context['previous_data'] ?? null;
+            if ($prev instanceof NotificationPolicy) {
+                $policy = $prev;
+            }
+        }
+
+        if (!$policy instanceof NotificationPolicy) {
+            // Fallback or explicit POST
+            $policy = new NotificationPolicy();
+            $policy->setIsActive(true);
+        }
+
+        // Update fields
         $policy->setName($data->name);
-        $policy->setIsActive(true);
+
         // Deep conversion for uiSnapshot
         $encoded = json_encode($data);
         if ($encoded === false) {
@@ -37,17 +61,29 @@ class NotificationPolicyProcessor implements ProcessorInterface
         }
         $policy->setUiSnapshot((array)json_decode($encoded, true));
 
-        // Set User
+        // Set User (if not set or just to ensure)
         $token = $this->tokenStorage->getToken();
         $user = $token?->getUser();
         if ($user instanceof User) {
+            $userId = $user->getId();
             // Ensure user is managed by current EM
             if (!$this->em->contains($user)) {
-                $user = $this->em->getRepository(User::class)->find($user->getId());
+                if ($userId !== null) {
+                    $user = $this->em->getRepository(User::class)->find($userId);
+                }
             }
-            $policy->setUser($user);
+            if ($user instanceof User) {
+                $existingUser = $policy->getUser();
+                if (!$existingUser instanceof User || $existingUser->getId() !== $user->getId()) {
+                    $policy->setUser($user);
+                }
+            }
         } else {
-            throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('User context is missing.');
+             // If we are updating, user might be already set, but we enforce context user check?
+             // Or allow system updates? For now, stick to security.
+            if ($policy->getUser() === null) {
+                throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('User context is missing.');
+            }
         }
 
         $this->processRules($policy, $data);
@@ -60,8 +96,8 @@ class NotificationPolicyProcessor implements ProcessorInterface
 
     private function processRules(NotificationPolicy $policy, NotificationPolicyDto $dto): void
     {
-        // Clear existing rules if any (conceptually for update, here new policy is empty)
-        // $policy->getNotificationRules()->clear();
+        // Clear existing rules
+        $policy->getNotificationRules()->clear();
 
         $targets = $dto->targets;
         $targetType = $targets['type'] ?? 'group';
