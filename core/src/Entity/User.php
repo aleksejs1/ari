@@ -107,6 +107,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserPref::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userPrefs;
 
+    /**
+     * @var Collection<int, NotificationPolicy>
+     */
+    #[ORM\OneToMany(targetEntity: NotificationPolicy::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $notificationPolicies;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -116,6 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tokenStorages = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->userPrefs = new ArrayCollection();
+        $this->notificationPolicies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -412,6 +419,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($userPref->getUser() === $this) {
                 $userPref->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NotificationPolicy>
+     */
+    public function getNotificationPolicies(): Collection
+    {
+        return $this->notificationPolicies;
+    }
+
+    public function addNotificationPolicy(NotificationPolicy $notificationPolicy): static
+    {
+        if (!$this->notificationPolicies->contains($notificationPolicy)) {
+            $this->notificationPolicies->add($notificationPolicy);
+            $notificationPolicy->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationPolicy(NotificationPolicy $notificationPolicy): static
+    {
+        if ($this->notificationPolicies->removeElement($notificationPolicy)) {
+            // set the owning side to null (unless already changed)
+            if ($notificationPolicy->getUser() === $this) {
+                $notificationPolicy->setUser(null);
             }
         }
 

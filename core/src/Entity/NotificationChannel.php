@@ -79,11 +79,18 @@ class NotificationChannel implements TenantAwareInterface
     #[ORM\OneToMany(targetEntity: NotificationIntent::class, mappedBy: 'channel', orphanRemoval: true)]
     private Collection $notificationIntents;
 
+    /**
+     * @var Collection<int, NotificationRule>
+     */
+    #[ORM\OneToMany(targetEntity: NotificationRule::class, mappedBy: 'channel')]
+    private Collection $notificationRules;
+
     public function __construct()
     {
         $this->notificationSubscriptions = new ArrayCollection();
         $this->notificationIntents = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->notificationRules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -234,5 +241,35 @@ class NotificationChannel implements TenantAwareInterface
                     ->addViolation();
             }
         }
+    }
+
+    /**
+     * @return Collection<int, NotificationRule>
+     */
+    public function getNotificationRules(): Collection
+    {
+        return $this->notificationRules;
+    }
+
+    public function addNotificationRule(NotificationRule $notificationRule): static
+    {
+        if (!$this->notificationRules->contains($notificationRule)) {
+            $this->notificationRules->add($notificationRule);
+            $notificationRule->setChannel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationRule(NotificationRule $notificationRule): static
+    {
+        if ($this->notificationRules->removeElement($notificationRule)) {
+            // set the owning side to null (unless already changed)
+            if ($notificationRule->getChannel() === $this) {
+                $notificationRule->setChannel(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait TenantAwareTrait
 {
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $tenant = null;
 
