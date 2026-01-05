@@ -24,7 +24,6 @@ export function NotificationChannelsTable({
   onEdit,
   onDelete,
 }: NotificationChannelsTableProps) {
-  'use no memo'
   const { t } = useTranslation()
 
   const columns: ColumnDef<NotificationChannel>[] = [
@@ -37,6 +36,9 @@ export function NotificationChannelsTable({
       accessorKey: 'config',
       header: t('notificationChannels.config'),
       cell: ({ row }) => {
+        if (row.original.type !== 'telegram') {
+          return null
+        }
         const config = row.original.config as Record<string, string>
         if (!config) {
           return null

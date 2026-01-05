@@ -104,8 +104,8 @@ export default function NotificationChannelsPage() {
               defaultValues={
                 editingChannel
                   ? {
-                      type: 'telegram',
-                      config: editingChannel.config as { botToken: string; chatId: string },
+                      type: editingChannel.type as 'telegram' | 'web',
+                      config: editingChannel.config,
                     }
                   : undefined
               }

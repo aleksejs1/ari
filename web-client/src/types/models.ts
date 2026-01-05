@@ -19,8 +19,6 @@ export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read
 export type ContactPhoneNumber = components['schemas']['ContactPhoneNumber.jsonld-contact.read']
 export type ContactEmailAdress = components['schemas']['ContactEmailAdress.jsonld-contact.read']
 export type ContactAddress = components['schemas']['ContactAddress.jsonld-contact.read']
-export type NotificationChannel =
-  components['schemas']['NotificationChannel.jsonld-notification_channel.read']
 export type NotificationSubscription =
   components['schemas']['NotificationSubscription.jsonld-notification_subscription.read']
 export type ContactGroup = z.infer<typeof contactGroupSchema>
@@ -189,11 +187,14 @@ export interface TimelineEvent {
 
 export const notificationChannelSchema = z.object({
   id: z.number().optional(),
-  type: z.literal('telegram'),
-  config: z.object({
-    botToken: z.string().min(1),
-    chatId: z.string().min(1),
-  }),
+  type: z.enum(['telegram', 'web']),
+  config: z
+    .object({
+      botToken: z.string().optional(),
+      chatId: z.string().optional(),
+    })
+    .optional()
+    .nullable(),
 })
 
 export type NotificationChannelFormValues = z.infer<typeof notificationChannelSchema>

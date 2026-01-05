@@ -216,7 +216,11 @@
     "verified": "Verified",
     "notVerified": "Not Verified",
     "formDescription": "Fill in the details below to configure your notification channel.",
-    "error": "Error loading notification channels."
+    "error": "Error loading notification channels.",
+    "types": {
+      "telegram": "Telegram",
+      "web": "Browser"
+    }
   },
   "common": {
     "save": "Save",
