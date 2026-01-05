@@ -15,4 +15,20 @@ class NotificationRuleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, NotificationRule::class);
     }
+
+    /**
+     * @return NotificationRule[]
+     */
+    public function findMatchingRules(string $eventType, int $offsetDays): array
+    {
+        return $this->createQueryBuilder('nr')
+            ->join('nr.policy', 'p')
+            ->addSelect('p')
+            ->where('nr.eventType = :eventType')
+            ->andWhere('nr.offsetDays = :offsetDays')
+            ->setParameter('eventType', $eventType)
+            ->setParameter('offsetDays', $offsetDays)
+            ->getQuery()
+            ->getResult();
+    }
 }
