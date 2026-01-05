@@ -11,7 +11,18 @@
       "groups": "Groups",
       "manageGroups": "Manage Groups",
       "home": "Home",
-      "settings": "Settings"
+      "settings": "Settings",
+      "sidebar": {
+        "contacts": "Contacts",
+        "auditLogs": "Audit Logs",
+        "groups": "Groups",
+        "manageGroups": "Manage Groups",
+        "notificationChannels": "Notification Channels",
+        "notificationPolicies": "Notification Policies",
+        "googleImport": "Google Import",
+        "settings": "Settings",
+        "home": "Home"
+      }
     }
   },
   "settings": {
@@ -324,6 +335,31 @@
     "failedToLoadContact": "Failed to load contact",
     "failedToLoadLogs": "Failed to load audit logs",
     "failedToLoadGroups": "Failed to load groups."
+  },
+  "notification_policies": {
+    "add_custom_event": "Add custom event...",
+    "all_events": "All events",
+    "title": "Notification Policies",
+    "create": "Create Notification Policy",
+    "edit": "Edit Notification Policy",
+    "name": "Name",
+    "type": "Type",
+    "targets": "Targets",
+    "events": "Event Types",
+    "event_type": "Event Type",
+    "schedule": "Schedule",
+    "add_schedule": "Add Schedule",
+    "days_before": "Days before",
+    "offset_days": "Offset Days",
+    "time": "Time",
+    "preview": "Notification Schedule Preview",
+    "preview_description": "If an event occurs on {{date}}, notifications will be sent on:",
+    "at": "at",
+    "types": {
+      "all": "All",
+      "contact": "Contacts",
+      "group": "Groups"
+    }
   },
   "validation": {
     "firstNameRequired": "First name is required",

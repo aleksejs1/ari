@@ -16,13 +16,13 @@ export function getHydraMember<T>(data?: HydraCollection<T>): T[] {
   if (!data) {
     return []
   }
-  return data['member'] ?? data.member ?? []
+  return data.member || []
 }
 
 export function getHydraPagination<T>(data?: HydraCollection<T>, page = 1) {
-  const totalItems = data?.['totalItems'] ?? data?.totalItems ?? 0
+  const totalItems = data?.totalItems ?? 0
   const totalPages = Math.ceil(totalItems / 30)
-  const view = data?.['view']
+  const view = data?.view
 
   return {
     totalItems,

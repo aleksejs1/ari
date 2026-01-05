@@ -12,6 +12,8 @@ import NotificationChannelsPage from './features/notification-channels/Notificat
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import HomePage from './pages/HomePage'
+import NotificationPoliciesPage from './pages/NotificationPoliciesPage'
+import NotificationPolicyFormPage from './pages/NotificationPolicyFormPage'
 import SettingsPage from './pages/Settings'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -80,6 +82,18 @@ export default function App() {
             {
               path: '/settings',
               element: <SettingsPage />,
+            },
+            {
+              path: '/settings/notification-policies',
+              element: <NotificationPoliciesPage />,
+            },
+            {
+              path: '/settings/notification-policies/new',
+              element: <NotificationPolicyFormPage />,
+            },
+            {
+              path: '/settings/notification-policies/:id',
+              element: <NotificationPolicyFormPage />,
             },
           ],
         },

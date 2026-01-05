@@ -4,6 +4,19 @@ import { vi } from 'vitest'
 
 import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
 
+// Mock ResizeObserver for Radix UI Popover
+global.ResizeObserver = class ResizeObserver {
+  observe() {
+    // mock
+  }
+  unobserve() {
+    // mock
+  }
+  disconnect() {
+    // mock
+  }
+}
+
 describe('ContactEmailInlineEdit', () => {
   const mockEmail = {
     '@id': '/api/emails/1',

@@ -11,7 +11,18 @@
       "groups": "Группы",
       "manageGroups": "Управление группами",
       "home": "Главная",
-      "settings": "Настройки"
+      "settings": "Настройки",
+      "sidebar": {
+        "contacts": "Контакты",
+        "auditLogs": "Логи аудита",
+        "groups": "Группы",
+        "manageGroups": "Управление группами",
+        "notificationChannels": "Каналы уведомлений",
+        "notificationPolicies": "Правила уведомлений",
+        "googleImport": "Импорт из Google",
+        "settings": "Настройки",
+        "home": "Главная"
+      }
     }
   },
   "settings": {
@@ -324,6 +335,31 @@
     "failedToLoadContact": "Не удалось загрузить контакт",
     "failedToLoadLogs": "Не удалось загрузить логи аудита",
     "failedToLoadGroups": "Не удалось загрузить группы."
+  },
+  "notification_policies": {
+    "add_custom_event": "Добавить свое событие...",
+    "all_events": "Все события",
+    "title": "Правила уведомлений",
+    "create": "Создать правило уведомлений",
+    "edit": "Редактировать правило уведомлений",
+    "name": "Название",
+    "type": "Тип",
+    "targets": "Получатели",
+    "events": "Типы событий",
+    "event_type": "Тип события",
+    "schedule": "Расписание",
+    "add_schedule": "Добавить расписание",
+    "days_before": "Дней до события",
+    "offset_days": "Смещение (дни)",
+    "time": "Время",
+    "preview": "Предпросмотр расписания",
+    "preview_description": "Если событие произойдет {{date}}, уведомления будут отправлены:",
+    "at": "в",
+    "types": {
+      "all": "Все",
+      "contact": "Контакты",
+      "group": "Группы"
+    }
   },
   "validation": {
     "firstNameRequired": "Имя обязательно",

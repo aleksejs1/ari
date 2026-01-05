@@ -236,7 +236,7 @@ describe('ContactsPage', () => {
     })
   })
 
-  it('handles robust pagination when hydra:view is missing', () => {
+  it('handles robust pagination when view is missing', () => {
     vi.mocked(useContacts).mockReturnValue({
       isLoading: false,
       isPlaceholderData: false,

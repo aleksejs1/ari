@@ -656,6 +656,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notification-policy/event-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of EventType resources.
+         * @description Retrieves the collection of EventType resources.
+         */
+        get: operations["event_types"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/google/import": {
         parameters: {
             query?: never;
@@ -886,6 +906,62 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/notification-policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of NotificationPolicy resources.
+         * @description Retrieves the collection of NotificationPolicy resources.
+         */
+        get: operations["api_notification-policies_get_collection"];
+        put?: never;
+        /**
+         * Creates a NotificationPolicy resource.
+         * @description Creates a NotificationPolicy resource.
+         */
+        post: operations["api_notification-policies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notification-policies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a NotificationPolicy resource.
+         * @description Retrieves a NotificationPolicy resource.
+         */
+        get: operations["api_notification-policies_id_get"];
+        /**
+         * Replaces the NotificationPolicy resource.
+         * @description Replaces the NotificationPolicy resource.
+         */
+        put: operations["api_notification-policies_id_put"];
+        post?: never;
+        /**
+         * Removes the NotificationPolicy resource.
+         * @description Removes the NotificationPolicy resource.
+         */
+        delete: operations["api_notification-policies_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the NotificationPolicy resource.
+         * @description Updates the NotificationPolicy resource.
+         */
+        patch: operations["api_notification-policies_id_patch"];
         trace?: never;
     };
     "/api/notification_subscriptions": {
@@ -1535,11 +1611,7 @@ export interface components {
         };
         "ContactGroup-contact.read": {
             readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            groupResource?: string;
+            groupResource?: components["schemas"]["Group-contact.read"];
         };
         "ContactGroup-contact_group.create_contact_group.update": {
             /**
@@ -1564,19 +1636,11 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            groupResource?: string;
+            groupResource?: components["schemas"]["Group-contact_group.read"];
         };
         "ContactGroup.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            groupResource?: string;
+            groupResource?: components["schemas"]["Group.jsonld-contact.read"];
         };
         "ContactGroup.jsonld-contact_group.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -1585,11 +1649,7 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            groupResource?: string;
+            groupResource?: components["schemas"]["Group.jsonld-contact_group.read"];
         };
         "ContactName-contact.create": {
             family?: string | null;
@@ -1901,10 +1961,24 @@ export interface components {
             readonly type?: string;
             readonly description?: string | null;
         };
+        "EventType-event_type.read": {
+            text?: string;
+        };
+        "EventType.jsonld-event_type.read": components["schemas"]["HydraItemBaseSchema"] & {
+            text?: string;
+        };
         "Group-contact.create": {
             name?: string;
         };
+        "Group-contact.read": {
+            readonly id?: number;
+            name?: string;
+        };
         "Group-contact_group.create_contact_group.update": {
+            name?: string;
+        };
+        "Group-contact_group.read": {
+            readonly id?: number;
             name?: string;
         };
         "Group-group.create": {
@@ -1914,6 +1988,14 @@ export interface components {
             name?: string;
         };
         "Group-group.read": {
+            readonly id?: number;
+            name?: string;
+        };
+        "Group.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            name?: string;
+        };
+        "Group.jsonld-contact_group.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             name?: string;
         };
@@ -2027,6 +2109,146 @@ export interface components {
                 [key: string]: string | null;
             } | null;
         };
+        "NotificationPolicy-notification_policy.read": {
+            readonly id?: number;
+            name?: string | null;
+            isActive?: boolean;
+            uiSnapshot?: {
+                [key: string]: string | null;
+            } | null;
+            notificationRules?: components["schemas"]["NotificationRule-notification_policy.read"][];
+        };
+        "NotificationPolicy.NotificationPolicyDto": {
+            id?: number | null;
+            name: string | null;
+            targets: {
+                /** @enum {unknown} */
+                type?: "group" | "contact" | "all";
+                ids?: unknown;
+            };
+            eventTypes: string[] | null;
+            schedule: {
+                [key: string]: string | null;
+            }[] | null;
+        };
+        "NotificationPolicy.NotificationPolicyDto-notification_policy.read": {
+            id?: number | null;
+            name: string | null;
+            targets: {
+                /** @enum {unknown} */
+                type?: "group" | "contact" | "all";
+                ids?: unknown;
+            };
+            eventTypes: string[] | null;
+            schedule: {
+                [key: string]: string | null;
+            }[] | null;
+        };
+        "NotificationPolicy.NotificationPolicyDto.jsonMergePatch": {
+            id?: number | null;
+            name?: string | null;
+            targets?: {
+                /** @enum {unknown} */
+                type?: "group" | "contact" | "all";
+                ids?: unknown;
+            };
+            eventTypes?: string[] | null;
+            schedule?: {
+                [key: string]: string | null;
+            }[] | null;
+        };
+        "NotificationPolicy.NotificationPolicyDto.jsonld-notification_policy.read": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: number | null;
+            name: string | null;
+            targets: {
+                /** @enum {unknown} */
+                type?: "group" | "contact" | "all";
+                ids?: unknown;
+            };
+            eventTypes: string[] | null;
+            schedule: {
+                [key: string]: string | null;
+            }[] | null;
+        };
+        "NotificationPolicy.jsonld-notification_policy.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            name?: string | null;
+            isActive?: boolean;
+            uiSnapshot?: {
+                [key: string]: string | null;
+            } | null;
+            notificationRules?: components["schemas"]["NotificationRule.jsonld-notification_policy.read"][];
+        };
+        NotificationPolicyDto: {
+            id?: number | null;
+            name: string | null;
+            targets: {
+                /** @enum {unknown} */
+                type?: "group" | "contact" | "all";
+                ids?: unknown;
+            };
+            eventTypes: string[] | null;
+            schedule: {
+                [key: string]: string | null;
+            }[] | null;
+        };
+        "NotificationPolicyDto.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: number | null;
+            name: string | null;
+            targets: {
+                /** @enum {unknown} */
+                type?: "group" | "contact" | "all";
+                ids?: unknown;
+            };
+            eventTypes: string[] | null;
+            schedule: {
+                [key: string]: string | null;
+            }[] | null;
+        };
+        "NotificationRule-notification_policy.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string | null;
+            targetType?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contactGroup?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            eventType?: string | null;
+            offsetDays?: number;
+            offsetTime?: string | null;
+        };
+        "NotificationRule.jsonld-notification_policy.read": {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            channel?: string | null;
+            targetType?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contactGroup?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+            eventType?: string | null;
+            offsetDays?: number;
+            offsetTime?: string | null;
+        };
         "NotificationSubscription-notification_subscription.read": {
             readonly id?: number;
             /**
@@ -2087,22 +2309,22 @@ export interface components {
         };
         "UserPref-user_pref.create_user_pref.update": {
             /** @enum {string} */
-            type?: "language" | "dateFormat";
+            type?: "language" | "dateFormat" | "favourite_group_name";
             value?: string | null;
         };
         "UserPref-user_pref.create_user_pref.update.jsonMergePatch": {
             /** @enum {string} */
-            type?: "language" | "dateFormat";
+            type?: "language" | "dateFormat" | "favourite_group_name";
             value?: string | null;
         };
         "UserPref-user_pref.read": {
             /** @enum {string} */
-            type?: "language" | "dateFormat";
+            type?: "language" | "dateFormat" | "favourite_group_name";
             value?: string | null;
         };
         "UserPref.jsonld-user_pref.read": components["schemas"]["HydraItemBaseSchema"] & {
             /** @enum {string} */
-            type?: "language" | "dateFormat";
+            type?: "language" | "dateFormat" | "favourite_group_name";
             value?: string | null;
         };
         Token: {
@@ -5804,6 +6026,34 @@ export interface operations {
             };
         };
     };
+    event_types: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+                /** @description EventType search */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description EventType collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["EventType.jsonld-event_type.read"][];
+                    };
+                    "application/json": components["schemas"]["EventType-event_type.read"][];
+                };
+            };
+        };
+    };
     importGoogleContacts: {
         parameters: {
             query?: never;
@@ -6673,6 +6923,339 @@ export interface operations {
                     "application/ld+json": components["schemas"]["Error.jsonld"];
                     "application/problem+json": components["schemas"]["Error"];
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    "api_notification-policies_get_collection": {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationPolicy collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["NotificationPolicy.NotificationPolicyDto.jsonld-notification_policy.read"][];
+                    };
+                    "application/json": components["schemas"]["NotificationPolicy.NotificationPolicyDto-notification_policy.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    "api_notification-policies_post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new NotificationPolicy resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationPolicy.NotificationPolicyDto"];
+                "application/json": components["schemas"]["NotificationPolicy.NotificationPolicyDto"];
+            };
+        };
+        responses: {
+            /** @description NotificationPolicy resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationPolicy.jsonld-notification_policy.read"];
+                    "application/json": components["schemas"]["NotificationPolicy-notification_policy.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    "api_notification-policies_id_get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationPolicy identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationPolicy resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationPolicy.NotificationPolicyDto.jsonld-notification_policy.read"];
+                    "application/json": components["schemas"]["NotificationPolicy.NotificationPolicyDto-notification_policy.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    "api_notification-policies_id_put": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationPolicy identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated NotificationPolicy resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationPolicy.NotificationPolicyDto"];
+                "application/json": components["schemas"]["NotificationPolicy.NotificationPolicyDto"];
+            };
+        };
+        responses: {
+            /** @description NotificationPolicy resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationPolicy.jsonld-notification_policy.read"];
+                    "application/json": components["schemas"]["NotificationPolicy-notification_policy.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    "api_notification-policies_id_delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationPolicy identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NotificationPolicy resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    "api_notification-policies_id_patch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationPolicy identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated NotificationPolicy resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["NotificationPolicy.NotificationPolicyDto.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description NotificationPolicy resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationPolicy.jsonld-notification_policy.read"];
+                    "application/json": components["schemas"]["NotificationPolicy-notification_policy.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };

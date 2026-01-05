@@ -152,11 +152,11 @@ describe('DashboardLayout', () => {
     // The existing test expects 'app.title', so I assume i18n mock returns the key.
 
     // Find the toggle button. It contains the text.
-    fireEvent.click(screen.getByText('app.navigation.groups'))
+    fireEvent.click(screen.getByText('app.navigation.sidebar.groups'))
 
     // Now groups should be visible
     expect(screen.getByText('Family')).toBeInTheDocument()
     expect(screen.getByText('Work')).toBeInTheDocument()
-    expect(screen.getByText('app.navigation.manageGroups')).toBeInTheDocument()
+    expect(screen.getByText('app.navigation.sidebar.manageGroups')).toBeInTheDocument()
   })
 })

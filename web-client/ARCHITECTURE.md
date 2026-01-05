@@ -30,6 +30,7 @@ src/
 │   ├── contacts/    # Contact management (List, Details, Forms, Relations)
 │   ├── dashboard/   # Dashboard widgets and layout
 │   ├── groups/      # Contact groups management
+│   ├── notification-policies/ # Notification policies management (Create, Edit, List)
 │   ├── ...          # Other feature modules
 │   └── [feature]/
 │       ├── components/  # Feature-specific components

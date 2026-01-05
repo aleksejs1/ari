@@ -39,21 +39,21 @@ export default function DashboardLayout() {
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <LayoutDashboard className="h-5 w-5" />
-            <span>{t('app.navigation.home', 'Home')}</span>
+            <span>{t('app.navigation.sidebar.home', 'Home')}</span>
           </Link>
           <Link
             to="/contacts"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Users className="h-5 w-5" />
-            <span>{t('app.navigation.contacts')}</span>
+            <span>{t('app.navigation.sidebar.contacts', 'Contacts')}</span>
           </Link>
           <Link
             to="/audit-logs"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <History className="h-5 w-5" />
-            <span>{t('app.navigation.auditLogs')}</span>
+            <span>{t('app.navigation.sidebar.auditLogs', 'Audit Logs')}</span>
           </Link>
 
           {/* Groups Section */}
@@ -64,7 +64,7 @@ export default function DashboardLayout() {
             >
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                <span>{t('app.navigation.groups', 'Groups')}</span>
+                <span>{t('app.navigation.sidebar.groups', 'Groups')}</span>
               </div>
               {isGroupsOpen ? (
                 <ChevronDown className="h-4 w-4" />
@@ -78,7 +78,7 @@ export default function DashboardLayout() {
                   to="/groups"
                   className="block rounded-lg px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
-                  {t('app.navigation.manageGroups', 'Manage Groups')}
+                  {t('app.navigation.sidebar.manageGroups', 'Manage Groups')}
                 </Link>
                 {groups?.map((group) => (
                   <Link
@@ -98,21 +98,28 @@ export default function DashboardLayout() {
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Bell className="h-5 w-5" />
-            <span>{t('app.navigation.notificationChannels')}</span>
+            <span>{t('app.navigation.sidebar.notificationChannels', 'Notification Channels')}</span>
+          </Link>
+          <Link
+            to="/settings/notification-policies"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Bell className="h-5 w-5" />
+            <span>{t('app.navigation.sidebar.notificationPolicies', 'Notification Policies')}</span>
           </Link>
           <Link
             to="/google-import"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Download className="h-5 w-5" />
-            <span>{t('app.navigation.googleImport')}</span>
+            <span>{t('app.navigation.sidebar.googleImport', 'Google Import')}</span>
           </Link>
           <Link
             to="/settings"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <Settings className="h-5 w-5" />
-            <span>{t('app.navigation.settings')}</span>
+            <span>{t('app.navigation.sidebar.settings', 'Settings')}</span>
           </Link>
         </nav>
         <div className="mt-auto space-y-2 border-t p-4 dark:border-gray-700">

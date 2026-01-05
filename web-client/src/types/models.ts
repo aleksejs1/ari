@@ -197,3 +197,59 @@ export const notificationChannelSchema = z.object({
 })
 
 export type NotificationChannelFormValues = z.infer<typeof notificationChannelSchema>
+export type NotificationChannel = z.infer<typeof notificationChannelSchema>
+
+export type NotificationPolicyType = 'all' | 'group' | 'contact'
+
+export interface NotificationSchedule {
+  offsetDays: number
+  time: string // H:MM
+  channels: string[] // NotificationChannel IRIs
+}
+
+export interface NotificationPolicy {
+  id?: number
+  '@id'?: string
+  '@type'?: string
+  name: string
+  targets: {
+    type: NotificationPolicyType
+    ids?: string[] // IRIs of groups or contacts
+  }
+  eventTypes: string[]
+  schedule: NotificationSchedule[]
+}
+
+// Zod schema for Notification Policy
+export const notificationPolicySchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  targets: z
+    .object({
+      type: z.enum(['all', 'group', 'contact']),
+      ids: z.array(z.string()).optional(),
+    })
+    .refine(
+      (data) => {
+        if (data.type === 'all') {
+          return true
+        }
+        return data.ids && data.ids.length > 0
+      },
+      {
+        message: 'Targets must be selected for group or contact policies',
+        path: ['ids'],
+      },
+    ),
+  eventTypes: z.array(z.string()),
+  schedule: z
+    .array(
+      z.object({
+        offsetDays: z.coerce.number(),
+        time: z.string().regex(/^([0-1]?\d|2[0-3]):[0-5]\d$/, 'Invalid time format (H:MM)'),
+        channels: z.array(z.string()).min(1, 'At least one channel must be selected'),
+      }),
+    )
+    .min(1, 'At least one schedule is required'),
+})
+
+export type NotificationPolicyFormValues = z.infer<typeof notificationPolicySchema>
