@@ -20,7 +20,6 @@ class ImportXmlAction extends AbstractController
     ) {
     }
 
-    #[Route('/api/contacts/import-xml', name: 'api_contacts_import_xml', methods: ['POST'])]
     public function __invoke(Request $request): Response
     {
         $user = $this->security->getUser();

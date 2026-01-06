@@ -28,6 +28,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\RequestBody;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ApiResource(
@@ -69,6 +71,33 @@ use Symfony\Component\Uid\Uuid;
     requirements: ['id' => '\d+']
 )]
 #[Post(
+    uriTemplate: '/contacts/import-xml',
+    name: 'import_contact_xml',
+    controller: 'App\Controller\ImportXmlAction',
+    openapi: new Operation(
+        summary: 'Import contacts from XML',
+        description: 'Upload an XML file to import contacts and groups.',
+        requestBody: new RequestBody(
+            content: new \ArrayObject([
+                'multipart/form-data' => [
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'file' => [
+                                'type' => 'string',
+                                'format' => 'binary',
+                            ],
+                        ],
+                    ],
+                ],
+            ])
+        )
+    ),
+    deserialize: false,
+    validate: false,
+    security: "is_granted('ROLE_USER')"
+)]
+#[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
     processor: 'App\State\ContactProcessor'
 )]
@@ -92,6 +121,7 @@ class Contact implements TenantAwareInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
 
     #[Groups(['contact:read', 'export'])]
     #[ORM\Column(type: 'uuid', unique: true)]
