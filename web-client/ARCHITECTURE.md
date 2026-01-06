@@ -54,6 +54,7 @@ src/
 - **Notification Channels**: Support for multiple types (Telegram, Web). Telegram required config (token, ID), Web is config-less.
 - **Validation**: All forms use Zod schemas defined in `src/types/models.ts` or co-located with forms ensures type safety between API and UI.
 - **Favorites**: Contact favorites are managed via a special group (default `favourites`, configurable in User Settings).
+- **Data Export**: Users can export all their data in XML format from the Settings page. This is handled via the `useExportContacts` hook which triggers a file download.
 
 ## Development Commands
 

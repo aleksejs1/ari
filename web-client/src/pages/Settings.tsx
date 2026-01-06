@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useExportContacts } from '@/features/contacts/useContacts'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 export default function SettingsPage() {
@@ -17,6 +19,7 @@ export default function SettingsPage() {
     setFavouriteGroupName,
     isLoading,
   } = useUserPrefs()
+  const { mutate: exportContacts, isPending: isExporting } = useExportContacts()
 
   if (isLoading) {
     return <div>{t('app.loading')}</div>
@@ -88,6 +91,18 @@ export default function SettingsPage() {
                 onChange={(e) => setFavouriteGroupName(e.target.value)}
               />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.exportData')}</CardTitle>
+            <CardDescription>{t('settings.exportDataDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => exportContacts()} disabled={isExporting}>
+              {isExporting ? t('common.loading') : t('settings.exportData')}
+            </Button>
           </CardContent>
         </Card>
       </div>

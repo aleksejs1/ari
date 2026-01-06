@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import SettingsPage from './Settings'
 
+import { useExportContacts } from '@/features/contacts/useContacts'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 // Mock the hook
@@ -14,6 +15,11 @@ vi.mock('@/hooks/useUserPrefs.hook', async () => {
   }
 })
 
+// Mock useExportContacts
+vi.mock('@/features/contacts/useContacts', () => ({
+  useExportContacts: vi.fn(),
+}))
+
 // Mock translation
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -24,6 +30,8 @@ vi.mock('react-i18next', () => ({
         'settings.languageDescription': 'Select your preferred language.',
         'settings.dateFormat': 'Date Format',
         'settings.dateFormatDescription': 'Select how dates should be displayed.',
+        'settings.exportData': 'Export Data',
+        'settings.exportDataDescription': 'Download all your contacts and data in XML format.',
         'app.loading': 'Loading...',
       }
       return map[key] || key
@@ -32,6 +40,25 @@ vi.mock('react-i18next', () => ({
 }))
 
 describe('SettingsPage', () => {
+  const setLanguage = vi.fn()
+  const setDateFormat = vi.fn()
+  const exportContacts = vi.fn()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      isLoading: false,
+      language: 'en',
+      dateFormat: 'mm/dd/yyyy',
+      setLanguage,
+      setDateFormat,
+    })
+    ;(useExportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      mutate: exportContacts,
+      isPending: false,
+    })
+  })
+
   it('renders loading state', () => {
     ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       isLoading: true,
@@ -41,16 +68,6 @@ describe('SettingsPage', () => {
   })
 
   it('renders settings when loaded', () => {
-    const setLanguage = vi.fn()
-    const setDateFormat = vi.fn()
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      isLoading: false,
-      language: 'en',
-      dateFormat: 'mm/dd/yyyy',
-      setLanguage,
-      setDateFormat,
-    })
-
     render(<SettingsPage />)
     expect(screen.getByText('Settings')).toBeInTheDocument()
     expect(screen.getByText('Language')).toBeInTheDocument()
@@ -65,16 +82,6 @@ describe('SettingsPage', () => {
   })
 
   it('calls setLanguage when language changes', async () => {
-    const setLanguage = vi.fn()
-    const setDateFormat = vi.fn()
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      isLoading: false,
-      language: 'en',
-      dateFormat: 'mm/dd/yyyy',
-      setLanguage,
-      setDateFormat,
-    })
-
     render(<SettingsPage />)
 
     const ruRadio = screen.getByLabelText('Русский')
@@ -86,16 +93,6 @@ describe('SettingsPage', () => {
   })
 
   it('calls setDateFormat when format changes', async () => {
-    const setLanguage = vi.fn()
-    const setDateFormat = vi.fn()
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      isLoading: false,
-      language: 'en',
-      dateFormat: 'mm/dd/yyyy',
-      setLanguage,
-      setDateFormat,
-    })
-
     render(<SettingsPage />)
 
     const euRadio = screen.getByLabelText('DD.MM.YYYY (31.12.2024)')
@@ -104,5 +101,26 @@ describe('SettingsPage', () => {
     await waitFor(() => {
       expect(setDateFormat).toHaveBeenCalledWith('dd.mm.yyyy')
     })
+  })
+
+  it('calls exportContacts when export button is clicked', async () => {
+    render(<SettingsPage />)
+
+    const exportButton = screen.getByRole('button', { name: 'Export Data' })
+    fireEvent.click(exportButton)
+
+    expect(exportContacts).toHaveBeenCalled()
+  })
+
+  it('disables export button when exporting', () => {
+    ;(useExportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      mutate: exportContacts,
+      isPending: true,
+    })
+
+    render(<SettingsPage />)
+
+    const exportButton = screen.getByRole('button', { name: /loading/i })
+    expect(exportButton).toBeDisabled()
   })
 })
