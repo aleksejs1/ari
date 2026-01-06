@@ -390,5 +390,9 @@
     "yearsCount_many": "{{count}} лет",
     "yearsCount_other": "{{count}} лет",
     "recentAuditLogs": "Последняя активность"
+  },
+  "notifications": {
+    "errorLoading": "Не удалось загрузить уведомления",
+    "empty": "Нет уведомлений"
   }
 }

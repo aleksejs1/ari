@@ -24,6 +24,9 @@ export type NotificationSubscription =
 export type ContactGroup = z.infer<typeof contactGroupSchema>
 export type ContactOrganization = components['schemas']['ContactOrganization.jsonld-contact.read']
 export type ContactBiography = components['schemas']['ContactBiography.jsonld-contact.read']
+
+export type ActivityFeed = components['schemas']['ActivityFeed.jsonld-activity_feed.read']
+
 export interface ContactRelation {
   id?: string
   '@id'?: string

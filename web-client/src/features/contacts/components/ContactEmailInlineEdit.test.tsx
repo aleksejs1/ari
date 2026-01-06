@@ -79,7 +79,7 @@ describe('ContactEmailInlineEdit', () => {
     await user.click(deleteBtn)
 
     // Confirm dialog
-    expect(screen.getByText('contacts.deleteConfirm')).toBeVisible()
+    expect(await screen.findByText('contacts.deleteConfirm')).toBeVisible()
     await user.click(screen.getByRole('button', { name: 'contacts.delete' }))
 
     expect(onDelete).toHaveBeenCalled()

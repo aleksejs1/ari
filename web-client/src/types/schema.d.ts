@@ -4,6 +4,66 @@
  */
 
 export interface paths {
+    "/api/activity-feed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ActivityFeed resources.
+         * @description Retrieves the collection of ActivityFeed resources.
+         */
+        get: operations["api_activity-feed_get_collection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/activity-feed/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ActivityFeed resource.
+         * @description Updates the ActivityFeed resource.
+         */
+        patch: operations["mark_as_read"];
+        trace?: never;
+    };
+    "/api/activity-feed/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ActivityFeed resources.
+         * @description Retrieves the collection of ActivityFeed resources.
+         */
+        get: operations["get_unread_count"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/audit_logs": {
         parameters: {
             query?: never;
@@ -1116,6 +1176,35 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        "ActivityFeed-activity_feed.read": {
+            readonly id?: number;
+            userId?: number;
+            eventType?: string;
+            title?: string;
+            message?: string | null;
+            /** @default false */
+            readonly isRead: boolean;
+            actionData?: (string | null)[] | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            expiresAt?: string | null;
+        };
+        "ActivityFeed-activity_feed.write.jsonMergePatch": Record<string, never>;
+        "ActivityFeed.jsonld-activity_feed.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            userId?: number;
+            eventType?: string;
+            title?: string;
+            message?: string | null;
+            /** @default false */
+            readonly isRead: boolean;
+            actionData?: (string | null)[] | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            expiresAt?: string | null;
+        };
         AuditLog: {
             readonly id?: number;
             /**
@@ -2345,6 +2434,150 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    "api_activity-feed_get_collection": {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ActivityFeed collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ActivityFeed.jsonld-activity_feed.read"][];
+                    };
+                    "application/json": components["schemas"]["ActivityFeed-activity_feed.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    mark_as_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The updated ActivityFeed resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ActivityFeed-activity_feed.write.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ActivityFeed resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ActivityFeed.jsonld-activity_feed.read"];
+                    "application/json": components["schemas"]["ActivityFeed-activity_feed.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    get_unread_count: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ActivityFeed collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ActivityFeed.jsonld-activity_feed.read"][];
+                    };
+                    "application/json": components["schemas"]["ActivityFeed-activity_feed.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     api_audit_logs_get_collection: {
         parameters: {
             query?: {

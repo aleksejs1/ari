@@ -15,6 +15,7 @@ import { Outlet, Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
 import { useGroups } from '@/features/groups/useGroups'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -135,8 +136,13 @@ export default function DashboardLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto p-8">
-        <Outlet />
+      <main className="flex-1 overflow-auto bg-gray-50/50 dark:bg-gray-900/50">
+        <header className="sticky top-0 z-10 flex h-14 items-center justify-end gap-4 border-b bg-white px-6 shadow-sm dark:bg-gray-800">
+          <NotificationBell />
+        </header>
+        <div className="p-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

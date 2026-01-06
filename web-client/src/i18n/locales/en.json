@@ -387,5 +387,9 @@
     "yearsCount": "{{count}} years",
     "yearsCount_one": "{{count}} year",
     "recentAuditLogs": "Recent Activity"
+  },
+  "notifications": {
+    "errorLoading": "Failed to load notifications",
+    "empty": "No notifications"
   }
 }

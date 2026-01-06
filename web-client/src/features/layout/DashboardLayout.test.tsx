@@ -22,6 +22,12 @@ vi.mock('@/hooks/useUserPrefs.hook', () => ({
   useUserPrefs: vi.fn(),
 }))
 
+vi.mock('@/features/activity-feed/useNotifications', () => ({
+  useNotifications: vi.fn(),
+  useUnreadCount: vi.fn().mockReturnValue({ data: 0 }),
+  useMarkAsRead: vi.fn(),
+}))
+
 describe('DashboardLayout', () => {
   beforeAll(() => {
     ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
