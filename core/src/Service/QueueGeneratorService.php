@@ -44,17 +44,23 @@ class QueueGeneratorService
             $matchingDates = $this->contactDateRepository->findMatchingDates($targetDate);
 
             foreach ($matchingDates as $contactDate) {
+                $contact = $contactDate->getContact();
+                if (null === $contact) {
+                    continue;
+                }
+
                 foreach ($offsetRules as $rule) {
                     if (!$this->isRuleMatchingDate($rule, $contactDate)) {
                         continue;
                     }
 
-                    $recipients = $this->resolveRecipients($rule);
+                    // Check if contact matches the rule target
+                    if (!$this->isContactMatchingRule($contact, $rule)) {
+                        continue;
+                    }
 
-                    foreach ($recipients as $recipient) {
-                        if ($this->createQueueItem($rule, $recipient, $executionDate, $contactDate)) {
-                            $createdCount++;
-                        }
+                    if ($this->createQueueItem($rule, $contact, $executionDate, $contactDate)) {
+                        $createdCount++;
                     }
                 }
             }
@@ -67,40 +73,48 @@ class QueueGeneratorService
 
     private function isRuleMatchingDate(NotificationRule $rule, ContactDate $contactDate): bool
     {
+        $eventType = $rule->getEventType();
+        // If rule has no event type, it matches ANY event
+        if ($eventType === null) {
+            return true;
+        }
+
         // Simple string matching for now.
         // If ContactDate has text "birthday", Rule eventType must be "birthday"
-        return strtolower((string)$rule->getEventType()) === strtolower((string)$contactDate->getText());
+        return strtolower($eventType) === strtolower((string)$contactDate->getText());
     }
 
-    /**
-     * @return Contact[]
-     */
-    private function resolveRecipients(NotificationRule $rule): array
+    private function isContactMatchingRule(Contact $contact, NotificationRule $rule): bool
     {
         $targetType = strtoupper((string)$rule->getTargetType());
 
-        if ($targetType === 'GROUP') {
-            $group = $rule->getContactGroup();
-            if ($group === null) {
-                return [];
-            }
-
-            $recipients = [];
-            foreach ($group->getContactGroups() as $contactGroup) {
-                $contact = $contactGroup->getContact();
-                if ($contact !== null) {
-                    $recipients[] = $contact;
-                }
-            }
-            return $recipients;
+        if ($targetType === 'ALL') {
+            return true;
         }
 
         if ($targetType === 'CONTACT') {
-            $contact = $rule->getContact();
-            return $contact !== null ? [$contact] : [];
+            $targetContact = $rule->getContact();
+            return $targetContact !== null && $targetContact->getId() === $contact->getId();
         }
 
-        return [];
+        if ($targetType === 'GROUP') {
+            $targetGroup = $rule->getContactGroup();
+            if ($targetGroup === null) {
+                return false;
+            }
+
+            // Check if contact is in the group.
+            // Assumption: Contact has a collection of ContactGroup entities or similar relation.
+            // Or we check from the group side.
+            foreach ($targetGroup->getContactGroups() as $cg) {
+                if ($cg->getContact()?->getId() === $contact->getId()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return false;
     }
 
     private function createQueueItem(
@@ -140,7 +154,6 @@ class QueueGeneratorService
             'contact' => $recipient,
             'scheduledAt' => $scheduledAt
         ]);
-
         if ($existing !== null) {
             return false;
         }
@@ -161,11 +174,20 @@ class QueueGeneratorService
         $queue->setAttempts(0);
 
         // Payload
+        $offset = $rule->getOffsetDays() ?? 0;
+        $message = sprintf(
+            'Contact %s has %s after %d days',
+            $sourceContact->getDisplayName(),
+            (string) $sourceEvent->getText(),
+            $offset
+        );
+
         $payload = [
             'event_type' => $sourceEvent->getText(),
             'subject_contact_id' => $sourceContact->getId(),
             'subject_contact_name' => $sourceContact->getDisplayName(),
             'event_date' => $eventDate->format('Y-m-d'),
+            'message' => $message,
         ];
         $queue->setPayload($payload);
 

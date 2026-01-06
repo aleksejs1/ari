@@ -36,7 +36,9 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
             'json' => ['type' => 'email', 'config' => []]
         ]);
         self::assertResponseStatusCodeSame(201);
-        $channelId = $channelResponse->toArray()['id'];
+        $channelData = $channelResponse->toArray();
+        self::assertEquals('email', $channelData['type'], 'Channel type verified from API response');
+        $channelId = $channelData['id'];
 
 
 
@@ -100,8 +102,10 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
              throw new \RuntimeException('Doctrine service not found');
         }
         $entityManager = $doctrine->getManager();
-        $queueItem = $entityManager->getRepository(NotificationQueue::class)->findOneBy([]);
-        self::assertNotNull($queueItem);
+        $contact = $entityManager->getRepository(\App\Entity\Contact::class)->find($contactId);
+        $queueItem = $entityManager->getRepository(NotificationQueue::class)->findOneBy(['contact' => $contact]);
+
+        self::assertNotNull($queueItem, 'Queue item should exist for the created contact');
         self::assertEquals('pending', $queueItem->getStatus());
 
         // 6. Idempotency Check

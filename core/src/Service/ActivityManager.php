@@ -24,7 +24,8 @@ class ActivityManager
         string $title,
         ?string $message = null,
         ?array $actionData = null,
-        ?\DateTimeInterface $expiresAt = null
+        ?\DateTimeInterface $expiresAt = null,
+        ?User $tenant = null
     ): void {
         $activity = new ActivityFeed();
         $activity->setUserId($userId);
@@ -33,9 +34,9 @@ class ActivityManager
         $activity->setMessage($message);
         $activity->setActionData($actionData);
         $activity->setExpiresAt($expiresAt);
-        // Tenant will be set automatically by TenantAware listener/trait if we are in a request context
-        // If this is run from a command, we might need to manually set it or ensure the user context is correct.
-        // Given existing patterns, we'll assume TenantAwareTrait handles it or the caller handles it.
+        if (null !== $tenant) {
+            $activity->setTenant($tenant);
+        }
 
         $this->entityManager->persist($activity);
         $this->entityManager->flush();

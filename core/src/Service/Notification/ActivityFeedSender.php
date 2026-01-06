@@ -4,7 +4,9 @@ namespace App\Service\Notification;
 
 use App\Entity\NotificationQueue;
 use App\Service\ActivityManager;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(index: 'web')]
 class ActivityFeedSender implements NotificationSenderInterface
 {
     public function __construct(
@@ -57,7 +59,8 @@ class ActivityFeedSender implements NotificationSenderInterface
             eventType: $eventType,
             title: $title,
             message: $message,
-            actionData: $actionData
+            actionData: $actionData,
+            tenant: $task->getTenant()
         );
     }
 }

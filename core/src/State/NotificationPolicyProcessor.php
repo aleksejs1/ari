@@ -166,6 +166,23 @@ class NotificationPolicyProcessor implements ProcessorInterface
                 }
             }
 
+            $contact = null;
+            if ($targetType === 'contact' && $targetId !== null) {
+                if (is_string($targetId) && str_starts_with($targetId, '/')) {
+                    try {
+                        $contact = $this->iriConverter->getResourceFromIri($targetId);
+                    } catch (\Exception $e) {
+                         // Fallback or ignore
+                    }
+                } else {
+                     $contact = $this->em->getRepository(\App\Entity\Contact::class)->find($targetId);
+                }
+
+                if (!$contact instanceof \App\Entity\Contact) {
+                    continue;
+                }
+            }
+
             $loopEventTypes = $dto->eventTypes;
             if ($loopEventTypes === null || count($loopEventTypes) === 0) {
                 $loopEventTypes = [null];
@@ -195,6 +212,9 @@ class NotificationPolicyProcessor implements ProcessorInterface
                         $rule->setTargetType($targetType);
                         if ($group instanceof \App\Entity\Group) {
                             $rule->setContactGroup($group);
+                        }
+                        if ($contact instanceof \App\Entity\Contact) {
+                            $rule->setContact($contact);
                         }
                         $rule->setEventType($eventType);
                         $rule->setOffsetDays((int)$offsetDays);
