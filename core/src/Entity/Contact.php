@@ -28,6 +28,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ApiResource(
@@ -93,6 +94,10 @@ class Contact implements TenantAwareInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['contact:read', 'export'])]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private ?Uuid $uuid = null;
+
     #[ORM\ManyToOne(inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -109,8 +114,10 @@ class Contact implements TenantAwareInterface
         $this->contactGroups = new ArrayCollection();
         $this->contactOrganizations = new ArrayCollection();
         $this->contactBiographies = new ArrayCollection();
+        $this->contactBiographies = new ArrayCollection();
         $this->contactRelations = new ArrayCollection();
         $this->reverseContactRelations = new ArrayCollection();
+        $this->uuid = Uuid::v7();
     }
 
     public function setUser(?User $user): static
@@ -124,6 +131,11 @@ class Contact implements TenantAwareInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
     }
 
     public function getUser(): User

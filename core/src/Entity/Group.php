@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`group`')]
@@ -49,6 +50,10 @@ class Group implements TenantAwareInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['group:read', 'export'])]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private ?Uuid $uuid = null;
+
     #[ORM\ManyToOne(inversedBy: 'groups')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -73,11 +78,17 @@ class Group implements TenantAwareInterface
     public function __construct()
     {
         $this->contactGroups = new ArrayCollection();
+        $this->uuid = Uuid::v7();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
     }
 
     public function getUser(): ?User
