@@ -92,6 +92,13 @@ class Group implements TenantAwareInterface
         return $this->uuid;
     }
 
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;

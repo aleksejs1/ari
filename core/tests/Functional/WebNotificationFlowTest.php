@@ -233,7 +233,7 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         string $token,
         array $targets,
         array $eventTypes,
-        int $offset
+        int $offset,
     ): void {
         // Use a time slightly in the past
         $schedulerTime = (new \DateTime())->modify('-5 minutes')->format('H:i');
@@ -285,7 +285,7 @@ class WebNotificationFlowTest extends AbstractApiTestCase
     private function assertActivityFeedMessage(
         \ApiPlatform\Symfony\Bundle\Test\Client $client,
         string $token,
-        string $message
+        string $message,
     ): void {
         $feedResponse = $client->request('GET', '/api/activity-feed', [
             'auth_bearer' => $token,
@@ -307,7 +307,7 @@ class WebNotificationFlowTest extends AbstractApiTestCase
     private function assertActivityFeedMessageMissing(
         \ApiPlatform\Symfony\Bundle\Test\Client $client,
         string $token,
-        string $message
+        string $message,
     ): void {
         $feedResponse = $client->request('GET', '/api/activity-feed', [
             'auth_bearer' => $token,

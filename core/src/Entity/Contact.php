@@ -135,6 +135,13 @@ class Contact implements TenantAwareInterface
         return $this->uuid;
     }
 
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
     public function getUser(): User
     {
         if (null === $this->user) {

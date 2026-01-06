@@ -26,9 +26,9 @@ trait ContactRelationsTrait
 
     /**
      * @var Collection<int, ContactRelation>
-     * Note: This side is not persisted directly as a collection in ContactRelation usually unless mapped.
-     * We map it in ContactRelation as 'person' with inversedBy='reverseContactRelations' to make this work
-     * efficiently.
+     *      Note: This side is not persisted directly as a collection in ContactRelation usually unless mapped.
+     *      We map it in ContactRelation as 'person' with inversedBy='reverseContactRelations' to make this
+     *      work efficiently.
      */
     #[ORM\OneToMany(
         targetEntity: ContactRelation::class,
