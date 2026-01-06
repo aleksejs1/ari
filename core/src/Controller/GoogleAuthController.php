@@ -80,6 +80,10 @@ class GoogleAuthController extends AbstractController
             return $this->json(['error' => 'User not found'], Response::HTTP_BAD_REQUEST);
         }
 
+        // Set tenant filter to allow finding existing TokenStorage records for this user
+        // This is necessary because the callback request is not authenticated in the traditional sense
+        $this->entityManager->getFilters()->enable('tenant')->setParameter('currentTenant', (string) $user->getId());
+
         try {
             $tokens = $this->oauthService->getAccessToken($code);
         } catch (\Exception $e) {
