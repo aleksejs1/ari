@@ -33,7 +33,9 @@
     "dateFormatDescription": "Select how dates should be displayed.",
     "favouriteGroupName": "Favorite Group Name",
     "favouriteGroupNameDescription": "The name of the group used for favorite contacts.",
-    "groupName": "Group Name"
+    "groupName": "Group Name",
+    "exportData": "Export Data",
+    "exportDataDescription": "Download all your contacts and data in XML format."
   },
   "auth": {
     "login": "Login",

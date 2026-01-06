@@ -128,16 +128,34 @@ export function useSimilarContacts(id: string) {
     queryKey: ['contacts', id, 'similar'],
     queryFn: async () => {
       const url = id.startsWith('/api') ? id.substring(4) : id
-      // The endpoint is /api/contacts/{id}/similar.
-      // If id is numeric "1", url should be "/contacts/1/similar".
-      // If id is "/api/contacts/1", url (substring) is "/contacts/1".
-      // Then append "/similar".
       const fullUrl = `${url}/similar`
       const response = await api.get<HydraCollection<Contact>>(fullUrl)
-      // User noted that keys might lack "hydra:" prefix.
-      // getHydraMember parses "member" key, which matches the "no prefix" scenario.
       return getHydraMember(response.data)
     },
     enabled: !!id,
+  })
+}
+
+export function useExportContacts() {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await api.get('/contacts/export', {
+        responseType: 'blob',
+      })
+
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute(
+        'download',
+        `ari_contacts_export_${new Date().toISOString().split('T')[0]}.xml`,
+      )
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+
+      return response.data
+    },
   })
 }

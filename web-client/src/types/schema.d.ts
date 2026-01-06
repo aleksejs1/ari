@@ -140,6 +140,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/contacts/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of Contact resources.
+         * @description Retrieves the collection of Contact resources.
+         */
+        get: operations["contact_export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contacts/{id}": {
         parameters: {
             query?: never;
@@ -1404,6 +1424,14 @@ export interface components {
         "Contact-contact_organization.read": {
             readonly displayName?: string;
         };
+        "Contact-export": {
+            readonly id?: number;
+            contactNames?: components["schemas"]["ContactName-export"][];
+            contactDates?: components["schemas"]["ContactDate-export"][];
+            contactEmailAdresses?: components["schemas"]["ContactEmailAdress-export"][];
+            contactAddresses?: components["schemas"]["ContactAddress-export"][];
+            contactBiographies?: components["schemas"]["ContactBiography-export"][];
+        };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             contactNames?: components["schemas"]["ContactName.jsonld-contact.read"][];
@@ -1425,6 +1453,14 @@ export interface components {
         };
         "Contact.jsonld-contact_organization.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly displayName?: string;
+        };
+        "Contact.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            contactNames?: components["schemas"]["ContactName.jsonld-export"][];
+            contactDates?: components["schemas"]["ContactDate.jsonld-export"][];
+            contactEmailAdresses?: components["schemas"]["ContactEmailAdress.jsonld-export"][];
+            contactAddresses?: components["schemas"]["ContactAddress.jsonld-export"][];
+            contactBiographies?: components["schemas"]["ContactBiography.jsonld-export"][];
         };
         "ContactAddress-contact.create": {
             type?: string | null;
@@ -1493,6 +1529,16 @@ export interface components {
             country?: string | null;
             countryCode?: string | null;
         };
+        "ContactAddress-export": {
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
         "ContactAddress.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             type?: string | null;
@@ -1511,6 +1557,16 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
+            type?: string | null;
+            street?: string | null;
+            streetExtended?: string | null;
+            city?: string | null;
+            region?: string | null;
+            postalCode?: string | null;
+            country?: string | null;
+            countryCode?: string | null;
+        };
+        "ContactAddress.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
             type?: string | null;
             street?: string | null;
             streetExtended?: string | null;
@@ -1557,6 +1613,10 @@ export interface components {
             type?: string | null;
             value?: string | null;
         };
+        "ContactBiography-export": {
+            type?: string | null;
+            value?: string | null;
+        };
         "ContactBiography.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             type?: string | null;
@@ -1569,6 +1629,10 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
+            type?: string | null;
+            value?: string | null;
+        };
+        "ContactBiography.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
             type?: string | null;
             value?: string | null;
         };
@@ -1622,6 +1686,11 @@ export interface components {
             readonly nextAnniversaryDate?: string | null;
             readonly yearsAtNextAnniversary?: number | null;
         };
+        "ContactDate-export": {
+            /** Format: date-time */
+            date?: string | null;
+            text?: string | null;
+        };
         "ContactDate.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             /** Format: date-time */
@@ -1642,6 +1711,11 @@ export interface components {
             /** Format: date-time */
             readonly nextAnniversaryDate?: string | null;
             readonly yearsAtNextAnniversary?: number | null;
+        };
+        "ContactDate.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
+            /** Format: date-time */
+            date?: string | null;
+            text?: string | null;
         };
         "ContactEmailAdress-contact.create": {
             value?: string | null;
@@ -1680,6 +1754,10 @@ export interface components {
             value?: string | null;
             type?: string | null;
         };
+        "ContactEmailAdress-export": {
+            value?: string | null;
+            type?: string | null;
+        };
         "ContactEmailAdress.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             value?: string | null;
@@ -1692,6 +1770,10 @@ export interface components {
              * @example https://example.com/
              */
             contact?: string | null;
+            value?: string | null;
+            type?: string | null;
+        };
+        "ContactEmailAdress.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
             value?: string | null;
             type?: string | null;
         };
@@ -1773,6 +1855,10 @@ export interface components {
             given?: string | null;
             contact?: components["schemas"]["Contact-contact_name.read"] | null;
         };
+        "ContactName-export": {
+            family?: string | null;
+            given?: string | null;
+        };
         "ContactName.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             family?: string | null;
@@ -1783,6 +1869,10 @@ export interface components {
             family?: string | null;
             given?: string | null;
             contact?: components["schemas"]["Contact.jsonld-contact_name.read"] | null;
+        };
+        "ContactName.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
+            family?: string | null;
+            given?: string | null;
         };
         "ContactOrganization-contact.create": {
             name?: string | null;
@@ -2939,6 +3029,45 @@ export interface operations {
                     "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
                     "application/problem+json": components["schemas"]["ConstraintViolation"];
                     "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    contact_export: {
+        parameters: {
+            query?: {
+                "contactGroups.groupResource"?: string;
+                "contactGroups.groupResource[]"?: string[];
+                /** @description Search across name, email, phone number, and organization name */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contact collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchemaNoPagination"] & {
+                        member: components["schemas"]["Contact.jsonld-export"][];
+                    };
+                    "application/json": components["schemas"]["Contact-export"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
