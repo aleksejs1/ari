@@ -48,12 +48,16 @@ class ContactDate implements TenantAwareInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Contact $contact = null;
 
-    #[Groups(['contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
+    #[Groups([
+        'contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update', 'export'
+    ])]
     #[Context(normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $date = null;
 
-    #[Groups(['contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update'])]
+    #[Groups([
+        'contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update', 'export'
+    ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $text = null;
 

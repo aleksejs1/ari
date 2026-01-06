@@ -48,6 +48,7 @@ class ContactBiography implements TenantAwareInterface
         'contact_biography:read',
         'contact_biography:create',
         'contact_biography:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
@@ -58,6 +59,7 @@ class ContactBiography implements TenantAwareInterface
         'contact_biography:read',
         'contact_biography:create',
         'contact_biography:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $value = null;

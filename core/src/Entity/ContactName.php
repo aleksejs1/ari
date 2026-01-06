@@ -37,11 +37,15 @@ class ContactName implements TenantAwareInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[Groups([
+        'contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update', 'export'
+    ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $family = null;
 
-    #[Groups(['contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[Groups([
+        'contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update', 'export'
+    ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
 

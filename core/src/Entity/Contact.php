@@ -35,22 +35,39 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['contact:read']],
     denormalizationContext: ['groups' => ['contact:create']]
 )]
-#[Get(security: "is_granted('CONTACT_VIEW', object)")]
+#[Get(
+    security: "is_granted('CONTACT_VIEW', object)",
+    requirements: ['id' => '\d+']
+)]
 #[Get(
     uriTemplate: '/contacts/{id}/similar',
     name: 'contact_similar',
-    provider: 'App\State\ContactSimilarProvider'
+    provider: 'App\State\ContactSimilarProvider',
+    requirements: ['id' => '\d+']
+)]
+#[GetCollection(
+    uriTemplate: '/contacts/export',
+    name: 'contact_export',
+    controller: 'App\Controller\ExportContactsAction',
+    normalizationContext: ['groups' => ['export']],
+    security: "is_granted('ROLE_USER')",
+    paginationEnabled: false
 )]
 #[GetCollection]
 #[Put(
     security: "is_granted('CONTACT_EDIT', object)",
-    processor: 'App\State\ContactProcessor'
+    processor: 'App\State\ContactProcessor',
+    requirements: ['id' => '\d+']
 )]
 #[Patch(
     security: "is_granted('CONTACT_EDIT', object)",
-    processor: 'App\State\ContactProcessor'
+    processor: 'App\State\ContactProcessor',
+    requirements: ['id' => '\d+']
 )]
-#[Delete(security: "is_granted('CONTACT_EDIT', object)")]
+#[Delete(
+    security: "is_granted('CONTACT_EDIT', object)",
+    requirements: ['id' => '\d+']
+)]
 #[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
     processor: 'App\State\ContactProcessor'
@@ -70,7 +87,7 @@ class Contact implements TenantAwareInterface
     use ContactBiographiesTrait;
     use ContactRelationsTrait;
 
-    #[Groups(['contact:read'])]
+    #[Groups(['contact:read', 'export'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

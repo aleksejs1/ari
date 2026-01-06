@@ -12,7 +12,7 @@ trait ContactEmailsTrait
     /**
      * @var Collection<int, ContactEmailAdress>
      */
-    #[Groups(['contact:read', 'contact:create'])]
+    #[Groups(['contact:read', 'contact:create', 'export'])]
     #[ORM\OneToMany(
         targetEntity: ContactEmailAdress::class,
         mappedBy: 'contact',

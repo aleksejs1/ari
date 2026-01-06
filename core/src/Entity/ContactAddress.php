@@ -48,6 +48,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
@@ -58,6 +59,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $street = null;
@@ -68,6 +70,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $streetExtended = null;
@@ -78,6 +81,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
@@ -88,6 +92,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $region = null;
@@ -98,6 +103,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $postalCode = null;
@@ -108,6 +114,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
@@ -118,6 +125,7 @@ class ContactAddress implements TenantAwareInterface
         'contact_address:read',
         'contact_address:create',
         'contact_address:update',
+        'export',
     ])]
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $countryCode = null;

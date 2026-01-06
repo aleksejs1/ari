@@ -48,6 +48,7 @@ class ContactEmailAdress implements TenantAwareInterface
         'contact_email_adress:read',
         'contact_email_adress:create',
         'contact_email_adress:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $value = null;
@@ -58,6 +59,7 @@ class ContactEmailAdress implements TenantAwareInterface
         'contact_email_adress:read',
         'contact_email_adress:create',
         'contact_email_adress:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
