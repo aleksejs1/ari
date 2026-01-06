@@ -50,7 +50,8 @@ class ContactRelation implements TenantAwareInterface
         'contact:create',
         'contact_relation:read',
         'contact_relation:create',
-        'contact_relation:update'
+        'contact_relation:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
@@ -60,7 +61,7 @@ class ContactRelation implements TenantAwareInterface
         'contact:create',
         'contact_relation:read',
         'contact_relation:create',
-        'contact_relation:update'
+        'contact_relation:update',
     ])]
     #[SerializedName('relatedContact')]
     #[ApiProperty(readableLink: false)]
@@ -107,7 +108,7 @@ class ContactRelation implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type === '' ? null : $type;
+        $this->type = '' === $type ? null : $type;
 
         return $this;
     }
@@ -129,5 +130,12 @@ class ContactRelation implements TenantAwareInterface
     public function getRelatedDisplayName(): string
     {
         return $this->person?->getDisplayName() ?? 'Unknown Contact';
+    }
+
+    #[Groups(['export'])]
+    #[SerializedName('personUuid')]
+    public function getPersonUuid(): ?string
+    {
+        return $this->getPerson()?->getUuid()?->toRfc4122();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\NotificationQueueRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;

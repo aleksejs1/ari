@@ -2,19 +2,15 @@
 
 namespace App\Tests\Functional;
 
-use App\Entity\NotificationQueue;
-use App\Entity\NotificationRule;
-use App\Entity\NotificationPolicy;
 use App\Entity\Contact;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Override;
 
 class WebNotificationFlowTest extends AbstractApiTestCase
 {
     private ?string $channelId = null;
 
-    #[Override]
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,7 +25,7 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         $client = static::createClient();
         $channelResponse = $client->request('POST', '/api/notification_channels', [
             'auth_bearer' => $this->token,
-            'json' => ['type' => 'web', 'config' => []]
+            'json' => ['type' => 'web', 'config' => []],
         ]);
         self::assertResponseStatusCodeSame(201);
         $this->channelId = $channelResponse->toArray()['id'];
@@ -43,7 +39,7 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         // 1. Create Group
         $groupResponse = $client->request('POST', '/api/groups', [
             'auth_bearer' => $token,
-            'json' => ['name' => 'Target Group']
+            'json' => ['name' => 'Target Group'],
         ]);
         $groupId = $groupResponse->toArray()['id'];
 
@@ -54,8 +50,8 @@ class WebNotificationFlowTest extends AbstractApiTestCase
             'json' => [
                 'contactNames' => [['given' => 'Group', 'family' => 'Member']],
                 'contactDates' => [['date' => $today->format('Y-m-d'), 'text' => 'event']],
-                'contactGroups' => [['groupResource' => '/api/groups/' . $groupId]]
-            ]
+                'contactGroups' => [['groupResource' => '/api/groups/' . $groupId]],
+            ],
         ]);
         self::assertResponseStatusCodeSame(201);
 
@@ -78,8 +74,8 @@ class WebNotificationFlowTest extends AbstractApiTestCase
             'auth_bearer' => $token,
             'json' => [
                 'contactNames' => [['given' => 'Specific', 'family' => 'Contact']],
-                'contactDates' => [['date' => $today->format('Y-m-d'), 'text' => 'event']]
-            ]
+                'contactDates' => [['date' => $today->format('Y-m-d'), 'text' => 'event']],
+            ],
         ]);
         $contactId = $contactResponse->toArray()['id'];
 
@@ -104,9 +100,9 @@ class WebNotificationFlowTest extends AbstractApiTestCase
                 'contactNames' => [['given' => 'Event', 'family' => 'Tester']],
                 'contactDates' => [
                     ['date' => $today->format('Y-m-d'), 'text' => 'birthday'], // Should match
-                    ['date' => $today->format('Y-m-d'), 'text' => 'anniversary'] // Should NOT match
-                ]
-            ]
+                    ['date' => $today->format('Y-m-d'), 'text' => 'anniversary'], // Should NOT match
+                ],
+            ],
         ]);
 
         // 2. Create Policy Targeting only 'birthday'
@@ -133,8 +129,8 @@ class WebNotificationFlowTest extends AbstractApiTestCase
             'auth_bearer' => $token,
             'json' => [
                 'contactNames' => [['given' => 'Wildcard', 'family' => 'User']],
-                'contactDates' => [['date' => $today->format('Y-m-d'), 'text' => 'custom-event']]
-            ]
+                'contactDates' => [['date' => $today->format('Y-m-d'), 'text' => 'custom-event']],
+            ],
         ]);
 
         // 2. Create Policy with empty eventTypes (Wildcard)
@@ -162,8 +158,8 @@ class WebNotificationFlowTest extends AbstractApiTestCase
             'auth_bearer' => $token,
             'json' => [
                 'contactNames' => [['given' => 'Late', 'family' => 'Notification']],
-                'contactDates' => [['date' => $yesterday->format('Y-m-d'), 'text' => 'yesterday-event']]
-            ]
+                'contactDates' => [['date' => $yesterday->format('Y-m-d'), 'text' => 'yesterday-event']],
+            ],
         ]);
 
         // Policy: Offset 1 (1 day after event)
@@ -188,8 +184,8 @@ class WebNotificationFlowTest extends AbstractApiTestCase
             'auth_bearer' => $token,
             'json' => [
                 'contactNames' => [['given' => 'Early', 'family' => 'Bird']],
-                'contactDates' => [['date' => $tomorrow->format('Y-m-d'), 'text' => 'future-event']]
-            ]
+                'contactDates' => [['date' => $tomorrow->format('Y-m-d'), 'text' => 'future-event']],
+            ],
         ]);
 
         // Policy: Offset -1 (1 day before event)
@@ -214,9 +210,9 @@ class WebNotificationFlowTest extends AbstractApiTestCase
                 'contactNames' => [['given' => 'Multi', 'family' => 'Date']],
                 'contactDates' => [
                     ['date' => $today->format('Y-m-d'), 'text' => 'event1'],
-                    ['date' => $today->format('Y-m-d'), 'text' => 'event2']
-                ]
-            ]
+                    ['date' => $today->format('Y-m-d'), 'text' => 'event2'],
+                ],
+            ],
         ]);
 
         // Policy for ALL events
@@ -229,18 +225,22 @@ class WebNotificationFlowTest extends AbstractApiTestCase
     }
 
     /**
-     * @param mixed $client
      * @param array<string, mixed> $targets
-     * @param array<string> $eventTypes
+     * @param array<string>        $eventTypes
      */
-    private function createPolicy($client, string $token, array $targets, array $eventTypes, int $offset): void
-    {
+    private function createPolicy(
+        \ApiPlatform\Symfony\Bundle\Test\Client $client,
+        string $token,
+        array $targets,
+        array $eventTypes,
+        int $offset
+    ): void {
         // Use a time slightly in the past
         $schedulerTime = (new \DateTime())->modify('-5 minutes')->format('H:i');
 
         $client->request('POST', '/api/notification-policies', [
             'auth_bearer' => $token,
-             'json' => [
+            'json' => [
                 'name' => 'Test Policy',
                 'active' => true,
                 'targets' => $targets,
@@ -248,18 +248,18 @@ class WebNotificationFlowTest extends AbstractApiTestCase
                 'schedule' => [
                     [
                         'offsetDays' => $offset,
-                         'time' => $schedulerTime,
-                         'channels' => [$this->channelId]
-                    ]
-                ]
-             ]
-         ]);
+                        'time' => $schedulerTime,
+                        'channels' => [$this->channelId],
+                    ],
+                ],
+            ],
+        ]);
         self::assertResponseStatusCodeSame(201);
     }
 
     private function runGenerateAndProcess(\DateTime $date): void
     {
-        if (self::$kernel === null) {
+        if (null === self::$kernel) {
             self::bootKernel();
         }
 
@@ -282,13 +282,13 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         } while (str_contains($output, 'Processed'));
     }
 
-    /**
-     * @param mixed $client
-     */
-    private function assertActivityFeedMessage($client, string $token, string $message): void
-    {
+    private function assertActivityFeedMessage(
+        \ApiPlatform\Symfony\Bundle\Test\Client $client,
+        string $token,
+        string $message
+    ): void {
         $feedResponse = $client->request('GET', '/api/activity-feed', [
-             'auth_bearer' => $token,
+            'auth_bearer' => $token,
         ]);
         self::assertResponseIsSuccessful();
         $data = $feedResponse->toArray();
@@ -304,13 +304,13 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         self::assertTrue($found, "Did not find activity feed with message: $message");
     }
 
-    /**
-     * @param mixed $client
-     */
-    private function assertActivityFeedMessageMissing($client, string $token, string $message): void
-    {
+    private function assertActivityFeedMessageMissing(
+        \ApiPlatform\Symfony\Bundle\Test\Client $client,
+        string $token,
+        string $message
+    ): void {
         $feedResponse = $client->request('GET', '/api/activity-feed', [
-             'auth_bearer' => $token,
+            'auth_bearer' => $token,
         ]);
         self::assertResponseIsSuccessful();
         $data = $feedResponse->toArray();

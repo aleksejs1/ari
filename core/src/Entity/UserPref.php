@@ -5,7 +5,6 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -98,19 +97,19 @@ class UserPref implements TenantAwareInterface
 
     public function validateValue(ExecutionContextInterface $context): void
     {
-        if ($this->type === self::TYPE_LANGUAGE) {
+        if (self::TYPE_LANGUAGE === $this->type) {
             if (!in_array($this->value, ['ru', 'en'], true)) {
                 $context->buildViolation('Invalid language')
                     ->atPath('value')
                     ->addViolation();
             }
-        } elseif ($this->type === self::TYPE_DATE_FORMAT) {
+        } elseif (self::TYPE_DATE_FORMAT === $this->type) {
             if (!in_array($this->value, ['mm/dd/yyyy', 'dd.mm.yyyy'], true)) {
-                 $context->buildViolation('Invalid date format')
-                    ->atPath('value')
-                    ->addViolation();
+                $context->buildViolation('Invalid date format')
+                   ->atPath('value')
+                   ->addViolation();
             }
-        } elseif ($this->type === self::TYPE_FAVOURITE_GROUP_NAME) {
+        } elseif (self::TYPE_FAVOURITE_GROUP_NAME === $this->type) {
             // Any string is allowed, so no strict validation needed other than type check if necessary,
             // but the property is string type hint.
             // If empty string is not allowed, we could check that, but requirement says "any string".

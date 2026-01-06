@@ -32,7 +32,7 @@ class GoogleOAuthService
             'prompt' => 'consent',
         ];
 
-        if ($state !== null) {
+        if (null !== $state) {
             $params['state'] = $state;
         }
 

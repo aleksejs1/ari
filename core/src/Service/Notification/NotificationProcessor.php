@@ -40,7 +40,7 @@ class NotificationProcessor
 
             $type = $channel->getType();
             if (null === $type) {
-                 $this->logger->error('Notification channel has no type', ['queue_id' => $item->getId()]);
+                $this->logger->error('Notification channel has no type', ['queue_id' => $item->getId()]);
                 $item->setStatus('failed');
                 $item->setResult('Channel has no type');
                 $this->entityManager->flush();
@@ -61,9 +61,9 @@ class NotificationProcessor
 
                 $item->setStatus('sent');
                 $item->setResult('Sent successfully');
-                $processedCount++;
+                ++$processedCount;
             } catch (\Throwable $e) {
-                $this->logger->error("Error sending notification: " . $e->getMessage(), [
+                $this->logger->error('Error sending notification: ' . $e->getMessage(), [
                     'queue_id' => $item->getId(),
                     'exception' => $e,
                 ]);

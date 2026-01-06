@@ -38,13 +38,13 @@ class ContactName implements TenantAwareInterface
     private ?int $id = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update', 'export'
+        'contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update', 'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $family = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update', 'export'
+        'contact:read', 'contact:create', 'contact_name:read', 'contact_name:create', 'contact_name:update', 'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
@@ -74,7 +74,7 @@ class ContactName implements TenantAwareInterface
 
     public function setFamily(?string $family): static
     {
-        $this->family = $family === '' ? null : $family;
+        $this->family = '' === $family ? null : $family;
 
         return $this;
     }
@@ -86,7 +86,7 @@ class ContactName implements TenantAwareInterface
 
     public function setGiven(?string $given): static
     {
-        $this->given = $given === '' ? null : $given;
+        $this->given = '' === $given ? null : $given;
 
         return $this;
     }

@@ -78,7 +78,7 @@ class ContactSimilarApiTest extends ApiTestCase
 
         self::assertCount(2, $items);
 
-        $ids = array_map(fn($item) => $item['@id'], $items);
+        $ids = array_map(fn ($item) => $item['@id'], $items);
 
         self::assertContains($ivanovaIri, $ids);
         self::assertContains($ivaninIri, $ids);
@@ -148,7 +148,7 @@ class ContactSimilarApiTest extends ApiTestCase
     private function createContactWithOrganization(
         \ApiPlatform\Symfony\Bundle\Test\Client $client,
         string $orgName,
-        string $surname = 'Test'
+        string $surname = 'Test',
     ): string {
         // Create Contact
         $response = $client->request('POST', '/api/contacts', [
@@ -201,7 +201,7 @@ class ContactSimilarApiTest extends ApiTestCase
         $items = $response->toArray()['member'];
 
         // Should find acme2 because of organization
-        $ids = array_map(fn($item) => $item['@id'], $items);
+        $ids = array_map(fn ($item) => $item['@id'], $items);
         self::assertContains($acme2, $ids);
         self::assertNotContains($other, $ids);
     }
@@ -218,7 +218,7 @@ class ContactSimilarApiTest extends ApiTestCase
         $response = $client->request('GET', $c1 . '/similar', [
             'auth_bearer' => $this->token,
         ]);
-        $ids = array_map(fn($item) => $item['@id'], $response->toArray()['member']);
+        $ids = array_map(fn ($item) => $item['@id'], $response->toArray()['member']);
         self::assertContains($c2, $ids);
 
         // 2. Add relation between them
@@ -227,7 +227,7 @@ class ContactSimilarApiTest extends ApiTestCase
             'json' => [
                 'contact' => $c1,
                 'relatedContact' => $c2,
-                'type' => 'colleague'
+                'type' => 'colleague',
             ],
         ]);
 
@@ -235,7 +235,7 @@ class ContactSimilarApiTest extends ApiTestCase
         $response = $client->request('GET', $c1 . '/similar', [
             'auth_bearer' => $this->token,
         ]);
-        $ids = array_map(fn($item) => $item['@id'], $response->toArray()['member']);
+        $ids = array_map(fn ($item) => $item['@id'], $response->toArray()['member']);
         self::assertNotContains($c2, $ids);
     }
 }

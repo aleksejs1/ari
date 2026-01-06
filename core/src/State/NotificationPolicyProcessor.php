@@ -11,8 +11,6 @@ use App\Entity\NotificationRule;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Override;
 
 /**
  * @implements ProcessorInterface<NotificationPolicyDto, NotificationPolicy>
@@ -22,26 +20,26 @@ class NotificationPolicyProcessor implements ProcessorInterface
     public function __construct(
         private EntityManagerInterface $em,
         private TokenStorageInterface $tokenStorage,
-        private IriConverterInterface $iriConverter
+        private IriConverterInterface $iriConverter,
     ) {
     }
 
-    #[Override]
+    #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
         $policy = null;
 
         // Try to fetch existing policy by ID for PUT/PATCH
-        if (($operation instanceof \ApiPlatform\Metadata\Put || $operation instanceof \ApiPlatform\Metadata\Patch)) {
-             $id = $uriVariables['id'] ?? null;
-            if ($id !== null) {
+        if ($operation instanceof \ApiPlatform\Metadata\Put || $operation instanceof \ApiPlatform\Metadata\Patch) {
+            $id = $uriVariables['id'] ?? null;
+            if (null !== $id) {
                 $policy = $this->em->getRepository(NotificationPolicy::class)->find($id);
             }
         }
 
         // Fallback to previous_data if find failed (e.g. key mismatch) but usually uriVariables is reliable
         if (!$policy instanceof NotificationPolicy) {
-             $prev = $context['previous_data'] ?? null;
+            $prev = $context['previous_data'] ?? null;
             if ($prev instanceof NotificationPolicy) {
                 $policy = $prev;
             }
@@ -58,10 +56,10 @@ class NotificationPolicyProcessor implements ProcessorInterface
 
         // Deep conversion for uiSnapshot
         $encoded = json_encode($data);
-        if ($encoded === false) {
-             throw new \RuntimeException('Failed to encode policy data');
+        if (false === $encoded) {
+            throw new \RuntimeException('Failed to encode policy data');
         }
-        $policy->setUiSnapshot((array)json_decode($encoded, true));
+        $policy->setUiSnapshot((array) json_decode($encoded, true));
 
         // Set User (if not set or just to ensure)
         $token = $this->tokenStorage->getToken();
@@ -70,7 +68,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
             $userId = $user->getId();
             // Ensure user is managed by current EM
             if (!$this->em->contains($user)) {
-                if ($userId !== null) {
+                if (null !== $userId) {
                     $user = $this->em->getRepository(User::class)->find($userId);
                 }
             }
@@ -81,9 +79,9 @@ class NotificationPolicyProcessor implements ProcessorInterface
                 }
             }
         } else {
-             // If we are updating, user might be already set, but we enforce context user check?
-             // Or allow system updates? For now, stick to security.
-            if ($policy->getUser() === null) {
+            // If we are updating, user might be already set, but we enforce context user check?
+            // Or allow system updates? For now, stick to security.
+            if (null === $policy->getUser()) {
                 throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('User context is missing.');
             }
         }
@@ -138,7 +136,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
         // If type is 'all', we iterate once with null target.
         // If type is 'group' or 'contact', iterate over targetIds.
         $loopTargets = [];
-        if ($targetType === 'all') {
+        if ('all' === $targetType) {
             $loopTargets = [null];
         } elseif (count($targetIds) > 0) {
             $loopTargets = $targetIds;
@@ -151,16 +149,16 @@ class NotificationPolicyProcessor implements ProcessorInterface
         foreach ($loopTargets as $targetId) {
             $group = null;
 
-            if ($targetType === 'group' && $targetId !== null) {
+            if ('group' === $targetType && null !== $targetId) {
                 $group = null;
                 if (is_string($targetId) && str_starts_with($targetId, '/')) {
                     try {
                         $group = $this->iriConverter->getResourceFromIri($targetId);
                     } catch (\Exception $e) {
-                         // Fallback or ignore? Usually valid IRI required if it starts with /
+                        // Fallback or ignore? Usually valid IRI required if it starts with /
                     }
                 } else {
-                     $group = $this->em->getRepository(\App\Entity\Group::class)->find($targetId);
+                    $group = $this->em->getRepository(\App\Entity\Group::class)->find($targetId);
                 }
 
                 if (!$group instanceof \App\Entity\Group) {
@@ -169,15 +167,15 @@ class NotificationPolicyProcessor implements ProcessorInterface
             }
 
             $contact = null;
-            if ($targetType === 'contact' && $targetId !== null) {
+            if ('contact' === $targetType && null !== $targetId) {
                 if (is_string($targetId) && str_starts_with($targetId, '/')) {
                     try {
                         $contact = $this->iriConverter->getResourceFromIri($targetId);
                     } catch (\Exception $e) {
-                         // Fallback or ignore
+                        // Fallback or ignore
                     }
                 } else {
-                     $contact = $this->em->getRepository(\App\Entity\Contact::class)->find($targetId);
+                    $contact = $this->em->getRepository(\App\Entity\Contact::class)->find($targetId);
                 }
 
                 if (!$contact instanceof \App\Entity\Contact) {
@@ -186,7 +184,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
             }
 
             $loopEventTypes = $dto->eventTypes;
-            if ($loopEventTypes === null || count($loopEventTypes) === 0) {
+            if (null === $loopEventTypes || 0 === count($loopEventTypes)) {
                 $loopEventTypes = [null];
             }
 
@@ -217,7 +215,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
                             if ($eventType !== $existingRule->getEventType()) {
                                 continue;
                             }
-                            if ((int)$offsetDays !== $existingRule->getOffsetDays()) {
+                            if ((int) $offsetDays !== $existingRule->getOffsetDays()) {
                                 continue;
                             }
                             if ($time !== $existingRule->getOffsetTime()) {
@@ -228,12 +226,12 @@ class NotificationPolicyProcessor implements ProcessorInterface
                             }
 
                             // Check relations
-                            if ($targetType === 'group') {
+                            if ('group' === $targetType) {
                                 if ($group?->getId() !== $existingRule->getContactGroup()?->getId()) {
                                     continue;
                                 }
                             }
-                            if ($targetType === 'contact') {
+                            if ('contact' === $targetType) {
                                 if ($contact?->getId() !== $existingRule->getContact()?->getId()) {
                                     continue;
                                 }
@@ -259,7 +257,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
                             $rule->setContact($contact);
                         }
                         $rule->setEventType($eventType);
-                        $rule->setOffsetDays((int)$offsetDays);
+                        $rule->setOffsetDays((int) $offsetDays);
                         $rule->setOffsetTime($time);
                         $rule->setChannel($channel);
 
@@ -281,7 +279,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
         // We iterate over a copy or standard collection
         foreach ($policy->getNotificationRules() as $existingRule) {
             // If it's a new entity (no ID), skip invalidation check
-            if ($existingRule->getId() === null) {
+            if (null === $existingRule->getId()) {
                 continue;
             }
 

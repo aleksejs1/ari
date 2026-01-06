@@ -75,7 +75,7 @@ class ContactRelationValidationTest extends ApiTestCase
                     [
                         'relatedContact' => '/api/contacts/' . $contactId,
                         'type' => 'Self',
-                    ]
+                    ],
                 ],
             ],
         ]);
@@ -131,7 +131,7 @@ class ContactRelationValidationTest extends ApiTestCase
                     [
                         'relatedContact' => '/api/contacts/' . $otherContactId,
                         'type' => 'Friend',
-                    ]
+                    ],
                 ],
             ],
         ]);
@@ -187,7 +187,7 @@ class ContactRelationValidationTest extends ApiTestCase
                     [
                         'relatedContact' => '/api/contacts/' . $otherContactId,
                         'type' => 'Friend',
-                    ]
+                    ],
                 ],
             ],
         ]);
@@ -239,7 +239,7 @@ class ContactRelationValidationTest extends ApiTestCase
                     [
                         'relatedContact' => '/api/contacts/' . $otherContactId,
                         'type' => 'Twin',
-                    ]
+                    ],
                 ],
             ],
         ]);

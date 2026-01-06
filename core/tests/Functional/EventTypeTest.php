@@ -4,11 +4,10 @@ namespace App\Tests\Functional;
 
 use App\Entity\Contact;
 use App\Entity\ContactDate;
-use Override;
 
 class EventTypeTest extends AbstractApiTestCase
 {
-    #[Override]
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,7 +52,7 @@ class EventTypeTest extends AbstractApiTestCase
         $client = static::createClient();
 
         $response = $client->request('GET', '/api/notification-policy/event-types', [
-            'auth_bearer' => $this->token
+            'auth_bearer' => $this->token,
         ]);
 
         self::assertResponseIsSuccessful();
@@ -73,7 +72,7 @@ class EventTypeTest extends AbstractApiTestCase
         $client = static::createClient();
 
         $response = $client->request('GET', '/api/notification-policy/event-types?text=Birth', [
-            'auth_bearer' => $this->token
+            'auth_bearer' => $this->token,
         ]);
 
         self::assertResponseIsSuccessful();
@@ -88,7 +87,7 @@ class EventTypeTest extends AbstractApiTestCase
         $client = static::createClient();
 
         $response = $client->request('GET', '/api/notification-policy/event-types?search=Anniv', [
-            'auth_bearer' => $this->token
+            'auth_bearer' => $this->token,
         ]);
 
         self::assertResponseIsSuccessful();

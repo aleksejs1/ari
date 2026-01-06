@@ -24,8 +24,8 @@ class ContactGroupUpdateTest extends AbstractApiTestCase
             'auth_bearer' => $this->token,
             'json' => [
                 'contactGroups' => [
-                    ['groupResource' => $groupIri]
-                ]
+                    ['groupResource' => $groupIri],
+                ],
             ],
         ]);
         self::assertResponseStatusCodeSame(201);
@@ -48,8 +48,8 @@ class ContactGroupUpdateTest extends AbstractApiTestCase
         $client->request('PUT', $contactIri, [
             'auth_bearer' => $this->token,
             'json' => [
-                'contactGroups' => $initialContactGroups
-            ]
+                'contactGroups' => $initialContactGroups,
+            ],
         ]);
 
         self::assertResponseIsSuccessful();

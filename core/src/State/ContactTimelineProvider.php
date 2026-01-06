@@ -7,8 +7,6 @@ use ApiPlatform\State\ProviderInterface;
 use App\ApiResource\ContactTimeline;
 use App\Entity\AuditLog;
 use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -53,8 +51,8 @@ class ContactTimelineProvider implements ProviderInterface
 
             if (0 === $dateComparison) {
                 // If dates are equal, Contact entity type should come last
-                $aIsContact = $a->getEntityType() === Contact::class && $a->getAction() === 'INSERT';
-                $bIsContact = $b->getEntityType() === Contact::class && $b->getAction() === 'INSERT';
+                $aIsContact = Contact::class === $a->getEntityType() && 'INSERT' === $a->getAction();
+                $bIsContact = Contact::class === $b->getEntityType() && 'INSERT' === $b->getAction();
 
                 if ($aIsContact && !$bIsContact) {
                     return 1; // $a comes after $b
@@ -67,11 +65,16 @@ class ContactTimelineProvider implements ProviderInterface
             return $dateComparison;
         });
 
-        /* @var array<int, AuditLog> $allLogs */
-        /** @psalm-suppress InvalidArgument */
+        // Ensure the array is indexed sequentially to avoid int<0, max> variance issues if possible,
+        // though array_merge does this.
+        // We explicitly tell Psalm that this is a Collection of AuditLogs with integer keys.
+
+        /** @var ArrayCollection<int, AuditLog> $collection */
+        $collection = new ArrayCollection($allLogs);
+
         return new ContactTimeline(
             (int) $id,
-            new ArrayCollection($allLogs)
+            $collection
         );
     }
 }

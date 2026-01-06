@@ -49,7 +49,7 @@ class AuditLogSubscriber
                 $changeSet = $uow->getEntityChangeSet($entity);
                 $filteredChangeSet = $this->filterChangeSet($changeSet, $entity);
 
-                if ($filteredChangeSet !== []) {
+                if ([] !== $filteredChangeSet) {
                     $this->logChange($em, $entity, 'UPDATE', $filteredChangeSet);
                 }
             }
@@ -94,7 +94,7 @@ class AuditLogSubscriber
                 if (null !== $auditLog->getId()) {
                     $em = $args->getObjectManager();
 
-                // Also check for owner ID if it wasn't set (e.g. cascaded persist)
+                    // Also check for owner ID if it wasn't set (e.g. cascaded persist)
                     $ownerEntityId = $auditLog->getOwnerEntityId();
                     $ownerEntityType = $auditLog->getOwnerEntityType();
 

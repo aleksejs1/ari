@@ -42,8 +42,8 @@ class ContactGroupStabilityTest extends AbstractApiTestCase
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
             'contactGroups' => [
-                ['groupResource' => ['@id' => $groupIri]]
-            ]
+                ['groupResource' => ['@id' => $groupIri]],
+            ],
         ]);
 
         // 5. Change Group Name
@@ -83,7 +83,7 @@ class ContactGroupStabilityTest extends AbstractApiTestCase
         ]);
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
-            'groupResource' => ['@id' => $groupIri]
+            'groupResource' => ['@id' => $groupIri],
         ]);
     }
 }

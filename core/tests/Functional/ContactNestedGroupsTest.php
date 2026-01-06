@@ -47,11 +47,11 @@ class ContactNestedGroupsTest extends AbstractApiTestCase
         $groupNames = [];
         foreach ($data['contactGroups'] as $cg) {
             if (is_array($cg['groupResource'])) {
-                 $groupNames[] = $cg['groupResource']['name'];
+                $groupNames[] = $cg['groupResource']['name'];
             } else {
-                 // It's an IRI, fetch it
-                 $gResponse = $client->request('GET', $cg['groupResource'], ['auth_bearer' => $this->token]);
-                 $groupNames[] = $gResponse->toArray()['name'];
+                // It's an IRI, fetch it
+                $gResponse = $client->request('GET', $cg['groupResource'], ['auth_bearer' => $this->token]);
+                $groupNames[] = $gResponse->toArray()['name'];
             }
         }
 

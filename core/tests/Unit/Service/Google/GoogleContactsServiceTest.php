@@ -91,6 +91,7 @@ final class GoogleContactsServiceTest extends TestCase
                 if (str_contains($url, 'contactGroups')) {
                     return $groupsResponse;
                 }
+
                 return $contactsResponse;
             });
 
@@ -149,6 +150,7 @@ final class GoogleContactsServiceTest extends TestCase
                 if (str_contains($url, 'contactGroups')) {
                     return $groupsResponse;
                 }
+
                 return $contactsResponse;
             });
 
@@ -200,6 +202,7 @@ final class GoogleContactsServiceTest extends TestCase
                 if (str_contains($url, 'contactGroups')) {
                     return $groupsResponse;
                 }
+
                 return $contactsResponse;
             });
 
@@ -244,7 +247,7 @@ final class GoogleContactsServiceTest extends TestCase
             ->willReturnCallback(function (
                 string $method,
                 string $url,
-                array $options
+                array $options,
             ) use (
                 $groupsResponse1,
                 $groupsResponse2,
@@ -253,11 +256,13 @@ final class GoogleContactsServiceTest extends TestCase
             ) {
                 if (str_contains($url, 'contactGroups')) {
                     $nextGroup = isset($options['query']['pageToken'])
-                        && $options['query']['pageToken'] === 'next_group_token';
+                        && 'next_group_token' === $options['query']['pageToken'];
+
                     return $nextGroup ? $groupsResponse2 : $groupsResponse1;
                 }
                 $nextContact = isset($options['query']['pageToken'])
-                    && $options['query']['pageToken'] === 'next_contact_token';
+                    && 'next_contact_token' === $options['query']['pageToken'];
+
                 return $nextContact ? $contactsResponse2 : $contactsResponse1;
             });
 

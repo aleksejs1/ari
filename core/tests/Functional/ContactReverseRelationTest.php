@@ -47,6 +47,7 @@ class ContactReverseRelationTest extends ApiTestCase
                 'password' => $password,
             ],
         ]);
+
         return $response->toArray()['token'];
     }
 

@@ -41,7 +41,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new \ApiPlatform\Metadata\Delete(
             uriTemplate: '/notification-policies/{id}'
-        )
+        ),
     ],
     normalizationContext: ['groups' => ['notification_policy:read']],
     security: "is_granted('ROLE_USER')"

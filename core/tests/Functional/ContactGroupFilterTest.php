@@ -127,7 +127,7 @@ class ContactGroupFilterTest extends ApiTestCase
         $data = $responseArray['member'] ?? [];
 
         self::assertCount(2, $data);
-        $ids = array_map(fn($c) => $c['@id'], $data);
+        $ids = array_map(fn ($c) => $c['@id'], $data);
         self::assertContains($contact1Iri, $ids);
         self::assertContains($contact3Iri, $ids);
         self::assertNotContains($contact2Iri, $ids);

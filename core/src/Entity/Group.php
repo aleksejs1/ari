@@ -61,10 +61,11 @@ class Group implements TenantAwareInterface
     #[Groups([
         'group:read',
         'group:create',
+        'export',
         'contact:read',
         'contact_group:read',
         'contact:create',
-        'contact_group:create'
+        'contact_group:create',
     ])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;

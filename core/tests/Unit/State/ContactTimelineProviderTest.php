@@ -11,7 +11,6 @@ use App\Entity\ContactName;
 use App\Repository\AuditLogRepository;
 use App\Repository\ContactRepository;
 use App\State\ContactTimelineProvider;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -68,12 +67,12 @@ class ContactTimelineProviderTest extends TestCase
         $auditLogRepository->method('findBy')
             ->willReturnCallback(function ($criteria) use ($logContact, $logName, $logDate) {
                 // Main Contact request
-                if (isset($criteria['entityType']) && $criteria['entityType'] === Contact::class) {
+                if (isset($criteria['entityType']) && Contact::class === $criteria['entityType']) {
                     return [$logContact];
                 }
 
                 // Child entities request (fetched via owner)
-                if (isset($criteria['ownerEntityType']) && $criteria['ownerEntityType'] === Contact::class) {
+                if (isset($criteria['ownerEntityType']) && Contact::class === $criteria['ownerEntityType']) {
                     return [$logName, $logDate];
                 }
 

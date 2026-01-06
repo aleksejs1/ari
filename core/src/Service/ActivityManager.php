@@ -11,7 +11,7 @@ class ActivityManager
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ActivityFeedRepository $repository
+        private readonly ActivityFeedRepository $repository,
     ) {
     }
 
@@ -25,7 +25,7 @@ class ActivityManager
         ?string $message = null,
         ?array $actionData = null,
         ?\DateTimeInterface $expiresAt = null,
-        ?User $tenant = null
+        ?User $tenant = null,
     ): void {
         $activity = new ActivityFeed();
         $activity->setUserId($userId);

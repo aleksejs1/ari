@@ -10,7 +10,7 @@ use ApiPlatform\Metadata\Get;
 
 #[ApiResource(
     operations: [
-        new Get(uriTemplate: '/notification-policies/{id}')
+        new Get(uriTemplate: '/notification-policies/{id}'),
     ]
 )]
 class NotificationPolicyDto
@@ -30,7 +30,7 @@ class NotificationPolicyDto
     #[Assert\Collection(
         fields: [
             'type' => new Assert\Choice(choices: ['group', 'contact', 'all']),
-            'ids' => new Assert\Optional([new Assert\All([new Assert\NotBlank()])])
+            'ids' => new Assert\Optional([new Assert\All([new Assert\NotBlank()])]),
         ],
         allowMissingFields: true
     )]
@@ -45,8 +45,8 @@ class NotificationPolicyDto
         }
 
         $type = $this->targets['type'];
-        if ($type !== 'all') {
-            if (!isset($this->targets['ids']) || $this->targets['ids'] === []) {
+        if ('all' !== $type) {
+            if (!isset($this->targets['ids']) || [] === $this->targets['ids']) {
                 $context->buildViolation('This value should not be blank.')
                     ->atPath('targets[ids]')
                     ->addViolation();
@@ -71,10 +71,10 @@ class NotificationPolicyDto
             fields: [
                 'offsetDays' => new Assert\Type('integer'),
                 'time' => new Assert\Regex('/^\d{2}:\d{2}$/'),
-                'channels' => new Assert\All([new Assert\NotBlank()])
+                'channels' => new Assert\All([new Assert\NotBlank()]),
             ],
             allowMissingFields: false
-        )
+        ),
     ])]
     #[Groups(['notification_policy:read'])]
     public ?array $schedule = null;

@@ -35,7 +35,7 @@ class NotificationPolicyProcessorTest extends TestCase
         $dto->targets = ['type' => 'group', 'ids' => [1]];
         $dto->eventTypes = ['birthday'];
         $dto->schedule = [
-            ['offsetDays' => -1, 'time' => '10:00', 'channels' => [2]]
+            ['offsetDays' => -1, 'time' => '10:00', 'channels' => [2]],
         ];
 
         // Mocks
@@ -63,7 +63,7 @@ class NotificationPolicyProcessorTest extends TestCase
                     Group::class => $groupRepo,
                     NotificationChannel::class => $channelRepo,
                     User::class => $userRepo,
-                    default => null
+                    default => null,
                 };
             }
         );
@@ -74,7 +74,7 @@ class NotificationPolicyProcessorTest extends TestCase
 
         $result = $processor->process($dto, new Post());
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         self::assertInstanceOf(NotificationPolicy::class, $result);
         self::assertEquals('Test Policy', $result->getName());
         self::assertEquals($user, $result->getUser());

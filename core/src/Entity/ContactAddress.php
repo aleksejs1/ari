@@ -162,7 +162,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type === '' ? null : $type;
+        $this->type = '' === $type ? null : $type;
 
         return $this;
     }
@@ -174,7 +174,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setStreet(?string $street): static
     {
-        $this->street = $street === '' ? null : $street;
+        $this->street = '' === $street ? null : $street;
 
         return $this;
     }
@@ -186,7 +186,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setStreetExtended(?string $streetExtended): static
     {
-        $this->streetExtended = $streetExtended === '' ? null : $streetExtended;
+        $this->streetExtended = '' === $streetExtended ? null : $streetExtended;
 
         return $this;
     }
@@ -198,7 +198,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setCity(?string $city): static
     {
-        $this->city = $city === '' ? null : $city;
+        $this->city = '' === $city ? null : $city;
 
         return $this;
     }
@@ -210,7 +210,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setRegion(?string $region): static
     {
-        $this->region = $region === '' ? null : $region;
+        $this->region = '' === $region ? null : $region;
 
         return $this;
     }
@@ -222,7 +222,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setPostalCode(?string $postalCode): static
     {
-        $this->postalCode = $postalCode === '' ? null : $postalCode;
+        $this->postalCode = '' === $postalCode ? null : $postalCode;
 
         return $this;
     }
@@ -234,7 +234,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setCountry(?string $country): static
     {
-        $this->country = $country === '' ? null : $country;
+        $this->country = '' === $country ? null : $country;
 
         return $this;
     }
@@ -246,7 +246,7 @@ class ContactAddress implements TenantAwareInterface
 
     public function setCountryCode(?string $countryCode): static
     {
-        $this->countryCode = $countryCode === '' ? null : $countryCode;
+        $this->countryCode = '' === $countryCode ? null : $countryCode;
 
         return $this;
     }

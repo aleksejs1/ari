@@ -36,7 +36,7 @@ class UserPrefStateProvider implements ProviderInterface
 
         $userPref = $this->entityManager->getRepository(UserPref::class)->findOneBy(['user' => $user, 'type' => $type]);
 
-        if ($userPref !== null) {
+        if (null !== $userPref) {
             return $userPref;
         }
 

@@ -126,7 +126,7 @@ class UserPrefApiTest extends AbstractApiTestCase
         $response = $client->request('GET', '/api/user_prefs/dateFormat', [
             'auth_bearer' => $this->token,
         ]);
-         $data = $response->toArray();
+        $data = $response->toArray();
         self::assertEquals('dd.mm.yyyy', $data['value']);
     }
 
@@ -151,7 +151,7 @@ class UserPrefApiTest extends AbstractApiTestCase
         $response = $client->request('GET', '/api/user_prefs/favourite_group_name', [
             'auth_bearer' => $this->token,
         ]);
-         $data = $response->toArray();
+        $data = $response->toArray();
         self::assertEquals('My Favourites', $data['value']);
     }
 
@@ -188,7 +188,7 @@ class UserPrefApiTest extends AbstractApiTestCase
             'headers' => ['Content-Type' => 'application/merge-patch+json'],
             'json' => [
                 'type' => 'language',
-                'value' => 'ru'
+                'value' => 'ru',
             ],
         ]);
 
@@ -216,7 +216,7 @@ class UserPrefApiTest extends AbstractApiTestCase
             'headers' => ['Content-Type' => 'application/merge-patch+json'],
             'json' => [
                 'type' => 'language',
-                'value' => 'ru'
+                'value' => 'ru',
             ],
         ]);
 
@@ -231,9 +231,9 @@ class UserPrefApiTest extends AbstractApiTestCase
         self::assertEquals('en', $data['value']);
 
         // Verify User A still has 'ru'
-         $responseA = $client->request('GET', '/api/user_prefs/language', [
+        $responseA = $client->request('GET', '/api/user_prefs/language', [
             'auth_bearer' => $this->token,
-         ]);
+        ]);
         self::assertEquals('ru', $responseA->toArray()['value']);
     }
 }

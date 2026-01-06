@@ -27,7 +27,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
             'auth_bearer' => $this->token,
             'json' => [
                 'type' => 'email',
-                'config' => ['foo' => 'bar'] // Valid config for email (none required but array expected)
+                'config' => ['foo' => 'bar'], // Valid config for email (none required but array expected)
             ],
         ]);
         self::assertResponseStatusCodeSame(201);
@@ -39,16 +39,16 @@ class NotificationPolicyTest extends AbstractApiTestCase
             'name' => 'Test Policy',
             'targets' => [
                 'type' => 'group',
-                'ids' => [$groupId]
+                'ids' => [$groupId],
             ],
             'eventTypes' => ['birthday'],
             'schedule' => [
                 [
                     'offsetDays' => -7,
                     'time' => '09:00',
-                    'channels' => [$channelId]
-                ]
-            ]
+                    'channels' => [$channelId],
+                ],
+            ],
         ];
 
         $response = $client->request('POST', '/api/notification-policies', [
@@ -121,7 +121,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
             'name' => 'Original Policy',
             'targets' => ['type' => 'group', 'ids' => [$groupId]],
             'eventTypes' => ['birthday'],
-            'schedule' => [['offsetDays' => 0, 'time' => '12:00', 'channels' => [$channelId]]]
+            'schedule' => [['offsetDays' => 0, 'time' => '12:00', 'channels' => [$channelId]]],
         ];
 
         $resp = $client->request('POST', '/api/notification-policies', [
@@ -138,7 +138,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         self::assertJsonContains([
             'name' => 'Original Policy',
             'targets' => ['type' => 'group'], // Check root level key
-            'schedule' => [['time' => '12:00']]
+            'schedule' => [['time' => '12:00']],
         ]);
 
         // 4. Update (PUT)
@@ -179,6 +179,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         $client->request('GET', $policyIri, ['auth_bearer' => $this->token]);
         self::assertResponseStatusCodeSame(404);
     }
+
     public function testCreateAllNotificationPolicy(): void
     {
         $client = static::createClient();
@@ -195,7 +196,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         $payload = [
             'name' => 'All Policy',
             'targets' => [
-                'type' => 'all'
+                'type' => 'all',
                 // ids implied absent
             ],
             'eventTypes' => ['birthday'],
@@ -203,9 +204,9 @@ class NotificationPolicyTest extends AbstractApiTestCase
                 [
                     'offsetDays' => 0,
                     'time' => '10:00',
-                    'channels' => [$channelId]
-                ]
-            ]
+                    'channels' => [$channelId],
+                ],
+            ],
         ];
 
         $response = $client->request('POST', '/api/notification-policies', [
@@ -251,9 +252,9 @@ class NotificationPolicyTest extends AbstractApiTestCase
                 [
                     'offsetDays' => 0,
                     'time' => '10:00',
-                    'channels' => [$channelId]
-                ]
-            ]
+                    'channels' => [$channelId],
+                ],
+            ],
         ];
 
         $response = $client->request('POST', '/api/notification-policies', [
@@ -285,7 +286,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
             'name' => 'ID Check Policy',
             'targets' => ['type' => 'all'],
             'eventTypes' => [],
-            'schedule' => []
+            'schedule' => [],
         ];
 
         $response = $client->request('POST', '/api/notification-policies', [
@@ -322,7 +323,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         // Assert @id matches /api/notification-policies/{id}
         self::assertJsonContains([
             '@id' => $policyIri,
-            'id' => $policyId
+            'id' => $policyId,
         ]);
     }
 }

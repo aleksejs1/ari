@@ -10,7 +10,6 @@ use App\Dto\NotificationPolicy\EventTypeDto;
 use App\Entity\ContactDate;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\Pagination\Pagination;
-use Override;
 
 /**
  * @implements ProviderInterface<EventTypeDto>
@@ -19,11 +18,11 @@ class EventTypeProvider implements ProviderInterface
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private Pagination $pagination
+        private Pagination $pagination,
     ) {
     }
 
-    #[Override]
+    #[\Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         if (!$operation instanceof CollectionOperationInterface) {

@@ -8,7 +8,6 @@ use App\Repository\TokenStorageRepository;
 use App\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +33,7 @@ class GoogleAuthController extends AbstractController
 
         // Generate signed state: userID.signature
         $uuid = $user->getUuid();
-        if ($uuid === null) {
+        if (null === $uuid) {
             throw new \LogicException('User must have a UUID');
         }
         $stateData = $uuid;
@@ -62,7 +61,7 @@ class GoogleAuthController extends AbstractController
 
         // Verify state
         $parts = explode('.', $state);
-        if (count($parts) !== 2) {
+        if (2 !== count($parts)) {
             return $this->json(['error' => 'Invalid state format'], Response::HTTP_BAD_REQUEST);
         }
 

@@ -33,7 +33,7 @@ class ContactNestedRelationsTest extends AbstractApiTestCase
                     [
                         'relatedContact' => $relatedContactIri,
                         'type' => 'sister',
-                    ]
+                    ],
                 ],
             ],
         ]);
@@ -185,7 +185,7 @@ class ContactNestedRelationsTest extends AbstractApiTestCase
                     [
                         'relatedContact' => '/api/contacts/' . $contactAId,
                         'type' => 'Son',
-                    ]
+                    ],
                 ],
             ],
         ]);

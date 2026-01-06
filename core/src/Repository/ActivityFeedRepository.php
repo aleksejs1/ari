@@ -12,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ActivityFeed|null find($id, $lockMode = null, $lockVersion = null)
  * @method ActivityFeed|null findOneBy(array<string, mixed> $criteria, array<string, mixed> $orderBy = null)
  * @method ActivityFeed[]    findAll()
- * // phpcs:ignore Generic.Files.LineLength
+ *                                                                                                                                       // phpcs:ignore Generic.Files.LineLength
  * @method ActivityFeed[]    findBy(array<string, mixed> $criteria, array<string, mixed> $orderBy = null, $limit = null, $offset = null)
  */
 class ActivityFeedRepository extends ServiceEntityRepository

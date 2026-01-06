@@ -24,7 +24,6 @@ use App\Entity\User;
 use App\Service\ContactImport\ContactDuplicateCheckerInterface;
 use App\Service\ContactImport\ContactImportService;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class ContactImportServiceTest extends TestCase

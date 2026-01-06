@@ -3,7 +3,6 @@
 namespace App\Tests\Functional;
 
 use App\Entity\NotificationQueue;
-use App\Entity\NotificationRule;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -22,10 +21,10 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
                 'contactDates' => [
                     [
                         'date' => $tomorrow->format('Y-m-d'),
-                        'text' => 'birthday'
-                    ]
-                ]
-            ]
+                        'text' => 'birthday',
+                    ],
+                ],
+            ],
         ]);
         self::assertResponseStatusCodeSame(201);
         $contactId = $contactResponse->toArray()['id'];
@@ -33,7 +32,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
         // 2. Create Channel
         $channelResponse = $client->request('POST', '/api/notification_channels', [
             'auth_bearer' => $token,
-            'json' => ['type' => 'email', 'config' => []]
+            'json' => ['type' => 'email', 'config' => []],
         ]);
         self::assertResponseStatusCodeSame(201);
         $channelData = $channelResponse->toArray();
@@ -44,7 +43,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
 
         $groupResponse = $client->request('POST', '/api/groups', [
             'auth_bearer' => $token,
-            'json' => ['name' => 'Birthday Group']
+            'json' => ['name' => 'Birthday Group'],
         ]);
         $groupId = $groupResponse->toArray()['id'];
 
@@ -53,8 +52,8 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
             'auth_bearer' => $token,
             'json' => [
                 'contact' => '/api/contacts/' . $contactId,
-                'groupResource' => '/api/groups/' . $groupId
-            ]
+                'groupResource' => '/api/groups/' . $groupId,
+            ],
         ]);
         self::assertResponseStatusCodeSame(201);
 
@@ -70,10 +69,10 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
                         // Execution(Today) = Event(Tomorrow) + (-1). Target = Today - (-1) = Tomorrow. Correct.
                         'offsetDays' => -1,
                         'time' => '09:00',
-                        'channels' => [$channelId]
-                    ]
-                ]
-            ]
+                        'channels' => [$channelId],
+                    ],
+                ],
+            ],
         ]);
         self::assertResponseStatusCodeSame(201);
 
@@ -86,7 +85,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
 
         // Execute for Today
         $commandTester->execute([
-            '--date' => (new \DateTime())->format('Y-m-d')
+            '--date' => (new \DateTime())->format('Y-m-d'),
         ]);
 
         $output = $commandTester->getDisplay();
@@ -94,12 +93,12 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
 
         // Ensure count is not 0
         preg_match('/Generated (\d+) notification queue items/', $output, $matches);
-        self::assertGreaterThan(0, (int)$matches[1]);
+        self::assertGreaterThan(0, (int) $matches[1]);
 
         // 5. Verify Queue Item in DB
         $doctrine = $kernel->getContainer()->get('doctrine');
         if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
-             throw new \RuntimeException('Doctrine service not found');
+            throw new \RuntimeException('Doctrine service not found');
         }
         $entityManager = $doctrine->getManager();
         $contact = $entityManager->getRepository(\App\Entity\Contact::class)->find($contactId);
@@ -110,7 +109,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
 
         // 6. Idempotency Check
         $commandTester->execute([
-            '--date' => (new \DateTime())->format('Y-m-d')
+            '--date' => (new \DateTime())->format('Y-m-d'),
         ]);
         $output = $commandTester->getDisplay();
         self::assertStringContainsString('Generated 0 notification queue items', $output);

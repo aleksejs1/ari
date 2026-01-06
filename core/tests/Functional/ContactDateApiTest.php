@@ -104,8 +104,8 @@ class ContactDateApiTest extends ApiTestCase
             'date' => '2023-01-01', // Expect Y-m-d format
             'text' => 'Wedding Anniversary',
             'contact' => [
-                'displayName' => 'Unknown Contact' // Since we didn't add names
-            ]
+                'displayName' => 'Unknown Contact', // Since we didn't add names
+            ],
         ]);
 
         // 3. PUT (Update fully)
@@ -286,6 +286,7 @@ class ContactDateApiTest extends ApiTestCase
         self::assertEquals($expectedNext, $data['nextAnniversaryDate']);
         self::assertEquals(6, $data['yearsAtNextAnniversary']);
     }
+
     public function testGetCollectionSortedByUpcomingDate(): void
     {
         $client = static::createClient();
@@ -339,7 +340,7 @@ class ContactDateApiTest extends ApiTestCase
     private function createContactDate(
         \ApiPlatform\Symfony\Bundle\Test\Client $client,
         string $date,
-        string $text
+        string $text,
     ): void {
         $client->request('POST', '/api/contact_dates', [
             'auth_bearer' => $this->token,
@@ -370,8 +371,8 @@ class ContactDateApiTest extends ApiTestCase
             'json' => [
                 'given' => 'John',
                 'family' => 'Doe',
-                'contact' => $contactIri
-            ]
+                'contact' => $contactIri,
+            ],
         ]);
         self::assertResponseStatusCodeSame(201);
 
@@ -381,8 +382,8 @@ class ContactDateApiTest extends ApiTestCase
             'json' => [
                 'date' => '2025-01-01',
                 'text' => 'New Year',
-                'contact' => $contactIri
-            ]
+                'contact' => $contactIri,
+            ],
         ]);
         self::assertResponseStatusCodeSame(201);
 

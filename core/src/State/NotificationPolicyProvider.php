@@ -8,7 +8,6 @@ use App\Dto\NotificationPolicy\NotificationPolicyDto;
 use App\Entity\NotificationPolicy;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Metadata\CollectionOperationInterface;
-use Override;
 
 /**
  * @implements ProviderInterface<NotificationPolicyDto>
@@ -16,11 +15,11 @@ use Override;
 class NotificationPolicyProvider implements ProviderInterface
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
     ) {
     }
 
-    #[Override]
+    #[\Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         if ($operation instanceof CollectionOperationInterface) {
@@ -33,6 +32,7 @@ class NotificationPolicyProvider implements ProviderInterface
             foreach ($entities as $entity) {
                 $dtos[] = $this->mapToDto($entity);
             }
+
             return $dtos;
         }
 

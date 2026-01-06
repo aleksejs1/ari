@@ -3,11 +3,10 @@
 namespace App\Tests\Functional;
 
 use App\Entity\NotificationPolicy;
-use App\Entity\NotificationRule;
 use Doctrine\ORM\EntityManagerInterface;
-use Override;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase; // Using WebTestCase for client
-use App\Tests\Functional\AbstractApiTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+// Using WebTestCase for client
 
 // Assuming this is easier
 
@@ -15,7 +14,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
 {
     private string $channelId;
 
-    #[Override]
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -25,20 +24,20 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
         $client = static::createClient();
         $channelResponse = $client->request('POST', '/api/notification_channels', [
             'auth_bearer' => $this->token,
-            'json' => ['type' => 'web', 'config' => []]
+            'json' => ['type' => 'web', 'config' => []],
         ]);
         // Iterate channelId if needed, or rely on setup to be clean enough or handle uniqueness?
         // Usually safe to create one.
-        if ($channelResponse->getStatusCode() === 201) {
-             $this->channelId = $channelResponse->toArray()['id'];
+        if (201 === $channelResponse->getStatusCode()) {
+            $this->channelId = $channelResponse->toArray()['id'];
         } else {
             // Find existing if creating failed (maybe uniqueness constraint?)
-             $container = self::getContainer();
-             $em = $container->get(EntityManagerInterface::class);
-             assert($em instanceof EntityManagerInterface);
-             $ch = $em->getRepository(\App\Entity\NotificationChannel::class)->findOneBy(['type' => 'web']);
-            if ($ch !== null) {
-                $this->channelId = (string)$ch->getId();
+            $container = self::getContainer();
+            $em = $container->get(EntityManagerInterface::class);
+            assert($em instanceof EntityManagerInterface);
+            $ch = $em->getRepository(\App\Entity\NotificationChannel::class)->findOneBy(['type' => 'web']);
+            if (null !== $ch) {
+                $this->channelId = (string) $ch->getId();
             } else {
                 self::fail('Could not create or find channel');
             }
@@ -53,7 +52,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
         // 1. Create a dummy group to target
         $groupResponse = $client->request('POST', '/api/groups', [
             'auth_bearer' => $token,
-            'json' => ['name' => 'Rule Test Group']
+            'json' => ['name' => 'Rule Test Group'],
         ]);
         $groupId = $groupResponse->toArray()['id'];
 
@@ -61,7 +60,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
         // Target: Group, Event: 'event-A', Offset: 0
         $response = $client->request('POST', '/api/notification-policies', [
             'auth_bearer' => $token,
-             'json' => [
+            'json' => [
                 'name' => 'Additive Rules Policy',
                 'active' => true,
                 'targets' => ['type' => 'group', 'ids' => [$groupId]],
@@ -69,12 +68,12 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
                 'schedule' => [
                     [
                         'offsetDays' => 0,
-                         'time' => '10:00',
-                         'channels' => [$this->channelId]
-                    ]
-                ]
-             ]
-         ]);
+                        'time' => '10:00',
+                        'channels' => [$this->channelId],
+                    ],
+                ],
+            ],
+        ]);
         self::assertResponseStatusCodeSame(201);
         $policyId = $response->toArray()['id'];
 
@@ -96,7 +95,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
         // This effectively means we now have ['event-A', 'event-B']
         $client->request('PUT', '/api/notification-policies/' . $policyId, [
             'auth_bearer' => $token,
-             'json' => [
+            'json' => [
                 'name' => 'Additive Rules Policy Updated',
                 'active' => true,
                 'targets' => ['type' => 'group', 'ids' => [$groupId]],
@@ -104,12 +103,12 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
                 'schedule' => [
                     [
                         'offsetDays' => 0,
-                         'time' => '10:00',
-                         'channels' => [$this->channelId]
-                    ]
-                ]
-             ]
-         ]);
+                        'time' => '10:00',
+                        'channels' => [$this->channelId],
+                    ],
+                ],
+            ],
+        ]);
         self::assertResponseIsSuccessful();
 
         $em->clear();
@@ -136,7 +135,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
 
         $groupResponse = $client->request('POST', '/api/groups', [
             'auth_bearer' => $token,
-            'json' => ['name' => 'Deletion Test Group']
+            'json' => ['name' => 'Deletion Test Group'],
         ]);
         $groupId = $groupResponse->toArray()['id'];
 
@@ -144,7 +143,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
         // Events: ['A', 'B']
         $response = $client->request('POST', '/api/notification-policies', [
             'auth_bearer' => $token,
-             'json' => [
+            'json' => [
                 'name' => 'Deletion Rules Policy',
                 'active' => true,
                 'targets' => ['type' => 'group', 'ids' => [$groupId]],
@@ -152,12 +151,12 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
                 'schedule' => [
                     [
                         'offsetDays' => 0,
-                         'time' => '10:00',
-                         'channels' => [$this->channelId]
-                    ]
-                ]
-             ]
-         ]);
+                        'time' => '10:00',
+                        'channels' => [$this->channelId],
+                    ],
+                ],
+            ],
+        ]);
         $policyId = $response->toArray()['id'];
 
         $em = self::getContainer()->get(EntityManagerInterface::class);
@@ -170,7 +169,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
 
         $ruleAId = null;
         foreach ($rules as $r) {
-            if ($r->getEventType() === 'A') {
+            if ('A' === $r->getEventType()) {
                 $ruleAId = $r->getId();
             }
         }
@@ -181,7 +180,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
         // Events: ['A']
         $client->request('PUT', '/api/notification-policies/' . $policyId, [
             'auth_bearer' => $token,
-             'json' => [
+            'json' => [
                 'name' => 'Deletion Rules Policy Updated',
                 'active' => true,
                 'targets' => ['type' => 'group', 'ids' => [$groupId]],
@@ -189,12 +188,12 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
                 'schedule' => [
                     [
                         'offsetDays' => 0,
-                         'time' => '10:00',
-                         'channels' => [$this->channelId]
-                    ]
-                ]
-             ]
-         ]);
+                        'time' => '10:00',
+                        'channels' => [$this->channelId],
+                    ],
+                ],
+            ],
+        ]);
         self::assertResponseIsSuccessful();
 
         $em->clear();

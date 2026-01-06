@@ -54,7 +54,7 @@ class ContactExportTest extends AbstractApiTestCase
 
         // If content is empty (processed by StreamedResponse), explicitly execute callback to capture it
         // Use strict check instead of empty()
-        if ($content === '') {
+        if ('' === $content) {
             $response = $client->getKernelBrowser()->getResponse();
             if ($response instanceof StreamedResponse) {
                 $reflection = new \ReflectionClass($response);

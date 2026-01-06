@@ -2,7 +2,6 @@
 
 namespace App\Dto\NotificationPolicy;
 
-use ApiPlatform\State\ProviderInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\ApiFilter;
@@ -10,7 +9,6 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\QueryParameter;
 use App\State\EventTypeProvider;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
@@ -22,9 +20,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: EventTypeProvider::class,
             name: 'event_types',
             parameters: [
-                'search' => new QueryParameter(property: 'text', filter: SearchFilter::class)
+                'search' => new QueryParameter(property: 'text', filter: SearchFilter::class),
             ]
-        )
+        ),
     ]
 ) ]
 class EventTypeDto

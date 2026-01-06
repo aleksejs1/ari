@@ -96,7 +96,7 @@ class ContactBiography implements TenantAwareInterface
 
     public function setType(?string $type): static
     {
-        $this->type = $type === '' ? null : $type;
+        $this->type = '' === $type ? null : $type;
 
         return $this;
     }
@@ -108,7 +108,7 @@ class ContactBiography implements TenantAwareInterface
 
     public function setValue(?string $value): static
     {
-        $this->value = $value === '' ? null : $value;
+        $this->value = '' === $value ? null : $value;
 
         return $this;
     }

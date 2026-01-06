@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Metadata\Operation;
 use App\Entity\Contact;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -19,25 +18,45 @@ class ExportContactsAction
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $em,
-        Security $security
+        Security $security,
     ): StreamedResponse {
         $user = $security->getUser();
 
         if (!$user instanceof \App\Entity\User) {
-             throw new AccessDeniedException();
+            throw new AccessDeniedException();
         }
 
         return new StreamedResponse(function () use ($user, $em, $serializer) {
-            $data = $em->getRepository(Contact::class)->createQueryBuilder('c')
+            $contactRepo = $em->getRepository(Contact::class);
+            $groupRepo = $em->getRepository(\App\Entity\Group::class);
+
+            $contactsQuery = $contactRepo->createQueryBuilder('c')
                 ->where('c.user = :user')
                 ->setParameter('user', $user)
-                ->getQuery()
-                ->toIterable();
+                ->getQuery();
+
+            $groups = $groupRepo->findBy(['user' => $user]);
 
             echo '<?xml version="1.0" encoding="UTF-8"?>';
-            echo '<contacts>';
+            echo '<ari_export>';
 
-            foreach ($data as $contact) {
+            // Export Groups
+            echo '<groups>';
+            foreach ($groups as $group) {
+                $xml = $serializer->serialize($group, 'xml', [
+                    'groups' => ['export'],
+                    'xml_root_node_name' => 'group',
+                    'xml_format_output' => true,
+                ]);
+                $xml = str_replace('<?xml version="1.0"?>', '', $xml);
+                echo $xml;
+                flush();
+            }
+            echo '</groups>';
+
+            // Export Contacts
+            echo '<contacts>';
+            foreach ($contactsQuery->toIterable() as $contact) {
                 if (!$contact instanceof Contact) {
                     continue;
                 }
@@ -52,8 +71,9 @@ class ExportContactsAction
                 echo $xml;
                 flush();
             }
-
             echo '</contacts>';
+
+            echo '</ari_export>';
         }, 200, [
             'Content-Type' => 'text/xml',
             'Content-Disposition' => 'attachment; filename="contacts_export.xml"',

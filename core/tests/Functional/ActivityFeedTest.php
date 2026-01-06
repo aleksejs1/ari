@@ -60,16 +60,16 @@ class ActivityFeedTest extends AbstractApiTestCase
 
     public function testUnreadCount(): void
     {
-         $client = static::createClient();
-         $user = $this->getUserEntity();
+        $client = static::createClient();
+        $user = $this->getUserEntity();
 
-         // Create 2 Unread Activities
-         $container = self::getContainer();
-         /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-         $doctrine = $container->get('doctrine');
-         $em = $doctrine->getManager();
+        // Create 2 Unread Activities
+        $container = self::getContainer();
+        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
 
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; ++$i) {
             $activity = new ActivityFeed();
             $activity->setUserId((int) $user->getId());
             $activity->setEventType('count_event');
@@ -79,18 +79,18 @@ class ActivityFeedTest extends AbstractApiTestCase
             $activity->setTenant($user);
             $em->persist($activity);
         }
-         $em->flush();
+        $em->flush();
 
-         $response = $client->request('GET', '/api/activity-feed/unread-count', [
-             'auth_bearer' => $this->token,
-         ]);
+        $response = $client->request('GET', '/api/activity-feed/unread-count', [
+            'auth_bearer' => $this->token,
+        ]);
 
-         self::assertResponseIsSuccessful();
-         $data = $response->toArray();
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
 
-         // Response format depends on Controller implementation.
-         self::assertArrayHasKey('count', $data);
-         self::assertGreaterThanOrEqual(2, $data['count']);
+        // Response format depends on Controller implementation.
+        self::assertArrayHasKey('count', $data);
+        self::assertGreaterThanOrEqual(2, $data['count']);
     }
 
     public function testMarkAsRead(): void
@@ -119,11 +119,11 @@ class ActivityFeedTest extends AbstractApiTestCase
         $client->request('PATCH', '/api/activity-feed/read', [
             'auth_bearer' => $this->token,
             'json' => [
-                'ids' => [$id]
+                'ids' => [$id],
             ],
             'headers' => [
-                'Content-Type' => 'application/merge-patch+json'
-            ]
+                'Content-Type' => 'application/merge-patch+json',
+            ],
         ]);
 
         self::assertResponseIsSuccessful();

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use App\Repository\ActivityFeedRepository;
@@ -35,7 +34,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             controller: 'App\Controller\Api\ActivityFeedController::markAsRead',
             security: "is_granted('ROLE_USER')",
             name: 'mark_as_read'
-        )
+        ),
     ],
     normalizationContext: ['groups' => ['activity_feed:read']],
     denormalizationContext: ['groups' => ['activity_feed:write']]
@@ -68,7 +67,7 @@ class ActivityFeed implements TenantAwareInterface
 
     #[ORM\Column]
     #[Groups(['activity_feed:read'])]
-    #[SerializedName("isRead")]
+    #[SerializedName('isRead')]
     private bool $isRead = false;
 
     /**

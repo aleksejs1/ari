@@ -93,11 +93,11 @@ class DeletedEntityAuditLogTest extends ApiTestCase
         $foundDeleteLog = false;
 
         foreach ($logs as $log) {
-            if ($log['entityType'] === 'App\\Entity\\ContactName' && $log['entityId'] === $contactNameId) {
-                if ($log['action'] === 'INSERT') {
+            if ('App\\Entity\\ContactName' === $log['entityType'] && $log['entityId'] === $contactNameId) {
+                if ('INSERT' === $log['action']) {
                     $foundCreateLog = true;
                 }
-                if ($log['action'] === 'REMOVE') {
+                if ('REMOVE' === $log['action']) {
                     $foundDeleteLog = true;
                 }
             }

@@ -158,7 +158,7 @@ class ContactAddressApiTest extends ApiTestCase
         // Find the UPDATE log for ContactAddress
         $updateLog = null;
         foreach ($logs as $log) {
-            if ($log['entityType'] === 'App\\Entity\\ContactAddress' && $log['action'] === 'UPDATE') {
+            if ('App\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
                 $updateLog = $log;
                 break;
             }
@@ -205,7 +205,7 @@ class ContactAddressApiTest extends ApiTestCase
         // Find the log that has 'streetExtended' in changes (Bug reproduction)
         $bugLog = null;
         foreach ($logs as $log) {
-            if ($log['entityType'] === 'App\\Entity\\ContactAddress' && $log['action'] === 'UPDATE') {
+            if ('App\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
                 if (isset($log['changes']['streetExtended'])) {
                     $bugLog = $log;
                     break;

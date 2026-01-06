@@ -6,7 +6,6 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\Contact;
 use App\Entity\ContactRelation;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 
 class ContactRelationApiTest extends ApiTestCase
 {
@@ -65,6 +64,7 @@ class ContactRelationApiTest extends ApiTestCase
                 'password' => $password,
             ],
         ]);
+
         return $response->toArray()['token'];
     }
 

@@ -210,7 +210,7 @@ class AuditLog implements TenantAwareInterface
 
     public function setOwnerEntityType(?string $ownerEntityType): static
     {
-        $this->ownerEntityType = $ownerEntityType === '' ? null : $ownerEntityType;
+        $this->ownerEntityType = '' === $ownerEntityType ? null : $ownerEntityType;
 
         return $this;
     }

@@ -38,6 +38,7 @@ class NotificationGenerateCommand extends Command
 
         if (!is_string($dateStr)) {
             $io->error('Date option must be a string.');
+
             return Command::FAILURE;
         }
 
@@ -45,6 +46,7 @@ class NotificationGenerateCommand extends Command
             $executionDate = new \DateTime($dateStr);
         } catch (\Exception $e) {
             $io->error(sprintf('Invalid date format: %s', $dateStr));
+
             return Command::FAILURE;
         }
 
@@ -55,6 +57,7 @@ class NotificationGenerateCommand extends Command
             $io->success(sprintf('Generated %d notification queue items.', $count));
         } catch (\Exception $e) {
             $io->error(sprintf('Error generating notifications: %s', $e->getMessage()));
+
             return Command::FAILURE;
         }
 

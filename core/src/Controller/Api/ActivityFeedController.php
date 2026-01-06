@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 
 #[AsController]
@@ -17,7 +16,7 @@ class ActivityFeedController extends AbstractController
 {
     public function __construct(
         private readonly ActivityManager $activityManager,
-        private readonly Security $security
+        private readonly Security $security,
     ) {
     }
 
@@ -37,7 +36,7 @@ class ActivityFeedController extends AbstractController
     {
         $user = $this->security->getUser();
         if (!$user instanceof User) {
-             return new JsonResponse(['error' => 'User not found'], Response::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['error' => 'User not found'], Response::HTTP_UNAUTHORIZED);
         }
 
         $data = json_decode($request->getContent(), true);

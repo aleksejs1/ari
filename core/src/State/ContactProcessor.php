@@ -93,7 +93,7 @@ class ContactProcessor implements ProcessorInterface
                     $existing->getContactGroups(),
                     'addContactGroup',
                     function ($contactGroup, $owner) {
-                         // Propagate tenant to nested Group if it's new
+                        // Propagate tenant to nested Group if it's new
                         $group = $contactGroup->getGroupResource();
                         if (null !== $group && null === $group->getUser()) {
                             $group->setUser($owner->getTenant());
@@ -104,9 +104,9 @@ class ContactProcessor implements ProcessorInterface
                         $incomingGroup = $incoming->getGroupResource();
                         $existingGroup = $existing->getGroupResource();
 
-                        return null !== $incomingGroup &&
-                               null !== $existingGroup &&
-                               $incomingGroup->getId() === $existingGroup->getId();
+                        return null !== $incomingGroup
+                               && null !== $existingGroup
+                               && $incomingGroup->getId() === $existingGroup->getId();
                     }
                 );
 
@@ -150,7 +150,7 @@ class ContactProcessor implements ProcessorInterface
                 $data,
                 $data->getContactGroups(),
                 function ($contactGroup, $owner) {
-                     // Propagate tenant to nested Group if it's new
+                    // Propagate tenant to nested Group if it's new
                     $group = $contactGroup->getGroupResource();
                     if (null !== $group && null === $group->getUser()) {
                         $group->setUser($owner->getTenant());
@@ -169,12 +169,11 @@ class ContactProcessor implements ProcessorInterface
 
     /**
      * @template T of object
-     * @param Contact $owner
-     * @param iterable<mixed, T> $items
+     *
+     * @param iterable<mixed, T>                              $items
      * @param \Doctrine\Common\Collections\Collection<int, T> $targetCollection
-     * @param string $addMethod
-     * @param (callable(T, Contact): void)|null $extraLogic
-     * @param (callable(T, T): bool) $matcher
+     * @param (callable(T, Contact): void)|null               $extraLogic
+     * @param (callable(T, T): bool)                          $matcher
      */
     private function handleSmartUpdate(
         Contact $owner,
@@ -182,7 +181,7 @@ class ContactProcessor implements ProcessorInterface
         \Doctrine\Common\Collections\Collection $targetCollection,
         string $addMethod,
         ?callable $extraLogic,
-        callable $matcher
+        callable $matcher,
     ): void {
         // Smart Update Logic
         $itemsArr = is_array($items) ? $items : iterator_to_array($items);
@@ -249,7 +248,7 @@ class ContactProcessor implements ProcessorInterface
                     $extraLogic($incomingItem, $owner);
                 }
 
-                /** @phpstan-ignore method.dynamicName */
+                /* @phpstan-ignore method.dynamicName */
                 $owner->$addMethod($incomingItem);
             }
         }
@@ -257,18 +256,17 @@ class ContactProcessor implements ProcessorInterface
 
     /**
      * @template T of object
-     * @param Contact $owner
-     * @param iterable<mixed, T> $items
+     *
+     * @param iterable<mixed, T>                              $items
      * @param \Doctrine\Common\Collections\Collection<int, T> $targetCollection
-     * @param string $addMethod
-     * @param (callable(T, Contact): void)|null $extraLogic
+     * @param (callable(T, Contact): void)|null               $extraLogic
      */
     private function handleClearAndReplace(
         Contact $owner,
         iterable $items,
         \Doctrine\Common\Collections\Collection $targetCollection,
         string $addMethod,
-        ?callable $extraLogic
+        ?callable $extraLogic,
     ): void {
         $itemsArr = is_array($items) ? $items : iterator_to_array($items);
 
@@ -329,22 +327,18 @@ class ContactProcessor implements ProcessorInterface
                 } else {
                     // Not found in target (rare for ClearAndReplace with ID), treat as add
                     $this->prepareItem($owner, $incomingItem, $extraLogic);
-                    /** @phpstan-ignore method.dynamicName */
+                    /* @phpstan-ignore method.dynamicName */
                     $owner->$addMethod($incomingItem);
                 }
             } else {
                 // No ID -> New item
                 $this->prepareItem($owner, $incomingItem, $extraLogic);
-                /** @phpstan-ignore method.dynamicName */
+                /* @phpstan-ignore method.dynamicName */
                 $owner->$addMethod($incomingItem);
             }
         }
     }
 
-    /**
-     * @param object $target
-     * @param object $source
-     */
     private function updateEntityData(object $target, object $source): void
     {
         $reflection = new \ReflectionClass($target);
@@ -371,8 +365,8 @@ class ContactProcessor implements ProcessorInterface
 
     /**
      * @template T of object
-     * @param Contact $owner
-     * @param T $item
+     *
+     * @param T                                 $item
      * @param (callable(T, Contact): void)|null $extraLogic
      */
     private function prepareItem(Contact $owner, object $item, ?callable $extraLogic): void
@@ -391,14 +385,14 @@ class ContactProcessor implements ProcessorInterface
 
     /**
      * @template T of object
-     * @param Contact $owner
-     * @param iterable<mixed, T> $items
+     *
+     * @param iterable<mixed, T>                $items
      * @param (callable(T, Contact): void)|null $extraLogic
      */
     private function handleSimpleAdd(
         Contact $owner,
         iterable $items,
-        ?callable $extraLogic
+        ?callable $extraLogic,
     ): void {
         foreach ($items as $item) {
             if (method_exists($item, 'getContact') && method_exists($item, 'setContact')) {

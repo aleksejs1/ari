@@ -68,7 +68,7 @@ class TokenStorage implements TenantAwareInterface
 
     public function setAccessToken(?string $accessToken): static
     {
-        $this->accessToken = $accessToken === '' ? null : $accessToken;
+        $this->accessToken = '' === $accessToken ? null : $accessToken;
 
         return $this;
     }
@@ -80,7 +80,7 @@ class TokenStorage implements TenantAwareInterface
 
     public function setRefreshToken(?string $refreshToken): static
     {
-        $this->refreshToken = $refreshToken === '' ? null : $refreshToken;
+        $this->refreshToken = '' === $refreshToken ? null : $refreshToken;
 
         return $this;
     }

@@ -3,7 +3,7 @@
 namespace App\Entity\Traits;
 
 use App\Entity\ContactRelation;
-use App\Entity\ContactBiography; // Assumed for gender check
+// Assumed for gender check
 use App\Entity\Contact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,7 +15,7 @@ trait ContactRelationsTrait
     /**
      * @var Collection<int, ContactRelation>
      */
-    #[Groups(['contact:read', 'contact:create'])]
+    #[Groups(['contact:read', 'contact:create', 'export'])]
     #[ORM\OneToMany(
         targetEntity: ContactRelation::class,
         mappedBy: 'contact',
@@ -27,7 +27,8 @@ trait ContactRelationsTrait
     /**
      * @var Collection<int, ContactRelation>
      * Note: This side is not persisted directly as a collection in ContactRelation usually unless mapped.
-     * We map it in ContactRelation as 'person' with inversedBy='reverseContactRelations' to make this work efficiently.
+     * We map it in ContactRelation as 'person' with inversedBy='reverseContactRelations' to make this work
+     * efficiently.
      */
     #[ORM\OneToMany(
         targetEntity: ContactRelation::class,
@@ -103,8 +104,8 @@ trait ContactRelationsTrait
         // 2. Duplicate check (same person and type)
         foreach ($this->contactRelations as $existing) {
             if (
-                $existing->getPerson() === $contactRelation->getPerson() &&
-                $existing->getType() === $contactRelation->getType()
+                $existing->getPerson() === $contactRelation->getPerson()
+                && $existing->getType() === $contactRelation->getType()
             ) {
                 return $this;
             }
@@ -156,19 +157,20 @@ trait ContactRelationsTrait
 
         // Child/Parent logic
         if (in_array($type, ['son', 'daughter', 'child'], true)) {
-             // If I am the parent, return Parent (or Father/Mother if we knew my gender)
-             return $this->getGenderedTerm($me, 'Father', 'Mother', 'Parent');
+            // If I am the parent, return Parent (or Father/Mother if we knew my gender)
+            return $this->getGenderedTerm($me, 'Father', 'Mother', 'Parent');
         }
 
         if (isset($map[$type])) {
             // Refine Sibling
-            if ($map[$type] === 'Sibling') {
+            if ('Sibling' === $map[$type]) {
                 return $this->getGenderedTerm($me, 'Brother', 'Sister', 'Sibling');
             }
-             // Refine Spouse
-            if ($map[$type] === 'Spouse') { // If it was generic spouse, try to be specific? No, keep generic.
-                 return 'Spouse';
+            // Refine Spouse
+            if ('Spouse' === $map[$type]) { // If it was generic spouse, try to be specific? No, keep generic.
+                return 'Spouse';
             }
+
             return $map[$type];
         }
 
@@ -179,20 +181,21 @@ trait ContactRelationsTrait
         Contact $contact,
         string $maleTerm,
         string $femaleTerm,
-        string $neutralTerm
+        string $neutralTerm,
     ): string {
         // Try to find gender in biographies
         foreach ($contact->getContactBiographies() as $bio) {
-            if (mb_strtolower($bio->getType() ?? '') === 'gender') {
+            if ('gender' === mb_strtolower($bio->getType() ?? '')) {
                 $val = mb_strtolower($bio->getValue() ?? '');
-                if ($val === 'male' || $val === 'm') {
+                if ('male' === $val || 'm' === $val) {
                     return $maleTerm;
                 }
-                if ($val === 'female' || $val === 'f') {
+                if ('female' === $val || 'f' === $val) {
                     return $femaleTerm;
                 }
             }
         }
+
         return $neutralTerm;
     }
 }

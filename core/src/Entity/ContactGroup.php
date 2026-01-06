@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: ContactGroupRepository::class)]
 #[ApiResource(
@@ -82,5 +83,12 @@ class ContactGroup implements TenantAwareInterface
         $this->groupResource = $groupResource;
 
         return $this;
+    }
+
+    #[Groups(['export'])]
+    #[SerializedName('groupUuid')]
+    public function getGroupUuid(): ?string
+    {
+        return $this->getGroupResource()?->getUuid()?->toRfc4122();
     }
 }

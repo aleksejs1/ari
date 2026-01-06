@@ -94,8 +94,8 @@ class AuditLogIdempotencyTest extends ApiTestCase
                         '@id' => $contactDateIri,
                         'date' => '2025-01-23T00:00:00+00:00',
                         'text' => 'Birthday',
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
         self::assertResponseIsSuccessful();

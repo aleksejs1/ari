@@ -49,14 +49,14 @@ class ContactDate implements TenantAwareInterface
     private ?Contact $contact = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update', 'export'
+        'contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update', 'export',
     ])]
     #[Context(normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $date = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update', 'export'
+        'contact:read', 'contact:create', 'contact_date:read', 'contact_date:create', 'contact_date:update', 'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $text = null;
@@ -111,7 +111,7 @@ class ContactDate implements TenantAwareInterface
 
     public function setText(?string $text): static
     {
-        $this->text = $text === '' ? null : $text;
+        $this->text = '' === $text ? null : $text;
 
         return $this;
     }

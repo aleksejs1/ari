@@ -18,7 +18,7 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
         ?Operation $operation = null,
-        array $context = []
+        array $context = [],
     ): void {
         // Only trigger if the property is "upcomingAnniversary" and the value implies sorting (e.g. 'asc' or 'desc')
         // In API Platform, "order" filters usually come in via the "order" parameter in the context or query.
@@ -31,7 +31,7 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
         // The "order" parameter is usually handled by `OrderFilter`.
         // If we want a custom sort, we can register this filter and check if the order parameter contains our key.
 
-        if ($property !== 'upcomingAnniversary') {
+        if ('upcomingAnniversary' !== $property) {
             return;
         }
 
@@ -51,8 +51,8 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
 
         $mDate = "SUBSTRING({$dateField}, 6, 2)";
         $dDate = "SUBSTRING({$dateField}, 9, 2)";
-        $mNow = "SUBSTRING(CURRENT_DATE(), 6, 2)";
-        $dNow = "SUBSTRING(CURRENT_DATE(), 9, 2)";
+        $mNow = 'SUBSTRING(CURRENT_DATE(), 6, 2)';
+        $dNow = 'SUBSTRING(CURRENT_DATE(), 9, 2)';
 
         $isNextYear = "CASE WHEN (
             $mDate > $mNow OR 

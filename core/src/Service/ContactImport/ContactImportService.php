@@ -59,6 +59,7 @@ class ContactImportService
                 $entity = new ContactName($contact);
                 $entity->setGiven($dto->given);
                 $entity->setFamily($dto->family);
+
                 return $entity;
             }
         );
@@ -86,6 +87,7 @@ class ContactImportService
                     $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date)
                 );
                 $entity->setText($dto->text);
+
                 return $entity;
             }
         );
@@ -104,6 +106,7 @@ class ContactImportService
                 $entity = new ContactEmailAdress($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
+
                 return $entity;
             }
         );
@@ -122,6 +125,7 @@ class ContactImportService
                 $entity = new ContactPhoneNumber($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
+
                 return $entity;
             }
         );
@@ -159,6 +163,7 @@ class ContactImportService
                 $entity->setCountry($dto->country);
                 $entity->setCountryCode($dto->countryCode);
                 $entity->setType($dto->type);
+
                 return $entity;
             }
         );
@@ -171,9 +176,9 @@ class ContactImportService
 
                 $entityStartDate = $entity->getStartDate();
                 $dtoStartDate = $dto->startDate;
-                if (($entityStartDate === null) !== ($dtoStartDate === null)) {
+                if ((null === $entityStartDate) !== (null === $dtoStartDate)) {
                     $datesMatch = false;
-                } elseif ($entityStartDate !== null && $dtoStartDate !== null) {
+                } elseif (null !== $entityStartDate && null !== $dtoStartDate) {
                     if ($entityStartDate->format('Y-m-d') !== $dtoStartDate->format('Y-m-d')) {
                         $datesMatch = false;
                     }
@@ -182,9 +187,9 @@ class ContactImportService
                 if ($datesMatch) {
                     $entityEndDate = $entity->getEndDate();
                     $dtoEndDate = $dto->endDate;
-                    if (($entityEndDate === null) !== ($dtoEndDate === null)) {
+                    if ((null === $entityEndDate) !== (null === $dtoEndDate)) {
                         $datesMatch = false;
-                    } elseif ($entityEndDate !== null && $dtoEndDate !== null) {
+                    } elseif (null !== $entityEndDate && null !== $dtoEndDate) {
                         if ($entityEndDate->format('Y-m-d') !== $dtoEndDate->format('Y-m-d')) {
                             $datesMatch = false;
                         }
@@ -216,6 +221,7 @@ class ContactImportService
                 $entity->setType($dto->type);
                 $entity->setStartDate($dto->startDate);
                 $entity->setEndDate($dto->endDate);
+
                 return $entity;
             }
         );
@@ -234,6 +240,7 @@ class ContactImportService
                 $entity = new ContactBiography($contact);
                 $entity->setValue($dto->value);
                 $entity->setType($dto->type);
+
                 return $entity;
             }
         );
@@ -264,18 +271,19 @@ class ContactImportService
     /**
      * @template T of object
      * @template D of object
+     *
      * @param \Doctrine\Common\Collections\Collection<int, T> $collection
-     * @param array<D> $dtos
-     * @param callable(T, D): bool $isEqual
-     * @param callable(T, D): void $update
-     * @param callable(D): T $create
+     * @param array<D>                                        $dtos
+     * @param callable(T, D): bool                            $isEqual
+     * @param callable(T, D): void                            $update
+     * @param callable(D): T                                  $create
      */
     private function syncCollection(
         \Doctrine\Common\Collections\Collection $collection,
         array $dtos,
         callable $isEqual,
         callable $update,
-        callable $create
+        callable $create,
     ): void {
         $existingItems = $collection->toArray();
         $unmatchedDtos = [];

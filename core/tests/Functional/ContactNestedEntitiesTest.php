@@ -409,13 +409,13 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
         $addressUpdates = 0;
 
         foreach ($logs as $log) {
-            if ($log['entityType'] === 'App\\Entity\\ContactAddress') {
-                if ($log['action'] === 'INSERT') {
-                    $addressInserts++;
-                } elseif ($log['action'] === 'REMOVE') {
-                    $addressRemoves++;
-                } elseif ($log['action'] === 'UPDATE') {
-                    $addressUpdates++;
+            if ('App\\Entity\\ContactAddress' === $log['entityType']) {
+                if ('INSERT' === $log['action']) {
+                    ++$addressInserts;
+                } elseif ('REMOVE' === $log['action']) {
+                    ++$addressRemoves;
+                } elseif ('UPDATE' === $log['action']) {
+                    ++$addressUpdates;
                 }
             }
         }

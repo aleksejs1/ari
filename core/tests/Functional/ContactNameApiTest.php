@@ -254,12 +254,12 @@ class ContactNameApiTest extends ApiTestCase
         $normalizationLog = null;
         foreach ($logs as $log) {
             if (
-                $log['entityType'] === 'App\\Entity\\ContactName'
-                && $log['action'] === 'UPDATE'
+                'App\\Entity\\ContactName' === $log['entityType']
+                && 'UPDATE' === $log['action']
                 && isset($log['changes']['given'])
             ) {
                 // We want the one where it changes FROM 'John'
-                if ($log['changes']['given'][0] === 'John') {
+                if ('John' === $log['changes']['given'][0]) {
                     $normalizationLog = $log;
                     break;
                 }

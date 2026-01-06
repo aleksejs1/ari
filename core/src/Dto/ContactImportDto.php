@@ -5,14 +5,14 @@ namespace App\Dto;
 class ContactImportDto
 {
     /**
-     * @param ContactNameDto[] $names
-     * @param ContactDateDto[] $dates
-     * @param ContactEmailDto[] $emails
-     * @param ContactPhoneDto[] $phones
-     * @param ContactAddressDto[] $addresses
+     * @param ContactNameDto[]         $names
+     * @param ContactDateDto[]         $dates
+     * @param ContactEmailDto[]        $emails
+     * @param ContactPhoneDto[]        $phones
+     * @param ContactAddressDto[]      $addresses
      * @param ContactOrganizationDto[] $organizations
-     * @param ContactBiographyDto[] $biographies
-     * @param \App\Entity\Group[] $groups
+     * @param ContactBiographyDto[]    $biographies
+     * @param \App\Entity\Group[]      $groups
      */
     public function __construct(
         public readonly array $names = [],

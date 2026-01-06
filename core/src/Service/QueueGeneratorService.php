@@ -67,7 +67,7 @@ class QueueGeneratorService
                         }
 
                         if ($this->createQueueItem($rule, $contact, $executionDate, $contactDate)) {
-                            $createdCount++;
+                            ++$createdCount;
                         }
                     }
                 }
@@ -75,9 +75,9 @@ class QueueGeneratorService
 
             $this->entityManager->flush();
         } finally {
-             // Re-enable tenant filter if it was disabled?
-             // In a command context, it might not matter, but good practice if shared EM.
-             // However, managing the filter restart with correct parameters is complex.
+            // Re-enable tenant filter if it was disabled?
+            // In a command context, it might not matter, but good practice if shared EM.
+            // However, managing the filter restart with correct parameters is complex.
         }
 
         return $createdCount;
@@ -87,11 +87,12 @@ class QueueGeneratorService
     {
         $eventType = $rule->getEventType();
         // If rule has no event type, it matches ANY event
-        if ($eventType === null) {
+        if (null === $eventType) {
             return true;
         }
 
-        $dateText = (string)$contactDate->getText();
+        $dateText = (string) $contactDate->getText();
+
         return strtolower($eventType) === strtolower($dateText);
     }
 
@@ -105,20 +106,21 @@ class QueueGeneratorService
             return false;
         }
 
-        $targetType = strtoupper((string)$rule->getTargetType());
+        $targetType = strtoupper((string) $rule->getTargetType());
 
-        if ($targetType === 'ALL') {
+        if ('ALL' === $targetType) {
             return true;
         }
 
-        if ($targetType === 'CONTACT') {
+        if ('CONTACT' === $targetType) {
             $targetContact = $rule->getContact();
-            return $targetContact !== null && $targetContact->getId() === $contact->getId();
+
+            return null !== $targetContact && $targetContact->getId() === $contact->getId();
         }
 
-        if ($targetType === 'GROUP') {
+        if ('GROUP' === $targetType) {
             $targetGroup = $rule->getContactGroup();
-            if ($targetGroup === null) {
+            if (null === $targetGroup) {
                 return false;
             }
 
@@ -130,6 +132,7 @@ class QueueGeneratorService
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -140,7 +143,7 @@ class QueueGeneratorService
         NotificationRule $rule,
         Contact $recipient,
         \DateTimeInterface $executionDate,
-        ContactDate $sourceEvent
+        ContactDate $sourceEvent,
     ): bool {
         // Idempotency check: Rule + Recipient + ScheduledAt
 
@@ -148,21 +151,21 @@ class QueueGeneratorService
         $scheduledAt = \DateTimeImmutable::createFromFormat('U', $ts);
         // If rule has specific time offset? "offsetTime"
         $timeStr = $rule->getOffsetTime();
-        if ($timeStr !== null) {
+        if (null !== $timeStr) {
             // Assume format H:i
             try {
                 $timeParts = explode(':', $timeStr);
-                if (count($timeParts) === 2 && $scheduledAt !== false) {
-                    $scheduledAt = $scheduledAt->setTime((int)$timeParts[0], (int)$timeParts[1]);
+                if (2 === count($timeParts) && false !== $scheduledAt) {
+                    $scheduledAt = $scheduledAt->setTime((int) $timeParts[0], (int) $timeParts[1]);
                 }
             } catch (\Exception $e) {
                 // Ignore invalid time
             }
-        } elseif ($scheduledAt !== false) {
-             $scheduledAt = $scheduledAt->setTime(9, 0, 0); // Default 9 AM
+        } elseif (false !== $scheduledAt) {
+            $scheduledAt = $scheduledAt->setTime(9, 0, 0); // Default 9 AM
         }
 
-        if ($scheduledAt === false) {
+        if (false === $scheduledAt) {
             // Should not happen really
             return false;
         }
@@ -171,16 +174,16 @@ class QueueGeneratorService
         $existing = $this->notificationQueueRepository->findOneBy([
             'rule' => $rule,
             'contact' => $recipient,
-            'scheduledAt' => $scheduledAt
+            'scheduledAt' => $scheduledAt,
         ]);
-        if ($existing !== null) {
+        if (null !== $existing) {
             return false;
         }
 
         $sourceContact = $sourceEvent->getContact();
         $eventDate = $sourceEvent->getDate();
 
-        if ($sourceContact === null || $eventDate === null) {
+        if (null === $sourceContact || null === $eventDate) {
             return false;
         }
 
@@ -214,6 +217,7 @@ class QueueGeneratorService
         $queue->setTenant($recipient->getTenant());
 
         $this->entityManager->persist($queue);
+
         return true;
     }
 }

@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 class ActivityFeedSender implements NotificationSenderInterface
 {
     public function __construct(
-        private readonly ActivityManager $activityManager
+        private readonly ActivityManager $activityManager,
     ) {
     }
 
@@ -47,11 +47,11 @@ class ActivityFeedSender implements NotificationSenderInterface
         // If specific event types need specific formatting, we can add logic here.
         // For example, if it's a birthday event.
         if (
-            isset($payload['contactName']) &&
-            is_string($payload['contactName']) &&
-            str_contains(strtolower($title), 'birthday')
+            isset($payload['contactName'])
+            && is_string($payload['contactName'])
+            && str_contains(strtolower($title), 'birthday')
         ) {
-             $title = "Birthday: " . $payload['contactName'];
+            $title = 'Birthday: ' . $payload['contactName'];
         }
 
         $this->activityManager->createActivity(

@@ -25,7 +25,6 @@ use App\Repository\ContactRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -101,8 +100,6 @@ class Contact implements TenantAwareInterface
     #[ORM\ManyToOne(inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
-
-
 
     public function __construct()
     {
