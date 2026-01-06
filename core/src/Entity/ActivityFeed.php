@@ -12,6 +12,7 @@ use App\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: ActivityFeedRepository::class)]
 #[ORM\Index(columns: ['user_id', 'is_read'], name: 'idx_activity_feed_user_unread')]
@@ -67,6 +68,7 @@ class ActivityFeed implements TenantAwareInterface
 
     #[ORM\Column]
     #[Groups(['activity_feed:read'])]
+    #[SerializedName("isRead")]
     private bool $isRead = false;
 
     /**
@@ -143,6 +145,11 @@ class ActivityFeed implements TenantAwareInterface
     }
 
     public function isRead(): bool
+    {
+        return $this->isRead;
+    }
+
+    public function getIsRead(): bool
     {
         return $this->isRead;
     }

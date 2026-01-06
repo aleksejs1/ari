@@ -13,40 +13,17 @@ use Override;
 class WebNotificationFlowTest extends AbstractApiTestCase
 {
     private ?string $channelId = null;
-    private Application $application;
 
     #[Override]
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Clear database
-        $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
-        $doctrine = $container->get('doctrine');
-        /** @var \Doctrine\ORM\EntityManagerInterface $em */
-        $em = $doctrine->getManager();
-        // Use native SQL to bypass any Doctrine filters (e.g. Tenant)
-        $connection = $em->getConnection();
-        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
-        $connection->executeStatement('DELETE FROM notification_queue');
-        $connection->executeStatement('DELETE FROM notification_rule');
-        $connection->executeStatement('DELETE FROM notification_policy');
-        $connection->executeStatement('DELETE FROM contact_date');
-        $connection->executeStatement('DELETE FROM contact_group');
-        $connection->executeStatement('DELETE FROM contact_name');
-        $connection->executeStatement('DELETE FROM contact_email_adress');
-        $connection->executeStatement('DELETE FROM contact_phone_number');
-        $connection->executeStatement('DELETE FROM contact_address');
-        $connection->executeStatement('DELETE FROM contact_organization');
-        $connection->executeStatement('DELETE FROM contact_biography');
-        $connection->executeStatement('DELETE FROM contact_relation');
-        $connection->executeStatement('DELETE FROM contact');
-        $connection->executeStatement('DELETE FROM `group`');
-        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+        // Clear database - REMOVED as per request
+        // $container = self::getContainer();
+        // ... cleanup logic removed ...
 
-        $kernel = self::bootKernel();
-        $this->application = new Application($kernel);
+        self::bootKernel();
 
         // Create Channel 'web' once for tests
         $client = static::createClient();
@@ -282,13 +259,27 @@ class WebNotificationFlowTest extends AbstractApiTestCase
 
     private function runGenerateAndProcess(\DateTime $date): void
     {
-        $generateCommand = $this->application->find('ari:notifications:generate');
+        if (self::$kernel === null) {
+            self::bootKernel();
+        }
+
+        /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
+        $kernel = self::$kernel;
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $generateCommand = $application->find('ari:notifications:generate');
         $generateTester = new CommandTester($generateCommand);
         $generateTester->execute(['--date' => $date->format('Y-m-d')]);
 
-        $processCommand = $this->application->find('ari:notification:process');
-        $processTester = new CommandTester($processCommand);
-        $processTester->execute([]);
+        $processCommand = $application->find('ari:notification:process');
+
+        // Loop to drain the queue
+        do {
+            $processTester = new CommandTester($processCommand);
+            $processTester->execute([]);
+            $output = $processTester->getDisplay();
+        } while (str_contains($output, 'Processed'));
     }
 
     /**

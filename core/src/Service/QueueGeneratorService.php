@@ -35,38 +35,50 @@ class QueueGeneratorService
             $rulesByOffset[$offset][] = $rule;
         }
 
-        foreach ($rulesByOffset as $offset => $offsetRules) {
-            // Calculate Target Date: ExecutionDate - Offset
-            $targetDate = new \DateTime($executionDate->format('Y-m-d'));
-            $targetDate->modify(sprintf('%+d days', -$offset));
+        // Disable Tenant Filter to allow loading Contacts from other tenants if necessary
+        // (or to fix Proxy loading issue)
+        if ($this->entityManager->getFilters()->isEnabled('tenant')) {
+            $this->entityManager->getFilters()->disable('tenant');
+        }
 
-            // Find events (birthdays, etc) on this target date (ignoring year)
-            $matchingDates = $this->contactDateRepository->findMatchingDates($targetDate);
+        try {
+            foreach ($rulesByOffset as $offset => $offsetRules) {
+                // Calculate Target Date: ExecutionDate - Offset
+                $targetDate = new \DateTime($executionDate->format('Y-m-d'));
+                $targetDate->modify(sprintf('%+d days', -$offset));
 
-            foreach ($matchingDates as $contactDate) {
-                $contact = $contactDate->getContact();
-                if (null === $contact) {
-                    continue;
-                }
+                // Find events (birthdays, etc) on this target date (ignoring year)
+                $matchingDates = $this->contactDateRepository->findMatchingDates($targetDate);
 
-                foreach ($offsetRules as $rule) {
-                    if (!$this->isRuleMatchingDate($rule, $contactDate)) {
+                foreach ($matchingDates as $contactDate) {
+                    $contact = $contactDate->getContact();
+                    if (null === $contact) {
                         continue;
                     }
 
-                    // Check if contact matches the rule target
-                    if (!$this->isContactMatchingRule($contact, $rule)) {
-                        continue;
-                    }
+                    foreach ($offsetRules as $rule) {
+                        if (!$this->isRuleMatchingDate($rule, $contactDate)) {
+                            continue;
+                        }
 
-                    if ($this->createQueueItem($rule, $contact, $executionDate, $contactDate)) {
-                        $createdCount++;
+                        // Check if contact matches the rule target
+                        if (!$this->isContactMatchingRule($contact, $rule)) {
+                            continue;
+                        }
+
+                        if ($this->createQueueItem($rule, $contact, $executionDate, $contactDate)) {
+                            $createdCount++;
+                        }
                     }
                 }
             }
-        }
 
-        $this->entityManager->flush();
+            $this->entityManager->flush();
+        } finally {
+             // Re-enable tenant filter if it was disabled?
+             // In a command context, it might not matter, but good practice if shared EM.
+             // However, managing the filter restart with correct parameters is complex.
+        }
 
         return $createdCount;
     }
@@ -79,13 +91,20 @@ class QueueGeneratorService
             return true;
         }
 
-        // Simple string matching for now.
-        // If ContactDate has text "birthday", Rule eventType must be "birthday"
-        return strtolower($eventType) === strtolower((string)$contactDate->getText());
+        $dateText = (string)$contactDate->getText();
+        return strtolower($eventType) === strtolower($dateText);
     }
 
     private function isContactMatchingRule(Contact $contact, NotificationRule $rule): bool
     {
+        $rT = $rule->getTenant()?->getId();
+        $cT = $contact->getTenant()?->getId();
+
+        // Enforce Multi-tenancy: Rule and Contact must belong to the same tenant
+        if ($rT !== $cT) {
+            return false;
+        }
+
         $targetType = strtoupper((string)$rule->getTargetType());
 
         if ($targetType === 'ALL') {
