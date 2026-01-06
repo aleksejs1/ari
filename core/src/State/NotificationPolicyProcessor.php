@@ -98,8 +98,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
 
     private function processRules(NotificationPolicy $policy, NotificationPolicyDto $dto): void
     {
-        // Clear existing rules
-        $policy->getNotificationRules()->clear();
+        // $policy->getNotificationRules()->clear(); // Don't clear existing rules to preserve IDs
 
         $targets = $dto->targets;
         $targetType = $targets['type'] ?? 'group';
@@ -144,6 +143,9 @@ class NotificationPolicyProcessor implements ProcessorInterface
         } elseif (count($targetIds) > 0) {
             $loopTargets = $targetIds;
         }
+
+        // Keep track of rules that are valid for the current DTO
+        $keptRuleIds = [];
 
         // Iterate Logic
         foreach ($loopTargets as $targetId) {
@@ -206,6 +208,46 @@ class NotificationPolicyProcessor implements ProcessorInterface
                             continue;
                         }
 
+                        // Check if rule already exists
+                        $exists = false;
+                        foreach ($policy->getNotificationRules() as $existingRule) {
+                            if ($existingRule->getTargetType() !== $targetType) {
+                                continue;
+                            }
+                            if ($eventType !== $existingRule->getEventType()) {
+                                continue;
+                            }
+                            if ((int)$offsetDays !== $existingRule->getOffsetDays()) {
+                                continue;
+                            }
+                            if ($time !== $existingRule->getOffsetTime()) {
+                                continue;
+                            }
+                            if ($channel->getId() !== $existingRule->getChannel()?->getId()) {
+                                continue;
+                            }
+
+                            // Check relations
+                            if ($targetType === 'group') {
+                                if ($group?->getId() !== $existingRule->getContactGroup()?->getId()) {
+                                    continue;
+                                }
+                            }
+                            if ($targetType === 'contact') {
+                                if ($contact?->getId() !== $existingRule->getContact()?->getId()) {
+                                    continue;
+                                }
+                            }
+
+                            $exists = true;
+                            $keptRuleIds[] = $existingRule->getId();
+                            break;
+                        }
+
+                        if ($exists) {
+                            continue;
+                        }
+
                         $rule = new NotificationRule();
                         $rule->setPolicy($policy);
                         $rule->setTenant($policy->getTenant());
@@ -223,8 +265,29 @@ class NotificationPolicyProcessor implements ProcessorInterface
 
                         $policy->addNotificationRule($rule);
                         $this->em->persist($rule);
+                        // New rules are automatically "kept" since they are in the collection now.
+                        // But since we use keptRuleIds to remove OLD ones,
+                        // we just need to ensure we don't remove newly added ones.
+                        // Wait, newly added rule might not have ID yet if not flushed,
+                        // but it's not in the original collection loop anyway.
+                        // Actually, better logic: iterate existing rules and remove if ID not in keptRuleIds.
+                        // But newly added rules don't have ID. So we must filter only existing ones.
                     }
                 }
+            }
+        }
+
+        // Cleanup Logic
+        // We iterate over a copy or standard collection
+        foreach ($policy->getNotificationRules() as $existingRule) {
+            // If it's a new entity (no ID), skip invalidation check
+            if ($existingRule->getId() === null) {
+                continue;
+            }
+
+            if (!in_array($existingRule->getId(), $keptRuleIds, true)) {
+                $policy->removeNotificationRule($existingRule);
+                $this->em->remove($existingRule); // Ensure physical deletion
             }
         }
     }
