@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useExportContacts } from '@/features/contacts/useContacts'
+import { useExportContacts, useImportContacts } from '@/features/contacts/useContacts'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 export default function SettingsPage() {
@@ -20,6 +21,31 @@ export default function SettingsPage() {
     isLoading,
   } = useUserPrefs()
   const { mutate: exportContacts, isPending: isExporting } = useExportContacts()
+  const { mutate: importContacts, isPending: isImporting } = useImportContacts()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) {
+      return
+    }
+
+    importContacts(file, {
+      onSuccess: () => {
+        // Reset file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+        alert(t('settings.importSuccess'))
+      },
+      onError: () => {
+        alert(t('settings.importError'))
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      },
+    })
+  }
 
   if (isLoading) {
     return <div>{t('app.loading')}</div>
@@ -102,6 +128,29 @@ export default function SettingsPage() {
           <CardContent>
             <Button onClick={() => exportContacts()} disabled={isExporting}>
               {isExporting ? t('common.loading') : t('settings.exportData')}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.importData')}</CardTitle>
+            <CardDescription>{t('settings.importDataDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <input
+              type="file"
+              accept=".xml"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleImport}
+            />
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isImporting}
+              variant="secondary"
+            >
+              {isImporting ? t('common.loading') : t('settings.importData')}
             </Button>
           </CardContent>
         </Card>

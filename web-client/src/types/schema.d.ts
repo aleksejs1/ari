@@ -160,6 +160,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/contacts/import-xml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import contacts from XML
+         * @description Upload an XML file to import contacts and groups.
+         */
+        post: operations["import_contact_xml"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contacts/{id}": {
         parameters: {
             query?: never;
@@ -1404,6 +1424,8 @@ export interface components {
         };
         "Contact-contact.read": {
             readonly id?: number;
+            /** Format: uuid */
+            uuid?: string;
             contactNames?: components["schemas"]["ContactName-contact.read"][];
             contactDates?: components["schemas"]["ContactDate-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.read"][];
@@ -1426,14 +1448,20 @@ export interface components {
         };
         "Contact-export": {
             readonly id?: number;
+            /** Format: uuid */
+            uuid?: string;
             contactNames?: components["schemas"]["ContactName-export"][];
             contactDates?: components["schemas"]["ContactDate-export"][];
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-export"][];
             contactAddresses?: components["schemas"]["ContactAddress-export"][];
+            contactGroups?: components["schemas"]["ContactGroup-export"][];
             contactBiographies?: components["schemas"]["ContactBiography-export"][];
+            contactRelations?: components["schemas"]["ContactRelation-export"][];
         };
         "Contact.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
+            /** Format: uuid */
+            uuid?: string;
             contactNames?: components["schemas"]["ContactName.jsonld-contact.read"][];
             contactDates?: components["schemas"]["ContactDate.jsonld-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber.jsonld-contact.read"][];
@@ -1456,11 +1484,15 @@ export interface components {
         };
         "Contact.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
+            /** Format: uuid */
+            uuid?: string;
             contactNames?: components["schemas"]["ContactName.jsonld-export"][];
             contactDates?: components["schemas"]["ContactDate.jsonld-export"][];
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress.jsonld-export"][];
             contactAddresses?: components["schemas"]["ContactAddress.jsonld-export"][];
+            contactGroups?: components["schemas"]["ContactGroup.jsonld-export"][];
             contactBiographies?: components["schemas"]["ContactBiography.jsonld-export"][];
+            contactRelations?: components["schemas"]["ContactRelation.jsonld-export"][];
         };
         "ContactAddress-contact.create": {
             type?: string | null;
@@ -1809,6 +1841,9 @@ export interface components {
             contact?: string | null;
             groupResource?: components["schemas"]["Group-contact_group.read"];
         };
+        "ContactGroup-export": {
+            readonly groupUuid?: string | null;
+        };
         "ContactGroup.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             groupResource?: components["schemas"]["Group.jsonld-contact.read"];
@@ -1821,6 +1856,9 @@ export interface components {
              */
             contact?: string | null;
             groupResource?: components["schemas"]["Group.jsonld-contact_group.read"];
+        };
+        "ContactGroup.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly groupUuid?: string | null;
         };
         "ContactName-contact.create": {
             family?: string | null;
@@ -2074,6 +2112,10 @@ export interface components {
             relatedContact?: string;
             readonly displayName?: string;
         };
+        "ContactRelation-export": {
+            type?: string | null;
+            readonly personUuid?: string | null;
+        };
         "ContactRelation.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             type?: string | null;
@@ -2098,6 +2140,10 @@ export interface components {
              */
             relatedContact?: string;
             readonly displayName?: string;
+        };
+        "ContactRelation.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
+            type?: string | null;
+            readonly personUuid?: string | null;
         };
         ContactTimeline: {
             id?: number;
@@ -2168,6 +2214,8 @@ export interface components {
         };
         "Group-group.read": {
             readonly id?: number;
+            /** Format: uuid */
+            uuid?: string;
             name?: string;
         };
         "Group.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
@@ -2180,6 +2228,8 @@ export interface components {
         };
         "Group.jsonld-group.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
+            /** Format: uuid */
+            uuid?: string;
             name?: string;
         };
         HydraCollectionBaseSchema: components["schemas"]["HydraCollectionBaseSchemaNoPagination"] & {
@@ -3068,6 +3118,68 @@ export interface operations {
                     "application/ld+json": components["schemas"]["Error.jsonld"];
                     "application/problem+json": components["schemas"]["Error"];
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    import_contact_xml: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new Contact resource */
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Contact.jsonld-contact.read"];
+                    "application/json": components["schemas"]["Contact-contact.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };

@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import SettingsPage from './Settings'
 
-import { useExportContacts } from '@/features/contacts/useContacts'
+import { useExportContacts, useImportContacts } from '@/features/contacts/useContacts'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 // Mock the hook
@@ -18,6 +18,7 @@ vi.mock('@/hooks/useUserPrefs.hook', async () => {
 // Mock useExportContacts
 vi.mock('@/features/contacts/useContacts', () => ({
   useExportContacts: vi.fn(),
+  useImportContacts: vi.fn(),
 }))
 
 // Mock translation
@@ -32,6 +33,8 @@ vi.mock('react-i18next', () => ({
         'settings.dateFormatDescription': 'Select how dates should be displayed.',
         'settings.exportData': 'Export Data',
         'settings.exportDataDescription': 'Download all your contacts and data in XML format.',
+        'settings.importData': 'Import Data',
+        'settings.importDataDescription': 'Upload an XML file to import contacts.',
         'app.loading': 'Loading...',
       }
       return map[key] || key
@@ -43,6 +46,7 @@ describe('SettingsPage', () => {
   const setLanguage = vi.fn()
   const setDateFormat = vi.fn()
   const exportContacts = vi.fn()
+  const importContacts = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -55,6 +59,10 @@ describe('SettingsPage', () => {
     })
     ;(useExportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       mutate: exportContacts,
+      isPending: false,
+    })
+    ;(useImportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      mutate: importContacts,
       isPending: false,
     })
   })
@@ -122,5 +130,32 @@ describe('SettingsPage', () => {
 
     const exportButton = screen.getByRole('button', { name: /loading/i })
     expect(exportButton).toBeDisabled()
+  })
+
+  it('calls importContacts when file is selected', async () => {
+    render(<SettingsPage />)
+
+    const file = new File(['(⌐□_□)'], 'contacts.xml', { type: 'application/xml' })
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+
+    if (input) {
+      fireEvent.change(input, { target: { files: [file] } })
+    }
+
+    expect(importContacts).toHaveBeenCalled()
+    // Verify the arguments passed to importContacts (it's called with the file)
+    expect(importContacts).toHaveBeenCalledWith(file, expect.any(Object))
+  })
+
+  it('disables import button when importing', () => {
+    ;(useImportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      mutate: importContacts,
+      isPending: true,
+    })
+
+    render(<SettingsPage />)
+
+    const importButton = screen.getByRole('button', { name: /loading/i })
+    expect(importButton).toBeDisabled()
   })
 })
