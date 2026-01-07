@@ -22,7 +22,7 @@ class NotificationQueue implements TenantAwareInterface
     private ?NotificationRule $rule = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Contact $contact = null;
 
     #[ORM\ManyToOne]
