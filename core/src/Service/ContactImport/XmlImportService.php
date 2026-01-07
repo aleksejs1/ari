@@ -108,14 +108,27 @@ class XmlImportService
         }
 
         // Helper to convert SimpleXML children to array of arrays
-        /** @return array<int, array<string, string>> */
-        $toItems = function ($parentNode): array {
+        /**
+         * @param \SimpleXMLElement|iterable $nodes
+         * @return array<int, array<string, string>>
+         */
+        $toItems = function ($nodes): array {
             $items = [];
-            if (isset($parentNode->item)) {
-                foreach ($parentNode->item as $item) {
+            foreach ($nodes as $node) {
+                // If the node has <item> children, it's a container (Legacy/Standard KeyValue format)
+                if (isset($node->item) && count($node->item) > 0) {
+                    foreach ($node->item as $child) {
+                        $row = [];
+                        foreach ($child->children() as $prop) {
+                            $row[$prop->getName()] = (string) $prop;
+                        }
+                        $items[] = $row;
+                    }
+                } elseif ($node->count() > 0) {
+                    // Otherwise, the node itself is the item (Flat/Export format)
                     $row = [];
-                    foreach ($item as $key => $value) {
-                        $row[(string) $key] = (string) $value;
+                    foreach ($node->children() as $prop) {
+                        $row[$prop->getName()] = (string) $prop;
                     }
                     $items[] = $row;
                 }
@@ -298,14 +311,27 @@ class XmlImportService
     private function importContactRelations(\SimpleXMLElement $node, Contact $contact, array $contactsMap): void
     {
         // Helpers - duplicate for scope or move to method
-        /** @return array<int, array<string, string>> */
-        $toItems = function ($parentNode): array {
+        /**
+         * @param \SimpleXMLElement|iterable $nodes
+         * @return array<int, array<string, string>>
+         */
+        $toItems = function ($nodes): array {
             $items = [];
-            if (isset($parentNode->item)) {
-                foreach ($parentNode->item as $item) {
+            foreach ($nodes as $node) {
+                // If the node has <item> children, it's a container (Legacy/Standard KeyValue format)
+                if (isset($node->item) && count($node->item) > 0) {
+                    foreach ($node->item as $child) {
+                        $row = [];
+                        foreach ($child->children() as $prop) {
+                            $row[$prop->getName()] = (string) $prop;
+                        }
+                        $items[] = $row;
+                    }
+                } elseif ($node->count() > 0) {
+                    // Otherwise, the node itself is the item (Flat/Export format)
                     $row = [];
-                    foreach ($item as $key => $value) {
-                        $row[(string) $key] = (string) $value;
+                    foreach ($node->children() as $prop) {
+                        $row[$prop->getName()] = (string) $prop;
                     }
                     $items[] = $row;
                 }
