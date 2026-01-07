@@ -342,9 +342,46 @@ class XmlImportService
 
         $parsedItems = $toItems($node->contactRelations);
 
+        // Deduplicate: Filter out relations if the inverse already exists
+        $filteredItems = [];
+        foreach ($parsedItems as $item) {
+            $uuid = $item['personUuid'] ?? '';
+            $type = $item['type'] ?? '';
+
+            if (isset($contactsMap[$uuid])) {
+                $relatedContact = $contactsMap[$uuid];
+                $isDuplicate = false;
+
+                $meUuid = $contact->getUuid()?->toRfc4122();
+
+                // Check if related contact has a relation to me ($contact)
+                foreach ($relatedContact->getContactRelationsCollection() as $existingRelation) {
+                    $existingPerson = $existingRelation->getPerson();
+                    $existingPersonUuid = $existingPerson?->getUuid()?->toRfc4122();
+                    $existingType = $existingRelation->getType() ?? '';
+
+                    if ($existingPerson === $contact || $existingPersonUuid === $meUuid) {
+                        // Check type compatibility
+                        $expectedInverseType = $contact->invertRelationType($type, $relatedContact);
+
+                        // Compare case-insensitively
+                        if (mb_strtolower($existingType) === mb_strtolower($expectedInverseType)) {
+                            $isDuplicate = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($isDuplicate) {
+                    continue;
+                }
+            }
+            $filteredItems[] = $item;
+        }
+
         $this->syncCollection(
             $contact->getContactRelationsCollection(),
-            $parsedItems,
+            $filteredItems,
             function (ContactRelation $e, array $d) {
                 return $e->getPersonUuid() === ($d['personUuid'] ?? '') && $e->getType() === ($d['type'] ?? '');
             },

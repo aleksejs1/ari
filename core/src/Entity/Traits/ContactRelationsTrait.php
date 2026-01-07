@@ -132,7 +132,7 @@ trait ContactRelationsTrait
         return $this;
     }
 
-    private function invertRelationType(?string $type, Contact $me): string
+    public function invertRelationType(?string $type, Contact $me): string
     {
         if (null === $type) {
             return 'Related';

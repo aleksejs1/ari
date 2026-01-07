@@ -212,5 +212,17 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         self::assertNotNull($relatedPersonUuid);
         // We need to assert it matches the NEW spouse UUID
         self::assertEquals($newSpouseUuid, $relatedPersonUuid->toRfc4122());
+
+        // Assert that we don't have duplicates.
+        // Depending on import order, either Contact->Spouse or Spouse->Contact will be persisted, but not both.
+        // So the sum of their outgoing physical relations matching each other should be 1.
+        $contactRelationsCount = $importedContact->getContactRelationsCollection()->count();
+        $spouseRelationsCount = $relatedPerson->getContactRelationsCollection()->count();
+
+        self::assertEquals(
+            1,
+            $contactRelationsCount + $spouseRelationsCount,
+            'There should be exactly 1 physical relation persisted between the two contacts to avoid duplicates'
+        );
     }
 }
