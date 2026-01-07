@@ -340,9 +340,11 @@ class XmlImportService
             return $items;
         };
 
+        $parsedItems = $toItems($node->contactRelations);
+
         $this->syncCollection(
-            $contact->getContactRelations(),
-            $toItems($node->contactRelations),
+            $contact->getContactRelationsCollection(),
+            $parsedItems,
             function (ContactRelation $e, array $d) {
                 return $e->getPersonUuid() === ($d['personUuid'] ?? '') && $e->getType() === ($d['type'] ?? '');
             },

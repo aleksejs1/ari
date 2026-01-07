@@ -79,12 +79,27 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $organization->setTitle('CEO');
         $contact->addContactOrganization($organization);
 
+        // Add Spouse Contact
+        $spouse = new Contact();
+        $spouse->setUser($user);
+        $spouse->setUuid(Uuid::v7());
+        $this->entityManager->persist($spouse);
+
+        $relation = new \App\Entity\ContactRelation($contact);
+        $relation->setPerson($spouse);
+        $relation->setType('Spouse');
+        $contact->addContactRelation($relation);
+
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
 
         $contactUuidObj = $contact->getUuid();
         self::assertNotNull($contactUuidObj);
         $contactUuid = $contactUuidObj->toRfc4122();
+
+        $spouseUuidObj = $spouse->getUuid();
+        self::assertNotNull($spouseUuidObj);
+        $spouseUuid = $spouseUuidObj->toRfc4122();
 
         $groupUuidObj = $group->getUuid();
         self::assertNotNull($groupUuidObj);
@@ -117,6 +132,9 @@ class XmlImportReproductionTest extends AbstractApiTestCase
             }
         }
 
+        // Debug: Dump content to see structure
+        // echo "\nExported XML:\n" . $content . "\n";
+
         self::assertResponseIsSuccessful();
         self::assertNotEmpty($content, 'Exported content should not be empty');
 
@@ -126,10 +144,11 @@ class XmlImportReproductionTest extends AbstractApiTestCase
 
         $newContactUuid = Uuid::v7()->toRfc4122();
         $newGroupUuid = Uuid::v7()->toRfc4122();
+        $newSpouseUuid = Uuid::v7()->toRfc4122();
 
         $xmlContent = str_replace(
-            [$contactUuid, $groupUuid],
-            [$newContactUuid, $newGroupUuid],
+            [$contactUuid, $groupUuid, $spouseUuid],
+            [$newContactUuid, $newGroupUuid, $newSpouseUuid],
             $content
         );
 
@@ -175,5 +194,23 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         self::assertInstanceOf(\App\Entity\ContactOrganization::class, $firstOrganization);
         self::assertEquals('Acme Corp', $firstOrganization->getName());
         self::assertEquals('CEO', $firstOrganization->getTitle());
+
+        // Check Relation
+        $relations = $importedContact->getContactRelations();
+        self::assertGreaterThan(0, $relations->count(), 'Imported contact should have the relation');
+        $firstRelation = $relations->first();
+        self::assertInstanceOf(\App\Entity\ContactRelation::class, $firstRelation);
+        self::assertEquals('Spouse', $firstRelation->getType());
+
+        $relatedPerson = $firstRelation->getPerson();
+        self::assertNotNull($relatedPerson);
+        // The related person should be the IMPORTED version of the spouse (new UUID)
+        // We know the new spouse UUID because we will calculate/set it or we can verify it exists
+        // Actually, we replaced the spouse UUID too.
+
+        $relatedPersonUuid = $relatedPerson->getUuid();
+        self::assertNotNull($relatedPersonUuid);
+        // We need to assert it matches the NEW spouse UUID
+        self::assertEquals($newSpouseUuid, $relatedPersonUuid->toRfc4122());
     }
 }
