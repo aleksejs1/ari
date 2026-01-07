@@ -61,17 +61,20 @@ class UserPref implements TenantAwareInterface
 
     public const TYPE_LANGUAGE = 'language';
     public const TYPE_DATE_FORMAT = 'dateFormat';
+    public const TYPE_TIME_FORMAT = 'timeFormat';
     public const TYPE_FAVOURITE_GROUP_NAME = 'favourite_group_name';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
         self::TYPE_DATE_FORMAT,
+        self::TYPE_TIME_FORMAT,
         self::TYPE_FAVOURITE_GROUP_NAME,
     ];
 
     public const DEFAULTS = [
         self::TYPE_LANGUAGE => 'en',
         self::TYPE_DATE_FORMAT => 'mm/dd/yyyy',
+        self::TYPE_TIME_FORMAT => '24h',
         self::TYPE_FAVOURITE_GROUP_NAME => 'favourite',
     ];
 
@@ -106,6 +109,12 @@ class UserPref implements TenantAwareInterface
         } elseif (self::TYPE_DATE_FORMAT === $this->type) {
             if (!in_array($this->value, ['mm/dd/yyyy', 'dd.mm.yyyy'], true)) {
                 $context->buildViolation('Invalid date format')
+                   ->atPath('value')
+                   ->addViolation();
+            }
+        } elseif (self::TYPE_TIME_FORMAT === $this->type) {
+            if (!in_array($this->value, ['24h', '12h'], true)) {
+                $context->buildViolation('Invalid time format')
                    ->atPath('value')
                    ->addViolation();
             }
