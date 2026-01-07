@@ -20,6 +20,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`group`')]
+#[ORM\UniqueConstraint(name: 'unique_group_uuid_per_user', columns: ['uuid', 'user_id'])]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['group:read']],
@@ -51,7 +52,7 @@ class Group implements TenantAwareInterface
     private ?int $id = null;
 
     #[Groups(['group:read', 'export'])]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: 'uuid')]
     private ?Uuid $uuid = null;
 
     #[ORM\ManyToOne(inversedBy: 'groups')]

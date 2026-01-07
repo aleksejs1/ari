@@ -32,6 +32,7 @@ use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
+#[ORM\UniqueConstraint(name: 'unique_contact_uuid_per_user', columns: ['uuid', 'user_id'])]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['contact:read']],
@@ -124,7 +125,7 @@ class Contact implements TenantAwareInterface
 
 
     #[Groups(['contact:read', 'export'])]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: 'uuid')]
     private ?Uuid $uuid = null;
 
     #[ORM\ManyToOne(inversedBy: 'contacts')]
