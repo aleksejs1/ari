@@ -74,6 +74,11 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $contactGroup2->setGroupResource($group2);
         $contact->addContactGroup($contactGroup2);
 
+        $organization = new \App\Entity\ContactOrganization($contact);
+        $organization->setName('Acme Corp');
+        $organization->setTitle('CEO');
+        $contact->addContactOrganization($organization);
+
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
 
@@ -164,5 +169,11 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $firstContactName = $importedContact->getContactNames()->first();
         self::assertInstanceOf(ContactName::class, $firstContactName);
         self::assertEquals('Cycle', $firstContactName->getGiven());
+
+        // Check Organization
+        $firstOrganization = $importedContact->getContactOrganizations()->first();
+        self::assertInstanceOf(\App\Entity\ContactOrganization::class, $firstOrganization);
+        self::assertEquals('Acme Corp', $firstOrganization->getName());
+        self::assertEquals('CEO', $firstOrganization->getTitle());
     }
 }

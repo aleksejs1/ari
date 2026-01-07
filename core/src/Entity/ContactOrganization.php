@@ -49,6 +49,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
@@ -59,6 +60,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $department = null;
@@ -69,6 +71,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
@@ -79,6 +82,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $startDate = null;
@@ -89,6 +93,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $endDate = null;
@@ -99,6 +104,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $jobDescription = null;
@@ -109,6 +115,7 @@ class ContactOrganization implements TenantAwareInterface
         'contact_organization:read',
         'contact_organization:create',
         'contact_organization:update',
+        'export',
     ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
