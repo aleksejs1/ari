@@ -4,66 +4,117 @@ import { useEffect, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '@/hooks/useAuth'
-import { UserPrefsContext } from '@/hooks/useUserPrefsContext'
+import { UserPrefsContext, type UserPrefsContextType } from '@/hooks/useUserPrefsContext'
 import { api } from '@/lib/axios'
 import type { components } from '@/types/schema'
 
 type UserPref = components['schemas']['UserPref.jsonld-user_pref.read']
-type UserPrefType = 'language' | 'dateFormat' | 'favourite_group_name'
+type UserPrefType = 'language' | 'dateFormat' | 'timeFormat' | 'favourite_group_name'
+type DateInput = Date | string | null | undefined
 
-export function UserPrefsProvider({ children }: { children: ReactNode }) {
-  const { i18n } = useTranslation()
-  const { isAuthenticated } = useAuth()
-  const queryClient = useQueryClient()
+interface UserPrefsProviderProps {
+  children: ReactNode
+}
 
-  // Fetch prefs
-  const { data: prefs, isLoading } = useQuery({
+const formatDateHelper = (date: DateInput, dateFormat: string): string => {
+  if (!date) {
+    return ''
+  }
+  const d = typeof date === 'string' ? parseISO(date) : new Date(date)
+  if (isNaN(d.getTime())) {
+    return ''
+  }
+
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+
+  if (dateFormat === 'dd.mm.yyyy') {
+    return `${day}.${month}.${year}`
+  }
+  return `${month}/${day}/${year}`
+}
+
+const parseTimeString = (dateStr: string): { hours: number; minutes: string } | null => {
+  if (/^\d{1,2}:\d{2}$/.test(dateStr)) {
+    const [hStr, mStr] = dateStr.split(':')
+    return {
+      hours: parseInt(hStr, 10),
+      minutes: mStr,
+    }
+  }
+  return null
+}
+
+const formatTimeHelper = (date: DateInput, timeFormat: string): string => {
+  if (!date) {
+    return ''
+  }
+
+  let hours: number
+  let minutes: string
+
+  if (typeof date === 'string') {
+    const parsed = parseTimeString(date)
+    if (parsed) {
+      hours = parsed.hours
+      minutes = parsed.minutes
+    } else {
+      const d = parseISO(date)
+      if (isNaN(d.getTime())) {
+        return ''
+      }
+      hours = d.getHours()
+      minutes = String(d.getMinutes()).padStart(2, '0')
+    }
+  } else {
+    // Date object
+    if (isNaN(date.getTime())) {
+      return ''
+    }
+    hours = date.getHours()
+    minutes = String(date.getMinutes()).padStart(2, '0')
+  }
+
+  if (timeFormat === '12h') {
+    const period = hours >= 12 ? 'PM' : 'AM'
+    const h = hours % 12 || 12
+    return `${h}:${minutes} ${period}`
+  }
+
+  return `${String(hours).padStart(2, '0')}:${minutes}`
+}
+
+const useFetchUserPrefs = (isAuthenticated: boolean) => {
+  return useQuery({
     queryKey: ['user_prefs'],
     queryFn: async () => {
       const response = await api.get('/user_prefs')
-      // Handle the "bug" where hydra:member might be just member
       const items = response.data.member || []
       return items as UserPref[]
     },
     enabled: isAuthenticated,
   })
+}
 
-  // Derive language and dateFormat from prefs (no separate state needed)
-  const language = prefs?.find((p) => p.type === 'language')?.value || 'en'
-  const dateFormat = prefs?.find((p) => p.type === 'dateFormat')?.value || 'mm/dd/yyyy'
-  const favouriteGroupName =
-    prefs?.find((p) => p.type === 'favourite_group_name')?.value || 'favourites'
-
-  // Sync i18n language when derived language changes
-  useEffect(() => {
-    void i18n.changeLanguage(language)
-  }, [language, i18n])
-
-  // Helpers to find existing pref ID
-  const getPrefId = (type: UserPrefType) => {
-    return prefs?.find((p) => p.type === type)?.['@id']
-  }
+const useSaveUserPref = (prefs: UserPref[] | undefined) => {
+  const queryClient = useQueryClient()
 
   const getPrefRealId = (type: UserPrefType) => {
-    const atId = getPrefId(type)
+    const atId = prefs?.find((p) => p.type === type)?.['@id']
     return atId ? atId.split('/').pop() : null
   }
 
-  // Mutation to save pref
-  const savePrefMutation = useMutation({
+  return useMutation({
     mutationFn: async ({ type, value }: { type: UserPrefType; value: string }) => {
       const id = getPrefRealId(type)
       if (id) {
-        // PATCH
         await api.patch(
           `/user_prefs/${id}`,
           { value },
-          {
-            headers: { 'Content-Type': 'application/merge-patch+json' },
-          },
+          { headers: { 'Content-Type': 'application/merge-patch+json' } },
         )
       } else {
-        // PUT (Upsert)
         await api.put(`/user_prefs/${type}`, { value })
       }
     },
@@ -71,6 +122,54 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
       await queryClient.invalidateQueries({ queryKey: ['user_prefs'] })
     },
   })
+}
+
+const getPrefValue = (
+  prefs: UserPref[] | undefined,
+  type: UserPrefType,
+  defaultVal: string,
+): string => {
+  return prefs?.find((p) => p.type === type)?.value || defaultVal
+}
+
+const useUserPrefsLogic = () => {
+  const { i18n } = useTranslation()
+  const { isAuthenticated } = useAuth()
+
+  const { data: prefs, isLoading } = useFetchUserPrefs(isAuthenticated)
+  const savePrefMutation = useSaveUserPref(prefs)
+
+  // Derive preferences
+  const language = getPrefValue(prefs, 'language', 'en')
+  const dateFormat = getPrefValue(prefs, 'dateFormat', 'mm/dd/yyyy')
+  const timeFormat = getPrefValue(prefs, 'timeFormat', '24h')
+  const favouriteGroupName = getPrefValue(prefs, 'favourite_group_name', 'favourites')
+
+  useEffect(() => {
+    void i18n.changeLanguage(language)
+  }, [language, i18n])
+
+  return {
+    language,
+    dateFormat,
+    timeFormat,
+    favouriteGroupName,
+    isLoading,
+    savePrefMutation,
+    i18n,
+  }
+}
+
+export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
+  const {
+    language,
+    dateFormat,
+    timeFormat,
+    favouriteGroupName,
+    isLoading,
+    savePrefMutation,
+    i18n,
+  } = useUserPrefsLogic()
 
   const setLanguage = async (lang: string) => {
     await i18n.changeLanguage(lang)
@@ -81,44 +180,49 @@ export function UserPrefsProvider({ children }: { children: ReactNode }) {
     await savePrefMutation.mutateAsync({ type: 'dateFormat', value: format })
   }
 
+  const setTimeFormat = async (format: string) => {
+    await savePrefMutation.mutateAsync({ type: 'timeFormat', value: format })
+  }
+
   const setFavouriteGroupName = async (name: string) => {
     await savePrefMutation.mutateAsync({ type: 'favourite_group_name', value: name })
   }
 
-  const formatDate = (date: Date | string | null | undefined): string => {
-    if (!date) {
-      return ''
-    }
-    const d = typeof date === 'string' ? parseISO(date) : new Date(date)
-    if (isNaN(d.getTime())) {
-      return ''
-    }
+  const formatDate = (date: DateInput): string => {
+    return formatDateHelper(date, dateFormat)
+  }
 
-    const day = String(d.getDate()).padStart(2, '0')
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const year = d.getFullYear()
-
-    if (dateFormat === 'dd.mm.yyyy') {
-      return `${day}.${month}.${year}`
-    }
-    // Default mm/dd/yyyy
-    return `${month}/${day}/${year}`
+  const formatTime = (date: DateInput): string => {
+    return formatTimeHelper(date, timeFormat)
   }
 
   return (
-    <UserPrefsContext.Provider
+    <UserPrefsProviderContext
       value={{
         language,
         dateFormat,
+        timeFormat,
         favouriteGroupName,
         setLanguage,
         setDateFormat,
+        setTimeFormat,
         setFavouriteGroupName,
         formatDate,
+        formatTime,
         isLoading,
       }}
     >
       {children}
-    </UserPrefsContext.Provider>
+    </UserPrefsProviderContext>
   )
+}
+
+function UserPrefsProviderContext({
+  children,
+  value,
+}: {
+  children: ReactNode
+  value: UserPrefsContextType
+}) {
+  return <UserPrefsContext.Provider value={value}>{children}</UserPrefsContext.Provider>
 }

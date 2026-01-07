@@ -10,12 +10,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { TimeInput } from '@/components/ui/TimeInput'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { NotificationChannel, NotificationPolicyFormValues } from '@/types/models'
 
 const SchedulePreview = () => {
   const { t } = useTranslation()
-  const { formatDate } = useUserPrefs()
+  const { formatDate, formatTime } = useUserPrefs()
   const form = useFormContext<NotificationPolicyFormValues>()
   const schedules = form.watch('schedule') || []
 
@@ -36,7 +37,7 @@ const SchedulePreview = () => {
           const date = subDays(sampleDate, sch.offsetDays || 0)
           return (
             <li key={index}>
-              {formatDate(date)} {t('notification_policies.at', 'at')} {sch.time || '00:00'}
+              {formatDate(date)} {t('notification_policies.at', 'at')} {formatTime(sch.time)}
             </li>
           )
         })}
@@ -51,6 +52,7 @@ interface ScheduleSectionProps {
 
 export const ScheduleSection = ({ channels }: ScheduleSectionProps) => {
   const { t } = useTranslation()
+  const { timeFormat } = useUserPrefs()
   const form = useFormContext<NotificationPolicyFormValues>()
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -112,7 +114,12 @@ export const ScheduleSection = ({ channels }: ScheduleSectionProps) => {
                     <FormItem>
                       <FormLabel>{t('notification_policies.time', 'Time')}</FormLabel>
                       <FormControl>
-                        <Input type="time" {...field} />
+                        <TimeInput
+                          format={timeFormat as '12h' | '24h'}
+                          {...field}
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

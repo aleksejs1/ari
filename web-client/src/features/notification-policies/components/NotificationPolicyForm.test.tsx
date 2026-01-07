@@ -60,8 +60,26 @@ vi.mock('../../contacts/useContacts', async () => {
 
 vi.mock('@/hooks/useUserPrefs.hook', () => ({
   useUserPrefs: vi.fn(() => ({
-    formatDate: (date: Date) => date.toLocaleDateString(),
-    userPrefs: { dateFormat: 'dd.MM.yyyy' },
+    formatDate: (date: Date | string) => {
+      if (!date) {
+        return ''
+      }
+      if (typeof date === 'string') {
+        return date
+      }
+      return date.toLocaleDateString()
+    },
+    formatTime: (date: Date | string) => {
+      if (!date) {
+        return ''
+      }
+      if (typeof date === 'string') {
+        return date
+      }
+      return date.toLocaleTimeString()
+    },
+    dateFormat: 'dd.MM.yyyy',
+    timeFormat: '24h',
   })),
 }))
 

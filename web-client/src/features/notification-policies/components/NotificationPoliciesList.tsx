@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
 
 const getContactLabel = (contact: Contact, id: string): string => {
@@ -84,6 +85,7 @@ const TargetDisplay = ({
 
 export default function NotificationPoliciesList() {
   const { t } = useTranslation()
+  const { formatTime } = useUserPrefs()
   const { data: policies, isLoading: policiesLoading } = useNotificationPolicies()
   const { data: contactsData, isLoading: contactsLoading } = useContacts()
   const { data: groupsData, isLoading: groupsLoading } = useGroups()
@@ -169,7 +171,7 @@ export default function NotificationPoliciesList() {
                         <span className="font-medium">
                           {t('notification_policies.days_before', 'Days before')}:
                         </span>{' '}
-                        {sch.offsetDays}, {sch.time}
+                        {sch.offsetDays}, {formatTime(sch.time)}
                       </div>
                     ))}
                   </div>

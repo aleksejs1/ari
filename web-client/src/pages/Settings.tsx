@@ -14,9 +14,11 @@ export default function SettingsPage() {
   const {
     language,
     dateFormat,
+    timeFormat,
     favouriteGroupName,
     setLanguage,
     setDateFormat,
+    setTimeFormat,
     setFavouriteGroupName,
     isLoading,
   } = useUserPrefs()
@@ -97,6 +99,29 @@ export default function SettingsPage() {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="dd.mm.yyyy" id="format-eu" />
                 <Label htmlFor="format-eu">DD.MM.YYYY (31.12.2024)</Label>
+              </div>
+            </RadioGroup>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.timeFormat')}</CardTitle>
+            <CardDescription>{t('settings.timeFormatDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup
+              value={timeFormat}
+              onValueChange={(val) => setTimeFormat(val)}
+              className="flex flex-col space-y-1"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="24h" id="format-24h" />
+                <Label htmlFor="format-24h">24h (21:00)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="12h" id="format-12h" />
+                <Label htmlFor="format-12h">12h (09:00 PM)</Label>
               </div>
             </RadioGroup>
           </CardContent>
