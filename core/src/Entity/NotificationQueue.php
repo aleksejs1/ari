@@ -18,7 +18,7 @@ class NotificationQueue implements TenantAwareInterface
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'notificationQueues')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?NotificationRule $rule = null;
 
     #[ORM\ManyToOne]

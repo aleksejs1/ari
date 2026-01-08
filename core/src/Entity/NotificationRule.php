@@ -60,7 +60,7 @@ class NotificationRule implements TenantAwareInterface
     /**
      * @var Collection<int, NotificationQueue>
      */
-    #[ORM\OneToMany(targetEntity: NotificationQueue::class, mappedBy: 'rule', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: NotificationQueue::class, mappedBy: 'rule')]
     private Collection $notificationQueues;
 
     public function __construct()
