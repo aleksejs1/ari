@@ -37,7 +37,11 @@
     "favouriteGroupNameDescription": "The name of the group used for favorite contacts.",
     "groupName": "Group Name",
     "exportData": "Export Data",
-    "exportDataDescription": "Download all your contacts and data in XML format."
+    "exportDataDescription": "Download all your contacts and data in XML format.",
+    "importData": "Import Data",
+    "importDataDescription": "Upload an XML file to import contacts.",
+    "importSuccess": "Contacts imported successfully.",
+    "importError": "An error occurred during import."
   },
   "auth": {
     "login": "Login",

@@ -37,7 +37,11 @@
     "favouriteGroupNameDescription": "Название группы, используемой для избранных контактов.",
     "groupName": "Название группы",
     "exportData": "Экспорт данных",
-    "exportDataDescription": "Скачайте все свои контакты и данные в формате XML."
+    "exportDataDescription": "Скачайте все свои контакты и данные в формате XML.",
+    "importData": "Импорт данных",
+    "importDataDescription": "Загрузите XML файл для импорта контактов.",
+    "importSuccess": "Контакты успешно импортированы.",
+    "importError": "Произошла ошибка при импорте."
   },
   "auth": {
     "login": "Вход",
