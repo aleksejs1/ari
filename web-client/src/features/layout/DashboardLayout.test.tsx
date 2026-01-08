@@ -28,6 +28,10 @@ vi.mock('@/features/activity-feed/useNotifications', () => ({
   useMarkAsRead: vi.fn(),
 }))
 
+vi.mock('@/features/search/components/GlobalSearch', () => ({
+  GlobalSearch: () => <div data-testid="global-search-mock">Global Search</div>,
+}))
+
 describe('DashboardLayout', () => {
   beforeAll(() => {
     ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({

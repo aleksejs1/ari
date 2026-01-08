@@ -249,6 +249,14 @@
     "loading": "Загрузка...",
     "noName": "Без имени"
   },
+  "globalSearch": {
+    "placeholder": "Поиск контактов, групп, настроек...",
+    "sections": {
+      "contacts": "Контакты",
+      "groups": "Группы",
+      "settings": "Настройки"
+    }
+  },
   "groups": {
     "title": "Группы контактов",
     "createGroup": "Создать группу",

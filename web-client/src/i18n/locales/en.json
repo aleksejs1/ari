@@ -249,6 +249,14 @@
     "loading": "Loading...",
     "noName": "No Name"
   },
+  "globalSearch": {
+    "placeholder": "Search contacts, groups, settings...",
+    "sections": {
+      "contacts": "Contacts",
+      "groups": "Groups",
+      "settings": "Settings"
+    }
+  },
   "groups": {
     "title": "Contact Groups",
     "createGroup": "Create Group",

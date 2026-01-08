@@ -12,11 +12,15 @@ export interface HydraCollection<T> {
   [key: string]: unknown
 }
 
-export function getHydraMember<T>(data?: HydraCollection<T>): T[] {
+export function getHydraMember<T>(data?: HydraCollection<T> | T[]): T[] {
   if (!data) {
     return []
   }
-  return data.member || []
+  if (Array.isArray(data)) {
+    return data
+  }
+  // @ts-expect-error - Fallback for raw JSON-LD response
+  return data.member || data['hydra:member'] || []
 }
 
 export function getHydraPagination<T>(data?: HydraCollection<T>, page = 1) {
