@@ -225,7 +225,7 @@ class GoogleContactsService
                 if (null !== $googleGroup) {
                     $exists = false;
                     foreach ($contactGroups as $g) {
-                        if ($g === $googleGroup || ($g->getId() !== null && $g->getId() === $googleGroup->getId())) {
+                        if ($g === $googleGroup || (null !== $g->getId() && $g->getId() === $googleGroup->getId())) {
                             $exists = true;
                             break;
                         }
@@ -368,10 +368,17 @@ class GoogleContactsService
                 if (null !== $group) {
                     $group->setName($name);
                 } else {
-                    $group = new \App\Entity\Group();
-                    $group->setUser($user);
-                    $group->setName($name);
-                    $this->entityManager->persist($group);
+                    $group = $this->entityManager->getRepository(\App\Entity\Group::class)->findOneBy([
+                        'user' => $user,
+                        'name' => $name,
+                    ]);
+
+                    if (null === $group) {
+                        $group = new \App\Entity\Group();
+                        $group->setUser($user);
+                        $group->setName($name);
+                        $this->entityManager->persist($group);
+                    }
 
                     if (null === $mapping) {
                         $mapping = new ImportMapping();

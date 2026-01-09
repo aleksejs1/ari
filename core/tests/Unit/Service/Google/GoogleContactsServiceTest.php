@@ -2,7 +2,6 @@
 
 namespace App\Tests\Unit\Service\Google;
 
-use App\Dto\ContactImportDto;
 use App\Entity\Contact;
 use App\Entity\ImportMapping;
 use App\Entity\TokenStorage;
@@ -67,8 +66,8 @@ class GoogleContactsServiceTest extends TestCase
                 [
                     'resourceName' => 'people/zombie',
                     'names' => [['givenName' => 'John']],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $this->httpClient->method('request')->willReturnOnConsecutiveCalls($responseGroups, $responseContacts);
@@ -110,8 +109,8 @@ class GoogleContactsServiceTest extends TestCase
                 [
                     'resourceName' => 'people/123',
                     'names' => [['givenName' => 'John']],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $this->httpClient->method('request')->willReturnOnConsecutiveCalls($responseGroups, $responseContacts);
@@ -124,7 +123,7 @@ class GoogleContactsServiceTest extends TestCase
         $this->entityManager->expects($this->atLeastOnce())
             ->method('persist')
             ->with(self::callback(function ($obj) {
-                return $obj instanceof \App\Entity\Group && $obj->getName() === 'google';
+                return $obj instanceof \App\Entity\Group && 'google' === $obj->getName();
             }));
 
         $this->service->importContacts($user, true);
