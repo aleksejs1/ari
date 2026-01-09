@@ -243,4 +243,42 @@ class GroupApiTest extends ApiTestCase
             'contactsCount' => 2,
         ]);
     }
+
+    public function testGroupSorting(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Groups with different names
+        $names = ['C Group', 'A Group', 'B Group'];
+        foreach ($names as $name) {
+            $client->request('POST', '/api/groups', [
+                'auth_bearer' => $this->token,
+                'json' => ['name' => $name],
+            ]);
+        }
+
+        // 2. Sort ASC
+        $response = $client->request('GET', '/api/groups?order[name]=asc', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        /** @var array<int, array{name: string}> $members */
+        $members = $response->toArray()['member'];
+        self::assertCount(3, $members);
+        self::assertSame('A Group', $members[0]['name']);
+        self::assertSame('B Group', $members[1]['name']);
+        self::assertSame('C Group', $members[2]['name']);
+
+        // 3. Sort DESC
+        $response = $client->request('GET', '/api/groups?order[name]=desc', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        /** @var array<int, array{name: string}> $members */
+        $members = $response->toArray()['member'];
+        self::assertCount(3, $members);
+        self::assertSame('C Group', $members[0]['name']);
+        self::assertSame('B Group', $members[1]['name']);
+        self::assertSame('A Group', $members[2]['name']);
+    }
 }
