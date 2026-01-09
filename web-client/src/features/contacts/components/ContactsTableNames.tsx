@@ -20,7 +20,7 @@ export function ContactsTableNames({
 
   return (
     <div className="flex flex-col gap-1">
-      {displayNames.map((name, i) => (
+      {displayNames.slice(0, 1).map((name, i) => (
         <ContactNameInlineEdit
           key={i}
           name={name}

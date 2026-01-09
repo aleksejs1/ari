@@ -21,7 +21,7 @@ export function ContactsTablePhones({
 
   return (
     <div className="flex flex-col gap-1">
-      {displayPhones.map((phone, i) => (
+      {displayPhones.slice(0, 1).map((phone, i) => (
         <ContactPhoneInlineEdit
           key={i}
           phone={phone}

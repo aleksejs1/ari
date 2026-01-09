@@ -21,7 +21,7 @@ export function ContactsTableEmails({
 
   return (
     <div className="flex flex-col gap-1">
-      {displayEmails.map((email, i) => (
+      {displayEmails.slice(0, 1).map((email, i) => (
         <ContactEmailInlineEdit
           key={i}
           email={email}

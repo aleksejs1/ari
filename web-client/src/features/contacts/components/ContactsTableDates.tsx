@@ -17,7 +17,7 @@ export function ContactsTableDates({
 }: ContactsTableDatesProps) {
   return (
     <div className="flex flex-col gap-1">
-      {dates.map((date, i) => (
+      {dates.slice(0, 1).map((date, i) => (
         <ContactDateInlineEdit
           key={i}
           date={date}

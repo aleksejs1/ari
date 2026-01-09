@@ -107,6 +107,92 @@ describe('ContactsTable', () => {
     expect(screen.getByText(/Birthday/)).toBeInTheDocument()
   })
 
+  it('renders only the first item when multiple items exist', () => {
+    const multiItemData: Contact[] = [
+      {
+        '@id': '/api/contacts/4',
+        id: 4,
+        '@type': 'Contact',
+        contactNames: [
+          { '@id': '/api/cn/4a', '@type': 'ContactName', given: 'First', family: 'Name' },
+          { '@id': '/api/cn/4b', '@type': 'ContactName', given: 'Second', family: 'Name' },
+        ],
+        contactEmailAdresses: [
+          {
+            '@id': '/api/ce/4a',
+            '@type': 'ContactEmailAdress',
+            value: 'first@example.com',
+            type: 'work',
+          },
+          {
+            '@id': '/api/ce/4b',
+            '@type': 'ContactEmailAdress',
+            value: 'second@example.com',
+            type: 'home',
+          },
+        ],
+        phoneNumbers: [
+          {
+            '@id': '/api/pn/4a',
+            '@type': 'ContactPhoneNumber',
+            value: '111-111',
+            type: 'mobile',
+          },
+          {
+            '@id': '/api/pn/4b',
+            '@type': 'ContactPhoneNumber',
+            value: '222-222',
+            type: 'home',
+          },
+        ],
+        contactDates: [
+          {
+            '@id': '/api/cd/4a',
+            '@type': 'ContactDate',
+            date: '2023-01-01',
+            text: 'First Date',
+          },
+          {
+            '@id': '/api/cd/4b',
+            '@type': 'ContactDate',
+            date: '2023-02-02',
+            text: 'Second Date',
+          },
+        ],
+      },
+    ]
+
+    render(
+      <MemoryRouter>
+        <ContactsTable
+          data={multiItemData}
+          onEdit={vi.fn()}
+          onUpdateDate={vi.fn()}
+          onDeleteDate={vi.fn()}
+          onUpdateGroups={vi.fn()}
+          onUpdateEmail={vi.fn()}
+          onDeleteEmail={vi.fn()}
+          onUpdatePhone={vi.fn()}
+          onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
+        />
+      </MemoryRouter>,
+    )
+
+    // Should show first items
+    expect(screen.getByText('First Name')).toBeInTheDocument()
+    expect(screen.getByText('first@example.com')).toBeInTheDocument()
+    expect(screen.getByText('111-111')).toBeInTheDocument()
+    expect(screen.getByText(/First Date/)).toBeInTheDocument()
+
+    // Should NOT show second items
+    expect(screen.queryByText('Second Name')).not.toBeInTheDocument()
+    expect(screen.queryByText('second@example.com')).not.toBeInTheDocument()
+    expect(screen.queryByText('222-222')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Second Date/)).not.toBeInTheDocument()
+  })
+
   it('renders group pills', () => {
     vi.mocked(useGroups).mockReturnValue({
       data: [{ '@id': '/api/groups/1', '@type': 'Group', name: 'Work' }],
