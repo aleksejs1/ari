@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Filter\ContactSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use App\Entity\Traits\ContactAddressesTrait;
 use App\Entity\Traits\ContactBiographiesTrait;
 use App\Entity\Traits\ContactDatesTrait;
@@ -104,6 +105,7 @@ use ApiPlatform\OpenApi\Model\RequestBody;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['contactGroups.groupResource' => 'exact'])]
 #[ApiFilter(ContactSearchFilter::class)]
+#[ApiFilter(OrderFilter::class, properties: ['contactNames.given' => 'ASC', 'contactNames.family' => 'ASC'])]
 class Contact implements TenantAwareInterface
 {
     use TenantAwareTrait;

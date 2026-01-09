@@ -27,7 +27,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
             throw new \RuntimeException('Doctrine service not found');
         }
         $em = $doctrine->getManager();
-        if (!$em instanceof \Doctrine\ORM\EntityManagerInterface) {
+        if (!$em instanceof EntityManagerInterface) {
             throw new \RuntimeException('Entity Manager not found');
         }
         $this->entityManager = $em;

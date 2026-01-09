@@ -110,6 +110,7 @@ class XmlImportService
         // Helper to convert SimpleXML children to array of arrays
         /**
          * @param \SimpleXMLElement|iterable $nodes
+         *
          * @return array<int, array<string, string>>
          */
         $toItems = function ($nodes): array {
@@ -313,6 +314,7 @@ class XmlImportService
         // Helpers - duplicate for scope or move to method
         /**
          * @param \SimpleXMLElement|iterable $nodes
+         *
          * @return array<int, array<string, string>>
          */
         $toItems = function ($nodes): array {

@@ -283,4 +283,68 @@ class ContactApiTest extends ApiTestCase
         ]);
         self::assertResponseStatusCodeSame(404);
     }
+
+    public function testSortContactsByFirstName(): void
+    {
+        $client = static::createClient();
+
+        // Helper to create contact with name
+        $createContact = function (string $given) use ($client) {
+            $response = $client->request('POST', '/api/contacts', [
+                'auth_bearer' => $this->token,
+                'json' => [],
+            ]);
+            $contactIri = $response->toArray()['@id'];
+
+            $client->request('POST', '/api/contact_names', [
+                'auth_bearer' => $this->token,
+                'json' => [
+                    'given' => $given,
+                    'contact' => $contactIri,
+                ],
+            ]);
+
+            return $contactIri;
+        };
+
+        // Create contacts in unsorted order
+        $createContact('Zack');
+        $createContact('Alice');
+        $createContact('Bob');
+
+        // Request sorted by given name
+        $response = $client->request('GET', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'query' => [
+                'order' => ['contactNames.given' => 'ASC'],
+            ],
+            'headers' => ['Accept' => 'application/ld+json'],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $members = $response->toArray()['member'];
+
+        // Extract given names from response
+        $names = array_map(function ($member) {
+            foreach ($member['contactNames'] as $name) {
+                if (isset($name['given'])) {
+                    return $name['given'];
+                }
+            }
+
+            return null;
+        }, $members);
+
+        // Filter out any contacts that might have been created by other tests
+        // (though setUp usually isolates, better safe)
+        // Actually, setUp cleans up the DB usually or transactions roll back.
+        // With current setUp, we might have interference if not fully isolated, but let's check the last 3.
+        // Or better, just assert that the names appear in correct relative order if we only check these 3.
+        // However, in this test env, we likely start fresh or empty.
+        // Let's filter for just our expected names to be robust.
+        $expectedNames = ['Alice', 'Bob', 'Zack'];
+        $filteredNames = array_filter($names, fn ($n) => in_array($n, $expectedNames, true));
+
+        self::assertEquals($expectedNames, array_values($filteredNames));
+    }
 }
