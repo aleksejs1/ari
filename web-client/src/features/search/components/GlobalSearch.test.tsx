@@ -83,8 +83,10 @@ describe('GlobalSearch', () => {
       vi.advanceTimersByTime(300)
     })
 
+    // Default tab matches, so we should see the result
     expect(screen.getByText('John Doe')).toBeInTheDocument()
-    expect(screen.getByText('globalSearch.sections.contacts')).toBeInTheDocument()
+    // Check tab has count
+    expect(screen.getByText(/globalSearch.sections.contacts \(1\)/)).toBeInTheDocument()
   })
 
   it('displays contact results preferring displayName', () => {
@@ -134,6 +136,12 @@ describe('GlobalSearch', () => {
     act(() => {
       vi.advanceTimersByTime(300)
     })
+
+    // Initially in Contacts tab - check that Groups tab has count (1)
+    expect(screen.getByText(/globalSearch.sections.groups \(1\)/)).toBeInTheDocument()
+
+    // Switch to Groups tab
+    fireEvent.click(screen.getByText(/globalSearch.sections.groups/))
 
     expect(screen.getByText('Friends')).toBeInTheDocument()
   })
