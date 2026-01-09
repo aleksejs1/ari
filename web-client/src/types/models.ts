@@ -51,7 +51,9 @@ export const PREDEFINED_RELATIONS = [
   'parent',
 ]
 
-export type Group = components['schemas']['Group.jsonld-group.read']
+export type Group = components['schemas']['Group.jsonld-group.read'] & {
+  contactsCount?: number
+}
 
 // Zod Schemas for Forms
 // These need to match the API requirements for creation/update

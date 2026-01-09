@@ -82,15 +82,20 @@ export default function DashboardLayout() {
                 >
                   {t('app.navigation.sidebar.manageGroups', 'Manage Groups')}
                 </Link>
-                {groups?.map((group) => (
-                  <Link
-                    key={group['@id']}
-                    to={`/contacts?group=${group['@id']}`}
-                    className="block truncate rounded-lg px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                  >
-                    {group.name}
-                  </Link>
-                ))}
+                {groups
+                  ?.filter((group) => (group.contactsCount ?? 0) > 0)
+                  .map((group) => (
+                    <Link
+                      key={group['@id']}
+                      to={`/contacts?group=${group['@id']}`}
+                      className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      <span className="truncate">{group.name}</span>
+                      {group.contactsCount !== undefined && (
+                        <span className="ml-2 text-xs text-gray-400">{group.contactsCount}</span>
+                      )}
+                    </Link>
+                  ))}
               </div>
             )}
           </div>

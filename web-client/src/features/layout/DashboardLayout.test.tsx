@@ -136,8 +136,22 @@ describe('DashboardLayout', () => {
     })
 
     const mockGroups = [
-      { '@id': '/groups/1', '@type': 'Group', id: 1, name: 'Family', color: 'red' },
-      { '@id': '/groups/2', '@type': 'Group', id: 2, name: 'Work', color: 'blue' },
+      {
+        '@id': '/groups/1',
+        '@type': 'Group',
+        id: 1,
+        name: 'Family',
+        color: 'red',
+        contactsCount: 5,
+      },
+      {
+        '@id': '/groups/2',
+        '@type': 'Group',
+        id: 2,
+        name: 'Work',
+        color: 'blue',
+        contactsCount: 0,
+      },
     ] as Group[]
 
     vi.mocked(useGroups).mockReturnValue({
@@ -166,7 +180,9 @@ describe('DashboardLayout', () => {
 
     // Now groups should be visible
     expect(screen.getByText('Family')).toBeInTheDocument()
-    expect(screen.getByText('Work')).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
+    expect(screen.queryByText('Work')).not.toBeInTheDocument()
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
     expect(screen.getByText('app.navigation.sidebar.manageGroups')).toBeInTheDocument()
   })
 })
