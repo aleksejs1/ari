@@ -71,6 +71,9 @@ describe('ContactFormRelations', () => {
       </Wrapper>,
     )
 
+    // Expand
+    fireEvent.click(screen.getByText('contacts.relations'))
+
     fireEvent.click(screen.getByText('contacts.addRelation'))
 
     expect(screen.queryByText('contacts.noContacts')).not.toBeInTheDocument()
@@ -89,6 +92,9 @@ describe('ContactFormRelations', () => {
       </Wrapper>,
     )
 
+    // Expand
+    fireEvent.click(screen.getByText('contacts.relations'))
+
     expect(screen.getByTestId('autocomplete')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'common.delete' }))
@@ -105,6 +111,9 @@ describe('ContactFormRelations', () => {
         <ContactFormRelations />
       </Wrapper>,
     )
+
+    // Expand
+    fireEvent.click(screen.getByText('contacts.relations'))
 
     expect(screen.getByText('John Doe')).toBeInTheDocument()
   })

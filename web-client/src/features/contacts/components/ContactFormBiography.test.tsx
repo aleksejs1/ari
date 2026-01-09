@@ -43,6 +43,7 @@ vi.mock('react-i18next', () => ({
 describe('ContactFormBiography', () => {
   it('renders existing biographies', () => {
     render(<Wrapper />)
+    fireEvent.click(screen.getByText('contacts.biography'))
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Note')).toBeInTheDocument()
   })
@@ -52,6 +53,9 @@ describe('ContactFormBiography', () => {
 
     // Check initial state: no textareas
     expect(screen.queryByPlaceholderText('contacts.biographyPlaceholder')).not.toBeInTheDocument()
+
+    // Expand first
+    fireEvent.click(screen.getByText('contacts.biography'))
 
     fireEvent.click(screen.getByText('contacts.addBiography'))
 
@@ -63,13 +67,15 @@ describe('ContactFormBiography', () => {
   it('removes a biography', async () => {
     render(<Wrapper />)
 
+    fireEvent.click(screen.getByText('contacts.biography'))
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
 
-    // Find the delete button
-    // It is a button with a trash icon (lucide-react Trash2)
-    // We can assume it's the last button in the DOM (Add is first, then the Remove)
+    // The order of buttons:
+    // 0: Collapsible toggle
+    // 1: Add Biography button
+    // 2: Remove button
     const buttons = screen.getAllByRole('button')
-    const removeBtn = buttons[buttons.length - 1]
+    const removeBtn = buttons[2]
 
     fireEvent.click(removeBtn)
 

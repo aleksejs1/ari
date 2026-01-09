@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useCreateGroup } from '../useContacts'
 
+import { CollapsibleSection } from './CollapsibleSection'
 import { ContactFormAddress } from './ContactFormAddress'
 import { ContactFormBiography } from './ContactFormBiography'
 import { ContactFormEmail } from './ContactFormEmail'
@@ -171,10 +172,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         <ContactFormSync />
 
         {/* Groups Section */}
-        <div>
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-medium">{t('contacts.groups')}</h3>
-          </div>
+        <CollapsibleSection title={t('contacts.groups')}>
           <FormField
             control={form.control}
             name="contactGroups"
@@ -187,7 +185,7 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
               </FormItem>
             )}
           />
-        </div>
+        </CollapsibleSection>
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? t('common.saving') : t('common.save')}
         </Button>

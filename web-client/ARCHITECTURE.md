@@ -57,6 +57,7 @@ src/
 - **Data Export**: Users can export all their data in XML format from the Settings page. This is handled via the `useExportContacts` hook which triggers a file download.
 - **Data Import**: Users can import contacts from an XML file via the Settings page. This is handled by the `useImportContacts` hook which sends the file to the backend.
 - **Global Search**: A unified search bar in the header allows searching for Contacts (API), Groups (local), and Navigation/Settings (static), organized in tabs (Contacts, Groups, Settings). Implemented in `src/features/search/components/GlobalSearch.tsx`.
+- **Form Layout**: Large forms (like Contact Edit) use a `CollapsibleSection` pattern to group fields and reduce visual noise. Sections like Addresses, Biography, Organizations, and Relations are collapsed by default.
 
 ## Development Commands
 

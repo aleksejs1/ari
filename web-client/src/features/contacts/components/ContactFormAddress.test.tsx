@@ -29,7 +29,7 @@ describe('ContactForm Addresses', () => {
   it('adds and removes address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    // fireEvent.click(screen.getByText('contacts.addAddress'))
+    fireEvent.click(screen.getByText('contacts.addresses'))
 
     await waitFor(() => {
       expect(screen.getAllByPlaceholderText('contacts.addressStreet')).toHaveLength(1)
@@ -58,7 +58,7 @@ describe('ContactForm Addresses', () => {
       target: { value: 'John' },
     })
 
-    // fireEvent.click(screen.getByText('contacts.addAddress'))
+    fireEvent.click(screen.getByText('contacts.addresses'))
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText('contacts.addressStreet')).toBeInTheDocument()
@@ -99,7 +99,7 @@ describe('ContactForm Addresses', () => {
   it('validates mandatory address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    // fireEvent.click(screen.getByText('contacts.addAddress'))
+    fireEvent.click(screen.getByText('contacts.addresses'))
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText('contacts.addressTypePlaceholder')).toBeInTheDocument()

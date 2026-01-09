@@ -2,6 +2,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { CollapsibleSection } from './CollapsibleSection'
 import { NotificationSubscriptions } from './NotificationSubscriptions'
 
 import { Button } from '@/components/ui/button'
@@ -24,9 +25,9 @@ export function ContactFormSync() {
   })
 
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium">{t('contacts.dates')}</h3>
+    <CollapsibleSection
+      title={t('contacts.dates')}
+      action={
         <Button
           type="button"
           variant="outline"
@@ -35,7 +36,8 @@ export function ContactFormSync() {
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
         </Button>
-      </div>
+      }
+    >
       <div className="space-y-4">
         {dateFields.map((field, index) => (
           <div key={field.id} className="space-y-2">
@@ -85,6 +87,6 @@ export function ContactFormSync() {
           <p className="text-sm italic text-gray-500">{t('contacts.noDates')}</p>
         )}
       </div>
-    </div>
+    </CollapsibleSection>
   )
 }

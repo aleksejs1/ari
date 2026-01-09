@@ -2,6 +2,8 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { CollapsibleSection } from './CollapsibleSection'
+
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -21,9 +23,9 @@ export function ContactFormEmail() {
   })
 
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium">{t('contacts.emailAddresses')}</h3>
+    <CollapsibleSection
+      title={t('contacts.emailAddresses')}
+      action={
         <Button
           type="button"
           variant="outline"
@@ -32,7 +34,8 @@ export function ContactFormEmail() {
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addEmailAddress')}
         </Button>
-      </div>
+      }
+    >
       <div className="space-y-2">
         {emailFields.map((field, index) => (
           <div key={field.id} className="flex items-start gap-2">
@@ -66,6 +69,6 @@ export function ContactFormEmail() {
           </div>
         ))}
       </div>
-    </div>
+    </CollapsibleSection>
   )
 }

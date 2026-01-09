@@ -2,6 +2,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { CollapsibleSection } from './CollapsibleSection'
 import { ContactAutocomplete } from './ContactAutocomplete'
 
 import { Button } from '@/components/ui/button'
@@ -18,9 +19,10 @@ export function ContactFormRelations() {
   })
 
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium">{t('contacts.relations')}</h3>
+    <CollapsibleSection
+      title={t('contacts.relations')}
+      defaultOpen={false}
+      action={
         <Button
           type="button"
           variant="outline"
@@ -29,7 +31,8 @@ export function ContactFormRelations() {
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addRelation')}
         </Button>
-      </div>
+      }
+    >
       <div className="space-y-4">
         {fields.map((field, index) => (
           <div key={field.id} className="flex flex-col gap-4 sm:flex-row sm:items-start">
@@ -95,6 +98,6 @@ export function ContactFormRelations() {
           </div>
         ))}
       </div>
-    </div>
+    </CollapsibleSection>
   )
 }

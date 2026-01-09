@@ -61,6 +61,9 @@ describe('ContactFormOrganization', () => {
       </Wrapper>,
     )
 
+    // Expand first
+    fireEvent.click(screen.getByText('contacts.organizations'))
+
     fireEvent.click(screen.getByText('contacts.addOrganization'))
 
     expect(screen.getByPlaceholderText('contacts.organizationName')).toBeInTheDocument()
@@ -87,6 +90,9 @@ describe('ContactFormOrganization', () => {
         <ContactFormOrganization />
       </Wrapper>,
     )
+
+    // Expand
+    fireEvent.click(screen.getByText('contacts.organizations'))
 
     expect(screen.getByDisplayValue('Org 1')).toBeInTheDocument()
 
@@ -135,6 +141,9 @@ describe('ContactFormOrganization', () => {
         <ContactFormOrganization />
       </Wrapper>,
     )
+
+    // Expand
+    fireEvent.click(screen.getByText('contacts.organizations'))
 
     expect(screen.getByDisplayValue('Google')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Engineer')).toBeInTheDocument()

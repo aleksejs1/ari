@@ -2,6 +2,8 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { CollapsibleSection } from './CollapsibleSection'
+
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -22,9 +24,10 @@ export function ContactFormBiography() {
   })
 
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium">{t('contacts.biography')}</h3>
+    <CollapsibleSection
+      title={t('contacts.biography')}
+      defaultOpen={false}
+      action={
         <Button
           type="button"
           variant="outline"
@@ -33,7 +36,8 @@ export function ContactFormBiography() {
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addBiography')}
         </Button>
-      </div>
+      }
+    >
       <div className="space-y-4">
         {biographyFields.map((field, index) => (
           <div key={field.id} className="flex items-start gap-2">
@@ -76,6 +80,6 @@ export function ContactFormBiography() {
           </div>
         ))}
       </div>
-    </div>
+    </CollapsibleSection>
   )
 }
