@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
@@ -153,5 +154,12 @@ class Group implements TenantAwareInterface
         }
 
         return $this;
+    }
+
+    #[Groups(['group:read'])]
+    #[SerializedName('contactsCount')]
+    public function getContactsCount(): int
+    {
+        return $this->contactGroups->count();
     }
 }
