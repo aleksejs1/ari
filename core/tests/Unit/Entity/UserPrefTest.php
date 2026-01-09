@@ -14,13 +14,16 @@ class UserPrefTest extends TestCase
         self::assertEquals('language', UserPref::TYPE_LANGUAGE);
         self::assertEquals('dateFormat', UserPref::TYPE_DATE_FORMAT);
         self::assertEquals('favourite_group_name', UserPref::TYPE_FAVOURITE_GROUP_NAME);
+        self::assertEquals('googleSyncOnUpdate', UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
         self::assertContains(UserPref::TYPE_LANGUAGE, UserPref::ALLOWED_TYPES);
         self::assertContains(UserPref::TYPE_DATE_FORMAT, UserPref::ALLOWED_TYPES);
         self::assertContains(UserPref::TYPE_FAVOURITE_GROUP_NAME, UserPref::ALLOWED_TYPES);
+        self::assertContains(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE, UserPref::ALLOWED_TYPES);
         self::assertEquals('en', UserPref::DEFAULTS[UserPref::TYPE_LANGUAGE]);
         self::assertEquals('mm/dd/yyyy', UserPref::DEFAULTS[UserPref::TYPE_DATE_FORMAT]);
         self::assertEquals('24h', UserPref::DEFAULTS[UserPref::TYPE_TIME_FORMAT]);
         self::assertEquals('favourite', UserPref::DEFAULTS[UserPref::TYPE_FAVOURITE_GROUP_NAME]);
+        self::assertEquals('0', UserPref::DEFAULTS[UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE]);
     }
 
     public function testGettersSetters(): void
@@ -157,5 +160,41 @@ class UserPrefTest extends TestCase
         $context2 = $this->createMock(ExecutionContextInterface::class);
         $context2->expects($this->never())->method('buildViolation');
         $pref2->validateValue($context2);
+    }
+    public function testValidationGoogleSyncOnUpdate(): void
+    {
+        // Valid '0'
+        $pref = new UserPref();
+        $pref->setType(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
+        $pref->setValue('0');
+
+        $context = $this->createMock(ExecutionContextInterface::class);
+        $context->expects($this->never())->method('buildViolation');
+        $pref->validateValue($context);
+
+        // Valid '1'
+        $pref2 = new UserPref();
+        $pref2->setType(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
+        $pref2->setValue('1');
+
+        $context2 = $this->createMock(ExecutionContextInterface::class);
+        $context2->expects($this->never())->method('buildViolation');
+        $pref2->validateValue($context2);
+
+        // Invalid 'true'
+        $pref3 = new UserPref();
+        $pref3->setType(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
+        $pref3->setValue('true');
+
+        $context3 = $this->createMock(ExecutionContextInterface::class);
+        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
+
+        $context3->expects($this->once())->method('buildViolation')
+            ->with('Invalid value for googleSyncOnUpdate. Must be "0" or "1".')
+            ->willReturn($builder);
+        $builder->expects($this->once())->method('atPath')->with('value')->willReturn($builder);
+        $builder->expects($this->once())->method('addViolation');
+
+        $pref3->validateValue($context3);
     }
 }

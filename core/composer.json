@@ -95,7 +95,7 @@
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
         "psalm": "vendor/bin/psalm --memory-limit=1G",
         "deptrac": "vendor/bin/deptrac analyse",
-        "test": "vendor/bin/phpunit",
+        "test": "php -d memory_limit=512M vendor/bin/phpunit",
         "cs-fix": "vendor/bin/php-cs-fixer fix",
         "infection": "vendor/bin/infection --threads=max",
         "qa": [
@@ -106,7 +106,7 @@
             "@test",
             "@security:check"
         ],
-        "lint": "vendor/bin/phpcs --standard=PSR12 src tests",
+        "lint": "php -d memory_limit=512M vendor/bin/phpcs --standard=PSR12 src tests",
         "security:check": "symfony security:check"
     },
     "conflict": {
