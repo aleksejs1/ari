@@ -34,7 +34,7 @@ class GoogleContactsService
     ) {
     }
 
-    public function importContacts(User $user): int
+    public function importContacts(User $user, bool $addGoogleGroup = false): int
     {
         $tokenStorage = $this->tokenStorageRepository->findOneBy(['user' => $user, 'type' => 'google']);
 
@@ -44,6 +44,22 @@ class GoogleContactsService
 
         $accessToken = $this->getValidAccessToken($tokenStorage);
         $groupsMap = $this->importGroups($user, $accessToken);
+
+        $googleGroup = null;
+        if ($addGoogleGroup) {
+            $googleGroup = $this->entityManager->getRepository(\App\Entity\Group::class)->findOneBy([
+                'user' => $user,
+                'name' => 'google',
+            ]);
+
+            if (null === $googleGroup) {
+                $googleGroup = new \App\Entity\Group();
+                $googleGroup->setUser($user);
+                $googleGroup->setName('google');
+                $this->entityManager->persist($googleGroup);
+                $this->entityManager->flush();
+            }
+        }
 
         $importedCount = 0;
         $pageToken = null;
@@ -206,6 +222,19 @@ class GoogleContactsService
                     }
                 }
 
+                if (null !== $googleGroup) {
+                    $exists = false;
+                    foreach ($contactGroups as $g) {
+                        if ($g === $googleGroup || ($g->getId() !== null && $g->getId() === $googleGroup->getId())) {
+                            $exists = true;
+                            break;
+                        }
+                    }
+                    if (!$exists) {
+                        $contactGroups[] = $googleGroup;
+                    }
+                }
+
                 $dto = new ContactImportDto(
                     names: $names,
                     dates: $dates,
@@ -223,20 +252,32 @@ class GoogleContactsService
                     'user' => $user,
                 ]);
 
+                $contact = null;
                 if (null !== $mapping) {
                     $contact = $mapping->getContact();
                     if (null !== $contact) {
-                        $this->contactImportService->update($contact, $dto);
-                        ++$importedCount;
+                        try {
+                            // Force initialization to verify existence
+                            /** @psalm-suppress UnusedMethodCall */
+                            $contact->getUuid();
+                            $this->contactImportService->update($contact, $dto);
+                            ++$importedCount;
+                        } catch (\Doctrine\ORM\EntityNotFoundException) {
+                            $contact = null;
+                        }
                     }
-                } else {
+                }
+
+                if (null === $contact) {
                     $contact = $this->contactImportService->import($dto, $user);
                     if (null !== $contact) {
-                        $mapping = new ImportMapping();
-                        $mapping->setType('google');
-                        $mapping->setExternalId($resourceName);
+                        if (null === $mapping) {
+                            $mapping = new ImportMapping();
+                            $mapping->setType('google');
+                            $mapping->setExternalId($resourceName);
+                            $mapping->setUser($user);
+                        }
                         $mapping->setContact($contact);
-                        $mapping->setUser($user);
                         $this->entityManager->persist($mapping);
                         $this->entityManager->flush();
                         ++$importedCount;
@@ -314,6 +355,16 @@ class GoogleContactsService
                 ]);
 
                 $group = $mapping?->getGroup();
+                if (null !== $group) {
+                    try {
+                        // Force initialization to verify existence
+                        /** @psalm-suppress UnusedMethodCall */
+                        $group->getName();
+                    } catch (\Doctrine\ORM\EntityNotFoundException) {
+                        $group = null;
+                    }
+                }
+
                 if (null !== $group) {
                     $group->setName($name);
                 } else {

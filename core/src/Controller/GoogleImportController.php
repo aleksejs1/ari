@@ -20,13 +20,16 @@ class GoogleImportController extends AbstractController
     }
 
     #[Route('', name: 'api_google_import', methods: ['POST'])]
-    public function import(): JsonResponse
+    public function import(\Symfony\Component\HttpFoundation\Request $request): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
 
         try {
-            $count = $this->googleContactsService->importContacts($user);
+            $data = $request->toArray();
+            $addGoogleGroup = $data['add_google_group'] ?? false;
+
+            $count = $this->googleContactsService->importContacts($user, $addGoogleGroup);
 
             return $this->json(['imported' => $count]);
         } catch (\RuntimeException $e) {

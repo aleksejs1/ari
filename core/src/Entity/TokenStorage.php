@@ -57,6 +57,7 @@ class TokenStorage implements TenantAwareInterface
     public function setUser(?User $user): static
     {
         $this->user = $user;
+        $this->setTenant($user);
 
         return $this;
     }

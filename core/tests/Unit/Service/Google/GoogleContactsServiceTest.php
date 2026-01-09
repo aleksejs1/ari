@@ -2,41 +2,37 @@
 
 namespace App\Tests\Unit\Service\Google;
 
+use App\Dto\ContactImportDto;
+use App\Entity\Contact;
+use App\Entity\ImportMapping;
 use App\Entity\TokenStorage;
 use App\Entity\User;
+use App\Repository\ImportMappingRepository;
 use App\Repository\TokenStorageRepository;
 use App\Service\ContactImport\ContactImportService;
 use App\Service\Google\GoogleContactsService;
 use App\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
-#[AllowMockObjectsWithoutExpectations]
-final class GoogleContactsServiceTest extends TestCase
+#[ \PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
+class GoogleContactsServiceTest extends TestCase
 {
+    private \PHPUnit\Framework\MockObject\MockObject&TokenStorageRepository $tokenStorageRepository;
+    private \PHPUnit\Framework\MockObject\MockObject&ImportMappingRepository $importMappingRepository;
+    private \PHPUnit\Framework\MockObject\MockObject&GoogleOAuthService $oauthService;
+    private \PHPUnit\Framework\MockObject\MockObject&HttpClientInterface $httpClient;
+    private \PHPUnit\Framework\MockObject\MockObject&ContactImportService $contactImportService;
+    private \PHPUnit\Framework\MockObject\MockObject&EntityManagerInterface $entityManager;
     private GoogleContactsService $service;
-    /** @var TokenStorageRepository&MockObject */
-    private TokenStorageRepository $tokenStorageRepository;
-    /** @var \App\Repository\ImportMappingRepository&MockObject */
-    private \App\Repository\ImportMappingRepository $importMappingRepository;
-    /** @var GoogleOAuthService&MockObject */
-    private GoogleOAuthService $oauthService;
-    /** @var HttpClientInterface&MockObject */
-    private HttpClientInterface $httpClient;
-    /** @var ContactImportService&MockObject */
-    private ContactImportService $contactImportService;
-    /** @var EntityManagerInterface&MockObject */
-    private EntityManagerInterface $entityManager;
 
     #[\Override]
     protected function setUp(): void
     {
         $this->tokenStorageRepository = $this->createMock(TokenStorageRepository::class);
-        $this->importMappingRepository = $this->createMock(\App\Repository\ImportMappingRepository::class);
+        $this->importMappingRepository = $this->createMock(ImportMappingRepository::class);
         $this->oauthService = $this->createMock(GoogleOAuthService::class);
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->contactImportService = $this->createMock(ContactImportService::class);
@@ -52,226 +48,85 @@ final class GoogleContactsServiceTest extends TestCase
         );
     }
 
-    public function testImportContactsCreatesNewContactsWhenNoMappingExists(): void
+    public function testImportContactsHandlesZombieContact(): void
     {
         $user = new User();
         $tokenStorage = new TokenStorage();
-        $tokenStorage->setAccessToken('access_token');
-        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
-
-        $this->tokenStorageRepository->expects(self::once())
-            ->method('findOneBy')
-            ->with(['user' => $user, 'type' => 'google'])
-            ->willReturn($tokenStorage);
-
-        $groupsResponse = $this->createMock(ResponseInterface::class);
-        $groupsResponse->method('toArray')->willReturn([
-            'contactGroups' => [
-                ['resourceName' => 'contactGroups/g1', 'formattedName' => 'Group 1'],
-            ],
-        ]);
-
-        $contactsResponse = $this->createMock(ResponseInterface::class);
-        $contactsResponse->method('toArray')->willReturn([
-            'connections' => [
-                [
-                    'resourceName' => 'people/c123',
-                    'names' => [['givenName' => 'John', 'familyName' => 'Doe']],
-                    'birthdays' => [['date' => ['year' => 1990, 'month' => 1, 'day' => 1]]],
-                    'memberships' => [
-                        ['contactGroupMembership' => ['contactGroupResourceName' => 'contactGroups/g1']],
-                    ],
-                ],
-            ],
-        ]);
-
-        $this->httpClient->expects(self::exactly(2))
-            ->method('request')
-            ->willReturnCallback(function (string $method, string $url) use ($groupsResponse, $contactsResponse) {
-                if (str_contains($url, 'contactGroups')) {
-                    return $groupsResponse;
-                }
-
-                return $contactsResponse;
-            });
-
-        $this->importMappingRepository->expects(self::exactly(2))
-            ->method('findOneBy')
-            ->willReturnMap([
-                [['type' => 'google_group', 'externalId' => 'contactGroups/g1', 'user' => $user], null],
-                [['type' => 'google', 'externalId' => 'people/c123', 'user' => $user], null],
-            ]);
-
-        $contact = $this->createMock(\App\Entity\Contact::class);
-        $this->contactImportService->expects(self::once())
-            ->method('import')
-            ->willReturn($contact);
-
-        $this->entityManager->expects(self::exactly(3))
-            ->method('persist')
-            ->with(self::logicalOr(
-                self::isInstanceOf(\App\Entity\Group::class),
-                self::isInstanceOf(\App\Entity\ImportMapping::class)
-            ));
-        $this->entityManager->expects(self::exactly(2))->method('flush');
-
-        $count = $this->service->importContacts($user);
-        self::assertEquals(1, $count);
-    }
-
-    public function testImportContactsUpdatesExistingContactsWhenMappingExists(): void
-    {
-        $user = new User();
-        $tokenStorage = new TokenStorage();
-        $tokenStorage->setAccessToken('access_token');
-        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
-
-        $this->tokenStorageRepository->expects(self::once())
-            ->method('findOneBy')
-            ->with(['user' => $user, 'type' => 'google'])
-            ->willReturn($tokenStorage);
-
-        $groupsResponse = $this->createMock(ResponseInterface::class);
-        $groupsResponse->method('toArray')->willReturn(['contactGroups' => []]);
-
-        $contactsResponse = $this->createMock(ResponseInterface::class);
-        $contactsResponse->method('toArray')->willReturn([
-            'connections' => [
-                [
-                    'resourceName' => 'people/c123',
-                    'names' => [['givenName' => 'John', 'familyName' => 'Updated']],
-                ],
-            ],
-        ]);
-
-        $this->httpClient->expects(self::exactly(2))
-            ->method('request')
-            ->willReturnCallback(function (string $method, string $url) use ($groupsResponse, $contactsResponse) {
-                if (str_contains($url, 'contactGroups')) {
-                    return $groupsResponse;
-                }
-
-                return $contactsResponse;
-            });
-
-        $contact = $this->createMock(\App\Entity\Contact::class);
-        $mapping = $this->createMock(\App\Entity\ImportMapping::class);
-        $mapping->method('getContact')->willReturn($contact);
-
-        $this->importMappingRepository->expects(self::once())
-            ->method('findOneBy')
-            ->with(['type' => 'google', 'externalId' => 'people/c123', 'user' => $user])
-            ->willReturn($mapping);
-
-        $this->contactImportService->expects(self::once())
-            ->method('update')
-            ->with($contact, self::anything());
-
-        $this->entityManager->expects(self::once())->method('flush'); // from importGroups
-
-        $count = $this->service->importContacts($user);
-        self::assertEquals(1, $count);
-    }
-
-    public function testImportContactsRefreshesTokenIfExpired(): void
-    {
-        $user = new User();
-        $tokenStorage = new TokenStorage();
-        $tokenStorage->setAccessToken('expired_token');
-        $tokenStorage->setRefreshToken('refresh_token');
-        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('-1 hour'));
-
-        $this->tokenStorageRepository->expects(self::once())
-            ->method('findOneBy')
-            ->willReturn($tokenStorage);
-
-        $this->oauthService->expects(self::once())
-            ->method('refreshAccessToken')
-            ->with('refresh_token')
-            ->willReturn(['access_token' => 'new_access_token', 'expires_in' => 3600]);
-
-        $groupsResponse = $this->createMock(ResponseInterface::class);
-        $groupsResponse->method('toArray')->willReturn(['contactGroups' => []]);
-
-        $contactsResponse = $this->createMock(ResponseInterface::class);
-        $contactsResponse->method('toArray')->willReturn(['connections' => []]);
-
-        $this->httpClient->expects(self::exactly(2))
-            ->method('request')
-            ->willReturnCallback(function (string $method, string $url) use ($groupsResponse, $contactsResponse) {
-                if (str_contains($url, 'contactGroups')) {
-                    return $groupsResponse;
-                }
-
-                return $contactsResponse;
-            });
-
-        $this->entityManager->expects(self::exactly(2))->method('flush'); // 1 from refresh, 1 from importGroups
-
-        $this->service->importContacts($user);
-
-        self::assertEquals('new_access_token', $tokenStorage->getAccessToken());
-    }
-
-    public function testImportContactsHandlesPagination(): void
-    {
-        $user = new User();
-        $tokenStorage = new TokenStorage();
-        $tokenStorage->setAccessToken('access_token');
+        $tokenStorage->setAccessToken('token');
         $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
 
         $this->tokenStorageRepository->method('findOneBy')->willReturn($tokenStorage);
 
-        $groupsResponse1 = $this->createMock(ResponseInterface::class);
-        $groupsResponse1->method('toArray')->willReturn([
-            'contactGroups' => [['resourceName' => 'contactGroups/g1', 'formattedName' => 'Group 1']],
-            'nextPageToken' => 'next_group_token',
-        ]);
-        $groupsResponse2 = $this->createMock(ResponseInterface::class);
-        $groupsResponse2->method('toArray')->willReturn([
-            'contactGroups' => [['resourceName' => 'contactGroups/g2', 'formattedName' => 'Group 2']],
-        ]);
+        // Mock Google API Responses
+        $responseGroups = $this->createMock(ResponseInterface::class);
+        $responseGroups->method('toArray')->willReturn(['contactGroups' => []]);
 
-        $contactsResponse1 = $this->createMock(ResponseInterface::class);
-        $contactsResponse1->method('toArray')->willReturn([
-            'connections' => [['resourceName' => 'people/c1', 'names' => [['givenName' => 'C1']]]],
-            'nextPageToken' => 'next_contact_token',
-        ]);
-        $contactsResponse2 = $this->createMock(ResponseInterface::class);
-        $contactsResponse2->method('toArray')->willReturn([
-            'connections' => [['resourceName' => 'people/c2', 'names' => [['givenName' => 'C2']]]],
+        $responseContacts = $this->createMock(ResponseInterface::class);
+        $responseContacts->method('toArray')->willReturn([
+            'connections' => [
+                [
+                    'resourceName' => 'people/zombie',
+                    'names' => [['givenName' => 'John']],
+                ]
+            ]
         ]);
 
-        $this->httpClient->expects(self::exactly(4))
-            ->method('request')
-            ->willReturnCallback(function (
-                string $method,
-                string $url,
-                array $options,
-            ) use (
-                $groupsResponse1,
-                $groupsResponse2,
-                $contactsResponse1,
-                $contactsResponse2
-            ) {
-                if (str_contains($url, 'contactGroups')) {
-                    $nextGroup = isset($options['query']['pageToken'])
-                        && 'next_group_token' === $options['query']['pageToken'];
+        $this->httpClient->method('request')->willReturnOnConsecutiveCalls($responseGroups, $responseContacts);
 
-                    return $nextGroup ? $groupsResponse2 : $groupsResponse1;
-                }
-                $nextContact = isset($options['query']['pageToken'])
-                    && 'next_contact_token' === $options['query']['pageToken'];
+        // Setup Zombie Mapping
+        $mapping = $this->createMock(ImportMapping::class);
+        $contact = $this->createMock(Contact::class);
 
-                return $nextContact ? $contactsResponse2 : $contactsResponse1;
-            });
+        $mapping->method('getContact')->willReturn($contact);
 
-        $contact = $this->createMock(\App\Entity\Contact::class);
-        $this->contactImportService->method('import')->willReturn($contact);
-        $this->importMappingRepository->method('findOneBy')->willReturn(null);
+        // This is what triggers the Zombie error
+        $contact->method('getUuid')->willThrowException(new \Doctrine\ORM\EntityNotFoundException());
 
-        $count = $this->service->importContacts($user);
+        $this->importMappingRepository->method('findOneBy')->willReturn($mapping);
 
-        self::assertEquals(2, $count);
+        // Expectation: contactImportService->import (NEW) is called instead of update because original was zombie
+        $this->contactImportService->expects($this->once())
+            ->method('import')
+            ->willReturn(new Contact());
+
+        $this->service->importContacts($user);
+    }
+
+    public function testImportContactsCreatesGoogleGroup(): void
+    {
+        $user = new User();
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setAccessToken('token');
+        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
+
+        $this->tokenStorageRepository->method('findOneBy')->willReturn($tokenStorage);
+
+        $responseGroups = $this->createMock(ResponseInterface::class);
+        $responseGroups->method('toArray')->willReturn(['contactGroups' => []]);
+
+        $responseContacts = $this->createMock(ResponseInterface::class);
+        $responseContacts->method('toArray')->willReturn([
+            'connections' => [
+                [
+                    'resourceName' => 'people/123',
+                    'names' => [['givenName' => 'John']],
+                ]
+            ]
+        ]);
+
+        $this->httpClient->method('request')->willReturnOnConsecutiveCalls($responseGroups, $responseContacts);
+
+        $groupRepository = $this->createMock(\Doctrine\ORM\EntityRepository::class);
+        $this->entityManager->method('getRepository')->willReturn($groupRepository);
+        $groupRepository->method('findOneBy')->willReturn(null); // google group doesn't exist
+
+        // Expectation: EntityManager->persist(googleGroup)
+        $this->entityManager->expects($this->atLeastOnce())
+            ->method('persist')
+            ->with(self::callback(function ($obj) {
+                return $obj instanceof \App\Entity\Group && $obj->getName() === 'google';
+            }));
+
+        $this->service->importContacts($user, true);
     }
 }

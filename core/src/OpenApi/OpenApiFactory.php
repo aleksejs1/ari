@@ -135,7 +135,24 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Import contacts from Google People API.',
-                description: 'Triggers an import of contacts using the stored Google OAuth token for the current user.'
+                description: 'Triggers an import of contacts using the stored Google OAuth token for the current user.',
+                requestBody: new Model\RequestBody(
+                    description: 'Import options',
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'add_google_group' => [
+                                        'type' => 'boolean',
+                                        'description' => 'If true, adds a "google" group to all imported contacts.',
+                                        'example' => true,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]),
+                )
             )
         );
         $openApi->getPaths()->addPath('/api/google/import', $googleImportPath);
