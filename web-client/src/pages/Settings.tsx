@@ -16,10 +16,12 @@ export default function SettingsPage() {
     dateFormat,
     timeFormat,
     favouriteGroupName,
+    googleSyncOnUpdate,
     setLanguage,
     setDateFormat,
     setTimeFormat,
     setFavouriteGroupName,
+    setGoogleSyncOnUpdate,
     isLoading,
   } = useUserPrefs()
   const { mutate: exportContacts, isPending: isExporting } = useExportContacts()
@@ -142,6 +144,29 @@ export default function SettingsPage() {
                 onChange={(e) => setFavouriteGroupName(e.target.value)}
               />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.googleSyncOnUpdate')}</CardTitle>
+            <CardDescription>{t('settings.googleSyncOnUpdateDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup
+              value={googleSyncOnUpdate}
+              onValueChange={(val) => setGoogleSyncOnUpdate(val)}
+              className="flex flex-col space-y-1"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="1" id="google-sync-enabled" />
+                <Label htmlFor="google-sync-enabled">{t('settings.enabled')}</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="0" id="google-sync-disabled" />
+                <Label htmlFor="google-sync-disabled">{t('settings.disabled')}</Label>
+              </div>
+            </RadioGroup>
           </CardContent>
         </Card>
 

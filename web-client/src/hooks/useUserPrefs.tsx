@@ -9,7 +9,12 @@ import { api } from '@/lib/axios'
 import type { components } from '@/types/schema'
 
 type UserPref = components['schemas']['UserPref.jsonld-user_pref.read']
-type UserPrefType = 'language' | 'dateFormat' | 'timeFormat' | 'favourite_group_name'
+type UserPrefType =
+  | 'language'
+  | 'dateFormat'
+  | 'timeFormat'
+  | 'favourite_group_name'
+  | 'googleSyncOnUpdate'
 type DateInput = Date | string | null | undefined
 
 interface UserPrefsProviderProps {
@@ -144,6 +149,7 @@ const useUserPrefsLogic = () => {
   const dateFormat = getPrefValue(prefs, 'dateFormat', 'mm/dd/yyyy')
   const timeFormat = getPrefValue(prefs, 'timeFormat', '24h')
   const favouriteGroupName = getPrefValue(prefs, 'favourite_group_name', 'favourites')
+  const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
 
   useEffect(() => {
     void i18n.changeLanguage(language)
@@ -154,6 +160,7 @@ const useUserPrefsLogic = () => {
     dateFormat,
     timeFormat,
     favouriteGroupName,
+    googleSyncOnUpdate,
     isLoading,
     savePrefMutation,
     i18n,
@@ -166,6 +173,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     dateFormat,
     timeFormat,
     favouriteGroupName,
+    googleSyncOnUpdate,
     isLoading,
     savePrefMutation,
     i18n,
@@ -188,6 +196,10 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     await savePrefMutation.mutateAsync({ type: 'favourite_group_name', value: name })
   }
 
+  const setGoogleSyncOnUpdate = async (value: string) => {
+    await savePrefMutation.mutateAsync({ type: 'googleSyncOnUpdate', value })
+  }
+
   const formatDate = (date: DateInput): string => {
     return formatDateHelper(date, dateFormat)
   }
@@ -203,10 +215,12 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
         dateFormat,
         timeFormat,
         favouriteGroupName,
+        googleSyncOnUpdate,
         setLanguage,
         setDateFormat,
         setTimeFormat,
         setFavouriteGroupName,
+        setGoogleSyncOnUpdate,
         formatDate,
         formatTime,
         isLoading,

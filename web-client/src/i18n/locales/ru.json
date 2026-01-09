@@ -41,7 +41,11 @@
     "importData": "Импорт данных",
     "importDataDescription": "Загрузите XML файл для импорта контактов.",
     "importSuccess": "Контакты успешно импортированы.",
-    "importError": "Произошла ошибка при импорте."
+    "importError": "Произошла ошибка при импорте.",
+    "googleSyncOnUpdate": "Синхронизация с Google при обновлении",
+    "googleSyncOnUpdateDescription": "Автоматически отправлять изменения в Google при обновлении контакта в системе.",
+    "enabled": "Включено",
+    "disabled": "Выключено"
   },
   "auth": {
     "login": "Вход",

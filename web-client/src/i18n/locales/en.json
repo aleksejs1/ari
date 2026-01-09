@@ -41,7 +41,11 @@
     "importData": "Import Data",
     "importDataDescription": "Upload an XML file to import contacts.",
     "importSuccess": "Contacts imported successfully.",
-    "importError": "An error occurred during import."
+    "importError": "An error occurred during import.",
+    "googleSyncOnUpdate": "Google Sync on Update",
+    "googleSyncOnUpdateDescription": "Automatically sync contact changes to Google when updated in the system.",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "auth": {
     "login": "Login",
