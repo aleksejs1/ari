@@ -183,4 +183,64 @@ class GroupApiTest extends ApiTestCase
         self::assertCount(1, $response->toArray()['member']);
         self::assertJsonContains(['member' => [['@id' => $groupIri]]]);
     }
+
+    public function testGroupContactsCount(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Group
+        $response = $client->request('POST', '/api/groups', [
+            'auth_bearer' => $this->token,
+            'json' => ['name' => 'Group with Contacts'],
+        ]);
+        $groupIri = $response->toArray()['@id'];
+
+        // 2. Create Contact 1
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'givenName' => 'John',
+                'familyName' => 'Doe',
+            ],
+        ]);
+        $contact1Iri = $response->toArray()['@id'];
+
+        // 3. Create Contact 2
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'givenName' => 'Jane',
+                'familyName' => 'Smith',
+            ],
+        ]);
+        $contact2Iri = $response->toArray()['@id'];
+
+        // 4. Add Contact 1 to Group
+        $client->request('POST', '/api/contact_groups', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'contact' => $contact1Iri,
+                'groupResource' => $groupIri,
+            ],
+        ]);
+
+        // 5. Add Contact 2 to Group
+        $client->request('POST', '/api/contact_groups', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'contact' => $contact2Iri,
+                'groupResource' => $groupIri,
+            ],
+        ]);
+
+        // 6. Verify contactsCount
+        $client->request('GET', $groupIri, [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains([
+            'name' => 'Group with Contacts',
+            'contactsCount' => 2,
+        ]);
+    }
 }

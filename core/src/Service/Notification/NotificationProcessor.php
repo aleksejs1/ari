@@ -5,7 +5,7 @@ namespace App\Service\Notification;
 use App\Repository\NotificationQueueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class NotificationProcessor
@@ -16,7 +16,7 @@ class NotificationProcessor
     public function __construct(
         private readonly NotificationQueueRepository $queueRepository,
         private readonly EntityManagerInterface $entityManager,
-        #[TaggedLocator('app.notification_sender')]
+        #[AutowireLocator('app.notification_sender')]
         private readonly ServiceLocator $senders,
         private readonly LoggerInterface $logger,
     ) {
