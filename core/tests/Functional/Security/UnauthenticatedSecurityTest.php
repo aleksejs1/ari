@@ -52,44 +52,4 @@ class UnauthenticatedSecurityTest extends ApiTestCase
             ['DELETE', '/api/contact_dates/1'],
         ];
     }
-
-    #[DataProvider('uiRoutesProvider')]
-    public function testUiIsBlockedForUnauthenticatedUser(string $method, string $url): void
-    {
-        $client = static::createClient();
-        $client->request($method, $url);
-
-        // Normally we expect a redirect to login
-        self::assertResponseStatusCodeSame(302);
-        self::assertResponseHeaderSame('Location', 'http://localhost/login');
-    }
-
-    /**
-     * @return array<int, array{0: string, 1: string}>
-     */
-    public static function uiRoutesProvider(): array
-    {
-        return [
-            // Contacts
-            ['GET', '/contact/'],
-            ['GET', '/contact/new'],
-            ['GET', '/contact/1'],
-            ['GET', '/contact/1/edit'],
-            ['POST', '/contact/1'], // Delete action usually
-
-            // Contact Names
-            ['GET', '/contact/name/'],
-            ['GET', '/contact/name/new/1'],
-            ['GET', '/contact/name/1'],
-            ['GET', '/contact/name/1/edit'],
-            ['POST', '/contact/name/1'],
-
-            // Contact Dates
-            ['GET', '/contact/date/'],
-            ['GET', '/contact/date/new/1'],
-            ['GET', '/contact/date/1'],
-            ['GET', '/contact/date/1/edit'],
-            ['POST', '/contact/date/1'],
-        ];
-    }
 }

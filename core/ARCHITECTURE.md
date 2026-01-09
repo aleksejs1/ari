@@ -22,7 +22,7 @@ core/
 ├── src/
 │   ├── ApiResource/      # Custom API Platform resources (non-entity based)
 │   ├── Command/          # Symfony Console commands
-│   ├── Controller/       # Custom controllers (e.g., Export/Import actions)
+│   ├── Controller/       # Custom API actions (e.g., Export/Import) - No UI Controllers
 │   ├── Doctrine/         # Doctrine extensions (Filters, etc.)
 │   ├── Dto/              # Data Transfer Objects
 │   ├── Entity/           # Doctrine Entities & API Platform Resources
