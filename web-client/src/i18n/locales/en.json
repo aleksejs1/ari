@@ -280,7 +280,8 @@
     "import": "Import Contacts",
     "success": "Contacts imported successfully: {{count}}",
     "error": "An error occurred during import.",
-    "authSuccess": "Authorization successful!"
+    "authSuccess": "Authorization successful!",
+    "addGoogleGroup": "Add imported contacts to \"google\" group"
   },
   "auditLogs": {
     "title": "Audit Logs",

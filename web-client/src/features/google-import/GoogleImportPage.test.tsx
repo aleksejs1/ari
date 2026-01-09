@@ -94,10 +94,39 @@ describe('GoogleImportPage', () => {
     fireEvent.click(screen.getByText('googleImport.import'))
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/google/import', {}, expect.any(Object))
+      expect(api.post).toHaveBeenCalledWith(
+        '/google/import',
+        { add_google_group: true },
+        expect.any(Object),
+      )
     })
 
     expect(screen.getByText('Success: 42')).toBeInTheDocument()
+  })
+
+  it('handles import action with addGoogleGroup disabled', async () => {
+    vi.mocked(api.post).mockResolvedValueOnce({ data: { imported: 10 } })
+
+    render(
+      <MemoryRouter>
+        <GoogleImportPage />
+      </MemoryRouter>,
+    )
+
+    const checkbox = screen.getByLabelText('googleImport.addGoogleGroup')
+    fireEvent.click(checkbox)
+
+    fireEvent.click(screen.getByText('googleImport.import'))
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith(
+        '/google/import',
+        { add_google_group: false },
+        expect.any(Object),
+      )
+    })
+
+    expect(screen.getByText('Success: 10')).toBeInTheDocument()
   })
 
   it('renders error state', async () => {

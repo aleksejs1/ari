@@ -5,6 +5,8 @@ import { useSearchParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import { api } from '@/lib/axios'
 
 export default function GoogleImportPage() {
@@ -15,6 +17,7 @@ export default function GoogleImportPage() {
   const [authSuccess, setAuthSuccess] = useState(false)
   const [importCount, setImportCount] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [addGoogleGroup, setAddGoogleGroup] = useState(true)
 
   const code = searchParams.get('code')
 
@@ -71,7 +74,7 @@ export default function GoogleImportPage() {
     try {
       const response = await api.post(
         '/google/import',
-        {},
+        { add_google_group: addGoogleGroup },
         {
           headers: {
             Accept: 'application/json',
@@ -120,6 +123,21 @@ export default function GoogleImportPage() {
               {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {t('googleImport.import')}
             </Button>
+          </div>
+
+          <div className="flex items-center space-x-2 py-2">
+            <Checkbox
+              id="add-google-group"
+              checked={addGoogleGroup}
+              onCheckedChange={(checked) => setAddGoogleGroup(checked === true)}
+              disabled={isImporting}
+            />
+            <Label
+              htmlFor="add-google-group"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {t('googleImport.addGoogleGroup')}
+            </Label>
           </div>
 
           {authSuccess ? (
