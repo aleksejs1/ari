@@ -69,8 +69,15 @@ interface MockTableProps {
 }
 
 vi.mock('./components/ContactsTable', () => ({
-  ContactsTable: ({ data, onEdit }: MockTableProps) => (
+  ContactsTable: ({
+    data,
+    onEdit,
+    onSort,
+  }: MockTableProps & { onSort?: (id: string, desc: boolean) => void }) => (
     <div data-testid="table">
+      <button data-testid="sort-btn" onClick={() => onSort?.('contactNames.given', false)}>
+        Sort
+      </button>
       {data.map((c) => (
         <div key={c['@id']}>
           {c.contactNames?.[0]?.given}
@@ -232,6 +239,7 @@ describe('ContactsPage', () => {
       expect(useContacts).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ search: 'alice' }),
+        undefined,
       )
     })
   })
@@ -260,5 +268,27 @@ describe('ContactsPage', () => {
     // Next button should be enabled because we are on page 1 and there are 4 pages
     const nextBtn = screen.getByText('Next')
     expect(nextBtn).not.toBeDisabled()
+  })
+  it('updates sort filter when header is clicked', async () => {
+    vi.mocked(useContacts).mockReturnValue({
+      isLoading: false,
+      data: { member: [], view: {} },
+      isError: false,
+    } as unknown as ReturnType<typeof useContacts>)
+
+    render(
+      <MemoryRouter>
+        <ContactsPage />
+      </MemoryRouter>,
+    )
+    const sortBtn = screen.getByTestId('sort-btn')
+    fireEvent.click(sortBtn)
+
+    await waitFor(() => {
+      expect(useContacts).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
+        id: 'contactNames.given',
+        desc: false,
+      })
+    })
   })
 })

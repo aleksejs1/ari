@@ -16,9 +16,13 @@ export * from './hooks/useContactPhones'
 export * from './hooks/useContactRelations'
 export * from './utils'
 
-export function useContacts(page = 1, filters?: { group?: string; search?: string }) {
+export function useContacts(
+  page = 1,
+  filters?: { group?: string; search?: string },
+  sort?: { id: string; desc: boolean },
+) {
   return useQuery({
-    queryKey: ['contacts', page, filters],
+    queryKey: ['contacts', page, filters, sort],
     queryFn: async () => {
       const params = new URLSearchParams()
       params.append('page', page.toString())
@@ -29,6 +33,10 @@ export function useContacts(page = 1, filters?: { group?: string; search?: strin
 
       if (filters?.search) {
         params.append('search', filters.search)
+      }
+
+      if (sort) {
+        params.append(`order[${sort.id}]`, sort.desc ? 'desc' : 'asc')
       }
 
       const response = await api.get<HydraCollection<Contact>>(`/contacts?${params.toString()}`)

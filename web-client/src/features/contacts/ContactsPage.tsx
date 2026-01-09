@@ -52,7 +52,17 @@ export default function ContactsPage() {
     })
   }
 
-  const { data, isLoading, isPlaceholderData, isError } = useContacts(page, { group, search })
+  const [sorting, setSorting] = useState<{ id: string; desc: boolean } | undefined>(undefined)
+
+  const handleSort = (id: string, desc: boolean) => {
+    setSorting({ id, desc })
+  }
+
+  const { data, isLoading, isPlaceholderData, isError } = useContacts(
+    page,
+    { group, search },
+    sorting,
+  )
   const { t } = useTranslation()
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -226,6 +236,8 @@ export default function ContactsPage() {
             onDeletePhone={handleDeletePhone}
             onUpdateName={handleUpdateName}
             onDeleteName={handleDeleteName}
+            onSort={handleSort}
+            sorting={sorting}
           />
         </div>
 

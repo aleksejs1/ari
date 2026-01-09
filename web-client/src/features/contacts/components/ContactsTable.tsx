@@ -1,5 +1,5 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { Star } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, Star } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -42,6 +42,8 @@ interface ContactsTableProps {
   onDeletePhone: (contact: Contact, phone: ContactPhoneNumber) => void
   onUpdateName: (contact: Contact, name: ContactName) => void
   onDeleteName: (contact: Contact, name: ContactName) => void
+  onSort?: (id: string, desc: boolean) => void
+  sorting?: { id: string; desc: boolean }
 }
 
 export function ContactsTable({
@@ -56,6 +58,8 @@ export function ContactsTable({
   onDeletePhone,
   onUpdateName,
   onDeleteName,
+  onSort,
+  sorting,
 }: ContactsTableProps) {
   'use no memo'
   const onExchangeDate = onUpdateDate
@@ -94,7 +98,41 @@ export function ContactsTable({
       },
       {
         accessorKey: 'contactNames',
-        header: t('contacts.name'),
+        header: () => {
+          const isSorted = sorting?.id === 'contactNames.given'
+          let SortIcon = ArrowUpDown
+          if (isSorted) {
+            SortIcon = sorting.desc ? ArrowDown : ArrowUp
+          }
+          const iconClassName = isSorted ? 'h-4 w-4' : 'h-4 w-4 opacity-50'
+
+          return (
+            <div
+              className="flex cursor-pointer items-center gap-1 hover:text-foreground"
+              onClick={() => {
+                if (!onSort) {
+                  return
+                }
+                const isAsc = sorting?.id === 'contactNames.given' && !sorting.desc
+                onSort('contactNames.given', isAsc) // toggle to desc if already asc
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  if (!onSort) {
+                    return
+                  }
+                  const isAsc = sorting?.id === 'contactNames.given' && !sorting.desc
+                  onSort('contactNames.given', isAsc)
+                }
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              {t('contacts.name')}
+              <SortIcon className={iconClassName} />
+            </div>
+          )
+        },
         cell: ({ row }) => {
           const names = row.original.contactNames?.length
             ? row.original.contactNames
@@ -192,6 +230,8 @@ export function ContactsTable({
       onDeletePhone,
       onUpdateName,
       onDeleteName,
+      onSort,
+      sorting,
     ],
   )
   // eslint-disable-next-line react-hooks/incompatible-library
