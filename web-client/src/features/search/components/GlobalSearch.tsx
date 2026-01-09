@@ -9,6 +9,7 @@ import { useContacts } from '@/features/contacts/useContacts'
 import { getHydraMember } from '@/features/contacts/utils'
 import { useGroups } from '@/features/groups/useGroups'
 import { useDebounce } from '@/hooks/useDebounce'
+import { type Contact } from '@/types/models'
 
 interface SearchResult {
   id: string
@@ -141,17 +142,7 @@ export function GlobalSearch() {
               <div className="divide-y dark:divide-gray-700">
                 {renderSection(
                   t('globalSearch.sections.contacts'),
-                  contacts.map((c) => ({
-                    id: c['@id'] || String(c.id) || crypto.randomUUID(),
-                    title:
-                      c.displayName ||
-                      (c.names && c.names.length > 0
-                        ? `${c.names[0].givenName || ''} ${c.names[0].familyName || ''}`.trim()
-                        : t('contacts.noName')),
-                    type: 'contact',
-                    // @ts-expect-error - id is present in hydra response
-                    url: `/contacts/${c.id || c.uuid || c['@id']?.split('/').pop()}`,
-                  })),
+                  contacts.map((c) => mapContactToSearchResult(c, t('contacts.noName'))),
                 )}
                 {renderSection(
                   t('globalSearch.sections.groups'),
@@ -178,4 +169,27 @@ export function GlobalSearch() {
       ) : null}
     </div>
   )
+}
+
+function mapContactToSearchResult(c: Contact, noName: string): SearchResult {
+  return {
+    id: c['@id'] || String(c.id) || crypto.randomUUID(),
+    title: getContactTitle(c, noName),
+    type: 'contact',
+    // @ts-expect-error - id is present in hydra response
+    url: `/contacts/${c.id || c.uuid || c['@id']?.split('/').pop()}`,
+  }
+}
+
+function getContactTitle(c: Contact, fallback: string): string {
+  if (c.displayName) {
+    return c.displayName
+  }
+
+  if (c.names && c.names.length > 0) {
+    const first = c.names[0]
+    return `${first.givenName || ''} ${first.familyName || ''}`.trim()
+  }
+
+  return fallback
 }

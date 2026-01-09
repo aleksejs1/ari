@@ -1,3 +1,4 @@
+import { type UseQueryResult } from '@tanstack/react-query'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
@@ -5,6 +6,7 @@ import { GlobalSearch } from './GlobalSearch'
 
 import { useContacts } from '@/features/contacts/useContacts'
 import { useGroups } from '@/features/groups/useGroups'
+import { type Contact, type Group, type HydraCollection } from '@/types/models'
 
 // Mock hooks
 vi.mock('@/features/contacts/useContacts', () => ({
@@ -27,8 +29,10 @@ describe('GlobalSearch', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
-    vi.mocked(useContacts).mockReturnValue({ data: { 'hydra:member': [] } } as any)
-    vi.mocked(useGroups).mockReturnValue({ data: [] } as any)
+    vi.mocked(useContacts).mockReturnValue({
+      data: { 'hydra:member': [] },
+    } as unknown as UseQueryResult<HydraCollection<Contact>>)
+    vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as UseQueryResult<Group[]>)
   })
 
   afterEach(() => {
@@ -68,7 +72,7 @@ describe('GlobalSearch', () => {
         ],
       },
       isLoading: false,
-    } as any)
+    } as unknown as UseQueryResult<HydraCollection<Contact>>)
 
     render(<GlobalSearch />)
     const input = screen.getByPlaceholderText('globalSearch.placeholder')
@@ -96,7 +100,7 @@ describe('GlobalSearch', () => {
         ],
       },
       isLoading: false,
-    } as any)
+    } as unknown as UseQueryResult<HydraCollection<Contact>>)
 
     render(<GlobalSearch />)
     const input = screen.getByPlaceholderText('globalSearch.placeholder')
@@ -120,7 +124,7 @@ describe('GlobalSearch', () => {
         },
       ],
       isLoading: false,
-    } as any)
+    } as unknown as UseQueryResult<Group[]>)
 
     render(<GlobalSearch />)
     const input = screen.getByPlaceholderText('globalSearch.placeholder')
