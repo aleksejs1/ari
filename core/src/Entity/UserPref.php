@@ -63,12 +63,14 @@ class UserPref implements TenantAwareInterface
     public const TYPE_DATE_FORMAT = 'dateFormat';
     public const TYPE_TIME_FORMAT = 'timeFormat';
     public const TYPE_FAVOURITE_GROUP_NAME = 'favourite_group_name';
+    public const TYPE_GOOGLE_SYNC_ON_UPDATE = 'googleSyncOnUpdate';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
         self::TYPE_DATE_FORMAT,
         self::TYPE_TIME_FORMAT,
         self::TYPE_FAVOURITE_GROUP_NAME,
+        self::TYPE_GOOGLE_SYNC_ON_UPDATE,
     ];
 
     public const DEFAULTS = [
@@ -76,6 +78,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_DATE_FORMAT => 'mm/dd/yyyy',
         self::TYPE_TIME_FORMAT => '24h',
         self::TYPE_FAVOURITE_GROUP_NAME => 'favourite',
+        self::TYPE_GOOGLE_SYNC_ON_UPDATE => '0',
     ];
 
     #[ORM\Id]
@@ -122,6 +125,12 @@ class UserPref implements TenantAwareInterface
             // Any string is allowed, so no strict validation needed other than type check if necessary,
             // but the property is string type hint.
             // If empty string is not allowed, we could check that, but requirement says "any string".
+        } elseif (self::TYPE_GOOGLE_SYNC_ON_UPDATE === $this->type) {
+            if (!in_array($this->value, ['0', '1'], true)) {
+                $context->buildViolation('Invalid value for googleSyncOnUpdate. Must be "0" or "1".')
+                   ->atPath('value')
+                   ->addViolation();
+            }
         }
     }
 

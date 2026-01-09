@@ -71,7 +71,13 @@ Entities: `NotificationRule`, `NotificationQueue`, `NotificationPolicy`.
 - **Queue**: Pending notifications are stored in `NotificationQueue`.
 - **Cleanup**: `App\EventListener\NotificationRuleListener` ensures pending queue items are canceled when a rule is deleted.
 
-### 6. Code Quality & Standards
+### 6. User Preferences
+Entity: `UserPref`.
+- **Mechanism**: Stores user-specific settings (e.g., language, date format, time format, sync preferences).
+- **Validation**: Enforced via `#[Assert\Callback]` in the entity to ensure values matches the preference type.
+- **API**: Exposed via custom `UserPrefStateProvider` and `UserPrefProcessor` to allow access by preference `type` instead of ID.
+
+### 7. Code Quality & Standards
 The project enforces strict code quality:
 - **Deptrac**: Enforces architectural layers (e.g., Controllers cannot depend on Entity internals directly? - *Check deptrac.yaml*). 
   - *Correction based on file content*: Controllers depend on everything. Entities are isolated.
