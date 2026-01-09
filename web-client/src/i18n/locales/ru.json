@@ -109,6 +109,7 @@
     "emailType": "Тип",
     "emailTypePlaceholder": "Тип (напр. Личный, Рабочий)",
     "addresses": "Адреса",
+    "address": "Адрес",
     "addAddress": "Добавить адрес",
     "addressStreet": "Улица",
     "addressStreetExtended": "Дополнение к адресу",

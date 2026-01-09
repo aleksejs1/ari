@@ -5,7 +5,9 @@ import { getHydraMember, type HydraCollection } from '../contacts/useContacts'
 import { api } from '@/lib/axios'
 import { type Group } from '@/types/models'
 
-export function useGroups(params: Record<string, any> = { 'order[name]': 'asc' }) {
+export function useGroups(
+  params: Record<string, string | number | boolean> = { 'order[name]': 'asc' },
+) {
   return useQuery({
     queryKey: ['groups', params],
     queryFn: async () => {

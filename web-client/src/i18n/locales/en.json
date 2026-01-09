@@ -109,6 +109,7 @@
     "emailType": "Type",
     "emailTypePlaceholder": "Type (e.g. Personal, Work)",
     "addresses": "Addresses",
+    "address": "Address",
     "addAddress": "Add Address",
     "addressStreet": "Street",
     "addressStreetExtended": "Street Extended",

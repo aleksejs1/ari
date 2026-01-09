@@ -3,16 +3,19 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import {
+  useCreateContactAddress,
   useCreateContactBiography,
   useCreateContactDate,
   useCreateContactEmail,
   useCreateContactOrganization,
   useCreateContactPhone,
+  useDeleteContactAddress,
   useDeleteContactBiography,
   useDeleteContactDate,
   useDeleteContactEmail,
   useDeleteContactOrganization,
   useDeleteContactPhone,
+  useUpdateContactAddress,
   useUpdateContactBiography,
   useUpdateContactDate,
   useUpdateContactEmail,
@@ -32,6 +35,7 @@ import { Button } from '@/components/ui/button'
 import { useContactFavorite } from '@/features/contacts/hooks/useContactFavorite'
 import type {
   Contact,
+  ContactAddress,
   ContactBiography,
   ContactDate,
   ContactEmailAdress,
@@ -216,6 +220,34 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
     await handleDeleteOrganizationMutation.mutateAsync(org['@id'])
   }
 
+  const handleCreateAddressMutation = useCreateContactAddress()
+  const handleUpdateAddressMutation = useUpdateContactAddress()
+  const handleDeleteAddressMutation = useDeleteContactAddress()
+
+  const handleUpdateAddress = async (address: ContactAddress) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (address['@id']) {
+      await handleUpdateAddressMutation.mutateAsync({
+        id: address['@id'],
+        data: address,
+      })
+    } else {
+      await handleCreateAddressMutation.mutateAsync({
+        ...address,
+        contact: contact['@id'],
+      })
+    }
+  }
+
+  const handleDeleteAddress = async (address: ContactAddress) => {
+    if (!address['@id']) {
+      return
+    }
+    await handleDeleteAddressMutation.mutateAsync(address['@id'])
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -264,6 +296,8 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           onDeletePhone={handleDeletePhone}
           onUpdateEmail={handleUpdateEmail}
           onDeleteEmail={handleDeleteEmail}
+          onUpdateAddress={handleUpdateAddress}
+          onDeleteAddress={handleDeleteAddress}
         />
         <ProfessionalCard
           contact={contact}

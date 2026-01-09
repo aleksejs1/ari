@@ -1,12 +1,18 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { ContactAddressInlineEdit } from '../ContactAddressInlineEdit'
 import { ContactEmailInlineEdit } from '../ContactEmailInlineEdit'
 import { ContactPhoneInlineEdit } from '../ContactPhoneInlineEdit'
 import { DisplayItem } from '../DisplayItem'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { Contact, ContactEmailAdress, ContactPhoneNumber } from '@/types/models'
+import type {
+  Contact,
+  ContactAddress,
+  ContactEmailAdress,
+  ContactPhoneNumber,
+} from '@/types/models'
 
 interface ContactInfoCardProps {
   contact: Contact
@@ -14,6 +20,8 @@ interface ContactInfoCardProps {
   onDeletePhone: (phone: ContactPhoneNumber) => void
   onUpdateEmail: (email: ContactEmailAdress) => void
   onDeleteEmail: (email: ContactEmailAdress) => void
+  onUpdateAddress: (address: ContactAddress) => void
+  onDeleteAddress: (address: ContactAddress) => void
 }
 
 export const ContactInfoCard = ({
@@ -22,6 +30,8 @@ export const ContactInfoCard = ({
   onDeletePhone,
   onUpdateEmail,
   onDeleteEmail,
+  onUpdateAddress,
+  onDeleteAddress,
 }: ContactInfoCardProps) => {
   const { t } = useTranslation()
   return (
@@ -63,21 +73,27 @@ export const ContactInfoCard = ({
           </ContactEmailInlineEdit>
         ))}
         {contact.contactAddresses?.map((address, i) => (
-          <DisplayItem
+          <ContactAddressInlineEdit
             key={i}
-            icon={MapPin}
-            label={address.type ?? undefined}
-            value={[
-              address.street,
-              address.streetExtended,
-              address.city,
-              address.region,
-              address.postalCode,
-              address.country,
-            ]
-              .filter(Boolean)
-              .join(', ')}
-          />
+            address={address}
+            onUpdate={onUpdateAddress}
+            onDelete={() => onDeleteAddress(address)}
+          >
+            <DisplayItem
+              icon={MapPin}
+              label={address.type ?? undefined}
+              value={[
+                address.street,
+                address.streetExtended,
+                address.city,
+                address.region,
+                address.postalCode,
+                address.country,
+              ]
+                .filter(Boolean)
+                .join(', ')}
+            />
+          </ContactAddressInlineEdit>
         ))}
       </CardContent>
     </Card>
