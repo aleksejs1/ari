@@ -48,7 +48,25 @@ describe('useGroups', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     expect(result.current.data).toEqual(mockData.member)
-    expect(api.get).toHaveBeenCalledWith('/groups')
+    expect(api.get).toHaveBeenCalledWith('/groups', { params: { 'order[name]': 'asc' } })
+  })
+
+  it('fetches groups with custom params', async () => {
+    const mockData = {
+      member: [{ id: 1, name: 'Group 1' }],
+    }
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData })
+
+    // Override default sorting
+    const params = { 'order[id]': 'desc' }
+    const { result } = renderHook(() => useGroups(params), {
+      wrapper: createWrapper(),
+    })
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    expect(result.current.data).toEqual(mockData.member)
+    expect(api.get).toHaveBeenCalledWith('/groups', { params })
   })
 
   it('creates a group', async () => {

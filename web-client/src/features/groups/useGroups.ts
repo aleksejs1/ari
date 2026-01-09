@@ -5,11 +5,11 @@ import { getHydraMember, type HydraCollection } from '../contacts/useContacts'
 import { api } from '@/lib/axios'
 import { type Group } from '@/types/models'
 
-export function useGroups() {
+export function useGroups(params: Record<string, any> = { 'order[name]': 'asc' }) {
   return useQuery({
-    queryKey: ['groups'],
+    queryKey: ['groups', params],
     queryFn: async () => {
-      const response = await api.get<HydraCollection<Group>>('/groups')
+      const response = await api.get<HydraCollection<Group>>('/groups', { params })
       return getHydraMember(response.data)
     },
   })

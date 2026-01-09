@@ -30,7 +30,7 @@ src/
 │   ├── activity-feed/ # User notifications and activity history
 │   ├── contacts/    # Contact management (List, Details, Forms, Relations)
 │   ├── dashboard/   # Dashboard widgets and layout
-│   ├── groups/      # Contact groups management
+│   ├── groups/      # Contact groups management (Default sort is alphabetical by name)
 │   ├── notification-policies/ # Notification policies management (Create, Edit, List)
 │   ├── ...          # Other feature modules
 │   └── [feature]/
