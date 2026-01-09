@@ -1,4 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -13,6 +14,7 @@ import { type ContactFormValues, PREDEFINED_RELATIONS } from '@/types/models'
 export function ContactFormRelations() {
   const { t } = useTranslation()
   const { control, getValues } = useFormContext<ContactFormValues>()
+  const [isOpen, setIsOpen] = useState(false)
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'contactRelations',
@@ -21,13 +23,17 @@ export function ContactFormRelations() {
   return (
     <CollapsibleSection
       title={t('contacts.relations')}
-      defaultOpen={false}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       action={
         <Button
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append({ relatedContact: '', type: '', displayName: '' })}
+          onClick={() => {
+            append({ relatedContact: '', type: '', displayName: '' })
+            setIsOpen(true)
+          }}
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addRelation')}
         </Button>

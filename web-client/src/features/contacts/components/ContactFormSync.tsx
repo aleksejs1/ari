@@ -1,4 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -14,6 +15,7 @@ import { type ContactFormValues } from '@/types/models'
 export function ContactFormSync() {
   const { t } = useTranslation()
   const { control } = useFormContext<ContactFormValues>()
+  const [isOpen, setIsOpen] = useState(true)
 
   const {
     fields: dateFields,
@@ -27,12 +29,17 @@ export function ContactFormSync() {
   return (
     <CollapsibleSection
       title={t('contacts.dates')}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       action={
         <Button
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => appendDate({ text: t('contacts.birthday'), date: '' })}
+          onClick={() => {
+            appendDate({ text: t('contacts.birthday'), date: '' })
+            setIsOpen(true)
+          }}
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
         </Button>

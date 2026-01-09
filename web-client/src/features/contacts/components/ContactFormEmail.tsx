@@ -1,4 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -12,6 +13,7 @@ import { type ContactFormValues } from '@/types/models'
 export function ContactFormEmail() {
   const { t } = useTranslation()
   const { control } = useFormContext<ContactFormValues>()
+  const [isOpen, setIsOpen] = useState(true)
 
   const {
     fields: emailFields,
@@ -25,12 +27,17 @@ export function ContactFormEmail() {
   return (
     <CollapsibleSection
       title={t('contacts.emailAddresses')}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       action={
         <Button
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => appendEmail({ value: '', type: 'Personal' })}
+          onClick={() => {
+            appendEmail({ value: '', type: 'Personal' })
+            setIsOpen(true)
+          }}
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addEmailAddress')}
         </Button>

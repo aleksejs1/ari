@@ -1,4 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -13,6 +14,7 @@ import { type ContactFormValues } from '@/types/models'
 export function ContactFormBiography() {
   const { t } = useTranslation()
   const { control } = useFormContext<ContactFormValues>()
+  const [isOpen, setIsOpen] = useState(false)
 
   const {
     fields: biographyFields,
@@ -26,13 +28,17 @@ export function ContactFormBiography() {
   return (
     <CollapsibleSection
       title={t('contacts.biography')}
-      defaultOpen={false}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       action={
         <Button
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => appendBiography({ value: '', type: 'Bio' })}
+          onClick={() => {
+            appendBiography({ value: '', type: 'Bio' })
+            setIsOpen(true)
+          }}
         >
           <Plus className="mr-1 h-4 w-4" /> {t('contacts.addBiography')}
         </Button>
