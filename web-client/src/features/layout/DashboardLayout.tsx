@@ -32,9 +32,11 @@ export default function DashboardLayout() {
       {/* Sidebar */}
       <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r bg-white dark:bg-gray-800 md:flex">
         <div className="p-6">
-          <h1 className="bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
-            {t('app.title')}
-          </h1>
+          <Link to="/">
+            <h1 className="bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
+              {t('app.title')}
+            </h1>
+          </Link>
         </div>
         <nav className="space-y-2 px-4">
           <Link

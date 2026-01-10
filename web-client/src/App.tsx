@@ -8,6 +8,7 @@ import ContactTimelinePage from './features/contacts/ContactTimelinePage'
 import GoogleImportPage from './features/google-import/GoogleImportPage'
 import GroupsPage from './features/groups/GroupsPage'
 import DashboardLayout from './features/layout/DashboardLayout'
+import SidebarLessLayout from './features/layout/SidebarLessLayout'
 import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
@@ -44,8 +45,7 @@ export default function App() {
       element: <ProtectedRoute />,
       children: [
         {
-          path: '/',
-          element: <DashboardLayout />,
+          element: <SidebarLessLayout />,
           children: [
             {
               path: '/',
@@ -63,6 +63,11 @@ export default function App() {
               path: '/contacts/:id/timeline',
               element: <ContactTimelinePage />,
             },
+          ],
+        },
+        {
+          element: <DashboardLayout />,
+          children: [
             {
               path: '/audit-logs',
               element: <AuditLogsPage />,
@@ -114,7 +119,7 @@ export default function App() {
     },
     {
       path: '*',
-      element: <div>404 Not Found</div>, // cannot use hook easily here without wrapper component, skipping for now or making a wrapper
+      element: <div>404 Not Found</div>,
     },
   ])
 

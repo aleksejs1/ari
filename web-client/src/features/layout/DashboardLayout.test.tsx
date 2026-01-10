@@ -185,4 +185,30 @@ describe('DashboardLayout', () => {
     expect(screen.queryByText('0')).not.toBeInTheDocument()
     expect(screen.getByText('app.navigation.sidebar.manageGroups')).toBeInTheDocument()
   })
+
+  it('logo links to home page', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { uuid: 'test-user' },
+      login: vi.fn(),
+      logout: vi.fn(),
+      token: 'token',
+      isAuthenticated: true,
+      isLoading: false,
+    })
+
+    vi.mocked(useGroups).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: false,
+    } as unknown as UseQueryResult<Group[]>)
+
+    render(
+      <MemoryRouter>
+        <DashboardLayout />
+      </MemoryRouter>,
+    )
+
+    const logo = screen.getByText('app.title')
+    expect(logo.closest('a')).toHaveAttribute('href', '/')
+  })
 })
