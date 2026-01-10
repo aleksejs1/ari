@@ -5,7 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Dto\ChangePasswordDto;
 use App\Repository\UserRepository;
+use App\State\UserPasswordChangeProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +27,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
             processor: 'App\State\UserPasswordHasherProcessor',
             denormalizationContext: ['groups' => ['user:create']],
             validationContext: ['groups' => ['Default', 'user:create']],
+        ),
+        new Put(
+            uriTemplate: '/users/{id}/change-password',
+            status: 200,
+            security: "is_granted('ROLE_USER') and object == user",
+            input: ChangePasswordDto::class,
+            processor: 'App\State\UserPasswordChangeProcessor',
+            name: 'change_password',
         ),
     ],
     normalizationContext: ['groups' => ['user:read']],

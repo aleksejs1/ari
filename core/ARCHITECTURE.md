@@ -57,7 +57,8 @@ Security is handled at the object level using Symfony Voters.
   - `*:read`: For read operations.
   - `*:create`/`*:update`: For write operations.
   - `export`: Specific groups for data export.
-- **Custom Operations**: Implemented using `#[Get]`, `#[Post]`, etc., pointing to custom Controllers or State Processors where standard CRUD is insufficient (e.g., XML Import/Export, vCard Export).
+- **Custom Operations**: Implemented using `#[Get]`, `#[Post]`, etc., pointing to custom Controllers or State Processors where standard CRUD is insufficient (e.g., XML Import/Export, vCard Export, Change Password).
+- **Change Password**: `PUT /api/users/{id}/change-password` allows users to change their password securely using `ChangePasswordDto` and `UserPasswordChangeProcessor`.
 - **vCard Export**: `GET /api/contacts/{id}/vcard` exports a contact in vCard 4.0 format using `VCardService` (powered by `sabre/vobject`).
 
 ### 4. Audit Logging
