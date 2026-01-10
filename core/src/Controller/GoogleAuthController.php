@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\TokenStorage;
+
 use App\Entity\User;
-use App\Repository\TokenStorageRepository;
+use App\Service\Google\GoogleConnectService;
 use App\Service\Google\GoogleOAuthService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,8 +18,7 @@ class GoogleAuthController extends AbstractController
 {
     public function __construct(
         private readonly GoogleOAuthService $oauthService,
-        private readonly TokenStorageRepository $tokenStorageRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly GoogleConnectService $googleConnectService,
     ) {
     }
 
@@ -31,14 +29,11 @@ class GoogleAuthController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        // Generate signed state: userID.signature
-        $uuid = $user->getUuid();
-        if (null === $uuid) {
-            throw new \LogicException('User must have a UUID');
+        try {
+            $state = $this->googleConnectService->generateState($user);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        $stateData = $uuid;
-        $signature = hash_hmac('sha256', $stateData, $_ENV['APP_SECRET']);
-        $state = $stateData . '.' . $signature;
 
         return $this->json([
             'url' => $this->oauthService->getAuthorizationUrl($state),
@@ -59,59 +54,15 @@ class GoogleAuthController extends AbstractController
             return $this->json(['error' => 'No state provided'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Verify state
-        $parts = explode('.', $state);
-        if (2 !== count($parts)) {
-            return $this->json(['error' => 'Invalid state format'], Response::HTTP_BAD_REQUEST);
-        }
-
-        [$uuid, $signature] = $parts;
-        $expectedSignature = hash_hmac('sha256', $uuid, $_ENV['APP_SECRET']);
-
-        if (!hash_equals($expectedSignature, $signature)) {
-            return $this->json(['error' => 'Invalid state signature'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Manually fetch user
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['uuid' => $uuid]);
-
-        if (null === $user) {
-            return $this->json(['error' => 'User not found'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Set tenant filter to allow finding existing TokenStorage records for this user
-        // This is necessary because the callback request is not authenticated in the traditional sense
-        $this->entityManager->getFilters()->enable('tenant')->setParameter('currentTenant', (string) $user->getId());
-
         try {
-            $tokens = $this->oauthService->getAccessToken($code);
-        } catch (\Exception $e) {
+            $uuid = $this->googleConnectService->validateState($state);
+            $this->googleConnectService->connectUser($code, $uuid);
+        } catch (\Throwable $e) {
             return $this->json(
-                ['error' => 'Failed to fetch access token: ' . $e->getMessage()],
+                ['error' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST,
             );
         }
-
-        $tokenStorage = $this->tokenStorageRepository->findOneBy(['user' => $user, 'type' => 'google']);
-
-        if (null === $tokenStorage) {
-            $tokenStorage = new TokenStorage();
-            $tokenStorage->setUser($user);
-            $tokenStorage->setType('google');
-            $this->entityManager->persist($tokenStorage);
-        }
-
-        $accessToken = $tokens['access_token'];
-        $tokenStorage->setAccessToken($accessToken);
-        $tokenStorage->setRefreshToken(
-            $tokens['refresh_token'] ?? $tokenStorage->getRefreshToken(),
-        );
-        $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable(
-            sprintf('+%d seconds', $tokens['expires_in']),
-        ));
-        $tokenStorage->setTenant($user);
-
-        $this->entityManager->flush();
 
         return $this->json(['success' => true]);
     }

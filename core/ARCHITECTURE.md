@@ -86,8 +86,10 @@ Location: `src/Service/Google/`.
 
 ### 8. Code Quality & Standards
 The project enforces strict code quality:
-- **Deptrac**: Enforces architectural layers (e.g., Controllers cannot depend on Entity internals directly? - *Check deptrac.yaml*). 
-  - *Correction based on file content*: Controllers depend on everything. Entities are isolated.
+- **Deptrac**: Enforces architectural layers:
+  - **Controllers**: Cannot access **Repositories** directly. Must use **Services**.
+  - **Services**: Can access **Repositories**, **Entities**, and other services.
+  - **Entities**: Isolated (no dependencies on other layers).
 - **PHPStan/Psalm**: High strictness levels to prevent type errors.
 - **CS-Fixer**: Enforces PSR-12 and Symfony coding standards.
 

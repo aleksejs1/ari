@@ -2,6 +2,10 @@ deptrac:
   paths:
     - src
   layers:
+    - name: Service
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Service\\.*#'
     - name: Controller
       collectors:
         - type: classNameRegex
@@ -41,11 +45,17 @@ deptrac:
             - type: classNameRegex
               value: '#^(Symfony|Doctrine|ApiPlatform)\\.*#'
   ruleset:
+    Service:
+      - Entity
+      - Repository
+      - Security
+      - Vendor
+      - Doctrine
     Controller:
       - Entity
       - Form
-      - Repository
       - Security
+      - Service
       - Vendor
     Entity:
       - Repository
