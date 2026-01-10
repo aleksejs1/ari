@@ -15,4 +15,19 @@ class ContactBiographyRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ContactBiography::class);
     }
+
+    /**
+     * @return string[]
+     */
+    public function getDistinctValues(string $field): array
+    {
+        return array_column(
+            $this->createQueryBuilder('e')
+                ->select("DISTINCT(e.$field)")
+                ->where("e.$field IS NOT NULL")
+                ->getQuery()
+                ->getScalarResult(),
+            '1'
+        );
+    }
 }
