@@ -204,4 +204,23 @@ describe('GlobalSearch', () => {
 
     expect(screen.queryByText('globalSearch.showAllResults')).not.toBeInTheDocument()
   })
+
+  it('displays settings results', () => {
+    render(<GlobalSearch />)
+    const input = screen.getByPlaceholderText('globalSearch.placeholder')
+    fireEvent.change(input, { target: { value: 'Audit' } })
+    fireEvent.focus(input)
+
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    // Initially in Contacts tab - check that Settings tab has count
+    expect(screen.getByText(/globalSearch.sections.settings \(1\)/)).toBeInTheDocument()
+
+    // Switch to Settings tab
+    fireEvent.click(screen.getByText(/globalSearch.sections.settings/))
+
+    expect(screen.getByText('app.navigation.sidebar.auditLogs')).toBeInTheDocument()
+  })
 })

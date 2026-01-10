@@ -42,23 +42,38 @@ export function GlobalSearch() {
   // Settings Search
   const settingsRoutes = [
     {
-      id: 'settings-language',
-      title: t('settings.language'),
-      url: '/settings',
+      id: 'nav-audit-logs',
+      title: t('app.navigation.sidebar.auditLogs'),
+      url: '/audit-logs',
     },
     {
-      id: 'settings-date-format',
-      title: t('settings.dateFormat'),
-      url: '/settings',
+      id: 'nav-groups',
+      title: t('app.navigation.sidebar.groups'),
+      url: '/groups',
     },
     {
-      id: 'settings-time-format',
-      title: t('settings.timeFormat'),
-      url: '/settings',
+      id: 'nav-notification-channels',
+      title: t('app.navigation.sidebar.notificationChannels'),
+      url: '/notification-channels',
     },
     {
-      id: 'settings-fav-group',
-      title: t('settings.favouriteGroupName'),
+      id: 'nav-notification-policies',
+      title: t('app.navigation.sidebar.notificationPolicies'),
+      url: '/settings/notification-policies',
+    },
+    {
+      id: 'nav-create-notification-policy',
+      title: t('notification_policies.create'),
+      url: '/settings/notification-policies/new',
+    },
+    {
+      id: 'nav-google-import',
+      title: t('app.navigation.sidebar.googleImport'),
+      url: '/google-import',
+    },
+    {
+      id: 'nav-settings',
+      title: t('app.navigation.sidebar.settings'),
       url: '/settings',
     },
     {
