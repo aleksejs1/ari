@@ -21,6 +21,7 @@
         "notificationPolicies": "Notification Policies",
         "googleImport": "Google Import",
         "settings": "Settings",
+        "changePassword": "Change Password",
         "home": "Home"
       }
     }
@@ -45,7 +46,14 @@
     "googleSyncOnUpdate": "Google Sync on Update",
     "googleSyncOnUpdateDescription": "Automatically sync contact changes to Google when updated in the system.",
     "enabled": "Enabled",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "changePassword": "Change Password",
+    "changePasswordDescription": "Update your account password securely.",
+    "security": "Security",
+    "securityDescription": "Manage your password and account security.",
+    "passwordChanged": "Password changed successfully",
+    "passwordChangeError": "Failed to change password",
+    "updatePassword": "Update Password"
   },
   "auth": {
     "login": "Login",
@@ -69,7 +77,11 @@
     "noAccount": "Don't have an account?",
     "invalidCredentials": "Invalid credentials",
     "registrationFailed": "Registration failed. Please try again.",
-    "passwordsDontMatch": "Passwords don't match"
+    "passwordsDontMatch": "Passwords don't match",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordRequirements": "Make sure it is at least 6 characters long."
   },
   "contacts": {
     "title": "Contacts",
@@ -267,7 +279,10 @@
     "search": "Search",
     "unknown": "Unknown",
     "loading": "Loading...",
-    "noName": "No Name"
+    "loading": "Loading...",
+    "noName": "No Name",
+    "success": "Success",
+    "error": "Error"
   },
   "globalSearch": {
     "placeholder": "Search contacts, groups, settings...",

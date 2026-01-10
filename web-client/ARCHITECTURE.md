@@ -32,6 +32,7 @@ src/
 │   ├── dashboard/   # Dashboard widgets and layout
 │   ├── groups/      # Contact groups management (Alphabetical sort, color support)
 │   ├── notification-policies/ # Notification policies management (Create, Edit, List)
+│   ├── users/       # User management (Change Password)
 │   ├── ...          # Other feature modules
 │   └── [feature]/
 │       ├── components/  # Feature-specific components

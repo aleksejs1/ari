@@ -17,6 +17,7 @@ import NotificationPoliciesPage from './pages/NotificationPoliciesPage'
 import NotificationPolicyFormPage from './pages/NotificationPolicyFormPage'
 import SettingsPage from './pages/Settings'
 
+import ChangePasswordPage from '@/features/users/ChangePasswordPage'
 import { useAuth } from '@/hooks/useAuth'
 
 const ProtectedRoute = () => {
@@ -87,6 +88,10 @@ export default function App() {
             {
               path: '/settings',
               element: <SettingsPage />,
+            },
+            {
+              path: '/change-password',
+              element: <ChangePasswordPage />,
             },
             {
               path: '/settings/notification-policies',

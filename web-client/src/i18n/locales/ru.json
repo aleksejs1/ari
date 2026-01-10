@@ -21,6 +21,7 @@
         "notificationPolicies": "Правила уведомлений",
         "googleImport": "Импорт из Google",
         "settings": "Настройки",
+        "changePassword": "Смена пароля",
         "home": "Главная"
       }
     }
@@ -45,7 +46,14 @@
     "googleSyncOnUpdate": "Синхронизация с Google при обновлении",
     "googleSyncOnUpdateDescription": "Автоматически отправлять изменения в Google при обновлении контакта в системе.",
     "enabled": "Включено",
-    "disabled": "Выключено"
+    "disabled": "Выключено",
+    "changePassword": "Смена пароля",
+    "changePasswordDescription": "Безопасное обновление пароля вашего аккаунта.",
+    "security": "Безопасность",
+    "securityDescription": "Управление паролем и безопасностью аккаунта.",
+    "passwordChanged": "Пароль успешно изменен",
+    "passwordChangeError": "Не удалось изменить пароль",
+    "updatePassword": "Обновить пароль"
   },
   "auth": {
     "login": "Вход",
@@ -69,7 +77,11 @@
     "noAccount": "Нет аккаунта?",
     "invalidCredentials": "Неверные учетные данные",
     "registrationFailed": "Ошибка регистрации. Попробуйте еще раз.",
-    "passwordsDontMatch": "Пароли не совпадают"
+    "passwordsDontMatch": "Пароли не совпадают",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmNewPassword": "Подтвердите новый пароль",
+    "passwordRequirements": "Пароль должен содержать не менее 6 символов"
   },
   "contacts": {
     "title": "Контакты",
@@ -266,7 +278,9 @@
     "search": "Поиск",
     "unknown": "Неизвестно",
     "loading": "Загрузка...",
-    "noName": "Без имени"
+    "noName": "Без имени",
+    "success": "Успех",
+    "error": "Ошибка"
   },
   "globalSearch": {
     "placeholder": "Поиск контактов, групп, настроек...",

@@ -1,4 +1,4 @@
-import { Users, History, Bell, Download, Settings } from 'lucide-react'
+import { Users, History, Bell, Download, Settings, Lock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
 
@@ -65,6 +65,13 @@ export default function DashboardLayout() {
           >
             <Settings className="h-5 w-5" />
             <span>{t('app.navigation.sidebar.settings', 'Settings')}</span>
+          </Link>
+          <Link
+            to="/change-password"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Lock className="h-5 w-5" />
+            <span>{t('app.navigation.sidebar.changePassword', 'Change Password')}</span>
           </Link>
         </nav>
       </aside>
