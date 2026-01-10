@@ -10,7 +10,7 @@ import { type Group } from '@/types/models'
 
 // Mock dependencies
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: vi.fn().mockReturnValue({ t: (key: string) => key }),
 }))
 
 // Mock useGroups

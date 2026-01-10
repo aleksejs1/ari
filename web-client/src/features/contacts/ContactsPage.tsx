@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
+import { ContactModal } from './components/ContactModal'
 import { ContactsHeader } from './components/ContactsHeader'
-import { ContactSheet } from './components/ContactSheet'
 import { ContactsPagination } from './components/ContactsPagination'
 import { ContactsTable } from './components/ContactsTable'
 import {
@@ -263,7 +263,7 @@ export default function ContactsPage() {
         )}
       </div>
 
-      <ContactSheet
+      <ContactModal
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         contact={selectedContact}

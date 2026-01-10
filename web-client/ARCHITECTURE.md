@@ -59,7 +59,7 @@ src/
 - **Global Search**: A unified search bar in the header allows searching for Contacts (API), Groups (local), and Navigation/Settings (static), organized in tabs (Contacts, Groups, Settings). Implemented in `src/features/search/components/GlobalSearch.tsx`. Displays top 5 results with a "Show all results" option for contacts.
 - **User Menu**: Quick access to system utilities (Audit Logs, Settings) and user profile actions via the top-right header menu.
 - **Logo Navigation**: Clicking the application logo in the sidebar redirects to the Dashboard/Home page.
-- **Form Layout**: Large forms (like Contact Edit) use a `CollapsibleSection` pattern to group fields and reduce visual noise. Sections like Addresses, Biography, Organizations, and Relations are collapsed by default.
+- **Form Layout**: Contact creation/editing uses a `ContactModalForm` (Dialog) with a streamlined, Google Contacts-inspired layout (single column, icons). Other large forms may use `CollapsibleSection` to group fields.
 - **Layouts**: The application uses two main layouts: `DashboardLayout` (with sidebar) for most pages and `SidebarLessLayout` (no sidebar, simplified) for the Home and Contacts pages.
 - **Sidebar**: In `DashboardLayout`, the sidebar provides navigation to secondary features (Audit Logs, Groups, Settings etc). It does not contain Home or Contacts links, nor user/session controls (which are in the header).
 - **Header Navigation**: In `SidebarLessLayout`, primary navigation (like Contacts) is exposed directly in the header row next to the logo.

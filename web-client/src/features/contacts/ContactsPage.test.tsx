@@ -102,9 +102,9 @@ vi.mock('./components/ContactsPagination', () => ({
   ),
 }))
 
-vi.mock('./components/ContactSheet', () => ({
-  ContactSheet: ({ isOpen }: { isOpen: boolean }) => (
-    <div data-testid="sheet">{isOpen ? 'Open' : 'Closed'}</div>
+vi.mock('./components/ContactModal', () => ({
+  ContactModal: ({ isOpen }: { isOpen: boolean; contact?: Contact; onClose: () => void }) => (
+    <div data-testid="modal">{isOpen ? 'Open' : 'Closed'}</div>
   ),
 }))
 describe('ContactsPage', () => {
@@ -216,7 +216,7 @@ describe('ContactsPage', () => {
 
     // Open Create
     fireEvent.click(screen.getByText('Create'))
-    expect(screen.getByTestId('sheet')).toHaveTextContent('Open')
+    expect(screen.getByTestId('modal')).toHaveTextContent('Open')
   })
 
   it('updates search filter when search input changes', async () => {
