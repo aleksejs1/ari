@@ -4,6 +4,16 @@ import { vi } from 'vitest'
 
 import { ContactPhoneInlineEdit } from './ContactPhoneInlineEdit'
 
+vi.mock('./TypeAutocomplete', () => ({
+  TypeAutocomplete: ({
+    value,
+    onChange,
+    ...props
+  }: React.InputHTMLAttributes<HTMLInputElement>) => (
+    <input value={value} onChange={onChange} {...props} data-testid="type-autocomplete" />
+  ),
+}))
+
 describe('ContactPhoneInlineEdit', () => {
   const mockPhone = {
     '@id': '/api/phone_numbers/1',

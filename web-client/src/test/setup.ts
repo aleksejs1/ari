@@ -43,3 +43,13 @@ const defaultPrefs = {
 vi.mock('@/hooks/useUserPrefs', () => ({
   useUserPrefs: () => defaultPrefs,
 }))
+
+// Global mock for useAutocomplete
+vi.mock('@/features/contacts/hooks/useAutocomplete', () => ({
+  useAutocomplete: () => ({
+    data: {
+      phoneTypes: ['Mobile', 'Work', 'Home'],
+    },
+    isLoading: false,
+  }),
+}))

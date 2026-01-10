@@ -15,6 +15,7 @@ export * from './hooks/useContactGroups'
 export * from './hooks/useContactNames'
 export * from './hooks/useContactPhones'
 export * from './hooks/useContactRelations'
+export * from './hooks/useAutocomplete'
 export * from './utils'
 
 export function useContacts(

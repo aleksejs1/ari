@@ -116,6 +116,26 @@ export interface paths {
         patch: operations["api_audit_logs_id_patch"];
         trace?: never;
     };
+    "/api/autocomplete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get autocomplete suggestions for contact forms
+         * @description Returns distinct types and values already used by the user across contacts.
+         */
+        get: operations["get_autocomplete"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contacts": {
         parameters: {
             query?: never;
@@ -1379,6 +1399,30 @@ export interface components {
             } | null;
             /** Format: date-time */
             createdAt?: string;
+        };
+        Autocomplete: {
+            id?: string;
+            phoneTypes?: string[];
+            emailTypes?: string[];
+            addressTypes?: string[];
+            biographyTypes?: string[];
+            dateTypes?: string[];
+            organizationTypes?: string[];
+            organizationNames?: string[];
+            organizationTitles?: string[];
+            organizationDepartments?: string[];
+        };
+        "Autocomplete.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: string;
+            phoneTypes?: string[];
+            emailTypes?: string[];
+            addressTypes?: string[];
+            biographyTypes?: string[];
+            dateTypes?: string[];
+            organizationTypes?: string[];
+            organizationNames?: string[];
+            organizationTitles?: string[];
+            organizationDepartments?: string[];
         };
         /** @description Unprocessable entity */
         ConstraintViolation: {
@@ -3019,6 +3063,49 @@ export interface operations {
                     "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
                     "application/problem+json": components["schemas"]["ConstraintViolation"];
                     "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    get_autocomplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Autocomplete resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Autocomplete.jsonld"];
+                    "application/json": components["schemas"]["Autocomplete"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };

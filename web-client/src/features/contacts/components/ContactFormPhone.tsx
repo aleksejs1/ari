@@ -4,6 +4,7 @@ import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { CollapsibleSection } from './CollapsibleSection'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
@@ -64,7 +65,11 @@ export function ContactFormPhone() {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input placeholder={t('contacts.phoneTypePlaceholder')} {...field} />
+                    <TypeAutocomplete
+                      field="phoneTypes"
+                      placeholder={t('contacts.phoneTypePlaceholder')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

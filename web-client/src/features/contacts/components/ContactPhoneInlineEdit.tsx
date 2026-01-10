@@ -3,6 +3,7 @@ import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { InlineEditTrigger } from './InlineEditTrigger'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -74,9 +75,10 @@ export function ContactPhoneInlineEdit({
           className="h-8 flex-1"
           aria-label={t('contacts.phone')}
         />
-        <Input
+        <TypeAutocomplete
           value={type}
           onChange={(e) => setType(e.target.value)}
+          field="phoneTypes"
           placeholder={t('contacts.phoneTypePlaceholder')}
           className="h-8 w-24"
           aria-label={t('contacts.phoneType')}
