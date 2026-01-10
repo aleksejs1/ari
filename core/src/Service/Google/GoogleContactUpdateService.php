@@ -83,6 +83,80 @@ class GoogleContactUpdateService
             ];
         }
 
+        $addresses = [];
+        foreach ($contact->getContactAddresses() as $address) {
+            $addresses[] = [
+                'streetAddress' => $address->getStreet(),
+                'extendedAddress' => $address->getStreetExtended(),
+                'city' => $address->getCity(),
+                'region' => $address->getRegion(),
+                'postalCode' => $address->getPostalCode(),
+                'country' => $address->getCountry(),
+                'countryCode' => $address->getCountryCode(),
+                'type' => $address->getType() ?? 'other',
+            ];
+        }
+
+        $organizations = [];
+        foreach ($contact->getContactOrganizations() as $org) {
+            $startDate = $org->getStartDate();
+            $endDate = $org->getEndDate();
+            $organizations[] = [
+                'name' => $org->getName(),
+                'department' => $org->getDepartment(),
+                'title' => $org->getTitle(),
+                'jobDescription' => $org->getJobDescription(),
+                'type' => $org->getType() ?? 'work',
+                'startDate' => null !== $startDate ? [
+                    'year' => (int) $startDate->format('Y'),
+                    'month' => (int) $startDate->format('m'),
+                    'day' => (int) $startDate->format('d'),
+                ] : null,
+                'endDate' => null !== $endDate ? [
+                    'year' => (int) $endDate->format('Y'),
+                    'month' => (int) $endDate->format('m'),
+                    'day' => (int) $endDate->format('d'),
+                ] : null,
+            ];
+        }
+
+        $biographies = [];
+        foreach ($contact->getContactBiographies() as $bio) {
+            $biographies[] = [
+                'value' => $bio->getValue(),
+                'type' => $bio->getType() ?? 'other',
+            ];
+        }
+
+        $birthdays = [];
+        $events = [];
+        foreach ($contact->getContactDates() as $contactDate) {
+            $dateData = null;
+            $dt = $contactDate->getDate();
+            if (null !== $dt) {
+                $dateData = [
+                    'year' => (int) $dt->format('Y'),
+                    'month' => (int) $dt->format('m'),
+                    'day' => (int) $dt->format('d'),
+                ];
+            }
+
+            $text = $contactDate->getText();
+            if (null !== $dateData || null !== $text) {
+                if (null !== $text && 'birthday' === strtolower($text)) {
+                    $birthdays[] = [
+                        'date' => $dateData,
+                        'text' => $text,
+                    ];
+                } else {
+                    $events[] = [
+                        'date' => $dateData,
+                        'type' => $text ?? 'other',
+                    ];
+                }
+            }
+        }
+
         // Send GET request to fetch the latest etag
         $personUrl = sprintf('https://people.googleapis.com/v1/%s', $resourceName);
         $getResponse = $this->httpClient->request('GET', $personUrl, [
@@ -109,13 +183,18 @@ class GoogleContactUpdateService
                 'Authorization' => 'Bearer ' . $accessToken,
             ],
             'query' => [
-                'updatePersonFields' => 'phoneNumbers,names,emailAddresses',
+                'updatePersonFields' => 'phoneNumbers,names,emailAddresses,addresses,organizations,biographies,birthdays,events',
             ],
             'json' => [
                 'etag' => $etag,
                 'phoneNumbers' => $phoneNumbers,
                 'names' => $names,
                 'emailAddresses' => $emailAddresses,
+                'addresses' => $addresses,
+                'organizations' => $organizations,
+                'biographies' => $biographies,
+                'birthdays' => $birthdays,
+                'events' => $events,
             ],
         ]);
     }

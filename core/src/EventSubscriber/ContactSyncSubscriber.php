@@ -3,8 +3,12 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Contact;
+use App\Entity\ContactAddress;
+use App\Entity\ContactBiography;
+use App\Entity\ContactDate;
 use App\Entity\ContactEmailAdress;
 use App\Entity\ContactName;
+use App\Entity\ContactOrganization;
 use App\Entity\ContactPhoneNumber;
 use App\Service\Google\GoogleContactUpdateService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
@@ -30,19 +34,19 @@ class ContactSyncSubscriber
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress) {
+            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress || $entity instanceof ContactAddress || $entity instanceof ContactBiography || $entity instanceof ContactOrganization || $entity instanceof ContactDate) {
                 $this->addContactToSync($entity->getContact());
             }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress) {
+            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress || $entity instanceof ContactAddress || $entity instanceof ContactBiography || $entity instanceof ContactOrganization || $entity instanceof ContactDate) {
                 $this->addContactToSync($entity->getContact());
             }
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress) {
+            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress || $entity instanceof ContactAddress || $entity instanceof ContactBiography || $entity instanceof ContactOrganization || $entity instanceof ContactDate) {
                 $this->addContactToSync($entity->getContact());
             }
         }

@@ -80,8 +80,8 @@ Entity: `UserPref`.
 ### 7. Google Contacts Integration
 Location: `src/Service/Google/`.
 - **Import**: `GoogleContactsService` imports contacts from Google People API. Contacts are linked via `ImportMapping` entity.
-- **Update Sync**: `GoogleContactUpdateService` pushes phone number changes to Google when `UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE` is enabled.
-- **Event Subscriber**: `ContactSyncSubscriber` listens to `Contact`, `ContactPhoneNumber`, `ContactName`, and `ContactEmailAdress` entity changes and triggers the sync after flush.
+- **Update Sync**: `GoogleContactUpdateService` pushes contact data (phones, emails, names, addresses, bios, orgs, dates) to Google when `UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE` is enabled.
+- **Event Subscriber**: `ContactSyncSubscriber` listens to changes in `Contact` and its related entities (phones, names, emails, addresses, bios, orgs, dates) and triggers the sync after flush.
 - **OAuth Scope**: Uses `https://www.googleapis.com/auth/contacts` for read/write access.
 
 ### 8. Code Quality & Standards
