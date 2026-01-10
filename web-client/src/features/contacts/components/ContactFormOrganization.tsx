@@ -4,11 +4,11 @@ import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { CollapsibleSection } from './CollapsibleSection'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import { DateInput } from '@/components/ui/DateInput'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { type ContactFormValues } from '@/types/models'
 
@@ -77,7 +77,8 @@ export function ContactFormOrganization() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
+                      <TypeAutocomplete
+                        field="organizationNames"
                         placeholder={t('contacts.organizationName')}
                         {...field}
                         value={field.value || ''}
@@ -93,7 +94,8 @@ export function ContactFormOrganization() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
+                      <TypeAutocomplete
+                        field="organizationTitles"
                         placeholder={t('contacts.organizationTitle')}
                         {...field}
                         value={field.value || ''}
@@ -109,7 +111,8 @@ export function ContactFormOrganization() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
+                      <TypeAutocomplete
+                        field="organizationDepartments"
                         placeholder={t('contacts.organizationDepartment')}
                         {...field}
                         value={field.value || ''}
@@ -125,7 +128,8 @@ export function ContactFormOrganization() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
+                      <TypeAutocomplete
+                        field="organizationTypes"
                         placeholder={t('contacts.organizationTypePlaceholder')}
                         {...field}
                         value={field.value || ''}

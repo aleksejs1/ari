@@ -49,6 +49,14 @@ vi.mock('@/features/contacts/hooks/useAutocomplete', () => ({
   useAutocomplete: () => ({
     data: {
       phoneTypes: ['Mobile', 'Work', 'Home'],
+      emailTypes: ['Personal', 'Work', 'Other'],
+      addressTypes: ['Home', 'Work', 'Other'],
+      biographyTypes: ['Bio', 'Note'],
+      dateTypes: ['Birthday', 'Anniversary'],
+      organizationTypes: ['Work', 'Volunteer', 'Education'],
+      organizationNames: [],
+      organizationTitles: [],
+      organizationDepartments: [],
     },
     isLoading: false,
   }),

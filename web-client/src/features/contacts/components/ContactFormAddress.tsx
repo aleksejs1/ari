@@ -4,6 +4,7 @@ import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { CollapsibleSection } from './CollapsibleSection'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
@@ -158,7 +159,11 @@ export function ContactFormAddress() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder={t('contacts.addressTypePlaceholder')} {...field} />
+                      <TypeAutocomplete
+                        field="addressTypes"
+                        placeholder={t('contacts.addressTypePlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

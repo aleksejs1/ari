@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { InlineEditTrigger } from './InlineEditTrigger'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -75,9 +76,10 @@ function AddressForm({
   return (
     <div className="flex w-80 flex-col gap-3">
       <div className="space-y-2">
-        <Input
+        <TypeAutocomplete
           value={type}
           onChange={(e) => setType(e.target.value)}
+          field="addressTypes"
           placeholder={t('contacts.addressTypePlaceholder')}
           className="h-8"
           aria-label={t('contacts.addressType')}

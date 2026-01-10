@@ -4,10 +4,10 @@ import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { CollapsibleSection } from './CollapsibleSection'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { type ContactFormValues } from '@/types/models'
 
@@ -69,7 +69,11 @@ export function ContactFormBiography() {
               render={({ field }) => (
                 <FormItem className="w-[150px]">
                   <FormControl>
-                    <Input placeholder={t('contacts.typePlaceholder')} {...field} />
+                    <TypeAutocomplete
+                      field="biographyTypes"
+                      placeholder={t('contacts.typePlaceholder')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

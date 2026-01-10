@@ -45,7 +45,9 @@ describe('ContactFormBiography', () => {
     render(<Wrapper />)
     fireEvent.click(screen.getByText('contacts.biography'))
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('Note')).toBeInTheDocument()
+    // Check type field - TypeAutocomplete renders as input
+    const inputs = screen.getAllByRole('textbox')
+    expect(inputs.some((input) => (input as HTMLInputElement).value === 'Note')).toBe(true)
   })
 
   it('adds a new biography', async () => {
@@ -70,14 +72,14 @@ describe('ContactFormBiography', () => {
     fireEvent.click(screen.getByText('contacts.biography'))
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
 
-    // The order of buttons:
-    // 0: Collapsible toggle
-    // 1: Add Biography button
-    // 2: Remove button
-    const buttons = screen.getAllByRole('button')
-    const removeBtn = buttons[2]
+    // Find the trash icon button
+    const trashIcon = document.querySelector('svg.lucide-trash-2')
+    const removeBtn = trashIcon?.closest('button')
 
-    fireEvent.click(removeBtn)
+    expect(removeBtn).toBeTruthy()
+    if (removeBtn) {
+      fireEvent.click(removeBtn)
+    }
 
     await waitFor(() => {
       expect(screen.queryByDisplayValue('Initial Bio')).not.toBeInTheDocument()
