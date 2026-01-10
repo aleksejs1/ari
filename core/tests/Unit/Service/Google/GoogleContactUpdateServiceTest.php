@@ -44,7 +44,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $httpClient,
         );
 
-        $service->updateContactPhones($contact);
+        $service->updateContact($contact);
     }
 
     public function testUpdateContactPhonesSkipsIfNoMapping(): void
@@ -77,7 +77,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $httpClient,
         );
 
-        $service->updateContactPhones($contact);
+        $service->updateContact($contact);
     }
 
     public function testUpdateContactPhonesSkipsIfNoToken(): void
@@ -116,7 +116,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $httpClient,
         );
 
-        $service->updateContactPhones($contact);
+        $service->updateContact($contact);
     }
 
     public function testUpdateContactPhonesSendsRequest(): void
@@ -175,6 +175,6 @@ class GoogleContactUpdateServiceTest extends TestCase
             $httpClient,
         );
 
-        $service->updateContactPhones($contact);
+        $service->updateContact($contact);
     }
 }

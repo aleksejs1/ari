@@ -3,6 +3,8 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Contact;
+use App\Entity\ContactEmailAdress;
+use App\Entity\ContactName;
 use App\Entity\ContactPhoneNumber;
 use App\Service\Google\GoogleContactUpdateService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
@@ -12,7 +14,7 @@ use Doctrine\ORM\Events;
 
 #[AsDoctrineListener(event: Events::onFlush)]
 #[AsDoctrineListener(event: Events::postFlush)]
-class ContactPhoneSyncSubscriber
+class ContactSyncSubscriber
 {
     /** @var array<int, Contact> */
     private array $contactsToSync = [];
@@ -28,19 +30,19 @@ class ContactPhoneSyncSubscriber
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof ContactPhoneNumber) {
+            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress) {
                 $this->addContactToSync($entity->getContact());
             }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof ContactPhoneNumber) {
+            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress) {
                 $this->addContactToSync($entity->getContact());
             }
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if ($entity instanceof ContactPhoneNumber) {
+            if ($entity instanceof ContactPhoneNumber || $entity instanceof ContactName || $entity instanceof ContactEmailAdress) {
                 $this->addContactToSync($entity->getContact());
             }
         }
@@ -57,7 +59,7 @@ class ContactPhoneSyncSubscriber
 
         foreach ($contacts as $contact) {
             try {
-                $this->googleContactUpdateService->updateContactPhones($contact);
+                $this->googleContactUpdateService->updateContact($contact);
             } catch (\Exception) {
                 // Fail silently or log?
                 // For now, let's not block the flush if Google sync fails.

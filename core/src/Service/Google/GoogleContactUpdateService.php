@@ -20,7 +20,7 @@ class GoogleContactUpdateService
     ) {
     }
 
-    public function updateContactPhones(Contact $contact): void
+    public function updateContact(Contact $contact): void
     {
         $user = $contact->getUser();
 
@@ -67,6 +67,22 @@ class GoogleContactUpdateService
             ];
         }
 
+        $names = [];
+        foreach ($contact->getContactNames() as $name) {
+            $names[] = [
+                'givenName' => $name->getGiven() ?? '',
+                'familyName' => $name->getFamily() ?? '',
+            ];
+        }
+
+        $emailAddresses = [];
+        foreach ($contact->getContactEmailAdresses() as $email) {
+            $emailAddresses[] = [
+                'value' => $email->getValue(),
+                'type' => $email->getType() ?? 'other',
+            ];
+        }
+
         // Send GET request to fetch the latest etag
         $personUrl = sprintf('https://people.googleapis.com/v1/%s', $resourceName);
         $getResponse = $this->httpClient->request('GET', $personUrl, [
@@ -93,11 +109,13 @@ class GoogleContactUpdateService
                 'Authorization' => 'Bearer ' . $accessToken,
             ],
             'query' => [
-                'updatePersonFields' => 'phoneNumbers',
+                'updatePersonFields' => 'phoneNumbers,names,emailAddresses',
             ],
             'json' => [
                 'etag' => $etag,
                 'phoneNumbers' => $phoneNumbers,
+                'names' => $names,
+                'emailAddresses' => $emailAddresses,
             ],
         ]);
     }
