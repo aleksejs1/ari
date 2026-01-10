@@ -58,7 +58,7 @@ export function GroupsTable({ groups, onEdit }: GroupsTableProps) {
                     variant="ghost"
                     size="icon"
                     className="text-red-500 hover:text-red-600"
-                    onClick={() => handleDelete(group.id)}
+                    onClick={() => group.id && handleDelete(group.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

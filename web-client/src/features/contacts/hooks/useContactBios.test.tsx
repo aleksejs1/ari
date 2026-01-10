@@ -50,12 +50,12 @@ describe('useContactBios hooks', () => {
 
       await result.current.mutateAsync({
         contact: '/api/contacts/123',
-        text: 'Bio text',
+        value: 'Bio text',
       })
 
       expect(api.post).toHaveBeenCalledWith('/contact_biographies', {
         contact: '/api/contacts/123',
-        text: 'Bio text',
+        value: 'Bio text',
       })
 
       await waitFor(() => {
@@ -74,12 +74,12 @@ describe('useContactBios hooks', () => {
 
       await result.current.mutateAsync({
         id: '/api/contact_biographies/1',
-        data: { text: 'Updated bio' },
+        data: { value: 'Updated bio' },
       })
 
       expect(api.patch).toHaveBeenCalledWith(
         '/contact_biographies/1',
-        { text: 'Updated bio' },
+        { value: 'Updated bio' },
         { headers: { 'Content-Type': 'application/merge-patch+json' } },
       )
     })
@@ -92,12 +92,12 @@ describe('useContactBios hooks', () => {
 
       await result.current.mutateAsync({
         id: '/contact_biographies/1',
-        data: { text: 'Updated bio' },
+        data: { value: 'Updated bio' },
       })
 
       expect(api.patch).toHaveBeenCalledWith(
         '/contact_biographies/1',
-        { text: 'Updated bio' },
+        { value: 'Updated bio' },
         { headers: { 'Content-Type': 'application/merge-patch+json' } },
       )
     })

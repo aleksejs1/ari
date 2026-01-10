@@ -1,4 +1,3 @@
-import { type UseMutationResult } from '@tanstack/react-query'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 
@@ -9,7 +8,7 @@ import { GroupsTable } from './GroupsTable'
 import type { Group } from '@/types/models'
 
 vi.mock('../useGroups', () => ({
-  useDeleteGroup: vi.fn(),
+  useDeleteGroup: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false } as any)),
 }))
 
 vi.mock('react-i18next', () => ({
@@ -27,10 +26,10 @@ describe('GroupsTable', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useDeleteGroup).mockReturnValue({
-      mutateAsync: mockDeleteMutate,
-      isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+      ; (useDeleteGroup as any).mockReturnValue({
+        mutateAsync: mockDeleteMutate,
+        isPending: false,
+      })
   })
 
   it('renders groups', () => {

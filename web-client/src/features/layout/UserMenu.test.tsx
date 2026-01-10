@@ -19,28 +19,28 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
-// Mock ResizeObserver for Radix UI
-class ResizeObserverMock {
-  observe() {
-    // do nothing
-  }
-  unobserve() {
-    // do nothing
-  }
-  disconnect() {
-    // do nothing
-  }
+// Mock ResizeObserver
+window.ResizeObserver = class ResizeObserver {
+  observe() { }
+  unobserve() { }
+  disconnect() { }
+} as any
+
+const mockUser = {
+  id: 1,
+  uuid: 'user-1-uuid',
 }
-global.ResizeObserver = ResizeObserverMock
+
+const mockLogout = vi.fn()
+
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: vi.fn(() => ({
+    logout: mockLogout,
+    user: mockUser,
+  })),
+}))
 
 describe('UserMenu', () => {
-  const mockLogout = vi.fn()
-  const mockUser = {
-    username: 'testuser',
-    email: 'test@example.com',
-    uuid: '123-456',
-  }
-
   beforeEach(() => {
     vi.mocked(useAuth).mockReturnValue({
       user: mockUser,

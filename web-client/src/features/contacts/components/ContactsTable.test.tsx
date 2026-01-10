@@ -35,9 +35,9 @@ vi.mock('react-router-dom', async () => {
 describe('ContactsTable', () => {
   beforeEach(() => {
     vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
-    })
+      ; (useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+        formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+      })
   })
 
   const mockData: Contact[] = [
@@ -205,7 +205,7 @@ describe('ContactsTable', () => {
         '@type': 'Contact',
         contactNames: [{ '@id': '/api/cn/3', '@type': 'ContactName', given: 'Charlie' }],
         contactGroups: [
-          { '@id': '/api/cg/1', '@type': 'ContactGroup', groupResource: '/api/groups/1' },
+          { '@id': '/api/cg/1', '@type': 'ContactGroup', groupResource: '/api/groups/1' as any },
         ],
       },
     ]
@@ -321,6 +321,8 @@ describe('ContactsTable', () => {
           onDeleteEmail={vi.fn()}
           onUpdatePhone={vi.fn()}
           onDeletePhone={vi.fn()}
+          onUpdateName={vi.fn()}
+          onDeleteName={vi.fn()}
         />
       </MemoryRouter>,
     )

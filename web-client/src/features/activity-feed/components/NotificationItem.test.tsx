@@ -21,6 +21,8 @@ describe('NotificationItem', () => {
 
   it('renders unread notification', () => {
     const item: ActivityFeed = {
+      '@id': '/api/activity_feeds/1',
+      '@type': 'ActivityFeed',
       id: 1,
       title: 'Test Title',
       message: 'Test message',
@@ -37,6 +39,8 @@ describe('NotificationItem', () => {
 
   it('renders read notification', () => {
     const item: ActivityFeed = {
+      '@id': '/api/activity_feeds/2',
+      '@type': 'ActivityFeed',
       id: 2,
       title: 'Read Title',
       message: 'Read message',
@@ -52,6 +56,8 @@ describe('NotificationItem', () => {
 
   it('calls onRead when unread notification is clicked', () => {
     const item: ActivityFeed = {
+      '@id': '/api/activity_feeds/3',
+      '@type': 'ActivityFeed',
       id: 3,
       title: 'Unread Item',
       message: 'Click me',
@@ -68,6 +74,8 @@ describe('NotificationItem', () => {
 
   it('does not call onRead when read notification is clicked', () => {
     const item: ActivityFeed = {
+      '@id': '/api/activity_feeds/4',
+      '@type': 'ActivityFeed',
       id: 4,
       title: 'Already Read',
       message: 'Already read message',
@@ -84,6 +92,8 @@ describe('NotificationItem', () => {
 
   it('renders notification without createdAt', () => {
     const item: ActivityFeed = {
+      '@id': '/api/activity_feeds/5',
+      '@type': 'ActivityFeed',
       id: 5,
       title: 'No Date',
       message: 'No date message',

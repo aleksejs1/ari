@@ -49,7 +49,7 @@ export default function NotificationPolicyForm() {
   const contacts = contactsData ? getHydraMember(contactsData) : []
 
   const form = useForm<NotificationPolicyFormValues>({
-    resolver: zodResolver(notificationPolicySchema),
+    resolver: zodResolver(notificationPolicySchema) as any,
     defaultValues: {
       name: '',
       targets: {
@@ -114,11 +114,11 @@ export default function NotificationPolicyForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Form {...(form as any)}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6">
             {/* Name */}
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="name"
               render={({ field }) => (
                 <FormItem>

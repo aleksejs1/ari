@@ -24,14 +24,14 @@ describe('audit-logs/utils', () => {
     it('returns translated string', () => {
       const t = vi.fn().mockReturnValue('Translated Action')
       const log = { action: 'INSERT', entityType: 'App\\Entity\\Contact' } as TimelineEvent
-      expect(getLogDescription(log, t)).toBe('Translated Action')
+      expect(getLogDescription(log, t as any)).toBe('Translated Action')
       expect(t).toHaveBeenCalledWith('auditLogs.entities.Contact.INSERT')
     })
 
     it('returns fallback string if translation missing', () => {
       const t = vi.fn().mockImplementation((key) => key)
       const log = { action: 'UPDATE', entityType: 'App\\Entity\\ContactName' } as TimelineEvent
-      expect(getLogDescription(log, t)).toBe('UPDATE ContactName')
+      expect(getLogDescription(log, t as any)).toBe('UPDATE ContactName')
     })
   })
 
@@ -64,20 +64,26 @@ describe('audit-logs/utils', () => {
 
     it('finds contact ID in snapshot data (deep search)', () => {
       const log = {
+        id: 1,
+        action: 'INSERT',
         entityType: 'App\\Entity\\Unknown',
         snapshotAfter: {
           someField: {
             contact: '/api/contacts/789',
           },
         },
+        createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
       expect(getContactId(log)).toBe('789')
     })
 
     it('returns null if no contact ID found', () => {
       const log = {
+        id: 2,
+        action: 'INSERT',
         entityType: 'App\\Entity\\Tag',
         snapshotAfter: { name: 'tag' },
+        createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
       expect(getContactId(log)).toBeNull()
     })

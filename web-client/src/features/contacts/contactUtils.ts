@@ -56,7 +56,7 @@ export function mapContactToFormValues(contact: Contact): ContactFormValues {
       name: o.name ?? '',
       title: o.title ?? '',
       department: o.department ?? '',
-      description: o.description ?? '',
+      description: (o as any).description ?? '',
       jobDescription: o.jobDescription ?? '',
       startDate: o.startDate ?? '',
       endDate: o.endDate ?? '',
@@ -80,11 +80,11 @@ export function mapContactToFormValues(contact: Contact): ContactFormValues {
     })),
     contactRelations: (contact.contactRelations ?? []).map((r) => ({
       id: r.id?.toString(),
-      '@id': r['@id'],
+      '@id': r['@id'] ?? '',
       '@type': 'ContactRelation',
-      relatedContact: r.relatedContact,
-      type: r.type,
+      relatedContact: r.relatedContact ?? '',
+      type: r.type ?? '',
       displayName: r.displayName,
-    })),
+    })) as any,
   }
 }

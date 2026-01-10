@@ -17,9 +17,10 @@ vi.mock('./TypeAutocomplete', () => ({
 describe('ContactPhoneInlineEdit', () => {
   const mockPhone = {
     '@id': '/api/phone_numbers/1',
+    '@type': 'ContactPhoneNumber',
     value: '123-456-7890',
     type: 'Mobile',
-  }
+  } as any
   const onUpdate = vi.fn()
   const onDelete = vi.fn()
 
@@ -85,7 +86,7 @@ describe('ContactPhoneInlineEdit', () => {
   it('renders plus button when phone is empty', () => {
     render(
       <ContactPhoneInlineEdit
-        phone={{ value: '', type: '' }}
+        phone={{ value: '', type: '', '@id': '', '@type': 'ContactPhoneNumber' } as any}
         onUpdate={onUpdate}
         onDelete={onDelete}
       />,

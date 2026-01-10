@@ -85,12 +85,12 @@ describe('mapContactToFormValues', () => {
     )
 
     expect(result.contactOrganizations).toHaveLength(1)
-    expect(result.contactOrganizations[0]).toEqual(
+    expect(result.contactOrganizations?.[0]).toEqual(
       expect.objectContaining({ name: 'Acme', title: 'Manager' }),
     )
 
     expect(result.contactBiographies).toHaveLength(1)
-    expect(result.contactBiographies[0]).toEqual(
+    expect(result.contactBiographies?.[0]).toEqual(
       expect.objectContaining({ value: 'Bio text', type: 'Note' }),
     )
 
@@ -135,8 +135,8 @@ describe('mapContactToFormValues', () => {
 
     expect(result.contactNames[0].given).toBe('')
     expect(result.contactNames[0].family).toBe('')
-    expect(result.contactOrganizations[0].name).toBe('')
-    expect(result.contactOrganizations[0].title).toBe('')
+    expect(result.contactOrganizations?.[0]?.name).toBe('')
+    expect(result.contactOrganizations?.[0]?.title).toBe('')
   })
 
   it('maps contact group resource when it is a string IRI', () => {

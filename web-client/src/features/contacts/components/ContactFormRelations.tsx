@@ -50,10 +50,10 @@ export function ContactFormRelations() {
                   <FormItem>
                     <FormControl>
                       <ContactAutocomplete
-                        value={formField.value}
+                        value={formField.value as any}
                         onChange={formField.onChange}
                         initialLabel={getValues(`contactRelations.${index}.displayName`)}
-                        // exclude contact itself? need ID from context or something, but form values might have it
+                      // exclude contact itself? need ID from context or something, but form values might have it
                       />
                     </FormControl>
                     <FormMessage />

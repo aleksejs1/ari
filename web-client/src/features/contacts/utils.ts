@@ -19,7 +19,6 @@ export function getHydraMember<T>(data?: HydraCollection<T> | T[]): T[] {
   if (Array.isArray(data)) {
     return data
   }
-  // @ts-expect-error - Fallback for raw JSON-LD response
   return data.member || data['hydra:member'] || []
 }
 

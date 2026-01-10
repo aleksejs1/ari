@@ -1,4 +1,3 @@
-import { type UseMutationResult } from '@tanstack/react-query'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
@@ -35,11 +34,11 @@ describe('GroupDialog', () => {
     vi.mocked(useCreateGroup).mockReturnValue({
       mutateAsync: mockCreateMutate,
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
     vi.mocked(useUpdateGroup).mockReturnValue({
       mutateAsync: mockUpdateMutate,
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
   })
 
   it('renders create mode correctly', () => {

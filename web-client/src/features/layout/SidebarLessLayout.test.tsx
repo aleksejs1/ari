@@ -24,7 +24,7 @@ vi.mock('@/features/search/components/GlobalSearch', () => ({
 describe('SidebarLessLayout', () => {
   it('renders layout elements correctly', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user', username: 'Test User' },
+      user: { id: 1, uuid: 'test-uuid' },
       login: vi.fn(),
       logout: vi.fn(),
       token: 'token',

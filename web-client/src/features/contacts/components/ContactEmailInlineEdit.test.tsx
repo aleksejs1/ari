@@ -5,7 +5,7 @@ import { vi } from 'vitest'
 import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
 
 // Mock ResizeObserver for Radix UI Popover
-global.ResizeObserver = class ResizeObserver {
+(window as any).ResizeObserver = class ResizeObserver {
   observe() {
     // mock
   }
@@ -20,9 +20,10 @@ global.ResizeObserver = class ResizeObserver {
 describe('ContactEmailInlineEdit', () => {
   const mockEmail = {
     '@id': '/api/emails/1',
+    '@type': 'ContactEmailAdress',
     value: 'test@example.com',
     type: 'Work',
-  }
+  } as any
   const onUpdate = vi.fn()
   const onDelete = vi.fn()
 
@@ -88,7 +89,7 @@ describe('ContactEmailInlineEdit', () => {
   it('renders plus button when email is empty', () => {
     render(
       <ContactEmailInlineEdit
-        email={{ value: '', type: '' }}
+        email={{ value: '', type: '', '@id': '', '@type': 'ContactEmailAdress' } as any}
         onUpdate={onUpdate}
         onDelete={onDelete}
       />,

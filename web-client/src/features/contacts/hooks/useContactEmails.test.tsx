@@ -50,12 +50,12 @@ describe('useContactEmails hooks', () => {
 
       await result.current.mutateAsync({
         contact: '/api/contacts/123',
-        email: 'test@example.com',
+        value: 'test@example.com',
       })
 
       expect(api.post).toHaveBeenCalledWith('/contact_email_adresses', {
         contact: '/api/contacts/123',
-        email: 'test@example.com',
+        value: 'test@example.com',
       })
 
       await waitFor(() => {
@@ -74,7 +74,7 @@ describe('useContactEmails hooks', () => {
 
       await result.current.mutateAsync({
         id: '/api/contact_email_adresses/1',
-        data: { email: 'updated@example.com' },
+        data: { value: 'updated@example.com' },
       })
 
       expect(api.patch).toHaveBeenCalledWith(
@@ -92,7 +92,7 @@ describe('useContactEmails hooks', () => {
 
       await result.current.mutateAsync({
         id: '/contact_email_adresses/1',
-        data: { email: 'updated@example.com' },
+        data: { value: 'updated@example.com' },
       })
 
       expect(api.patch).toHaveBeenCalledWith(

@@ -57,7 +57,7 @@ const getContactFormDefaultValues = (
   t: (key: string) => string,
   defaultValues?: ContactFormValues,
 ): ContactFormValues => {
-  const d = defaultValues ?? {}
+  const d = (defaultValues ?? {}) as Partial<ContactFormValues>
 
   return {
     ...d,
@@ -161,9 +161,9 @@ export function ContactModalForm({
   const { mutateAsync: createGroup } = useCreateGroup()
 
   const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactSchema),
+    resolver: zodResolver(contactSchema) as any,
     defaultValues: getContactFormDefaultValues(t, defaultValues),
-  })
+  }) as any
 
   // Track visibility of optional sections
   const [showOrganization, setShowOrganization] = useState(false)
@@ -199,7 +199,7 @@ export function ContactModalForm({
       <DialogContent className="max-w-2xl overflow-hidden bg-background p-0 sm:max-w-[600px]">
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>
-            {defaultValues?.['@id'] ? t('contacts.editContact') : t('contacts.createContact')}
+            {(defaultValues as any)?.['@id'] ? t('contacts.editContact') : t('contacts.createContact')}
           </DialogTitle>
         </DialogHeader>
 

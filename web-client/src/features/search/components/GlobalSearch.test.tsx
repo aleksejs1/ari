@@ -32,7 +32,7 @@ describe('GlobalSearch', () => {
     vi.clearAllMocks()
     vi.mocked(useNavigate).mockReturnValue(vi.fn())
     vi.mocked(useContacts).mockReturnValue({
-      data: { 'hydra:member': [] },
+      data: { member: [] },
     } as unknown as UseQueryResult<HydraCollection<Contact>>)
     vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as UseQueryResult<Group[]>)
   })
@@ -65,11 +65,11 @@ describe('GlobalSearch', () => {
   it('displays contact results', () => {
     vi.mocked(useContacts).mockReturnValue({
       data: {
-        'hydra:member': [
+        member: [
           {
             '@id': '/api/contacts/1',
             id: '1',
-            names: [{ givenName: 'John', familyName: 'Doe' }],
+            contactNames: [{ given: 'John', family: 'Doe' }],
           },
         ],
       },
@@ -94,12 +94,12 @@ describe('GlobalSearch', () => {
   it('displays contact results preferring displayName', () => {
     vi.mocked(useContacts).mockReturnValue({
       data: {
-        'hydra:member': [
+        member: [
           {
             '@id': '/api/contacts/2',
             id: '2',
             displayName: 'Jane Doe Custom',
-            names: [{ givenName: 'Jane', familyName: 'Doe' }],
+            contactNames: [{ given: 'Jane', family: 'Doe' }],
           },
         ],
       },
@@ -154,10 +154,10 @@ describe('GlobalSearch', () => {
 
     vi.mocked(useContacts).mockReturnValue({
       data: {
-        'hydra:member': Array.from({ length: 6 }, (_, i) => ({
+        member: Array.from({ length: 6 }, (_, i) => ({
           '@id': `/api/contacts/${i}`,
           id: String(i),
-          names: [{ givenName: 'John', familyName: 'Doe' }],
+          contactNames: [{ given: 'John', family: 'Doe' }],
         })),
         totalItems: 6,
       },
@@ -183,10 +183,10 @@ describe('GlobalSearch', () => {
   it('does not show "Show all results" button when there are 5 or fewer results', () => {
     vi.mocked(useContacts).mockReturnValue({
       data: {
-        'hydra:member': Array.from({ length: 5 }, (_, i) => ({
+        member: Array.from({ length: 5 }, (_, i) => ({
           '@id': `/api/contacts/${i}`,
           id: String(i),
-          names: [{ givenName: 'John', familyName: 'Doe' }],
+          contactNames: [{ given: 'John', family: 'Doe' }],
         })),
         totalItems: 5,
       },

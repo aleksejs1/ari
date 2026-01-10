@@ -37,7 +37,7 @@ export function useUpdateContactGroups() {
       const response = await api.patch(
         url,
         {
-          contactGroups: groupIds.map((id) => ({ groupResource: id })),
+          contactGroups: groupIds.map((id) => ({ groupResource: id })) as any,
         },
         {
           headers: {

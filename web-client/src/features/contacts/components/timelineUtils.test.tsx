@@ -78,9 +78,11 @@ describe('timelineUtils', () => {
 
     it('renders ContactName snapshot', () => {
       const log = {
+        id: 1,
         action: 'INSERT',
         entityType: 'App\\Entity\\ContactName',
         snapshotAfter: { given: 'Jane', family: 'Doe' },
+        createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
       const result = renderWithRouter(getLogSnapshotDetails(log, 'en'))
       expect(result.container).toHaveTextContent('Doe Jane')
@@ -88,9 +90,11 @@ describe('timelineUtils', () => {
 
     it('renders ContactOrganization with dates', () => {
       const log = {
+        id: 2,
         action: 'INSERT',
         entityType: 'App\\Entity\\ContactOrganization',
         snapshotAfter: { name: 'Acme', startDate: '2022-01-01' },
+        createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
       const result = renderWithRouter(getLogSnapshotDetails(log, 'en'))
       expect(result.container).toHaveTextContent('Acme')
@@ -98,9 +102,11 @@ describe('timelineUtils', () => {
 
     it('renders ContactGroup', () => {
       const log = {
+        id: 3,
         action: 'INSERT',
         entityType: 'App\\Entity\\ContactGroup',
         snapshotAfter: { groupResource: { name: 'Friends' } },
+        createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
       const result = renderWithRouter(getLogSnapshotDetails(log, 'en'))
       expect(result.container).toHaveTextContent('Friends')
@@ -120,7 +126,7 @@ describe('timelineUtils', () => {
     it('uses translation keys', () => {
       const t = vi.fn().mockReturnValue('Translated')
       const log = { action: 'INSERT', entityType: 'App\\Entity\\Contact' } as TimelineEvent
-      getLogLabel(log, t)
+      getLogLabel(log, t as any)
       expect(t).toHaveBeenCalledWith('contacts.history.actions.Contact.INSERT ', 'INSERT Contact ')
     })
   })

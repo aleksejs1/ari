@@ -1,4 +1,3 @@
-import { type UseMutationResult, type UseQueryResult } from '@tanstack/react-query'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -50,23 +49,23 @@ describe('GroupsPage', () => {
     vi.mocked(useCreateGroup).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
     vi.mocked(useUpdateGroup).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
     vi.mocked(useDeleteGroup).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
   })
 
   it('renders loading state', () => {
     vi.mocked(useGroups).mockReturnValue({
       data: undefined,
-      isLoading: true,
+      verifiedAt: '2023-01-01T00:00:00Z',
       error: null,
-    } as unknown as UseQueryResult<Group[], unknown>)
+    } as any)
 
     render(
       <MemoryRouter>
@@ -84,8 +83,8 @@ describe('GroupsPage', () => {
     vi.mocked(useGroups).mockReturnValue({
       data: undefined,
       isLoading: false,
-      error: new Error('Failed to load'),
-    } as unknown as UseQueryResult<Group[], unknown>)
+      error: new Error('Error'),
+    } as any)
 
     render(
       <MemoryRouter>
@@ -101,7 +100,7 @@ describe('GroupsPage', () => {
       data: mockGroups,
       isLoading: false,
       error: null,
-    } as unknown as UseQueryResult<Group[], unknown>)
+    } as any)
 
     render(
       <MemoryRouter>
@@ -120,7 +119,7 @@ describe('GroupsPage', () => {
       data: mockGroups,
       isLoading: false,
       error: null,
-    } as unknown as UseQueryResult<Group[], unknown>)
+    } as any)
 
     render(
       <MemoryRouter>
@@ -138,7 +137,7 @@ describe('GroupsPage', () => {
       data: mockGroups,
       isLoading: false,
       error: null,
-    } as unknown as UseQueryResult<Group[], unknown>)
+    } as any)
 
     render(
       <MemoryRouter>

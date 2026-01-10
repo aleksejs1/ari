@@ -42,7 +42,7 @@ describe('useNotificationChannels', () => {
 
   it('fetches notification channels', async () => {
     const mockData = {
-      member: [{ id: 1, type: 'telegram', value: '123' }],
+      member: [{ id: 1, type: 'telegram' as const, config: { chatId: '123' } }],
       totalItems: 1,
     }
     vi.mocked(api.get).mockResolvedValueOnce({ data: mockData })
@@ -58,7 +58,7 @@ describe('useNotificationChannels', () => {
   })
 
   it('creates a notification channel', async () => {
-    const newChannel = { type: 'telegram', value: '123' }
+    const newChannel = { type: 'telegram' as const, config: { chatId: '123' } }
     const responseChannel = { id: 1, ...newChannel }
     vi.mocked(api.post).mockResolvedValueOnce({ data: responseChannel })
 
@@ -72,7 +72,7 @@ describe('useNotificationChannels', () => {
   })
 
   it('updates a notification channel', async () => {
-    const updateData = { id: '1', data: { type: 'slack', value: '456' } }
+    const updateData = { id: '1', data: { type: 'web' as const, config: { chatId: '456' } } }
     const responseChannel = { id: 1, ...updateData.data }
     vi.mocked(api.put).mockResolvedValueOnce({ data: responseChannel })
 
@@ -86,7 +86,7 @@ describe('useNotificationChannels', () => {
   })
 
   it('updates a notification channel with IRI', async () => {
-    const updateData = { id: '/api/notification_channels/1', data: { type: 'slack', value: '456' } }
+    const updateData = { id: '/api/notification_channels/1', data: { type: 'web' as const, config: { chatId: '456' } } }
     const responseChannel = { id: 1, ...updateData.data }
     vi.mocked(api.put).mockResolvedValueOnce({ data: responseChannel })
 

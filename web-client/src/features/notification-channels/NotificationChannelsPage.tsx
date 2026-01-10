@@ -44,6 +44,7 @@ export default function NotificationChannelsPage() {
   const handleDelete = async (channel: NotificationChannel) => {
     if (window.confirm(t('notificationChannels.deleteConfirm'))) {
       try {
+        if (!channel['@id']) return
         await deleteMutation.mutateAsync(channel['@id'])
       } catch (err) {
         console.error('Failed to delete channel:', err)
@@ -54,6 +55,7 @@ export default function NotificationChannelsPage() {
   const handleSubmit = async (values: NotificationChannelFormValues) => {
     try {
       if (editingChannel) {
+        if (!editingChannel['@id']) return
         await updateMutation.mutateAsync({
           id: editingChannel['@id'],
           data: values,
@@ -104,9 +106,9 @@ export default function NotificationChannelsPage() {
               defaultValues={
                 editingChannel
                   ? {
-                      type: editingChannel.type as 'telegram' | 'web',
-                      config: editingChannel.config,
-                    }
+                    type: editingChannel.type as 'telegram' | 'web',
+                    config: editingChannel.config,
+                  }
                   : undefined
               }
               onSubmit={handleSubmit}

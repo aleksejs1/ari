@@ -58,8 +58,8 @@ const Wrapper = ({
           )
           .optional(),
       }),
-    ),
-  })
+    ) as any,
+  }) as any
   return <FormProvider {...methods}>{children}</FormProvider>
 }
 

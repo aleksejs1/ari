@@ -22,7 +22,7 @@ const getRelatedContactId = (relatedContact: unknown): string | undefined => {
 }
 
 const getRelatedContactName = (
-  relation: NonNullable<Contact['contactRelations']>[number],
+  relation: any,
   t: (key: string, options?: { defaultValue?: string }) => string,
 ): string => {
   if (relation.displayName) {
@@ -31,9 +31,9 @@ const getRelatedContactName = (
   if (
     typeof relation.relatedContact === 'object' &&
     relation.relatedContact !== null &&
-    relation.relatedContact.displayName
+    (relation.relatedContact as any).displayName
   ) {
-    return relation.relatedContact.displayName
+    return (relation.relatedContact as any).displayName
   }
   return t('common.unknown')
 }

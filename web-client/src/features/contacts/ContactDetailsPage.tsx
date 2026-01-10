@@ -47,7 +47,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
       if (contact?.['@id']) {
         await exportVcardMutation.mutateAsync({
           id: contact['@id'],
-          filename: `contact_${contact.firstName || 'export'}_${contact.lastName || ''}`,
+          filename: `contact_${contact.contactNames?.[0]?.given || 'export'}_${contact.contactNames?.[0]?.family || ''}`,
         })
       }
     } catch (error) {

@@ -91,7 +91,11 @@ export const TargetsSection = ({ groups, contacts }: TargetsSectionProps) => {
                         selectedType === 'group'
                           ? groups.find((g) => g['@id'] === id)
                           : contacts.find((c) => c['@id'] === id)
-                      const label = item?.name || (item as Contact)?.contactNames?.[0]?.given || id
+                      const label =
+                        (item as Group)?.name ||
+                        (item as Contact)?.displayName ||
+                        (item as Contact)?.contactNames?.[0]?.given ||
+                        id
                       return (
                         <Badge key={id} variant="secondary" className="pr-1">
                           {label}
@@ -119,7 +123,10 @@ export const TargetsSection = ({ groups, contacts }: TargetsSectionProps) => {
                         {(selectedType === 'group' ? groups : contacts).map((item) => {
                           const id = item['@id'] || ''
                           const label =
-                            item.name || (item as Contact)?.contactNames?.[0]?.given || id
+                            (item as Group).name ||
+                            (item as Contact).displayName ||
+                            (item as Contact).contactNames?.[0]?.given ||
+                            id
                           const isSelected = selectedIds.includes(id)
                           return (
                             <button

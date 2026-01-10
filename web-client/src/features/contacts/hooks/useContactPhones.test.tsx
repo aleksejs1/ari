@@ -50,12 +50,12 @@ describe('useContactPhones hooks', () => {
 
       await result.current.mutateAsync({
         contact: '/api/contacts/123',
-        phone: '+1234567890',
+        value: '+1234567890',
       })
 
       expect(api.post).toHaveBeenCalledWith('/contact_phone_numbers', {
         contact: '/api/contacts/123',
-        phone: '+1234567890',
+        value: '+1234567890',
       })
 
       await waitFor(() => {
@@ -74,12 +74,12 @@ describe('useContactPhones hooks', () => {
 
       await result.current.mutateAsync({
         id: '/api/contact_phone_numbers/1',
-        data: { phone: '+0987654321' },
+        data: { value: '+0987654321' },
       })
 
       expect(api.patch).toHaveBeenCalledWith(
         '/contact_phone_numbers/1',
-        { phone: '+0987654321' },
+        { value: '+0987654321' },
         { headers: { 'Content-Type': 'application/merge-patch+json' } },
       )
     })
@@ -92,12 +92,12 @@ describe('useContactPhones hooks', () => {
 
       await result.current.mutateAsync({
         id: '/contact_phone_numbers/1',
-        data: { phone: '+0987654321' },
+        data: { value: '+0987654321' },
       })
 
       expect(api.patch).toHaveBeenCalledWith(
         '/contact_phone_numbers/1',
-        { phone: '+0987654321' },
+        { value: '+0987654321' },
         { headers: { 'Content-Type': 'application/merge-patch+json' } },
       )
     })

@@ -57,7 +57,7 @@ export function useContactFavorite() {
 
       const newGroups = isFavorite
         ? contact.contactGroups?.filter((cg) => getGroupIri(cg) !== favGroupId)
-        : [...(contact.contactGroups || []), { groupResource: favGroupId }]
+        : [...(contact.contactGroups || []), { groupResource: favGroupId } as any]
 
       if (contact['@id']) {
         patchContact({

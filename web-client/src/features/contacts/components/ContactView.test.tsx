@@ -64,7 +64,7 @@ vi.mock('lucide-react', () => ({
 }))
 
 const mockContact: Contact = {
-  id: '123',
+  id: 123,
   '@id': '/api/contacts/123',
   '@type': 'Contact',
   contactNames: [
@@ -111,7 +111,7 @@ const mockContact: Contact = {
   ],
   contactGroups: [
     {
-      groupResource: { name: 'Friends', '@id': 'group-1' },
+      groupResource: { name: 'Friends', '@id': 'group-1', '@type': 'Group' } as any,
       '@id': 'cg-1',
       '@type': 'ContactGroup',
     },

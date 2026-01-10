@@ -237,7 +237,6 @@ function mapContactToSearchResult(c: Contact, noName: string): SearchResult {
     id: c['@id'] || String(c.id) || crypto.randomUUID(),
     title: getContactTitle(c, noName),
     type: 'contact',
-    // @ts-expect-error - id is present in hydra response
     url: `/contacts/${c.id || c.uuid || c['@id']?.split('/').pop()}`,
   }
 }
@@ -247,9 +246,9 @@ function getContactTitle(c: Contact, fallback: string): string {
     return c.displayName
   }
 
-  if (c.names && c.names.length > 0) {
-    const first = c.names[0]
-    return `${first.givenName || ''} ${first.familyName || ''}`.trim()
+  if (c.contactNames && c.contactNames.length > 0) {
+    const first = c.contactNames[0]
+    return `${first.given || ''} ${first.family || ''}`.trim()
   }
 
   return fallback

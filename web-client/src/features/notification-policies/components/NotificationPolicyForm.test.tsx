@@ -4,8 +4,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import NotificationPolicyForm from './NotificationPolicyForm'
 
+// Mock matchMedia
+window.matchMedia =
+  window.matchMedia ||
+  (() => ({
+    matches: false,
+    addListener: () => { },
+    removeListener: () => { },
+  }))
+
 // Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
+window.ResizeObserver = class ResizeObserver {
   observe() {
     // mock
   }
@@ -15,7 +24,7 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {
     // mock
   }
-}
+} as any
 
 vi.mock('../useNotificationPolicies', () => ({
   useNotificationPolicy: vi.fn(() => ({ data: undefined, isLoading: false })),

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, type Resolver } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { useCreateGroup } from '../useContacts'
@@ -101,7 +101,7 @@ const getContactFormDefaultValues = (
   t: (key: string) => string,
   defaultValues?: ContactFormValues,
 ): ContactFormValues => {
-  const d = defaultValues ?? {}
+  const d = (defaultValues ?? {}) as Partial<ContactFormValues>
 
   return {
     ...d,
@@ -143,9 +143,9 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
   const contactSchema = getContactSchema(t)
 
   const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactSchema) as unknown as Resolver<ContactFormValues>,
+    resolver: zodResolver(contactSchema) as any,
     values: getContactFormDefaultValues(t, defaultValues),
-  })
+  }) as any
 
   const { mutateAsync: createGroup } = useCreateGroup()
 

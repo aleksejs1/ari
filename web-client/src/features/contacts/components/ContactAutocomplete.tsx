@@ -55,7 +55,7 @@ export function ContactAutocomplete({
     if (names) {
       return `${names.given} ${names.family ?? ''}`.trim()
     }
-    return contact.email ?? contact.phone ?? t('common.noName')
+    return t('common.noName')
   }
 
   const renderContent = () => {

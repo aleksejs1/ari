@@ -9,11 +9,10 @@ describe('NotificationChannelsTable', () => {
   const mockData: NotificationChannel[] = [
     {
       '@id': '/ch/1',
-      '@type': 'NotificationChannel',
       id: 1,
-      type: 'telegram',
-      config: { botToken: 'abc' },
-      verified: true,
+      type: 'telegram' as const,
+      config: { chatId: '123' },
+      verifiedAt: '2023-01-01T00:00:00Z',
     },
   ]
   const mockOnEdit = vi.fn()

@@ -1,4 +1,3 @@
-import { type UseMutationResult, type UseQueryResult } from '@tanstack/react-query'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -59,15 +58,15 @@ describe('NotificationChannelsPage', () => {
     vi.mocked(useCreateNotificationChannel).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
     vi.mocked(useUpdateNotificationChannel).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
     vi.mocked(useDeleteNotificationChannel).mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as UseMutationResult<unknown, unknown, unknown, unknown>)
+    } as any)
   })
 
   it('renders loading state', () => {
@@ -75,7 +74,7 @@ describe('NotificationChannelsPage', () => {
       data: undefined,
       isLoading: true,
       error: null,
-    } as unknown as UseQueryResult<unknown, unknown>)
+    } as any)
 
     render(
       <MemoryRouter>
@@ -97,7 +96,7 @@ describe('NotificationChannelsPage', () => {
       data: undefined,
       isLoading: false,
       error: new Error('Error'),
-    } as unknown as UseQueryResult<unknown, unknown>)
+    } as any)
 
     render(
       <MemoryRouter>
@@ -110,14 +109,14 @@ describe('NotificationChannelsPage', () => {
 
   it('renders channels table', () => {
     const mockChannels = [
-      { '@id': '/ch/1', '@type': 'NotificationChannel', id: 1, type: 'telegram' },
+      { '@id': '/ch/1', id: 1, type: 'telegram' as const, config: { chatId: '123' } },
     ] as NotificationChannel[]
 
     vi.mocked(useNotificationChannels).mockReturnValue({
       data: { member: mockChannels },
       isLoading: false,
       error: null,
-    } as unknown as UseQueryResult<unknown, unknown>)
+    } as any)
 
     render(
       <MemoryRouter>
@@ -131,10 +130,10 @@ describe('NotificationChannelsPage', () => {
 
   it('opens and closes dialog', async () => {
     vi.mocked(useNotificationChannels).mockReturnValue({
-      data: [],
+      data: { member: [] },
       isLoading: false,
       error: null,
-    } as unknown as UseQueryResult<unknown, unknown>)
+    } as any)
 
     render(
       <MemoryRouter>

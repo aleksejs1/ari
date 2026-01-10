@@ -69,10 +69,10 @@ export default function UpcomingAnniversariesWidget() {
                     <span className="text-sm font-semibold text-primary">
                       {anniversary.nextAnniversaryDate
                         ? formatLocalizedDate(
-                            anniversary.nextAnniversaryDate,
-                            i18n.language,
-                            'd MMMM',
-                          )
+                          anniversary.nextAnniversaryDate,
+                          i18n.language,
+                          'd MMMM',
+                        )
                         : ''}
                     </span>
                   </div>
@@ -80,7 +80,7 @@ export default function UpcomingAnniversariesWidget() {
                     <span>{anniversary.text}</span>
                     {anniversary.yearsAtNextAnniversary !== undefined && (
                       <span>
-                        {t('dashboard.yearsCount', { count: anniversary.yearsAtNextAnniversary })}
+                        {t('dashboard.yearsCount', { count: anniversary.yearsAtNextAnniversary ?? 0 })}
                       </span>
                     )}
                   </div>

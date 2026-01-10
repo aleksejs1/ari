@@ -3,6 +3,9 @@ import { z } from 'zod'
 import type { components } from './schema'
 
 import { formatApiDate } from '@/lib/utils'
+import type { HydraCollection } from '@/features/contacts/utils'
+
+export type { HydraCollection }
 
 export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
   displayName?: string
@@ -192,6 +195,7 @@ export interface TimelineEvent {
 
 export const notificationChannelSchema = z.object({
   id: z.number().optional(),
+  '@id': z.string().optional(),
   type: z.enum(['telegram', 'web']),
   config: z
     .object({
@@ -200,10 +204,13 @@ export const notificationChannelSchema = z.object({
     })
     .optional()
     .nullable(),
+  verifiedAt: z.string().optional().nullable(),
 })
 
 export type NotificationChannelFormValues = z.infer<typeof notificationChannelSchema>
-export type NotificationChannel = z.infer<typeof notificationChannelSchema>
+export type NotificationChannel = z.infer<typeof notificationChannelSchema> & {
+  '@id'?: string
+}
 
 export type NotificationPolicyType = 'all' | 'group' | 'contact'
 
@@ -250,7 +257,7 @@ export const notificationPolicySchema = z.object({
   schedule: z
     .array(
       z.object({
-        offsetDays: z.coerce.number(),
+        offsetDays: z.preprocess((v) => Number(v), z.number()),
         time: z.string().regex(/^([0-1]?\d|2[0-3]):[0-5]\d$/, 'Invalid time format (H:MM)'),
         channels: z.array(z.string()).min(1, 'At least one channel must be selected'),
       }),

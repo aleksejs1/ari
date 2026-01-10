@@ -22,9 +22,9 @@ import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
 
 const getContactLabel = (contact: Contact, id: string): string => {
-  const names = (contact.contactNames as unknown as { given?: string }[]) || []
+  const names = contact.contactNames || []
   const givenName = names.length > 0 ? names[0].given : undefined
-  return contact.displayName || contact.nickname || givenName || id
+  return contact.displayName || givenName || id
 }
 
 const getFirstTargetLabel = (

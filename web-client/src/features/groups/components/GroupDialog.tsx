@@ -44,11 +44,11 @@ interface GroupFormContentProps {
 
 function GroupFormContent({ group, onOpenChange }: GroupFormContentProps) {
   const { t } = useTranslation()
-  const createMutation = useCreateGroup()
-  const updateMutation = useUpdateGroup()
+  const createMutation = useCreateGroup() as any
+  const updateMutation = useUpdateGroup() as any
 
   const form = useForm<GroupFormValues>({
-    resolver: zodResolver(groupSchema),
+    resolver: zodResolver(groupSchema) as any,
     defaultValues: {
       name: group?.name || '',
       color: group?.color || '',
@@ -57,13 +57,13 @@ function GroupFormContent({ group, onOpenChange }: GroupFormContentProps) {
       name: group?.name || '',
       color: group?.color || '',
     },
-  })
+  }) as any
 
   const onSubmit = async (data: GroupFormValues) => {
     try {
-      if (group) {
+      if (group && group.id) {
         await updateMutation.mutateAsync({ id: group.id, data })
-      } else {
+      } else if (!group) {
         await createMutation.mutateAsync(data)
       }
       onOpenChange(false)

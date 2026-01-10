@@ -14,7 +14,7 @@ vi.mock('./hooks/useUserPrefs.hook', () => ({
 
 // Import UserPrefsProvider from the actual module (not mocked)
 vi.mock('./hooks/useUserPrefs', async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
   }
@@ -22,7 +22,7 @@ vi.mock('./hooks/useUserPrefs', async (importOriginal) => {
 
 describe('App Smoke Test', () => {
   it('renders login page by default', () => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    ; (useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
       dateFormat: 'mm/dd/yyyy',
