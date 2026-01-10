@@ -6,6 +6,14 @@ deptrac:
       collectors:
         - type: classNameRegex
           value: '#^App\\Service\\.*#'
+    - name: Command
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Command\\.*#'
+    - name: ApiResource
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\ApiResource\\.*#'
     - name: Controller
       collectors:
         - type: classNameRegex
@@ -51,6 +59,21 @@ deptrac:
       - Security
       - Vendor
       - Doctrine
+    Command:
+      - Entity
+      - Service
+      - Vendor
+    ApiResource:
+      - Entity
+      - Service
+      - Vendor
+      - State
+    State:
+      - Entity
+      - Security
+      - Vendor
+      - Service
+      - ApiResource
     Controller:
       - Entity
       - Form
@@ -70,10 +93,7 @@ deptrac:
     Security:
       - Entity
       - Vendor
-    State:
-      - Entity
-      - Security
-      - Vendor
+
     Doctrine:
       - Entity
       - Security
