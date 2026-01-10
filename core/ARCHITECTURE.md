@@ -50,6 +50,7 @@ Security is handled at the object level using Symfony Voters.
 - **Voters**: Located in `src/Security/Voter`, e.g., `ContactVoter`.
 - **Permissions**: Defined constants like `CONTACT_VIEW`, `CONTACT_EDIT`, `CONTACT_ADD`.
 - **API Integration**: API Platform resources use `security` attributes, e.g., `security: "is_granted('CONTACT_VIEW', object)"`.
+- **Brute Force Protection**: Implemented via Symfony's `login_throttling` on the `/api/login` firewall. Limits login attempts to 5 per minute per IP/Username to prevent password guessing attacks. Requires `symfony/rate-limiter` and `symfony/lock`.
 
 ### 3. API Design
 - **Resources**: Primarily entity-based, exposed via `#[ApiResource]`.
