@@ -75,6 +75,10 @@ class Group implements TenantAwareInterface
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['group:read', 'group:create', 'export'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $color = null;
+
     /**
      * @var Collection<int, ContactGroup>
      */
@@ -125,6 +129,18 @@ class Group implements TenantAwareInterface
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }
