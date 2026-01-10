@@ -1,5 +1,6 @@
 import { type UseQueryResult } from '@tanstack/react-query'
 import { render, screen, fireEvent, act } from '@testing-library/react'
+import { useNavigate } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 import { GlobalSearch } from './GlobalSearch'
@@ -21,7 +22,7 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: vi.fn(),
   }
 })
 
@@ -29,6 +30,7 @@ describe('GlobalSearch', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
+    vi.mocked(useNavigate).mockReturnValue(vi.fn())
     vi.mocked(useContacts).mockReturnValue({
       data: { 'hydra:member': [] },
     } as unknown as UseQueryResult<HydraCollection<Contact>>)
@@ -144,5 +146,62 @@ describe('GlobalSearch', () => {
     fireEvent.click(screen.getByText(/globalSearch.sections.groups/))
 
     expect(screen.getByText('Friends')).toBeInTheDocument()
+  })
+
+  it('shows "Show all results" button when there are more than 5 results', () => {
+    const navigate = vi.fn()
+    vi.mocked(useNavigate).mockReturnValue(navigate)
+
+    vi.mocked(useContacts).mockReturnValue({
+      data: {
+        'hydra:member': Array.from({ length: 6 }, (_, i) => ({
+          '@id': `/api/contacts/${i}`,
+          id: String(i),
+          names: [{ givenName: 'John', familyName: 'Doe' }],
+        })),
+        totalItems: 6,
+      },
+      isLoading: false,
+    } as unknown as UseQueryResult<HydraCollection<Contact>>)
+
+    render(<GlobalSearch />)
+    const input = screen.getByPlaceholderText('globalSearch.placeholder')
+    fireEvent.change(input, { target: { value: 'John' } })
+    fireEvent.focus(input)
+
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    const showAllButton = screen.getByText('globalSearch.showAllResults')
+    expect(showAllButton).toBeInTheDocument()
+
+    fireEvent.click(showAllButton)
+    expect(navigate).toHaveBeenCalledWith('/contacts?page=1&search=John')
+  })
+
+  it('does not show "Show all results" button when there are 5 or fewer results', () => {
+    vi.mocked(useContacts).mockReturnValue({
+      data: {
+        'hydra:member': Array.from({ length: 5 }, (_, i) => ({
+          '@id': `/api/contacts/${i}`,
+          id: String(i),
+          names: [{ givenName: 'John', familyName: 'Doe' }],
+        })),
+        totalItems: 5,
+      },
+      isLoading: false,
+    } as unknown as UseQueryResult<HydraCollection<Contact>>)
+
+    render(<GlobalSearch />)
+    const input = screen.getByPlaceholderText('globalSearch.placeholder')
+    fireEvent.change(input, { target: { value: 'John' } })
+    fireEvent.focus(input)
+
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    expect(screen.queryByText('globalSearch.showAllResults')).not.toBeInTheDocument()
   })
 })

@@ -260,7 +260,8 @@
       "contacts": "Contacts",
       "groups": "Groups",
       "settings": "Settings"
-    }
+    },
+    "showAllResults": "Show all results"
   },
   "groups": {
     "title": "Contact Groups",

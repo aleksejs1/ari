@@ -192,6 +192,20 @@ export function GlobalSearch() {
                     {item.title}
                   </button>
                 ))}
+                {activeTab === 'contacts' && (contactsData?.totalItems ?? 0) > 5 && (
+                  <div className="border-t border-gray-100 px-4 py-2 pt-2 dark:border-gray-700">
+                    <button
+                      onClick={() =>
+                        handleSelect(
+                          `/contacts?page=1&search=${encodeURIComponent(debouncedQuery)}`,
+                        )
+                      }
+                      className="w-full rounded-md bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      {t('globalSearch.showAllResults')}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="p-4 text-center text-sm text-gray-500">{t('common.noResults')}</div>
