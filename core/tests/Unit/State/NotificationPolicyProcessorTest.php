@@ -65,7 +65,7 @@ class NotificationPolicyProcessorTest extends TestCase
                     User::class => $userRepo,
                     default => null,
                 };
-            }
+            },
         );
 
         // Expectations

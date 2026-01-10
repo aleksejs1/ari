@@ -2,12 +2,12 @@
 
 namespace App\State;
 
+use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\NotificationPolicy\NotificationPolicyDto;
 use App\Entity\NotificationPolicy;
 use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\Metadata\CollectionOperationInterface;
 
 /**
  * @implements ProviderInterface<NotificationPolicyDto>

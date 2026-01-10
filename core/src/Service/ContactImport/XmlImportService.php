@@ -16,8 +16,8 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Repository\ContactRepository;
 use App\Repository\GroupRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Helper\CollectionSyncTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
 
 class XmlImportService
@@ -148,7 +148,7 @@ class XmlImportService
             function (ContactName $e, array $d) {
                 $e->setGiven($d['given'] ?? '')->setFamily($d['family'] ?? '');
             },
-            fn (array $d) => (new ContactName($contact))->setGiven($d['given'] ?? '')->setFamily($d['family'] ?? '')
+            fn (array $d) => (new ContactName($contact))->setGiven($d['given'] ?? '')->setFamily($d['family'] ?? ''),
         );
 
         $this->syncCollection(
@@ -199,7 +199,7 @@ class XmlImportService
                 $e->setText($d['text'] ?? '');
 
                 return $e;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -211,7 +211,7 @@ class XmlImportService
             function (ContactEmailAdress $e, array $d) {
                 $e->setValue($d['value'] ?? '')->setType($d['type'] ?? '');
             },
-            fn (array $d) => (new ContactEmailAdress($contact))->setValue($d['value'] ?? '')->setType($d['type'] ?? '')
+            fn (array $d) => (new ContactEmailAdress($contact))->setValue($d['value'] ?? '')->setType($d['type'] ?? ''),
         );
 
         $this->syncCollection(
@@ -223,7 +223,7 @@ class XmlImportService
             function (ContactPhoneNumber $e, array $d) {
                 $e->setValue($d['value'] ?? '')->setType($d['type'] ?? '');
             },
-            fn (array $d) => (new ContactPhoneNumber($contact))->setValue($d['value'] ?? '')->setType($d['type'] ?? '')
+            fn (array $d) => (new ContactPhoneNumber($contact))->setValue($d['value'] ?? '')->setType($d['type'] ?? ''),
         );
 
         $this->syncCollection(
@@ -245,7 +245,7 @@ class XmlImportService
                   ->setRegion($d['region'] ?? '')->setPostalCode($d['postalCode'] ?? '')
                   ->setCountry($d['country'] ?? '')->setCountryCode($d['countryCode'] ?? '')
                   ->setStreetExtended($d['streetExtended'] ?? '');
-            }
+            },
         );
 
         $this->syncCollection(
@@ -265,7 +265,7 @@ class XmlImportService
                 return $e->setName($d['name'] ?? '')->setTitle($d['title'] ?? '')
                  ->setDepartment($d['department'] ?? '')->setJobDescription($d['jobDescription'] ?? '')
                  ->setType($d['type'] ?? '');
-            }
+            },
         );
 
         $this->syncCollection(
@@ -277,7 +277,7 @@ class XmlImportService
             function (ContactBiography $e, array $d) {
                 $e->setValue($d['value'] ?? '')->setType($d['type'] ?? '');
             },
-            fn (array $d) => (new ContactBiography($contact))->setValue($d['value'] ?? '')->setType($d['type'] ?? '')
+            fn (array $d) => (new ContactBiography($contact))->setValue($d['value'] ?? '')->setType($d['type'] ?? ''),
         );
 
         // Sync Groups
@@ -300,7 +300,7 @@ class XmlImportService
                 }
 
                 return $e;
-            }
+            },
         );
 
         return $contact;
@@ -399,7 +399,7 @@ class XmlImportService
                 }
 
                 return $e;
-            }
+            },
         );
     }
 }

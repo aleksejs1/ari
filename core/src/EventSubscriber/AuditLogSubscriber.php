@@ -37,7 +37,7 @@ class AuditLogSubscriber
                     'INSERT',
                     null,
                     null,
-                    $this->getEntitySnapshot($em, $entity)
+                    $this->getEntitySnapshot($em, $entity),
                 );
                 $this->insertedEntities[spl_object_hash($entity)] = $auditLog;
             }
@@ -64,7 +64,7 @@ class AuditLogSubscriber
                     'REMOVE',
                     null,
                     $this->getEntitySnapshot($em, $entity),
-                    null
+                    null,
                 );
             }
         }
@@ -124,7 +124,7 @@ class AuditLogSubscriber
                             $ownerEntityType,
                             json_encode($auditLog->getSnapshotAfter()),
                             $auditLog->getId(),
-                        ]
+                        ],
                     );
                 }
             }
@@ -228,7 +228,7 @@ class AuditLogSubscriber
      */
     private function getEntitySnapshot(EntityManagerInterface $em, object $entity): array
     {
-        $metadata = $em->getClassMetadata(get_class($entity));
+        $metadata = $em->getClassMetadata($entity::class);
         $snapshot = [];
 
         foreach ($metadata->getFieldNames() as $fieldName) {

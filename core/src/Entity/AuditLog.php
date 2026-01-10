@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['audit:read']],
-    security: "is_granted('ROLE_USER')"
+    security: "is_granted('ROLE_USER')",
 )]
 #[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['createdAt' => 'DESC'])]

@@ -17,7 +17,7 @@ trait ContactGroupsTrait
         targetEntity: ContactGroup::class,
         mappedBy: 'contact',
         cascade: ['persist', 'remove'],
-        orphanRemoval: true
+        orphanRemoval: true,
     )]
     private Collection $contactGroups;
 

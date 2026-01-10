@@ -34,7 +34,7 @@ final class ContactImportServiceTest extends TestCase
         $checker = $this->createMock(ContactDuplicateCheckerInterface::class);
         $service = new ContactImportService(
             [$checker],
-            $entityManager
+            $entityManager,
         );
 
         $user = new User();
@@ -52,11 +52,11 @@ final class ContactImportServiceTest extends TestCase
                     '12345',
                     'Country',
                     'US',
-                    'home'
+                    'home',
                 ),
             ],
             organizations: [new ContactOrganizationDto('Org Name', 'Dept', 'Title', 'Desc', 'work')],
-            biographies: [new ContactBiographyDto('Bio text', 'note')]
+            biographies: [new ContactBiographyDto('Bio text', 'note')],
         );
 
         $checker->expects(self::once())
@@ -120,7 +120,7 @@ final class ContactImportServiceTest extends TestCase
         $checker = $this->createMock(ContactDuplicateCheckerInterface::class);
         $service = new ContactImportService(
             [$checker],
-            $entityManager
+            $entityManager,
         );
 
         $user = new User();
@@ -145,7 +145,7 @@ final class ContactImportServiceTest extends TestCase
         // We pass an empty array of checkers because update() doesn't use them
         $service = new ContactImportService(
             [],
-            $entityManager
+            $entityManager,
         );
 
         $contact = new Contact();
@@ -178,7 +178,7 @@ final class ContactImportServiceTest extends TestCase
         // We pass an empty array of checkers because update() doesn't use them
         $service = new ContactImportService(
             [],
-            $entityManager
+            $entityManager,
         );
 
         $contact = new Contact();
@@ -229,7 +229,7 @@ final class ContactImportServiceTest extends TestCase
             addresses: [new ContactAddressDto(street: '123 Hill House')],
             organizations: [$org],
             biographies: [$bio],
-            groups: [$group]
+            groups: [$group],
         );
 
         $entityManager->expects(self::once())->method('persist');

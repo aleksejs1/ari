@@ -10,10 +10,10 @@ use App\Dto\ContactImportDto;
 use App\Dto\ContactNameDto;
 use App\Dto\ContactOrganizationDto;
 use App\Dto\ContactPhoneDto;
+use App\Entity\ImportMapping;
 use App\Entity\TokenStorage;
 use App\Entity\User;
 use App\Repository\ImportMappingRepository;
-use App\Entity\ImportMapping;
 use App\Repository\TokenStorageRepository;
 use App\Service\ContactImport\ContactImportService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -100,7 +100,7 @@ class GoogleContactsService
                         if (isset($nameParam['givenName']) || isset($nameParam['familyName'])) {
                             $names[] = new ContactNameDto(
                                 family: $nameParam['familyName'] ?? '',
-                                given: $nameParam['givenName'] ?? ''
+                                given: $nameParam['givenName'] ?? '',
                             );
                         }
                     }
@@ -117,7 +117,7 @@ class GoogleContactsService
                                         '%04d-%02d-%02d',
                                         $dateParts['year'],
                                         $dateParts['month'],
-                                        $dateParts['day']
+                                        $dateParts['day'],
                                     ));
                                     $dates[] = new ContactDateDto($date, 'Birthday');
                                 } catch (\Exception $e) {
@@ -137,7 +137,7 @@ class GoogleContactsService
                     foreach ($connection['emailAddresses'] as $emailParam) {
                         $emails[] = new ContactEmailDto(
                             value: $emailParam['value'] ?? '',
-                            type: $emailParam['type'] ?? ''
+                            type: $emailParam['type'] ?? '',
                         );
                     }
                 }
@@ -147,7 +147,7 @@ class GoogleContactsService
                     foreach ($connection['phoneNumbers'] as $phoneParam) {
                         $phones[] = new ContactPhoneDto(
                             value: $phoneParam['value'] ?? '',
-                            type: $phoneParam['type'] ?? ''
+                            type: $phoneParam['type'] ?? '',
                         );
                     }
                 }
@@ -163,7 +163,7 @@ class GoogleContactsService
                             postalCode: $addressParam['postalCode'] ?? '',
                             country: $addressParam['country'] ?? '',
                             countryCode: $addressParam['countryCode'] ?? '',
-                            type: $addressParam['type'] ?? ''
+                            type: $addressParam['type'] ?? '',
                         );
                     }
                 }
@@ -176,7 +176,7 @@ class GoogleContactsService
                             $sd = $orgParam['startDate'];
                             if (isset($sd['year'], $sd['month'], $sd['day'])) {
                                 $startDate = new \DateTime(
-                                    sprintf('%04d-%02d-%02d', $sd['year'], $sd['month'], $sd['day'])
+                                    sprintf('%04d-%02d-%02d', $sd['year'], $sd['month'], $sd['day']),
                                 );
                             }
                         }
@@ -185,7 +185,7 @@ class GoogleContactsService
                             $ed = $orgParam['endDate'];
                             if (isset($ed['year'], $ed['month'], $ed['day'])) {
                                 $endDate = new \DateTime(
-                                    sprintf('%04d-%02d-%02d', $ed['year'], $ed['month'], $ed['day'])
+                                    sprintf('%04d-%02d-%02d', $ed['year'], $ed['month'], $ed['day']),
                                 );
                             }
                         }
@@ -197,7 +197,7 @@ class GoogleContactsService
                             jobDescription: $orgParam['jobDescription'] ?? '',
                             type: $orgParam['type'] ?? '',
                             startDate: $startDate,
-                            endDate: $endDate
+                            endDate: $endDate,
                         );
                     }
                 }
@@ -207,7 +207,7 @@ class GoogleContactsService
                     foreach ($connection['biographies'] as $bioParam) {
                         $biographies[] = new ContactBiographyDto(
                             value: $bioParam['value'] ?? '',
-                            type: $bioParam['type'] ?? ''
+                            type: $bioParam['type'] ?? '',
                         );
                     }
                 }
@@ -243,7 +243,7 @@ class GoogleContactsService
                     addresses: $addresses,
                     organizations: $organizations,
                     biographies: $biographies,
-                    groups: $contactGroups
+                    groups: $contactGroups,
                 );
 
                 $mapping = $this->importMappingRepository->findOneBy([

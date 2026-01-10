@@ -29,7 +29,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
         ]);
 
         $openApi = $openApi->withComponents(
-            $components->withSecuritySchemes($securitySchemes)
+            $components->withSecuritySchemes($securitySchemes),
         );
 
         // Apply the security scheme globally
@@ -152,8 +152,8 @@ class OpenApiFactory implements OpenApiFactoryInterface
                             ],
                         ],
                     ]),
-                )
-            )
+                ),
+            ),
         );
         $openApi->getPaths()->addPath('/api/google/import', $googleImportPath);
 
@@ -182,8 +182,8 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get Google OAuth Authorization URL.',
-                description: 'Returns the URL to redirect the user to for Google authentication.'
-            )
+                description: 'Returns the URL to redirect the user to for Google authentication.',
+            ),
         );
         $openApi->getPaths()->addPath('/connect/google', $connectGooglePath);
 
@@ -199,7 +199,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                         in: 'query',
                         description: 'The authorization code returned by Google',
                         required: true,
-                        schema: ['type' => 'string']
+                        schema: ['type' => 'string'],
                     ),
                 ],
                 responses: [
@@ -236,8 +236,8 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Handle Google OAuth Callback.',
-                description: 'Exchanges the authorization code for an access token and stores it.'
-            )
+                description: 'Exchanges the authorization code for an access token and stores it.',
+            ),
         );
         $openApi->getPaths()->addPath('/connect/google/check', $connectGoogleCheckPath);
 

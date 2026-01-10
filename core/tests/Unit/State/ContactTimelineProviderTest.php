@@ -12,8 +12,8 @@ use App\Repository\AuditLogRepository;
 use App\Repository\ContactRepository;
 use App\State\ContactTimelineProvider;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\TestCase;
 
 #[AllowMockObjectsWithoutExpectations]
 class ContactTimelineProviderTest extends TestCase
@@ -109,7 +109,7 @@ class ContactTimelineProviderTest extends TestCase
         self::assertEquals(
             Contact::class,
             $lastLog->getEntityType(),
-            'Contact entity should be last when dates are equal'
+            'Contact entity should be last when dates are equal',
         );
     }
 

@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,10 +12,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use App\Filter\ContactSearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\RequestBody;
 use App\Entity\Traits\ContactAddressesTrait;
 use App\Entity\Traits\ContactBiographiesTrait;
 use App\Entity\Traits\ContactDatesTrait;
@@ -22,6 +23,7 @@ use App\Entity\Traits\ContactNamesTrait;
 use App\Entity\Traits\ContactOrganizationsTrait;
 use App\Entity\Traits\ContactPhoneNumbersTrait;
 use App\Entity\Traits\ContactRelationsTrait;
+use App\Filter\ContactSearchFilter;
 use App\Repository\ContactRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
@@ -29,25 +31,23 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
-use ApiPlatform\OpenApi\Model\Operation;
-use ApiPlatform\OpenApi\Model\RequestBody;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ORM\UniqueConstraint(name: 'unique_contact_uuid_per_user', columns: ['uuid', 'user_id'])]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['contact:read']],
-    denormalizationContext: ['groups' => ['contact:create']]
+    denormalizationContext: ['groups' => ['contact:create']],
 )]
 #[Get(
     security: "is_granted('CONTACT_VIEW', object)",
-    requirements: ['id' => '\d+']
+    requirements: ['id' => '\d+'],
 )]
 #[Get(
     uriTemplate: '/contacts/{id}/similar',
     name: 'contact_similar',
     provider: 'App\State\ContactSimilarProvider',
-    requirements: ['id' => '\d+']
+    requirements: ['id' => '\d+'],
 )]
 #[GetCollection(
     uriTemplate: '/contacts/export',
@@ -55,22 +55,22 @@ use ApiPlatform\OpenApi\Model\RequestBody;
     controller: 'App\Controller\ExportContactsAction',
     normalizationContext: ['groups' => ['export']],
     security: "is_granted('ROLE_USER')",
-    paginationEnabled: false
+    paginationEnabled: false,
 )]
 #[GetCollection]
 #[Put(
     security: "is_granted('CONTACT_EDIT', object)",
     processor: 'App\State\ContactProcessor',
-    requirements: ['id' => '\d+']
+    requirements: ['id' => '\d+'],
 )]
 #[Patch(
     security: "is_granted('CONTACT_EDIT', object)",
     processor: 'App\State\ContactProcessor',
-    requirements: ['id' => '\d+']
+    requirements: ['id' => '\d+'],
 )]
 #[Delete(
     security: "is_granted('CONTACT_EDIT', object)",
-    requirements: ['id' => '\d+']
+    requirements: ['id' => '\d+'],
 )]
 #[Post(
     uriTemplate: '/contacts/import-xml',
@@ -92,16 +92,16 @@ use ApiPlatform\OpenApi\Model\RequestBody;
                         ],
                     ],
                 ],
-            ])
-        )
+            ]),
+        ),
     ),
     deserialize: false,
     validate: false,
-    security: "is_granted('ROLE_USER')"
+    security: "is_granted('ROLE_USER')",
 )]
 #[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
-    processor: 'App\State\ContactProcessor'
+    processor: 'App\State\ContactProcessor',
 )]
 #[ApiFilter(SearchFilter::class, properties: ['contactGroups.groupResource' => 'exact'])]
 #[ApiFilter(ContactSearchFilter::class)]

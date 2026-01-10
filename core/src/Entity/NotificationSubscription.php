@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     normalizationContext: ['groups' => ['notification_subscription:read']],
     denormalizationContext: ['groups' => ['notification_subscription:write']],
-    processor: 'App\State\UserOwnerProcessor'
+    processor: 'App\State\UserOwnerProcessor',
 )]
 #[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
 class NotificationSubscription implements TenantAwareInterface

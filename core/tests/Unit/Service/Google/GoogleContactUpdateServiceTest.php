@@ -13,7 +13,6 @@ use App\Repository\TokenStorageRepository;
 use App\Repository\UserPrefRepository;
 use App\Service\Google\GoogleContactsService;
 use App\Service\Google\GoogleContactUpdateService;
-use PHPUnit\Framework\Attributes\AllowMockingUnknownTypes;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -42,7 +41,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $importMappingRepository,
             $userPrefRepository,
             $googleContactsService,
-            $httpClient
+            $httpClient,
         );
 
         $service->updateContactPhones($contact);
@@ -75,7 +74,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $importMappingRepository,
             $userPrefRepository,
             $googleContactsService,
-            $httpClient
+            $httpClient,
         );
 
         $service->updateContactPhones($contact);
@@ -114,7 +113,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $importMappingRepository,
             $userPrefRepository,
             $googleContactsService,
-            $httpClient
+            $httpClient,
         );
 
         $service->updateContactPhones($contact);
@@ -173,7 +172,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $importMappingRepository,
             $userPrefRepository,
             $googleContactsService,
-            $httpClient
+            $httpClient,
         );
 
         $service->updateContactPhones($contact);

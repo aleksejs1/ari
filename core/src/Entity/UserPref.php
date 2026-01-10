@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserPrefRepository;
-use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
             provider: 'App\State\UserPrefStateProvider',
-            security: "is_granted('USER_PREF_VIEW', object)"
+            security: "is_granted('USER_PREF_VIEW', object)",
         ),
         new GetCollection(), // Optional: if we want to list all prefs
         new Put(
@@ -37,22 +37,22 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
             requirements: ['type' => '\w+'],
             provider: 'App\State\UserPrefStateProvider',
             processor: 'App\State\UserPrefProcessor',
-            security: "is_granted('USER_PREF_EDIT', object)"
+            security: "is_granted('USER_PREF_EDIT', object)",
         ),
         new Patch(
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
             provider: 'App\State\UserPrefStateProvider',
             processor: 'App\State\UserPrefProcessor',
-            security: "is_granted('USER_PREF_EDIT', object)"
+            security: "is_granted('USER_PREF_EDIT', object)",
         ),
         new Delete(
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
             provider: 'App\State\UserPrefStateProvider',
-            security: "is_granted('USER_PREF_EDIT', object)"
+            security: "is_granted('USER_PREF_EDIT', object)",
         ),
-    ]
+    ],
 )]
 #[Assert\Callback(callback: 'validateValue')]
 class UserPref implements TenantAwareInterface

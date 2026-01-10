@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(),
     ],
     security: "is_granted('ROLE_USER')",
-    normalizationContext: ['groups' => ['notification_intent:read']]
+    normalizationContext: ['groups' => ['notification_intent:read']],
 )]
 class NotificationIntent implements TenantAwareInterface
 {

@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\NotificationQueueRepository;
-use Doctrine\ORM\Mapping as ORM;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationQueueRepository::class)]
 class NotificationQueue implements TenantAwareInterface

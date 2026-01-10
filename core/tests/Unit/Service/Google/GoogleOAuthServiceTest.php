@@ -3,11 +3,11 @@
 namespace App\Tests\Unit\Service\Google;
 
 use App\Service\Google\GoogleOAuthService;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 #[AllowMockObjectsWithoutExpectations]
 final class GoogleOAuthServiceTest extends TestCase
@@ -24,7 +24,7 @@ final class GoogleOAuthServiceTest extends TestCase
             'client_id',
             'client_secret',
             'redirect_uri',
-            $this->httpClient
+            $this->httpClient,
         );
     }
 

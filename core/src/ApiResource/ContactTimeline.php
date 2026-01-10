@@ -5,8 +5,8 @@ namespace App\ApiResource;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\State\ContactTimelineProvider;
 use App\Entity\AuditLog;
+use App\State\ContactTimelineProvider;
 use Doctrine\Common\Collections\Collection;
 
 #[ApiResource(
@@ -15,9 +15,9 @@ use Doctrine\Common\Collections\Collection;
         new Get(
             uriTemplate: '/contacts/{id}/timeline',
             provider: ContactTimelineProvider::class,
-            name: 'get_contact_timeline'
+            name: 'get_contact_timeline',
         ),
-    ]
+    ],
 )]
 class ContactTimeline
 {

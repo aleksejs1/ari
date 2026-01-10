@@ -2,9 +2,9 @@
 
 namespace App\State;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use ApiPlatform\Metadata\IriConverterInterface;
 use App\Dto\NotificationPolicy\NotificationPolicyDto;
 use App\Entity\NotificationPolicy;
 use App\Entity\NotificationRule;

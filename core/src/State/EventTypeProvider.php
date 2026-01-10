@@ -2,14 +2,14 @@
 
 namespace App\State;
 
-use ApiPlatform\State\ProviderInterface;
-use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\CollectionOperationInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\Pagination\Pagination;
 use ApiPlatform\State\Pagination\TraversablePaginator;
+use ApiPlatform\State\ProviderInterface;
 use App\Dto\NotificationPolicy\EventTypeDto;
 use App\Entity\ContactDate;
 use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\State\Pagination\Pagination;
 
 /**
  * @implements ProviderInterface<EventTypeDto>
@@ -80,7 +80,7 @@ class EventTypeProvider implements ProviderInterface
             new \ArrayIterator($dtos),
             $page,
             $itemsPerPage,
-            $totalItems
+            $totalItems,
         );
     }
 }

@@ -37,7 +37,7 @@ class ContactSearchFilter extends AbstractFilter
                 $queryBuilder->expr()->like('LOWER(cn.family)', ':' . $parameterName),
                 $queryBuilder->expr()->like('LOWER(ce.value)', ':' . $parameterName),
                 $queryBuilder->expr()->like('LOWER(cp.value)', ':' . $parameterName),
-                $queryBuilder->expr()->like('LOWER(co.name)', ':' . $parameterName)
+                $queryBuilder->expr()->like('LOWER(co.name)', ':' . $parameterName),
             ))
             ->setParameter($parameterName, '%' . $parameterValue . '%');
     }

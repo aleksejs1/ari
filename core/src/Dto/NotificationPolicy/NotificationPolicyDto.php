@@ -2,16 +2,16 @@
 
 namespace App\Dto\NotificationPolicy;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
         new Get(uriTemplate: '/notification-policies/{id}'),
-    ]
+    ],
 )]
 class NotificationPolicyDto
 {
@@ -32,7 +32,7 @@ class NotificationPolicyDto
             'type' => new Assert\Choice(choices: ['group', 'contact', 'all']),
             'ids' => new Assert\Optional([new Assert\All([new Assert\NotBlank()])]),
         ],
-        allowMissingFields: true
+        allowMissingFields: true,
     )]
     #[Groups(['notification_policy:read'])]
     public ?array $targets = null;
@@ -73,7 +73,7 @@ class NotificationPolicyDto
                 'time' => new Assert\Regex('/^\d{2}:\d{2}$/'),
                 'channels' => new Assert\All([new Assert\NotBlank()]),
             ],
-            allowMissingFields: false
+            allowMissingFields: false,
         ),
     ])]
     #[Groups(['notification_policy:read'])]

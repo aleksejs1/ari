@@ -80,7 +80,7 @@ class ProcessNotificationsCommand extends Command
                         "<b>Reminder</b>\nContact: %s\nEvent: %s\nDate: %s",
                         $nameStr,
                         $entity->getText() ?? 'No description',
-                        $entityDate->format('Y-m-d')
+                        $entityDate->format('Y-m-d'),
                     );
 
                     try {
@@ -101,7 +101,7 @@ class ProcessNotificationsCommand extends Command
                         $io->error(sprintf(
                             'Failed to send notification for subscription %d: %s',
                             (int) $subscription->getId(),
-                            $e->getMessage()
+                            $e->getMessage(),
                         ));
                     }
                 }

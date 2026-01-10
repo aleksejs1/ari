@@ -61,7 +61,7 @@ class ContactVoterTest extends TestCase
 
         self::assertSame(
             Voter::ACCESS_GRANTED,
-            $this->voter->vote($token, $subject, [ContactVoter::VIEW])
+            $this->voter->vote($token, $subject, [ContactVoter::VIEW]),
         );
     }
 
@@ -77,7 +77,7 @@ class ContactVoterTest extends TestCase
 
         self::assertSame(
             Voter::ACCESS_DENIED,
-            $this->voter->vote($token, $subject, [ContactVoter::VIEW])
+            $this->voter->vote($token, $subject, [ContactVoter::VIEW]),
         );
     }
 
@@ -92,7 +92,7 @@ class ContactVoterTest extends TestCase
 
         self::assertSame(
             Voter::ACCESS_GRANTED,
-            $this->voter->vote($token, $subject, [ContactVoter::EDIT])
+            $this->voter->vote($token, $subject, [ContactVoter::EDIT]),
         );
     }
 
@@ -108,7 +108,7 @@ class ContactVoterTest extends TestCase
 
         self::assertSame(
             Voter::ACCESS_DENIED,
-            $this->voter->vote($token, $subject, [ContactVoter::EDIT])
+            $this->voter->vote($token, $subject, [ContactVoter::EDIT]),
         );
     }
 
@@ -122,7 +122,7 @@ class ContactVoterTest extends TestCase
 
         self::assertSame(
             Voter::ACCESS_GRANTED,
-            $this->voter->vote($token, $subject, [ContactVoter::ADD])
+            $this->voter->vote($token, $subject, [ContactVoter::ADD]),
         );
     }
 
@@ -134,7 +134,7 @@ class ContactVoterTest extends TestCase
 
         self::assertSame(
             Voter::ACCESS_DENIED,
-            $this->voter->vote($token, $subject, [ContactVoter::VIEW])
+            $this->voter->vote($token, $subject, [ContactVoter::VIEW]),
         );
     }
 }

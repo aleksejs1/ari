@@ -18,7 +18,7 @@ class UserPrefApiTest extends AbstractApiTestCase
         /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = self::getContainer()->get('security.user_password_hasher');
         $user->setPassword(
-            $hasher->hashPassword($user, 'password')
+            $hasher->hashPassword($user, 'password'),
         );
 
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */

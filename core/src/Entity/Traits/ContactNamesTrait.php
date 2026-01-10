@@ -17,7 +17,7 @@ trait ContactNamesTrait
         targetEntity: ContactName::class,
         mappedBy: 'contact',
         cascade: ['persist', 'remove'],
-        orphanRemoval: true
+        orphanRemoval: true,
     )]
     private Collection $contactNames;
 

@@ -93,7 +93,7 @@ class ContactRelationValidationTest extends ApiTestCase
         self::assertCount(
             0,
             $reloaded->getContactRelationsCollection(),
-            'DB should have 0 relations (self-reference ignored)'
+            'DB should have 0 relations (self-reference ignored)',
         );
     }
 
@@ -149,7 +149,7 @@ class ContactRelationValidationTest extends ApiTestCase
         self::assertCount(
             1,
             $reloaded->getContactRelationsCollection(),
-            'DB should have only 1 relation (duplicate ignored)'
+            'DB should have only 1 relation (duplicate ignored)',
         );
     }
 
@@ -199,7 +199,7 @@ class ContactRelationValidationTest extends ApiTestCase
         self::assertCount(
             2,
             $data['contactRelations'],
-            'Relations with same person but different types should be allowed'
+            'Relations with same person but different types should be allowed',
         );
 
         // Verify in DB

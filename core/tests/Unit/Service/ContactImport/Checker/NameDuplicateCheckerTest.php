@@ -36,7 +36,7 @@ final class NameDuplicateCheckerTest extends TestCase
         $contactName->setContact($contact);
 
         $dto = new ContactImportDto(
-            names: [new ContactNameDto('Doe', 'John')]
+            names: [new ContactNameDto('Doe', 'John')],
         );
 
         $this->contactNameRepository->expects(self::once())
@@ -59,7 +59,7 @@ final class NameDuplicateCheckerTest extends TestCase
         $contactName->setContact($contact);
 
         $dto = new ContactImportDto(
-            names: [new ContactNameDto('Doe', 'John')]
+            names: [new ContactNameDto('Doe', 'John')],
         );
 
         $this->contactNameRepository->expects(self::once())
@@ -74,7 +74,7 @@ final class NameDuplicateCheckerTest extends TestCase
     {
         $user = new User();
         $dto = new ContactImportDto(
-            names: [new ContactNameDto('Doe', 'John')]
+            names: [new ContactNameDto('Doe', 'John')],
         );
 
         $this->contactNameRepository->expects(self::once())

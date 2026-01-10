@@ -88,7 +88,7 @@ class GoogleAuthController extends AbstractController
         } catch (\Exception $e) {
             return $this->json(
                 ['error' => 'Failed to fetch access token: ' . $e->getMessage()],
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_BAD_REQUEST,
             );
         }
 
@@ -104,10 +104,10 @@ class GoogleAuthController extends AbstractController
         $accessToken = $tokens['access_token'];
         $tokenStorage->setAccessToken($accessToken);
         $tokenStorage->setRefreshToken(
-            $tokens['refresh_token'] ?? $tokenStorage->getRefreshToken()
+            $tokens['refresh_token'] ?? $tokenStorage->getRefreshToken(),
         );
         $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable(
-            sprintf('+%d seconds', $tokens['expires_in'])
+            sprintf('+%d seconds', $tokens['expires_in']),
         ));
         $tokenStorage->setTenant($user);
 

@@ -71,7 +71,7 @@ class ContactGroupUpdateTest extends AbstractApiTestCase
         self::assertSame(
             $initialContactGroupId,
             $updatedContactGroups[0]['@id'],
-            'ContactGroup IRI changed, implying deletion and recreation.'
+            'ContactGroup IRI changed, implying deletion and recreation.',
         );
     }
 }

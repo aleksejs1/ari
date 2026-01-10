@@ -6,10 +6,10 @@ use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
 use App\Security\TenantAwareInterface;
 use App\State\UserOwnerProcessor;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 #[AllowMockObjectsWithoutExpectations]
 final class UserOwnerProcessorTest extends TestCase

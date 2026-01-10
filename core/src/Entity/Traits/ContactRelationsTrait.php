@@ -2,9 +2,9 @@
 
 namespace App\Entity\Traits;
 
-use App\Entity\ContactRelation;
-// Assumed for gender check
 use App\Entity\Contact;
+// Assumed for gender check
+use App\Entity\ContactRelation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +20,7 @@ trait ContactRelationsTrait
         targetEntity: ContactRelation::class,
         mappedBy: 'contact',
         orphanRemoval: true,
-        cascade: ['persist']
+        cascade: ['persist'],
     )]
     private Collection $contactRelations;
 
@@ -35,7 +35,7 @@ trait ContactRelationsTrait
         targetEntity: ContactRelation::class,
         mappedBy: 'person',
         orphanRemoval: true,
-        cascade: ['persist']
+        cascade: ['persist'],
     )]
     private Collection $reverseContactRelations;
 
@@ -55,7 +55,7 @@ trait ContactRelationsTrait
             }
             $invertedType = $this->invertRelationType(
                 $reverseRelation->getType(),
-                $contact
+                $contact,
             );
 
             // Create a virtual relation object for display

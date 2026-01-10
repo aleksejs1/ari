@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -12,11 +12,11 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\GroupRepository;
+use App\Security\TenantAwareInterface;
+use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Uid\Uuid;
@@ -27,23 +27,23 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['group:read']],
-    denormalizationContext: ['groups' => ['group:create']]
+    denormalizationContext: ['groups' => ['group:create']],
 )]
 #[ApiFilter(OrderFilter::class, properties: ['name' => 'ASC'])]
 #[Get(security: "is_granted('GROUP_VIEW', object)")]
 #[GetCollection]
 #[Put(
     security: "is_granted('GROUP_EDIT', object)",
-    processor: 'App\State\UserOwnerProcessor'
+    processor: 'App\State\UserOwnerProcessor',
 )]
 #[Patch(
     security: "is_granted('GROUP_EDIT', object)",
-    processor: 'App\State\UserOwnerProcessor'
+    processor: 'App\State\UserOwnerProcessor',
 )]
 #[Delete(security: "is_granted('GROUP_EDIT', object)")]
 #[Post(
     securityPostDenormalize: "is_granted('GROUP_ADD', object)",
-    processor: 'App\State\UserOwnerProcessor'
+    processor: 'App\State\UserOwnerProcessor',
 )]
 class Group implements TenantAwareInterface
 {

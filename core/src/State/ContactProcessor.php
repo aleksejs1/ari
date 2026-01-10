@@ -55,35 +55,35 @@ class ContactProcessor implements ProcessorInterface
                     $data->getContactNames(),
                     $existing->getContactNames(),
                     'addContactName',
-                    null
+                    null,
                 );
                 $this->handleClearAndReplace(
                     $existing,
                     $data->getContactDates(),
                     $existing->getContactDates(),
                     'addContactDate',
-                    null
+                    null,
                 );
                 $this->handleClearAndReplace(
                     $existing,
                     $data->getPhoneNumbers(),
                     $existing->getPhoneNumbers(),
                     'addPhoneNumber',
-                    null
+                    null,
                 );
                 $this->handleClearAndReplace(
                     $existing,
                     $data->getContactEmailAdresses(),
                     $existing->getContactEmailAdresses(),
                     'addContactEmailAdress',
-                    null
+                    null,
                 );
                 $this->handleClearAndReplace(
                     $existing,
                     $data->getContactAddresses(),
                     $existing->getContactAddresses(),
                     'addContactAddress',
-                    null
+                    null,
                 );
 
                 // ContactGroup has extra logic
@@ -107,7 +107,7 @@ class ContactProcessor implements ProcessorInterface
                         return null !== $incomingGroup
                                && null !== $existingGroup
                                && $incomingGroup->getId() === $existingGroup->getId();
-                    }
+                    },
                 );
 
                 $this->handleClearAndReplace(
@@ -115,14 +115,14 @@ class ContactProcessor implements ProcessorInterface
                     $data->getContactOrganizations(),
                     $existing->getContactOrganizations(),
                     'addContactOrganization',
-                    null
+                    null,
                 );
                 $this->handleClearAndReplace(
                     $existing,
                     $data->getContactBiographies(),
                     $existing->getContactBiographies(),
                     'addContactBiography',
-                    null
+                    null,
                 );
                 $existing->getReverseContactRelationsCollection()->clear();
                 $this->handleClearAndReplace(
@@ -130,7 +130,7 @@ class ContactProcessor implements ProcessorInterface
                     $data->getContactRelations(),
                     $existing->getContactRelationsCollection(),
                     'addContactRelation',
-                    null
+                    null,
                 );
 
                 // Flush changes and return the existing entity
@@ -155,7 +155,7 @@ class ContactProcessor implements ProcessorInterface
                     if (null !== $group && null === $group->getUser()) {
                         $group->setUser($owner->getTenant());
                     }
-                }
+                },
             );
 
             $this->handleSimpleAdd($data, $data->getContactOrganizations(), null);

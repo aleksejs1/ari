@@ -8,11 +8,11 @@ use App\Repository\NotificationQueueRepository;
 use App\Service\Notification\NotificationProcessor;
 use App\Service\Notification\NotificationSenderInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class NotificationProcessorTest extends TestCase
 {
@@ -35,7 +35,7 @@ class NotificationProcessorTest extends TestCase
             $this->repository,
             $this->entityManager,
             $this->senders,
-            $this->logger
+            $this->logger,
         );
     }
 

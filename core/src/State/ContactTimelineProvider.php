@@ -74,7 +74,7 @@ class ContactTimelineProvider implements ProviderInterface
 
         return new ContactTimeline(
             (int) $id,
-            $collection
+            $collection,
         );
     }
 }

@@ -60,7 +60,7 @@ class ActivityFeedSender implements NotificationSenderInterface
             title: $title,
             message: $message,
             actionData: $actionData,
-            tenant: $task->getTenant()
+            tenant: $task->getTenant(),
         );
     }
 }

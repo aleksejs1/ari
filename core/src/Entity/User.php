@@ -23,10 +23,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             processor: 'App\State\UserPasswordHasherProcessor',
             denormalizationContext: ['groups' => ['user:create']],
-            validationContext: ['groups' => ['Default', 'user:create']]
+            validationContext: ['groups' => ['Default', 'user:create']],
         ),
     ],
-    normalizationContext: ['groups' => ['user:read']]
+    normalizationContext: ['groups' => ['user:read']],
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

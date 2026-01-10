@@ -10,11 +10,11 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\NotificationChannelRepository;
+use App\Security\TenantAwareInterface;
+use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['notification_channel:read']],
     denormalizationContext: ['groups' => ['notification_channel:write']],
-    processor: 'App\State\UserOwnerProcessor'
+    processor: 'App\State\UserOwnerProcessor',
 )]
 class NotificationChannel implements TenantAwareInterface
 {

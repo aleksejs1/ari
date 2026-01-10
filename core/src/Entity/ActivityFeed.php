@@ -21,23 +21,23 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         new GetCollection(
             uriTemplate: '/activity-feed',
             order: ['createdAt' => 'DESC'],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
         ),
         new GetCollection(
             uriTemplate: '/activity-feed/unread-count',
             controller: 'App\Controller\Api\ActivityFeedController::getUnreadCount',
             security: "is_granted('ROLE_USER')",
-            name: 'get_unread_count'
+            name: 'get_unread_count',
         ),
         new Patch(
             uriTemplate: '/activity-feed/read',
             controller: 'App\Controller\Api\ActivityFeedController::markAsRead',
             security: "is_granted('ROLE_USER')",
-            name: 'mark_as_read'
+            name: 'mark_as_read',
         ),
     ],
     normalizationContext: ['groups' => ['activity_feed:read']],
-    denormalizationContext: ['groups' => ['activity_feed:write']]
+    denormalizationContext: ['groups' => ['activity_feed:write']],
 )]
 class ActivityFeed implements TenantAwareInterface
 {

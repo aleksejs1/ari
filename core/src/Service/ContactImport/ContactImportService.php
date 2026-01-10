@@ -63,7 +63,7 @@ class ContactImportService
                 $entity->setFamily($dto->family);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -79,19 +79,19 @@ class ContactImportService
             },
             function (ContactDate $entity, $dto) {
                 $entity->setDate(
-                    $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date)
+                    $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date),
                 );
                 $entity->setText($dto->text);
             },
             function ($dto) use ($contact) {
                 $entity = new ContactDate($contact);
                 $entity->setDate(
-                    $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date)
+                    $dto->date instanceof \DateTime ? $dto->date : \DateTime::createFromInterface($dto->date),
                 );
                 $entity->setText($dto->text);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -110,7 +110,7 @@ class ContactImportService
                 $entity->setType($dto->type);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -129,7 +129,7 @@ class ContactImportService
                 $entity->setType($dto->type);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -167,7 +167,7 @@ class ContactImportService
                 $entity->setType($dto->type);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -225,7 +225,7 @@ class ContactImportService
                 $entity->setEndDate($dto->endDate);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -244,7 +244,7 @@ class ContactImportService
                 $entity->setType($dto->type);
 
                 return $entity;
-            }
+            },
         );
 
         $this->syncCollection(
@@ -261,7 +261,7 @@ class ContactImportService
                 $entity->setGroupResource($dtoGroup);
 
                 return $entity;
-            }
+            },
         );
 
         $this->entityManager->persist($contact);

@@ -77,7 +77,7 @@ class AuditLogTest extends ApiTestCase
         $logs = $this->em->getRepository(AuditLog::class)->findBy(
             ['entityType' => Contact::class, 'action' => 'INSERT'],
             ['id' => 'DESC'],
-            1
+            1,
         );
 
         self::assertNotEmpty($logs, 'AuditLog for INSERT not found');

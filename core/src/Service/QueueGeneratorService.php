@@ -201,7 +201,7 @@ class QueueGeneratorService
             'Contact %s has %s after %d days',
             $sourceContact->getDisplayName(),
             (string) $sourceEvent->getText(),
-            $offset
+            $offset,
         );
 
         $payload = [

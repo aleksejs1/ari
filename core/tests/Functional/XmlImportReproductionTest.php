@@ -4,9 +4,9 @@ namespace App\Tests\Functional;
 
 use App\Entity\Contact;
 use App\Entity\ContactGroup;
+use App\Entity\ContactName;
 use App\Entity\Group;
 use App\Entity\User;
-use App\Entity\ContactName;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Uid\Uuid;
@@ -149,7 +149,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $xmlContent = str_replace(
             [$contactUuid, $groupUuid, $spouseUuid],
             [$newContactUuid, $newGroupUuid, $newSpouseUuid],
-            $content
+            $content,
         );
 
         // 4. Import
@@ -222,7 +222,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         self::assertEquals(
             1,
             $contactRelationsCount + $spouseRelationsCount,
-            'There should be exactly 1 physical relation persisted between the two contacts to avoid duplicates'
+            'There should be exactly 1 physical relation persisted between the two contacts to avoid duplicates',
         );
     }
 }
