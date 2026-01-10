@@ -1,6 +1,5 @@
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { useAutocomplete } from '../hooks/useAutocomplete'
 
@@ -24,9 +23,9 @@ export function TypeAutocomplete({
   className,
   ...props
 }: TypeAutocompleteProps) {
-  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [customValues, setCustomValues] = useState<string[]>([])
+  const [isTyping, setIsTyping] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { data } = useAutocomplete()
@@ -39,21 +38,22 @@ export function TypeAutocomplete({
     [data, field, customValues],
   )
 
-  // Filter suggestions based on current input
-  const filteredSuggestions = useMemo(
-    () =>
-      allSuggestions.filter(
-        (suggestion) =>
-          !currentValue || suggestion.toLowerCase().includes(currentValue.toLowerCase()),
-      ),
-    [allSuggestions, currentValue],
-  )
+  // Filter suggestions only when user is actively typing
+  const filteredSuggestions = useMemo(() => {
+    if (!isTyping || !currentValue) {
+      return allSuggestions
+    }
+    return allSuggestions.filter((suggestion) =>
+      suggestion.toLowerCase().includes(currentValue.toLowerCase()),
+    )
+  }, [allSuggestions, currentValue, isTyping])
 
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setOpen(false)
+        setIsTyping(false)
         // Add custom value when clicking outside
         if (currentValue && !allSuggestions.includes(currentValue)) {
           setCustomValues((prev) => [...new Set([...prev, currentValue])])
@@ -77,21 +77,29 @@ export function TypeAutocomplete({
         onChange(event)
       }
       setOpen(false)
+      setIsTyping(false)
       inputRef.current?.focus()
     },
     [onChange, props.name],
   )
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsTyping(true)
     if (onChange) {
       onChange(e)
     }
-    setOpen(true)
+    if (!open) {
+      setOpen(true)
+    }
   }
 
   const handleInputFocus = () => {
+    setIsTyping(false) // Reset typing state on focus to show full list
     setOpen(true)
   }
+
+  // Only show dropdown if there are suggestions
+  const showDropdown = open && filteredSuggestions.length > 0
 
   return (
     <div ref={containerRef} className="relative flex-1">
@@ -111,6 +119,7 @@ export function TypeAutocomplete({
         className="absolute right-0 top-0 h-full px-2 hover:bg-transparent"
         tabIndex={-1}
         onClick={() => {
+          setIsTyping(false) // Show full list when clicking button
           setOpen(!open)
           inputRef.current?.focus()
         }}
@@ -118,35 +127,29 @@ export function TypeAutocomplete({
         <ChevronsUpDown className="h-4 w-4 opacity-50" />
       </Button>
 
-      {open ? (
+      {showDropdown ? (
         <div className="absolute top-full z-50 mt-1 w-full overflow-hidden rounded-md border bg-popover shadow-md">
           <ScrollArea className="max-h-[200px]">
             <div className="flex flex-col p-1">
-              {filteredSuggestions.length > 0 ? (
-                filteredSuggestions.map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    type="button"
-                    className="flex w-full items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground"
-                    onMouseDown={(e) => {
-                      e.preventDefault()
-                      handleSuggestionClick(suggestion)
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        currentValue === suggestion ? 'opacity-100' : 'opacity-0',
-                      )}
-                    />
-                    {suggestion}
-                  </button>
-                ))
-              ) : (
-                <div className="p-2 text-center text-xs text-muted-foreground">
-                  {t('common.noResults')}
-                </div>
-              )}
+              {filteredSuggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  className="flex w-full items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    handleSuggestionClick(suggestion)
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      'mr-2 h-4 w-4',
+                      currentValue === suggestion ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+                  {suggestion}
+                </button>
+              ))}
             </div>
           </ScrollArea>
         </div>

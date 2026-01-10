@@ -20,7 +20,7 @@ describe('TypeAutocomplete', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(useAutocomplete).mockReturnValue({
-      data: { phoneTypes: ['Mobile', 'Work'] },
+      data: { phoneTypes: ['Mobile', 'Work', 'Home'] },
       isLoading: false,
     } as UseQueryResult<Autocomplete>)
   })
@@ -45,21 +45,24 @@ describe('TypeAutocomplete', () => {
     expect(mockOnChange).toHaveBeenCalled()
   })
 
-  it('shows suggestions on focus', async () => {
-    render(<TypeAutocomplete value="" onChange={mockOnChange} field="phoneTypes" />)
+  it('shows all suggestions on focus even when value exists', async () => {
+    render(<TypeAutocomplete value="Home" onChange={mockOnChange} field="phoneTypes" />)
 
     fireEvent.focus(screen.getByRole('textbox'))
+
+    // All suggestions should be visible on initial focus
+    expect(await screen.findByText('Mobile')).toBeInTheDocument()
+    expect(screen.getByText('Work')).toBeInTheDocument()
+    expect(screen.getByText('Home')).toBeInTheDocument()
+  })
+
+  it('shows dropdown with suggestions on button click', async () => {
+    render(<TypeAutocomplete value="" onChange={mockOnChange} field="phoneTypes" />)
+
+    fireEvent.click(screen.getByRole('button'))
 
     expect(await screen.findByText('Mobile')).toBeInTheDocument()
     expect(screen.getByText('Work')).toBeInTheDocument()
-  })
-
-  it('filters suggestions based on input', async () => {
-    render(<TypeAutocomplete value="Mo" onChange={mockOnChange} field="phoneTypes" />)
-
-    fireEvent.focus(screen.getByRole('textbox'))
-
-    expect(await screen.findByText('Mobile')).toBeInTheDocument()
-    expect(screen.queryByText('Work')).not.toBeInTheDocument()
+    expect(screen.getByText('Home')).toBeInTheDocument()
   })
 })
