@@ -1,31 +1,13 @@
-import {
-  Users,
-  LogOut,
-  History,
-  Bell,
-  Download,
-  ChevronDown,
-  ChevronRight,
-  LayoutDashboard,
-  Settings,
-} from 'lucide-react'
-import { useState } from 'react'
+import { Users, History, Bell, Download, Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
 
-import { Button } from '@/components/ui/button'
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
-import { useGroups } from '@/features/groups/useGroups'
 import { UserMenu } from '@/features/layout/UserMenu'
 import { GlobalSearch } from '@/features/search/components/GlobalSearch'
-import { useAuth } from '@/hooks/useAuth'
 
 export default function DashboardLayout() {
-  const { logout, user } = useAuth()
   const { t } = useTranslation()
-  const { data: groups } = useGroups()
-  const [isGroupsOpen, setIsGroupsOpen] = useState(false)
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -40,20 +22,6 @@ export default function DashboardLayout() {
         </div>
         <nav className="space-y-2 px-4">
           <Link
-            to="/"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-          >
-            <LayoutDashboard className="h-5 w-5" />
-            <span>{t('app.navigation.sidebar.home', 'Home')}</span>
-          </Link>
-          <Link
-            to="/contacts"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-          >
-            <Users className="h-5 w-5" />
-            <span>{t('app.navigation.sidebar.contacts', 'Contacts')}</span>
-          </Link>
-          <Link
             to="/audit-logs"
             className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >
@@ -62,46 +30,13 @@ export default function DashboardLayout() {
           </Link>
 
           {/* Groups Section */}
-          <div>
-            <button
-              onClick={() => setIsGroupsOpen(!isGroupsOpen)}
-              className="flex w-full items-center justify-between rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                <span>{t('app.navigation.sidebar.groups', 'Groups')}</span>
-              </div>
-              {isGroupsOpen ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </button>
-            {!!isGroupsOpen && (
-              <div className="ml-9 mt-1 space-y-1">
-                <Link
-                  to="/groups"
-                  className="block rounded-lg px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  {t('app.navigation.sidebar.manageGroups', 'Manage Groups')}
-                </Link>
-                {groups
-                  ?.filter((group) => (group.contactsCount ?? 0) > 0)
-                  .map((group) => (
-                    <Link
-                      key={group['@id']}
-                      to={`/contacts?group=${group['@id']}`}
-                      className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                    >
-                      <span className="truncate">{group.name}</span>
-                      {group.contactsCount !== undefined && (
-                        <span className="ml-2 text-xs text-gray-400">{group.contactsCount}</span>
-                      )}
-                    </Link>
-                  ))}
-              </div>
-            )}
-          </div>
+          <Link
+            to="/groups"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Users className="h-5 w-5" />
+            <span>{t('app.navigation.sidebar.groups', 'Groups')}</span>
+          </Link>
 
           <Link
             to="/notification-channels"
@@ -132,16 +67,6 @@ export default function DashboardLayout() {
             <span>{t('app.navigation.sidebar.settings', 'Settings')}</span>
           </Link>
         </nav>
-        <div className="mt-auto space-y-2 border-t p-4 dark:border-gray-700">
-          <div className="mb-2 truncate text-sm font-medium" title={user?.uuid}>
-            {user?.uuid}
-          </div>
-          <LanguageSwitcher />
-          <Button variant="outline" className="w-full justify-start gap-2" onClick={logout}>
-            <LogOut className="h-4 w-4" />
-            {t('auth.logout')}
-          </Button>
-        </div>
       </aside>
 
       {/* Main Content */}
