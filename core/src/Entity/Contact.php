@@ -49,6 +49,13 @@ use Symfony\Component\Uid\Uuid;
     provider: 'App\State\ContactSimilarProvider',
     requirements: ['id' => '\d+'],
 )]
+#[Get(
+    uriTemplate: '/contacts/{id}/vcard',
+    name: 'contact_vcard',
+    controller: 'App\Controller\VCardExportAction',
+    requirements: ['id' => '\d+'],
+    security: "is_granted('CONTACT_VIEW', object)",
+)]
 #[GetCollection(
     uriTemplate: '/contacts/export',
     name: 'contact_export',
