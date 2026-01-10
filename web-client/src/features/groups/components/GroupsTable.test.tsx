@@ -8,7 +8,7 @@ import { GroupsTable } from './GroupsTable'
 import type { Group } from '@/types/models'
 
 vi.mock('../useGroups', () => ({
-  useDeleteGroup: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false } as any)),
+  useDeleteGroup: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false }) as any),
 }))
 
 vi.mock('react-i18next', () => ({
@@ -26,10 +26,10 @@ describe('GroupsTable', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-      ; (useDeleteGroup as any).mockReturnValue({
-        mutateAsync: mockDeleteMutate,
-        isPending: false,
-      })
+    ;(useDeleteGroup as any).mockReturnValue({
+      mutateAsync: mockDeleteMutate,
+      isPending: false,
+    })
   })
 
   it('renders groups', () => {

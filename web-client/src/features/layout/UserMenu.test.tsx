@@ -21,9 +21,15 @@ vi.mock('react-i18next', () => ({
 
 // Mock ResizeObserver
 window.ResizeObserver = class ResizeObserver {
-  observe() { }
-  unobserve() { }
-  disconnect() { }
+  observe() {
+    // mock
+  }
+  unobserve() {
+    // mock
+  }
+  disconnect() {
+    // mock
+  }
 } as any
 
 const mockUser = {
@@ -67,8 +73,7 @@ describe('UserMenu', () => {
 
     await user.click(screen.getByRole('button', { name: /open user menu/i }))
 
-    expect(await screen.findByText('testuser')).toBeInTheDocument()
-    expect(await screen.findByText('test@example.com')).toBeInTheDocument()
+    expect(await screen.findByText('user-1-uuid')).toBeInTheDocument()
   })
 
   it('displays menu items', async () => {

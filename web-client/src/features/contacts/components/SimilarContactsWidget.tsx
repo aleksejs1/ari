@@ -39,7 +39,9 @@ const SimilarContactItem = ({
     <li className="flex items-center justify-between">
       <div className="flex flex-col">
         <Link to={`/contacts/${id}`} className="font-medium hover:underline">
-          {contact.displayName || `${contact.contactNames?.[0]?.given ?? ''} ${contact.contactNames?.[0]?.family ?? ''}`.trim() || t('contacts.noName')}
+          {contact.displayName ||
+            `${contact.contactNames?.[0]?.given ?? ''} ${contact.contactNames?.[0]?.family ?? ''}`.trim() ||
+            t('contacts.noName')}
         </Link>
         <span className="text-sm text-muted-foreground">
           {contact.contactOrganizations?.[0]?.name}

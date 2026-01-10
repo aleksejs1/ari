@@ -79,7 +79,7 @@ describe('useContactEmails hooks', () => {
 
       expect(api.patch).toHaveBeenCalledWith(
         '/contact_email_adresses/1',
-        { email: 'updated@example.com' },
+        { value: 'updated@example.com' },
         { headers: { 'Content-Type': 'application/merge-patch+json' } },
       )
     })
@@ -97,7 +97,7 @@ describe('useContactEmails hooks', () => {
 
       expect(api.patch).toHaveBeenCalledWith(
         '/contact_email_adresses/1',
-        { email: 'updated@example.com' },
+        { value: 'updated@example.com' },
         { headers: { 'Content-Type': 'application/merge-patch+json' } },
       )
     })

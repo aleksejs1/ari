@@ -50,9 +50,7 @@ interface ContactViewProps {
   onEdit: () => void
 }
 
-const getGroupFilterValue = (
-  groupResource: any,
-): string | null => {
+const getGroupFilterValue = (groupResource: any): string | null => {
   if (typeof groupResource === 'string') {
     return groupResource
   }
@@ -258,8 +256,9 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           <h1 className="flex items-center gap-2 text-2xl font-bold">
             {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
             <Star
-              className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 ${isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
-                }`}
+              className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 ${
+                isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
+              }`}
               onClick={() => toggleFavorite(contact)}
             />
           </h1>
@@ -286,10 +285,10 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
                       style={
                         fullGroup?.color
                           ? {
-                            backgroundColor: fullGroup.color,
-                            borderColor: fullGroup.color,
-                            color: getContrastingTextColor(fullGroup.color),
-                          }
+                              backgroundColor: fullGroup.color,
+                              borderColor: fullGroup.color,
+                              color: getContrastingTextColor(fullGroup.color),
+                            }
                           : undefined
                       }
                     >

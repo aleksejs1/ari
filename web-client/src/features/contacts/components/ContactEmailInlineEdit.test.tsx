@@ -5,7 +5,7 @@ import { vi } from 'vitest'
 import { ContactEmailInlineEdit } from './ContactEmailInlineEdit'
 
 // Mock ResizeObserver for Radix UI Popover
-(window as any).ResizeObserver = class ResizeObserver {
+;(window as any).ResizeObserver = class ResizeObserver {
   observe() {
     // mock
   }

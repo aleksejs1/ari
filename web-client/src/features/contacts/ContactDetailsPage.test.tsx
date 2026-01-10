@@ -254,8 +254,7 @@ describe('ContactDetailsPage', () => {
       data: {
         id: 1,
         '@id': '/api/contacts/1',
-        firstName: 'John',
-        lastName: 'Doe',
+        contactNames: [{ given: 'John', family: 'Doe' }],
       },
       error: null,
     } as unknown as UseQueryResult<Contact>)

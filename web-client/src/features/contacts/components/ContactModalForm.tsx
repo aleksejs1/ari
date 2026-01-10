@@ -199,7 +199,9 @@ export function ContactModalForm({
       <DialogContent className="max-w-2xl overflow-hidden bg-background p-0 sm:max-w-[600px]">
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>
-            {(defaultValues as any)?.['@id'] ? t('contacts.editContact') : t('contacts.createContact')}
+            {(defaultValues as any)?.['@id']
+              ? t('contacts.editContact')
+              : t('contacts.createContact')}
           </DialogTitle>
         </DialogHeader>
 

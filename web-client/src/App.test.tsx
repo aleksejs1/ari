@@ -22,7 +22,7 @@ vi.mock('./hooks/useUserPrefs', async (importOriginal) => {
 
 describe('App Smoke Test', () => {
   it('renders login page by default', () => {
-    ; (useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
       dateFormat: 'mm/dd/yyyy',

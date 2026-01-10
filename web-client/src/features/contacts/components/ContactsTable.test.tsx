@@ -35,9 +35,9 @@ vi.mock('react-router-dom', async () => {
 describe('ContactsTable', () => {
   beforeEach(() => {
     vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
-      ; (useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
-      })
+    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+    })
   })
 
   const mockData: Contact[] = [

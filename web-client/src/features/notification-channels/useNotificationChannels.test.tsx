@@ -86,7 +86,10 @@ describe('useNotificationChannels', () => {
   })
 
   it('updates a notification channel with IRI', async () => {
-    const updateData = { id: '/api/notification_channels/1', data: { type: 'web' as const, config: { chatId: '456' } } }
+    const updateData = {
+      id: '/api/notification_channels/1',
+      data: { type: 'web' as const, config: { chatId: '456' } },
+    }
     const responseChannel = { id: 1, ...updateData.data }
     vi.mocked(api.put).mockResolvedValueOnce({ data: responseChannel })
 

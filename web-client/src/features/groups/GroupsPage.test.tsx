@@ -63,7 +63,7 @@ describe('GroupsPage', () => {
   it('renders loading state', () => {
     vi.mocked(useGroups).mockReturnValue({
       data: undefined,
-      verifiedAt: '2023-01-01T00:00:00Z',
+      isLoading: true,
       error: null,
     } as any)
 

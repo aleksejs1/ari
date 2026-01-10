@@ -9,8 +9,8 @@ window.matchMedia =
   window.matchMedia ||
   (() => ({
     matches: false,
-    addListener: () => { },
-    removeListener: () => { },
+    addListener: () => undefined,
+    removeListener: () => undefined,
   }))
 
 // Mock ResizeObserver
