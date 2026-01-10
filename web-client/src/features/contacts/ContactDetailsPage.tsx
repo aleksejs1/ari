@@ -1,4 +1,4 @@
-import { ArrowLeft, Loader2, Trash2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Trash2, Download } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -6,48 +6,28 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ContactForm } from './components/ContactForm'
 import { ContactTimeline } from './components/ContactTimeline'
 import { ContactView } from './components/ContactView'
+import { DeleteContactDialog } from './components/DeleteContactDialog'
 import { SimilarContactsWidget } from './components/SimilarContactsWidget'
 import { mapContactToFormValues } from './contactUtils'
-import { useContact, useUpdateContact, useDeleteContact } from './useContacts'
+import {
+  useContact,
+  useUpdateContact,
+  useDeleteContact,
+  useExportContactVcard,
+} from './useContacts'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { type ContactFormValues } from '@/types/models'
+import { type Contact, type ContactFormValues } from '@/types/models'
 
-export default function ContactDetailsPage() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
+function ContactDetailsContent({ contact }: { contact: Contact }) {
   const { t } = useTranslation()
-  const { data: contact, isLoading, error } = useContact(id ?? '')
+  const navigate = useNavigate()
   const updateMutation = useUpdateContact()
   const deleteMutation = useDeleteContact()
+  const exportVcardMutation = useExportContactVcard()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-
-  if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    )
-  }
-
-  if (error || !contact) {
-    return (
-      <div className="p-4 text-center">
-        <p className="mb-4 text-red-500">{t('errors.failedToLoadContact')}</p>
-        <Button onClick={() => navigate(-1)}>{t('common.backToContacts')}</Button>
-      </div>
-    )
-  }
 
   const defaultValues = mapContactToFormValues(contact)
 
@@ -59,6 +39,19 @@ export default function ContactDetailsPage() {
       }
     } catch (error) {
       console.error('Failed to update contact', error)
+    }
+  }
+
+  const handleExportVcard = async () => {
+    try {
+      if (contact?.['@id']) {
+        await exportVcardMutation.mutateAsync({
+          id: contact['@id'],
+          filename: `contact_${contact.firstName || 'export'}_${contact.lastName || ''}`,
+        })
+      }
+    } catch (error) {
+      console.error('Failed to export contact vCard', error)
     }
   }
 
@@ -92,6 +85,22 @@ export default function ContactDetailsPage() {
         <h1 className="flex-1 text-2xl font-bold">
           {isEditing ? t('contacts.editContact') : t('contacts.details')}
         </h1>
+        {!isEditing && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void handleExportVcard()}
+            disabled={exportVcardMutation.isPending}
+            className="gap-2"
+          >
+            {exportVcardMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            {t('contacts.exportVcard')}
+          </Button>
+        )}
         <Button
           variant="destructive"
           size="sm"
@@ -136,27 +145,38 @@ export default function ContactDetailsPage() {
         />
       )}
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('contacts.deleteConfirmTitle')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => void handleDelete()}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              {t('common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteContactDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        isPending={deleteMutation.isPending}
+      />
     </div>
   )
+}
+
+export default function ContactDetailsPage() {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const { data: contact, isLoading, error } = useContact(id ?? '')
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (error || !contact) {
+    return (
+      <div className="p-4 text-center">
+        <p className="mb-4 text-red-500">{t('errors.failedToLoadContact')}</p>
+        <Button onClick={() => navigate(-1)}>{t('common.backToContacts')}</Button>
+      </div>
+    )
+  }
+
+  return <ContactDetailsContent contact={contact} />
 }

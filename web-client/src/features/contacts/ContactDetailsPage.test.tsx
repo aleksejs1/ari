@@ -50,6 +50,9 @@ describe('ContactDetailsPage', () => {
     vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
       {} as UseMutationResult<void, Error, string, unknown>,
     )
+    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue(
+      {} as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>,
+    )
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -88,6 +91,9 @@ describe('ContactDetailsPage', () => {
     vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
       {} as UseMutationResult<void, Error, string, unknown>,
     )
+    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
+      isPending: false,
+    } as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -129,6 +135,9 @@ describe('ContactDetailsPage', () => {
     vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
       {} as UseMutationResult<void, Error, string, unknown>,
     )
+    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
+      isPending: false,
+    } as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -171,6 +180,9 @@ describe('ContactDetailsPage', () => {
     vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
       {} as UseMutationResult<void, Error, string, unknown>,
     )
+    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue(
+      {} as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>,
+    )
 
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
@@ -209,6 +221,10 @@ describe('ContactDetailsPage', () => {
       mutateAsync: mockDelete,
     } as unknown as UseMutationResult<void, Error, string, unknown>)
 
+    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
+      isPending: false,
+    } as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
+
     render(
       <MemoryRouter initialEntries={['/contacts/1']}>
         <Routes>
@@ -229,6 +245,56 @@ describe('ContactDetailsPage', () => {
 
     await waitFor(() => {
       expect(mockDelete).toHaveBeenCalledWith('/api/contacts/1')
+    })
+  })
+
+  it('triggers vCard export', async () => {
+    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
+      isLoading: false,
+      data: {
+        id: 1,
+        '@id': '/api/contacts/1',
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      error: null,
+    } as unknown as UseQueryResult<Contact>)
+
+    vi.spyOn(useContactsHook, 'useUpdateContact').mockReturnValue({
+      isPending: false,
+    } as unknown as UseMutationResult<
+      unknown,
+      Error,
+      { id: string; data: ContactFormValues },
+      unknown
+    >)
+
+    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
+      {} as UseMutationResult<void, Error, string, unknown>,
+    )
+
+    const mockExport = vi.fn()
+    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
+      isPending: false,
+      mutateAsync: mockExport,
+    } as unknown as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
+
+    render(
+      <MemoryRouter initialEntries={['/contacts/1']}>
+        <Routes>
+          <Route path="/contacts/:id" element={<ContactDetailsPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const exportButton = screen.getByText('contacts.exportVcard')
+    fireEvent.click(exportButton)
+
+    await waitFor(() => {
+      expect(mockExport).toHaveBeenCalledWith({
+        id: '/api/contacts/1',
+        filename: 'contact_John_Doe',
+      })
     })
   })
 })

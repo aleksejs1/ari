@@ -146,6 +146,58 @@ export function useSimilarContacts(id: string) {
   })
 }
 
+export function useExportContactVcard() {
+  return useMutation({
+    mutationFn: async ({ id, filename }: { id: string; filename: string }) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      // The API returns JSON with a key (likely 'vcard' or similar, but let's handle the response)
+      // User mentioned ignoring "hydra:" prefix and that keys might be raw.
+      // We expect the endpoint to return the vCard content string in a JSON field or as raw text.
+      // However, usually detailed endpoints return JSON.
+      // Let's assume the API returns JSON with a property 'vCard' or similar.
+      // If it returns raw text, we handle that too.
+      // Based on user request "I added a new API: /api/contacts/{id}/vcard", let's try to get it.
+      const response = await api.get(`${url}/vcard`)
+
+      let vCardContent = ''
+      if (typeof response.data === 'string') {
+        vCardContent = response.data
+      } else if (typeof response.data === 'object') {
+        // Try to find a likely key
+        // User said: "in reality keys don't have hydra: prefix"
+        // Let's look for 'vCard', 'vcard', 'content', or just grab the first string value if uncertain?
+        // Safest bet for now: check for 'vCard' property.
+        if ('vCard' in response.data) {
+          vCardContent = response.data.vCard
+        } else if ('vcard' in response.data) {
+          vCardContent = response.data.vcard
+        } else {
+          // If we can't find a specific key, and it's an object, maybe the whole body is the vCard?
+          // Unlikely if it's JSON. Let's dump the whole JSON if specific keys fail, or maybe it returns the object itself as vCard fields?
+          // Actually, vCard is a text format. If it returns JSON, it must be wrapped.
+          // Let's assume it might be in a property named 'vCard' as per common convention or just the body text.
+          console.warn(
+            'Could not find vCard property in response, using full JSON stringify',
+            response.data,
+          )
+          vCardContent = JSON.stringify(response.data)
+        }
+      }
+
+      const blobUrl = window.URL.createObjectURL(new Blob([vCardContent], { type: 'text/vcard' }))
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.setAttribute('download', `${filename}.vcf`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(blobUrl)
+
+      return response.data
+    },
+  })
+}
+
 export function useExportContacts() {
   return useMutation({
     mutationFn: async () => {

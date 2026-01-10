@@ -252,6 +252,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/contacts/{id}/vcard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a Contact resource.
+         * @description Retrieves a Contact resource.
+         */
+        get: operations["contact_vcard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contact_addresses": {
         parameters: {
             query?: never;
@@ -770,6 +790,26 @@ export interface paths {
         get: operations["get_contact_timeline"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demo-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate a demo account
+         * @description Creates a new user with password "demo" and 70 pre-populated contacts.
+         */
+        post: operations["generate_demo_account"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2232,6 +2272,15 @@ export interface components {
             id?: number;
             logs?: components["schemas"]["AuditLog.jsonld"][];
         };
+        DemoAccount: {
+            username?: string;
+        };
+        "DemoAccount-demo.read": {
+            username?: string;
+        };
+        "DemoAccount.jsonld-demo.read": components["schemas"]["HydraItemBaseSchema"] & {
+            username?: string;
+        };
         /** @description A representation of common errors. */
         Error: {
             /** @description A short, human-readable summary of the problem. */
@@ -3553,6 +3602,52 @@ export interface operations {
         };
     };
     contact_similar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Contact identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contact resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Contact.jsonld-contact.read"];
+                    "application/json": components["schemas"]["Contact-contact.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    contact_vcard: {
         parameters: {
             query?: never;
             header?: never;
@@ -6628,6 +6723,67 @@ export interface operations {
                     "application/ld+json": components["schemas"]["Error.jsonld"];
                     "application/problem+json": components["schemas"]["Error"];
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    generate_demo_account: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new DemoAccount resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["DemoAccount"];
+                "application/json": components["schemas"]["DemoAccount"];
+            };
+        };
+        responses: {
+            /** @description Demo account created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        username?: string;
+                    };
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };
