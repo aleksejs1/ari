@@ -18,6 +18,7 @@ import NotificationPolicyFormPage from './pages/NotificationPolicyFormPage'
 import SettingsPage from './pages/Settings'
 
 import ChangePasswordPage from '@/features/users/ChangePasswordPage'
+import DeleteAccountPage from '@/features/users/DeleteAccountPage'
 import { useAuth } from '@/hooks/useAuth'
 
 const ProtectedRoute = () => {
@@ -92,6 +93,10 @@ export default function App() {
             {
               path: '/change-password',
               element: <ChangePasswordPage />,
+            },
+            {
+              path: '/delete-account',
+              element: <DeleteAccountPage />,
             },
             {
               path: '/settings/notification-policies',

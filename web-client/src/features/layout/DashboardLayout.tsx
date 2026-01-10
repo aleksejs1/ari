@@ -1,4 +1,4 @@
-import { Users, History, Bell, Download, Settings, Lock } from 'lucide-react'
+import { Users, History, Bell, Download, Settings, Lock, UserX } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
 
@@ -72,6 +72,13 @@ export default function DashboardLayout() {
           >
             <Lock className="h-5 w-5" />
             <span>{t('app.navigation.sidebar.changePassword', 'Change Password')}</span>
+          </Link>
+          <Link
+            to="/delete-account"
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+          >
+            <UserX className="h-5 w-5" />
+            <span>{t('app.navigation.sidebar.deleteAccount', 'Delete Account')}</span>
           </Link>
         </nav>
       </aside>
