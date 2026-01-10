@@ -19,9 +19,8 @@ final class UserChangePasswordTest extends AbstractApiTestCase
         $doctrine = self::getContainer()->get('doctrine');
         $user = $doctrine->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
         self::assertNotNull($user);
-        $id = $user->getId();
 
-        $client->request('PUT', '/api/users/'.(string) $id.'/change-password', [
+        $client->request('PUT', '/api/profile/change-password', [
             'auth_bearer' => $this->token,
             'json' => [
                 'currentPassword' => 'pass',
@@ -58,10 +57,9 @@ final class UserChangePasswordTest extends AbstractApiTestCase
         $doctrine = self::getContainer()->get('doctrine');
         $user = $doctrine->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
         self::assertNotNull($user);
-        $id = $user->getId();
 
         // Wrong current password
-        $client->request('PUT', '/api/users/'.(string) $id.'/change-password', [
+        $client->request('PUT', '/api/profile/change-password', [
             'auth_bearer' => $this->token,
             'json' => [
                 'currentPassword' => 'wrong-password',
@@ -71,7 +69,7 @@ final class UserChangePasswordTest extends AbstractApiTestCase
         self::assertResponseStatusCodeSame(400);
 
         // Too short new password
-        $client->request('PUT', '/api/users/'.(string) $id.'/change-password', [
+        $client->request('PUT', '/api/profile/change-password', [
             'auth_bearer' => $this->token,
             'json' => [
                 'currentPassword' => 'pass',

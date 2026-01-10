@@ -11,6 +11,7 @@ use App\Entity\User;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @implements ProcessorInterface<ChangePasswordDto, User>
@@ -24,6 +25,7 @@ final readonly class UserPasswordChangeProcessor implements ProcessorInterface
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private ProcessorInterface $persistProcessor,
         private UserPasswordHasherInterface $passwordHasher,
+        private Security $security,
     ) {
     }
 
@@ -33,7 +35,7 @@ final readonly class UserPasswordChangeProcessor implements ProcessorInterface
     #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): User
     {
-        $user = $context['previous_data'] ?? null;
+        $user = $context['previous_data'] ?? $this->security->getUser();
 
         if (!$user instanceof User) {
             throw new \LogicException('Current user not found.');

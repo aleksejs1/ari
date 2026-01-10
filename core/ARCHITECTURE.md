@@ -41,7 +41,7 @@ core/
 ### 1. Multi-Tenancy
 The application is designed to be multi-tenant, where data is isolated per "Tenant" (User).
 - **Interface**: `App\Security\TenantAwareInterface` guarantees a `getTenant()` method.
-- **Trait**: `App\Security\TenantAwareTrait` implements the interface.
+- **Trait**: `App\Security\TenantAwareTrait` implements the interface and ensures `onDelete: CASCADE` at the database level for the `tenant_id` foreign key. This guarantees that deleting a user automatically cleans up all their associated multi-tenant data.
 - **Enforcement**: `App\Doctrine\Filter\TenantFilter` is a Doctrine SQLFilter that automatically appends `AND tenant_id = <current_user_id>` to SQL queries. This ensures users cannot accidentally access other users' data.
 - **Bypass**: The filter can be disabled for administrative tasks or internal commands.
 
@@ -51,6 +51,7 @@ Security is handled at the object level using Symfony Voters.
 - **Permissions**: Defined constants like `CONTACT_VIEW`, `CONTACT_EDIT`, `CONTACT_ADD`.
 - **API Integration**: API Platform resources use `security` attributes, e.g., `security: "is_granted('CONTACT_VIEW', object)"`.
 - **Brute Force Protection**: Implemented via Symfony's `login_throttling` on the `/api/login` firewall. Limits login attempts to 5 per minute per IP/Username to prevent password guessing attacks. Requires `symfony/rate-limiter` and `symfony/lock`.
+- **Account Deletion**: `DELETE /api/profile` allows users to delete their entire account and all associated data. Handled by `CurrentUserProvider`, `UserDeleteProcessor`, and database-level cascades.
 
 ### 3. API Design
 - **Resources**: Primarily entity-based, exposed via `#[ApiResource]`.
@@ -59,7 +60,8 @@ Security is handled at the object level using Symfony Voters.
   - `*:create`/`*:update`: For write operations.
   - `export`: Specific groups for data export.
 - **Custom Operations**: Implemented using `#[Get]`, `#[Post]`, etc., pointing to custom Controllers or State Processors where standard CRUD is insufficient (e.g., XML Import/Export, vCard Export, Change Password).
-- **Change Password**: `PUT /api/users/{id}/change-password` allows users to change their password securely using `ChangePasswordDto` and `UserPasswordChangeProcessor`.
+- **Change Password**: `PUT /api/profile/change-password` allows users to change their password securely using `ChangePasswordDto` and `UserPasswordChangeProcessor`.
+- **Account Deletion**: `DELETE /api/profile` securely removes all user data. Multi-tenant data isolation is reinforced by `onDelete: CASCADE` on the `tenant_id` foreign key in `TenantAwareTrait`.
 - **vCard Export**: `GET /api/contacts/{id}/vcard` exports a contact in vCard 4.0 format using `VCardService` (powered by `sabre/vobject`).
 
 ### 4. Audit Logging

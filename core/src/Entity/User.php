@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -29,12 +30,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
             validationContext: ['groups' => ['Default', 'user:create']],
         ),
         new Put(
-            uriTemplate: '/users/{id}/change-password',
+            uriTemplate: '/profile/change-password',
             status: 200,
-            security: "is_granted('ROLE_USER') and object == user",
+            security: "is_granted('ROLE_USER')",
             input: ChangePasswordDto::class,
+            provider: 'App\State\CurrentUserProvider',
             processor: 'App\State\UserPasswordChangeProcessor',
             name: 'change_password',
+        ),
+        new Delete(
+            uriTemplate: '/profile',
+            security: "is_granted('ROLE_USER')",
+            provider: 'App\State\CurrentUserProvider',
+            processor: 'App\State\UserDeleteProcessor',
         ),
     ],
     normalizationContext: ['groups' => ['user:read']],
