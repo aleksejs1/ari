@@ -92,7 +92,10 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "phpstan": [
+            "php bin/console cache:warmup --env=dev",
+            "vendor/bin/phpstan analyse --memory-limit=1G"
+        ],
         "psalm": "vendor/bin/psalm --memory-limit=1G",
         "deptrac": "vendor/bin/deptrac analyse",
         "test": "php -d memory_limit=512M vendor/bin/phpunit",
