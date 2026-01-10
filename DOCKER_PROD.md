@@ -14,22 +14,21 @@ This guide explains how to deploy Ari CRM in a production-ready environment, suc
 
 ## 1. Prepare Environment Variables
 
+## 1. Prepare Environment Variables
+
 Since `compose.prod.yaml` is part of the code repository, you should **not** put your real passwords in it. Instead, use a `.env` file on your NAS.
 
+**Option A: Automatic Setup (Recommended)**
+Run the helper script to generate a `.env` file with secure random passwords:
+
+```bash
+./setup_prod.sh
+```
+
+**Option B: Manual Setup**
 1. Create a file named `.env` in the same folder as `compose.prod.yaml`.
 2. Copy the contents of `.env.prod.example` into it.
 3. Change the passwords to your own secure values.
-
-Example `.env` file content:
-```ini
-APP_SECRET=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-JWT_PASSPHRASE=d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb821815
-MARIADB_PASSWORD=MySecretDbPassword
-MARIADB_ROOT_PASSWORD=MySecretRootPassword
-MARIADB_USER=ari_user
-MARIADB_DB=ari_db
-APP_PORT=8080
-```
 
 ---
 
@@ -72,9 +71,11 @@ The application will automatically detect new migrations and apply them on resta
 ### Viewing Logs
 ```bash
 docker compose -f compose.prod.yaml logs -f app
+# Or directly by container name:
+# docker logs -f ari-prod-app
 ```
 
 ### Backup
 Everything is stored in:
-- `database_data` volume (MariaDB data).
+- `database_data` volume (scoped to `ari-prod` project).
 - The `core/var` directory inside the container (though it's mostly logs and cache, ensure critical user data like uploads, if any, are handled).
