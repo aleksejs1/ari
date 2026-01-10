@@ -1,0 +1,28 @@
+# Git
+.git
+.gitignore
+
+# Docker
+# docker/ should be included as it contains config files
+compose.yaml
+compose.override.yaml
+.env.local
+.env.*.local
+
+# Backend ignores
+core/var/
+core/vendor/
+core/config/jwt/*.pem
+core/.env.local
+core/.env.*.local
+core/phpunit.xml.dist
+
+# Frontend ignores
+web-client/node_modules/
+web-client/dist/
+web-client/.env.local
+web-client/.env.*.local
+
+# Misc
+*.sh
+!docker/entrypoint.sh

@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: "mysql://${MARIADB_USER}:${MARIADB_PASSWORD}@database:3306/${MARIADB_DB}?serverVersion=mariadb-11.4.9&charset=utf8mb4"
+      CORS_ALLOW_ORIGIN: '^https?://.*$'
+      JWT_PASSPHRASE: ${JWT_PASSPHRASE}
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DB}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "mariadb-admin ping -h localhost -u$${MARIADB_USER:-app} -p$${MARIADB_PASSWORD:-!ChangeMe!} || exit 1" ]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/mysql
+
+volumes:
+  database_data:

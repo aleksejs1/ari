@@ -2,3 +2,6 @@
 git_stats.sh
 git_stats_manual.sh
 estimate_hours.sh
+
+# Environment files
+.env

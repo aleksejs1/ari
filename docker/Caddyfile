@@ -1,0 +1,23 @@
+:8080 {
+	# Global root for frontend
+	root * /app/public
+	encode zstd gzip
+
+	# Handle API requests (Symfony)
+	handle /api/* {
+		root * /app/core/public
+		php_server
+	}
+
+	# Handle everything else (Frontend)
+	handle {
+		# Try to serve file, then directory, then fall back to index.html
+		try_files {path} {path}/ /index.html
+		file_server
+	}
+
+	log {
+		output stderr
+		level INFO
+	}
+}
