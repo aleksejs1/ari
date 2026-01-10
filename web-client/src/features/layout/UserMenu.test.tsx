@@ -82,10 +82,7 @@ describe('UserMenu', () => {
     await user.click(screen.getByRole('button', { name: /open user menu/i }))
 
     expect(await screen.findByText('Audit Logs')).toBeInTheDocument()
-    expect(await screen.findByText('Manage Groups')).toBeInTheDocument()
-    expect(await screen.findByText('Notification Channels')).toBeInTheDocument()
-    expect(await screen.findByText('Notification Policies')).toBeInTheDocument()
-    expect(await screen.findByText('Google Import')).toBeInTheDocument()
+
     expect(await screen.findByText('Settings')).toBeInTheDocument()
     expect(await screen.findByText('Logout')).toBeInTheDocument()
   })

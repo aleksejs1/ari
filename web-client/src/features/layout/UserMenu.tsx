@@ -1,4 +1,4 @@
-import { LogOut, Settings, Bell, Download, Shield, Users, Menu, FileText } from 'lucide-react'
+import { LogOut, Settings, Menu, FileText } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -43,32 +43,7 @@ export function UserMenu() {
               <span>{t('app.navigation.auditLogs', 'Audit Logs')}</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/groups" className="cursor-pointer">
-              <Users className="mr-2 h-4 w-4" />
-              <span>{t('app.navigation.manageGroups', 'Manage Groups')}</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/notification-channels" className="cursor-pointer">
-              <Bell className="mr-2 h-4 w-4" />
-              <span>{t('app.navigation.notificationChannels', 'Notification Channels')}</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/settings/notification-policies" className="cursor-pointer">
-              <Shield className="mr-2 h-4 w-4" />
-              <span>
-                {t('app.navigation.sidebar.notificationPolicies', 'Notification Policies')}
-              </span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/google-import" className="cursor-pointer">
-              <Download className="mr-2 h-4 w-4" />
-              <span>{t('app.navigation.googleImport', 'Google Import')}</span>
-            </Link>
-          </DropdownMenuItem>
+
           <DropdownMenuItem asChild>
             <Link to="/settings" className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
