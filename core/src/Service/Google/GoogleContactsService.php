@@ -291,7 +291,7 @@ class GoogleContactsService
         return $importedCount;
     }
 
-    private function getValidAccessToken(TokenStorage $tokenStorage): string
+    public function getValidAccessToken(TokenStorage $tokenStorage): string
     {
         if ($tokenStorage->getTokenExpiresAt() > new \DateTimeImmutable()) {
             return (string) $tokenStorage->getAccessToken();

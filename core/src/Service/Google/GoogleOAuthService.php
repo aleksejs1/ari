@@ -27,7 +27,7 @@ class GoogleOAuthService
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
             'response_type' => 'code',
-            'scope' => 'https://www.googleapis.com/auth/contacts.readonly',
+            'scope' => 'https://www.googleapis.com/auth/contacts',
             'access_type' => 'offline',
             'prompt' => 'consent',
         ];

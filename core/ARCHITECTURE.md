@@ -77,7 +77,14 @@ Entity: `UserPref`.
 - **Validation**: Enforced via `#[Assert\Callback]` in the entity to ensure values matches the preference type.
 - **API**: Exposed via custom `UserPrefStateProvider` and `UserPrefProcessor` to allow access by preference `type` instead of ID.
 
-### 7. Code Quality & Standards
+### 7. Google Contacts Integration
+Location: `src/Service/Google/`.
+- **Import**: `GoogleContactsService` imports contacts from Google People API. Contacts are linked via `ImportMapping` entity.
+- **Update Sync**: `GoogleContactUpdateService` pushes phone number changes to Google when `UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE` is enabled.
+- **Event Subscriber**: `ContactPhoneSyncSubscriber` listens to `ContactPhoneNumber` entity changes and triggers the sync after flush.
+- **OAuth Scope**: Uses `https://www.googleapis.com/auth/contacts` for read/write access.
+
+### 8. Code Quality & Standards
 The project enforces strict code quality:
 - **Deptrac**: Enforces architectural layers (e.g., Controllers cannot depend on Entity internals directly? - *Check deptrac.yaml*). 
   - *Correction based on file content*: Controllers depend on everything. Entities are isolated.

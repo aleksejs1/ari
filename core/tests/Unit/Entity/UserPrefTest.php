@@ -161,6 +161,7 @@ class UserPrefTest extends TestCase
         $context2->expects($this->never())->method('buildViolation');
         $pref2->validateValue($context2);
     }
+
     public function testValidationGoogleSyncOnUpdate(): void
     {
         // Valid '0'
