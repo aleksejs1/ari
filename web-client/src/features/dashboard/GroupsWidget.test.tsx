@@ -71,8 +71,8 @@ describe('GroupsWidget', () => {
     vi.mocked(api.get).mockResolvedValue({
       data: {
         member: [
-          { '@id': '/api/groups/1', name: 'Family' },
-          { '@id': '/api/groups/2', name: 'Work' },
+          { '@id': '/api/groups/1', name: 'Family', contactsCount: 5 },
+          { '@id': '/api/groups/2', name: 'Work', contactsCount: 3 },
         ],
       },
     })
@@ -95,10 +95,33 @@ describe('GroupsWidget', () => {
     expect(workLink).toHaveAttribute('href', '/contacts?group=%2Fapi%2Fgroups%2F2')
   })
 
+  it('hides groups with no contacts', async () => {
+    vi.mocked(api.get).mockResolvedValue({
+      data: {
+        member: [
+          { '@id': '/api/groups/1', name: 'Family', contactsCount: 5 },
+          { '@id': '/api/groups/2', name: 'Empty Group', contactsCount: 0 },
+        ],
+      },
+    })
+    const Wrapper = createWrapper()
+    render(
+      <Wrapper>
+        <GroupsWidget />
+      </Wrapper>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Family')).toBeInTheDocument()
+    })
+
+    expect(screen.queryByText('Empty Group')).not.toBeInTheDocument()
+  })
+
   it('displays the groups navigation title', async () => {
     vi.mocked(api.get).mockResolvedValue({
       data: {
-        member: [{ '@id': '/api/groups/1', name: 'Friends' }],
+        member: [{ '@id': '/api/groups/1', name: 'Friends', contactsCount: 1 }],
       },
     })
     const Wrapper = createWrapper()

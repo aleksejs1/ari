@@ -25,13 +25,15 @@ export default function GroupsWidget() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-2">
-          {groups.map((group) => (
-            <Link key={group['@id']} to={`/contacts?group=${encodeURIComponent(group['@id'])}`}>
-              <Badge variant="secondary" className="cursor-pointer hover:opacity-80">
-                {group.name}
-              </Badge>
-            </Link>
-          ))}
+          {groups
+            .filter((group) => (group.contactsCount ?? 0) > 0)
+            .map((group) => (
+              <Link key={group['@id']} to={`/contacts?group=${encodeURIComponent(group['@id'])}`}>
+                <Badge variant="secondary" className="cursor-pointer hover:opacity-80">
+                  {group.name}
+                </Badge>
+              </Link>
+            ))}
         </div>
       </CardContent>
     </Card>
