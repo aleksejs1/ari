@@ -23,7 +23,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
     {
         parent::setUp();
         $doctrine = self::getContainer()->get('doctrine');
-        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+        if (!$doctrine instanceof \Doctrine\Bundle\DoctrineBundle\Registry) {
             throw new \RuntimeException('Doctrine service not found');
         }
         $em = $doctrine->getManager();

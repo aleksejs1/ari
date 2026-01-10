@@ -97,7 +97,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
 
         // 5. Verify Queue Item in DB
         $doctrine = $kernel->getContainer()->get('doctrine');
-        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+        if (!$doctrine instanceof \Doctrine\Bundle\DoctrineBundle\Registry) {
             throw new \RuntimeException('Doctrine service not found');
         }
         $entityManager = $doctrine->getManager();

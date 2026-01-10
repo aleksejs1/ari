@@ -19,7 +19,7 @@ class ContactExportTest extends AbstractApiTestCase
         $client = static::createClient();
         $container = self::getContainer();
         $doctrine = $container->get('doctrine');
-        assert($doctrine instanceof \Doctrine\Persistence\ManagerRegistry);
+        assert($doctrine instanceof \Doctrine\Bundle\DoctrineBundle\Registry);
         $em = $doctrine->getManager();
 
         /** @var User $user */

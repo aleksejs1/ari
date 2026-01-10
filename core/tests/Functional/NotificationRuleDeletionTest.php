@@ -68,7 +68,7 @@ class NotificationRuleDeletionTest extends AbstractApiTestCase
         $this->runGenerate($today);
 
         // Verify Queue Item exists and is Pending
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = self::getContainer()->get('doctrine');
         /** @var \Doctrine\ORM\EntityManagerInterface $em */
         $em = $doctrine->getManager();
@@ -97,7 +97,7 @@ class NotificationRuleDeletionTest extends AbstractApiTestCase
         self::assertResponseStatusCodeSame(200);
 
         // 5. Verify Rule is Deleted and Queue is Canceled
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = self::getContainer()->get('doctrine');
         $doctrine->resetManager(); // clear was not enough? resetManager behaves like re-booting EM.
         // Actually $em->clear() is what we used before. resetManager replaces the EM instance.

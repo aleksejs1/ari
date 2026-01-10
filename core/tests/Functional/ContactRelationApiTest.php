@@ -22,13 +22,13 @@ class ContactRelationApiTest extends ApiTestCase
     protected function setUp(): void
     {
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
 
         /** @var \Symfony\Component\DependencyInjection\ContainerInterface $testContainer */
         $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
         // User A
@@ -95,7 +95,7 @@ class ContactRelationApiTest extends ApiTestCase
         // Setup existing relation
         $client = static::createClient();
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
         $c1 = $em->find(Contact::class, $this->contactId1);
@@ -123,12 +123,12 @@ class ContactRelationApiTest extends ApiTestCase
         // Create User B and their data
         $client = static::createClient();
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
         /** @var \Symfony\Component\DependencyInjection\ContainerInterface $testContainer */
         $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
         $userB = new User();

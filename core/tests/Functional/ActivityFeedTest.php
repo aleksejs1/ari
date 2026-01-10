@@ -10,7 +10,7 @@ class ActivityFeedTest extends AbstractApiTestCase
     private function getUserEntity(): User
     {
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
         $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
@@ -29,7 +29,7 @@ class ActivityFeedTest extends AbstractApiTestCase
 
         // Create ActivityFeed manually
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
 
@@ -65,7 +65,7 @@ class ActivityFeedTest extends AbstractApiTestCase
 
         // Create 2 Unread Activities
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
 
@@ -100,7 +100,7 @@ class ActivityFeedTest extends AbstractApiTestCase
 
         // Create Unread Activity
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
 

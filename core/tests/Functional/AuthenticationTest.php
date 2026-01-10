@@ -16,7 +16,7 @@ class AuthenticationTest extends ApiTestCase
 
         /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
         $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
         $uuid = 'test-user-' . bin2hex(random_bytes(4));
@@ -24,7 +24,7 @@ class AuthenticationTest extends ApiTestCase
         $user->setUuid($uuid);
         $user->setPassword($hasher->hashPassword($user, '$3cr3t'));
 
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);

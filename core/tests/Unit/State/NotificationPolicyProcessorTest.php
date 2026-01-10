@@ -74,7 +74,6 @@ class NotificationPolicyProcessorTest extends TestCase
 
         $result = $processor->process($dto, new Post());
 
-        /* @phpstan-ignore-next-line */
         self::assertInstanceOf(NotificationPolicy::class, $result);
         self::assertEquals('Test Policy', $result->getName());
         self::assertEquals($user, $result->getUser());

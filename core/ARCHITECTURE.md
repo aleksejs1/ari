@@ -10,7 +10,7 @@ This document provides a technical overview of the `core` service (backend), whi
 - **ORM**: Doctrine ORM 3
 - **Database**: MySQL (via `pdo_mysql`)
 - **Authentication**: JWT (LexikJWTAuthenticationBundle)
-- **Static Analysis**: PHPStan (Level 8), Psalm (Level 3), Deptrac
+- **Static Analysis**: PHPStan (Level 8 with Symfony container integration), Psalm (Level 3), Deptrac
 - **Testing**: PHPUnit 12
 
 ## Directory Structure

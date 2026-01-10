@@ -15,7 +15,7 @@ class GroupDeletionTest extends AbstractApiTestCase
     {
         $client = static::createClient();
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         /** @var EntityManagerInterface $em */
         $em = $doctrine->getManager();

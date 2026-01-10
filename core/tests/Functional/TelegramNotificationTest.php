@@ -22,14 +22,14 @@ class TelegramNotificationTest extends ApiTestCase
     public function testProcessNotificationsCommand(): void
     {
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         /** @var EntityManagerInterface $em */
         $em = $doctrine->getManager();
 
         /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
         $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
         // 1. Setup Data
@@ -81,7 +81,6 @@ class TelegramNotificationTest extends ApiTestCase
 
         // 3. Run Command
         $em->clear();
-        /** @var \Symfony\Component\Console\Command\Command $command */
         $command = $container->get(ProcessNotificationsCommand::class);
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
@@ -116,7 +115,7 @@ class TelegramNotificationTest extends ApiTestCase
     {
         $container = self::getContainer();
 
-        /** @var \Symfony\Component\Validator\Validator\ValidatorInterface $validator */
+        /** @var \Symfony\Component\Validator\Validator\TraceableValidator $validator */
         $validator = $container->get('validator');
 
         $channel = new NotificationChannel();

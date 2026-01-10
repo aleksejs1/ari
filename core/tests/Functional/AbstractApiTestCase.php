@@ -17,14 +17,14 @@ abstract class AbstractApiTestCase extends ApiTestCase
     protected function setUp(): void
     {
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         /** @var EntityManagerInterface $em */
         $em = $doctrine->getManager();
 
         /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
         $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
         // Create User

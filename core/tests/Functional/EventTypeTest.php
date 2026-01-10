@@ -13,7 +13,7 @@ class EventTypeTest extends AbstractApiTestCase
         parent::setUp();
 
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
 

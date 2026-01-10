@@ -15,13 +15,13 @@ class UserPrefApiTest extends AbstractApiTestCase
         $user = new User();
         $user->setUuid($uniqueId);
 
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = self::getContainer()->get('security.user_password_hasher');
         $user->setPassword(
             $hasher->hashPassword($user, 'password')
         );
 
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = self::getContainer()->get('doctrine');
         $em = $doctrine->getManager();
         $em->persist($user);

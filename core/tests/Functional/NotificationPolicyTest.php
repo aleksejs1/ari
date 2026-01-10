@@ -71,7 +71,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         // So we MUST check via EntityManager.
 
         $entityManager = static::getContainer()->get('doctrine');
-        if (!$entityManager instanceof \Doctrine\Persistence\ManagerRegistry) {
+        if (!$entityManager instanceof \Doctrine\Bundle\DoctrineBundle\Registry) {
             throw new \RuntimeException('Doctrine not found');
         }
         $em = $entityManager->getManager();
@@ -159,7 +159,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
 
         // Verify Rules updated (via DB or implicit logic - DB check better)
         $doctrine = static::getContainer()->get('doctrine');
-        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+        if (!$doctrine instanceof \Doctrine\Bundle\DoctrineBundle\Registry) {
             throw new \RuntimeException('Doctrine not found');
         }
         $entityManager = $doctrine->getManager();
@@ -218,7 +218,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         $policyId = $response->toArray()['id'];
 
         $doctrine = static::getContainer()->get('doctrine');
-        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+        if (!$doctrine instanceof \Doctrine\Bundle\DoctrineBundle\Registry) {
             throw new \RuntimeException('Doctrine not found');
         }
         $em = $doctrine->getManager();
@@ -265,7 +265,7 @@ class NotificationPolicyTest extends AbstractApiTestCase
         $policyId = $response->toArray()['id'];
 
         $doctrine = static::getContainer()->get('doctrine');
-        if (!$doctrine instanceof \Doctrine\Persistence\ManagerRegistry) {
+        if (!$doctrine instanceof \Doctrine\Bundle\DoctrineBundle\Registry) {
             throw new \RuntimeException('Doctrine not found');
         }
         $em = $doctrine->getManager();

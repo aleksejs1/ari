@@ -30,7 +30,6 @@ class UserPrefProcessor implements ProcessorInterface
     #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
-        /* @phpstan-ignore-next-line */
         if ($data instanceof UserPref) {
             $user = $this->security->getUser();
             if ($user instanceof User) {

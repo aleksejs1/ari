@@ -19,11 +19,11 @@ class GoogleAuthTest extends ApiTestCase
         $user = new User();
         $user->setUuid($uuid);
 
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $container->get('security.user_password_hasher');
         $user->setPassword($hasher->hashPassword($user, 'password'));
 
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);

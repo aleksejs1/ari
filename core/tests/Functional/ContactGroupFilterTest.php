@@ -5,7 +5,7 @@ namespace App\Tests\Functional;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
 class ContactGroupFilterTest extends ApiTestCase
 {
@@ -18,14 +18,14 @@ class ContactGroupFilterTest extends ApiTestCase
     protected function setUp(): void
     {
         $container = self::getContainer();
-        /** @var \Doctrine\Persistence\ManagerRegistry $doctrine */
+        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $container->get('doctrine');
         /** @var EntityManagerInterface $em */
         $em = $doctrine->getManager();
 
         /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
         $testContainer = $container->get('test.service_container');
-        /** @var UserPasswordHasherInterface $hasher */
+        /** @var UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
         // Create User
