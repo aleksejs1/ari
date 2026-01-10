@@ -45,6 +45,7 @@ security:
         - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/docs,  roles: PUBLIC_ACCESS }
+        - { path: ^/api/demo-account, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api$,      roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }

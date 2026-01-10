@@ -85,7 +85,13 @@ Location: `src/Service/Google/`.
 - **Event Subscriber**: `ContactSyncSubscriber` listens to changes in `Contact` and its related entities (phones, names, emails, addresses, bios, orgs, dates) and triggers the sync after flush.
 - **OAuth Scope**: Uses `https://www.googleapis.com/auth/contacts` for read/write access.
 
-### 8. Code Quality & Standards
+### 8. Demo Account Generation
+- **Service**: `App\Service\Demo\DemoAccountService` generates a pre-populated user with 70 contacts and complex relationships (families, colleagues).
+- **Command**: `bin/console app:generate-demo-account` triggers generation via CLI.
+- **API**: `POST /api/demo-account` allows triggering via the web client (returns the username).
+- **Data Generator**: `App\Service\Demo\DemoDataGenerator` provides realistic localized data without external dependencies.
+
+### 9. Code Quality & Standards
 The project enforces strict code quality:
 - **Deptrac**: Enforces architectural layers:
   - **Controllers**, **Commands**, **ApiResources**: Cannot access **Repositories** directly. Must use **Services**.

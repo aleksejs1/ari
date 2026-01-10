@@ -63,11 +63,13 @@ deptrac:
       - Entity
       - Service
       - Vendor
+      - ApiResource
     ApiResource:
       - Entity
       - Service
       - Vendor
       - State
+      - Controller
     State:
       - Entity
       - Security
@@ -80,6 +82,7 @@ deptrac:
       - Security
       - Service
       - Vendor
+      - ApiResource
     Entity:
       - Repository
       - Security
