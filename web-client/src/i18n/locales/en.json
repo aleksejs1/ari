@@ -81,7 +81,10 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "confirmNewPassword": "Confirm New Password",
-    "passwordRequirements": "Make sure it is at least 6 characters long."
+    "passwordRequirements": "Make sure it is at least 6 characters long.",
+    "demo": "Demo",
+    "demoDescription": "Try the system with a pre-populated demo account.",
+    "creatingDemoAccount": "Creating demo account..."
   },
   "contacts": {
     "title": "Contacts",

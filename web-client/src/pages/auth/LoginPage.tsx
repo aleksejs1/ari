@@ -32,6 +32,7 @@ export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
+  const [isDemoLoading, setIsDemoLoading] = useState(false)
   const { t } = useTranslation()
 
   const formSchema = z.object({
@@ -58,6 +59,28 @@ export default function LoginPage() {
     } catch (err: unknown) {
       console.error(err)
       setError(t('auth.invalidCredentials'))
+    }
+  }
+
+  async function onDemoLogin() {
+    setIsDemoLoading(true)
+    setError(null)
+    try {
+      const response = await api.post<{ username: string }>('/demo-account', {})
+      const { username } = response.data
+
+      const loginResponse = await api.post<LoginResponse>('/login_check', {
+        username,
+        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+        password: 'demo',
+      })
+      login(loginResponse.data.token)
+      await navigate('/')
+    } catch (err: unknown) {
+      console.error(err)
+      setError(t('auth.invalidCredentials'))
+    } finally {
+      setIsDemoLoading(false)
     }
   }
 
@@ -101,11 +124,32 @@ export default function LoginPage() {
                 )}
               />
               {error ? <div className="text-sm text-red-500">{error}</div> : null}
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isDemoLoading}>
                 {t('auth.signIn')}
               </Button>
             </form>
           </Form>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-muted-foreground dark:bg-gray-800">
+                  {t('auth.demo')}
+                </span>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={onDemoLogin}
+              disabled={isDemoLoading || form.formState.isSubmitting}
+            >
+              {isDemoLoading ? t('auth.creatingDemoAccount') : t('auth.demo')}
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">{t('auth.demoDescription')}</p>
+          </div>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-500">

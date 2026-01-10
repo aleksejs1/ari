@@ -81,7 +81,10 @@
     "currentPassword": "Текущий пароль",
     "newPassword": "Новый пароль",
     "confirmNewPassword": "Подтвердите новый пароль",
-    "passwordRequirements": "Пароль должен содержать не менее 6 символов"
+    "passwordRequirements": "Пароль должен содержать не менее 6 символов",
+    "demo": "Демо",
+    "demoDescription": "Попробуйте систему с автоматически созданным демо-аккаунтом.",
+    "creatingDemoAccount": "Создание демо-аккаунта..."
   },
   "contacts": {
     "title": "Контакты",

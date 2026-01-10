@@ -65,6 +65,7 @@ src/
 - **Sidebar**: In `DashboardLayout`, the sidebar provides navigation to secondary features (Audit Logs, Groups, Settings etc). It does not contain Home or Contacts links, nor user/session controls (which are in the header).
 - **Header Navigation**: In `SidebarLessLayout`, primary navigation (like Contacts) is exposed directly in the header row next to the logo.
 - **Type Autocomplete**: Form fields for "type" (phone type, email type, etc.) use a `TypeAutocomplete` component that provides suggestions from the `/api/autocomplete` endpoint via the `useAutocomplete` hook. Users can also enter custom values, which are cached locally for future use within the session.
+- **Demo Mode**: Users can instantly explore the application using a "Demo" account. This is triggered from the Login page, calling `POST /api/demo-account` to generate a temporary user and then automatically logging in with the default password `demo`.
 
 ## Development Commands
 

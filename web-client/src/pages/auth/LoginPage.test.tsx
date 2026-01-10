@@ -126,4 +126,57 @@ describe('LoginPage', () => {
       expect(screen.getByText('auth.passwordRequired')).toBeInTheDocument()
     })
   })
+
+  it('handles successful demo login', async () => {
+    vi.mocked(api.post)
+      .mockResolvedValueOnce({ data: { username: 'demo-user-123' } }) // /demo-account
+      .mockResolvedValueOnce({ data: { token: 'demo-token' } }) // /login_check
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'auth.demo' }))
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith('/demo-account', {})
+    })
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith('/login_check', {
+        username: 'demo-user-123',
+        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+        password: 'demo',
+      })
+    })
+
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith('demo-token')
+      expect(mockNavigate).toHaveBeenCalledWith('/')
+    })
+  })
+
+  it('handles demo login failure', async () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+      /* suppress */
+    })
+    vi.mocked(api.post).mockRejectedValueOnce(new Error('API Error'))
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'auth.demo' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('auth.invalidCredentials')).toBeInTheDocument()
+    })
+
+    expect(mockLogin).not.toHaveBeenCalled()
+    consoleSpy.mockRestore()
+  })
 })
