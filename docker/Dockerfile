@@ -43,6 +43,12 @@ WORKDIR /app
 # Copy Backend files and vendor from builder
 COPY --from=backend-builder /app/core /app/core
 
+# Create directory for JWT keys (to be safe)
+RUN mkdir -p config/jwt && chown -R www-data:www-data config/jwt
+
+# Create empty .env file to satisfy Symfony Runtime
+RUN touch .env
+
 # Copy Frontend build to Caddy's public directory
 COPY --from=frontend-builder /app/web-client/dist /app/public
 
