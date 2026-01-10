@@ -29,7 +29,7 @@ export const getContactSchema = (t: TFunction) => {
     '@id': z.string().optional(),
     '@type': z.string().optional(),
     value: z.string(),
-    type: z.string().min(1, t('validation.typeRequired')),
+    type: z.string(),
   })
 
   const contactEmailAdressSchema = z.object({
@@ -40,14 +40,14 @@ export const getContactSchema = (t: TFunction) => {
     value: z.string().refine((val) => val === '' || z.string().email().safeParse(val).success, {
       message: t('validation.invalidEmail'),
     }),
-    /* eslint-enable sonarjs/deprecation */ type: z.string().min(1, t('validation.typeRequired')),
+    /* eslint-enable sonarjs/deprecation */ type: z.string(),
   })
 
   const contactAddressSchema = z.object({
     id: z.string().optional(),
     '@id': z.string().optional(),
     '@type': z.string().optional(),
-    type: z.string().min(1, t('validation.typeRequired')),
+    type: z.string(),
     street: z.string().optional().nullable(),
     streetExtended: z.string().optional().nullable(),
     city: z.string().optional().nullable(),
@@ -91,7 +91,7 @@ export const getContactSchema = (t: TFunction) => {
     '@id': z.string().optional(),
     '@type': z.string().optional(),
     value: z.string(),
-    type: z.string().min(1, t('validation.typeRequired')),
+    type: z.string(),
   })
 
   const contactRelationSchema = z.object({

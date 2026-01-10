@@ -83,7 +83,7 @@ export const contactPhoneNumberSchema = z.object({
   '@id': z.string().optional(),
   '@type': z.string().optional(),
   value: z.string().min(1),
-  type: z.string().min(1),
+  type: z.string(),
 })
 
 export const contactEmailAdressSchema = z.object({
@@ -92,14 +92,14 @@ export const contactEmailAdressSchema = z.object({
   '@type': z.string().optional(),
   // eslint-disable-next-line sonarjs/deprecation
   value: z.string().min(1).email({}),
-  type: z.string().min(1),
+  type: z.string(),
 })
 
 export const contactAddressSchema = z.object({
   id: z.string().optional(),
   '@id': z.string().optional(),
   '@type': z.string().optional(),
-  type: z.string().min(1),
+  type: z.string(),
   street: z.string().optional().nullable(),
   streetExtended: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
@@ -145,7 +145,7 @@ export const contactBiographySchema = z.object({
   '@id': z.string().optional(),
   '@type': z.string().optional(),
   value: z.string().min(1),
-  type: z.string().min(1),
+  type: z.string(),
 })
 
 export const contactRelationSchema = z.object({

@@ -95,33 +95,4 @@ describe('ContactForm Addresses', () => {
       )
     })
   })
-
-  it('validates mandatory address fields', async () => {
-    render(<ContactForm onSubmit={vi.fn()} />)
-
-    fireEvent.click(screen.getByText('contacts.addresses'))
-
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.addressTypePlaceholder')).toBeInTheDocument()
-    })
-
-    // Fill a value so the address is not filtered out as empty
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressStreet'), {
-      target: { value: 'Something' },
-    })
-
-    // Clear the default 'Home' type to trigger validation
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressTypePlaceholder'), {
-      target: { value: '' },
-    })
-
-    fireEvent.click(screen.getByText('common.save'))
-
-    await waitFor(() => {
-      expect(screen.getByText('validation.typeRequired')).toBeInTheDocument()
-      expect(screen.queryByText('validation.streetRequired')).not.toBeInTheDocument()
-      expect(screen.queryByText('validation.cityRequired')).not.toBeInTheDocument()
-      expect(screen.queryByText('validation.postalCodeRequired')).not.toBeInTheDocument()
-    })
-  })
 })
