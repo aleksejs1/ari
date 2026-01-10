@@ -4,6 +4,8 @@ import { vi } from 'vitest'
 
 import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
 
+import type { Contact, Group } from '@/types/models'
+
 // Mock components that might be problematic in tests
 vi.mock('@/components/ui/scroll-area', () => ({
   ScrollArea: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -13,12 +15,12 @@ describe('ContactGroupInlineEdit', () => {
   const mockGroups = [
     { '@id': '/api/groups/1', name: 'Group 1' },
     { '@id': '/api/groups/2', name: 'Group 2' },
-  ] as { '@id': string; name: string }[]
+  ] as Group[]
 
   const mockContact = {
     '@id': '/api/contacts/1',
     contactGroups: [{ groupResource: '/api/groups/1' }],
-  } as Partial<Contact>
+  } as unknown as Contact // Use unknown first to cast to Partial<Contact> not straightforward with deep types
 
   const onUpdate = vi.fn()
 
@@ -33,18 +35,57 @@ describe('ContactGroupInlineEdit', () => {
     expect(screen.queryByText('Group 2')).not.toBeInTheDocument()
   })
 
+  it('renders colored badges when group has color', () => {
+    const coloredGroups = [
+      { '@id': '/api/groups/3', name: 'Red Group', color: '#ff0000' },
+    ] as Group[]
+
+    const coloredContact = {
+      '@id': '/api/contacts/2',
+      contactGroups: [{ groupResource: '/api/groups/3' }],
+    } as unknown as Contact
+
+    render(
+      <ContactGroupInlineEdit
+        contact={coloredContact}
+        groups={coloredGroups}
+        onUpdate={onUpdate}
+      />,
+    )
+
+    const badge = screen.getByText('Red Group')
+    // hex colors are often normalized to rgb in styles, but inline styles usually persist.
+    // However, we are checking style prop or class.
+    expect(badge).toHaveStyle({ backgroundColor: '#ff0000' })
+    expect(badge.style.color).toBe('rgb(255, 255, 255)')
+  })
+
+  it('renders dark text on light group colors', () => {
+    const lightGroups = [
+      { '@id': '/api/groups/4', name: 'Light Group', color: '#ffff00' }, // Yellow
+    ] as Group[]
+
+    const lightContact = {
+      '@id': '/api/contacts/3',
+      contactGroups: [{ groupResource: '/api/groups/4' }],
+    } as unknown as Contact
+
+    render(
+      <ContactGroupInlineEdit contact={lightContact} groups={lightGroups} onUpdate={onUpdate} />,
+    )
+
+    const badge = screen.getByText('Light Group')
+    // The contrasting color for yellow (#ffff00) should be a dark shade (not white)
+    expect(badge).toHaveStyle({ backgroundColor: '#ffff00' })
+    expect(badge.style.color).not.toBe('rgb(255, 255, 255)')
+    expect(badge.style.color).not.toBe('#ffffff')
+    expect(badge).not.toHaveClass('text-white')
+  })
+
   it('opens popover and shows all groups', async () => {
     const user = userEvent.setup()
     render(<ContactGroupInlineEdit contact={mockContact} groups={mockGroups} onUpdate={onUpdate} />)
 
-    // Hover to show edit button (or just click it if visible/in DOM even if opacity 0)
-    // The InlineEditTrigger button has aria-label="Edit Groups" or similar.
-    // Let's check the label in InlineEditTrigger: t(isExistent ? 'common.edit' : 'common.add', { item: label })
-    // isExistent is true (has groups). label is "Groups".
-    // So "Edit Groups".
-
-    // Note: InlineEditTrigger uses standard Radix Popover.
-    // Button is opacity 0 but clickable.
     const editButton = screen.getByRole('button', { name: /Edit/i })
     await user.click(editButton)
 

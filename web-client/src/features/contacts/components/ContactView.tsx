@@ -21,6 +21,7 @@ import {
   useUpdateContactEmail,
   useUpdateContactOrganization,
   useUpdateContactPhone,
+  useGroups,
 } from '../useContacts'
 
 import { BiographyCard } from './cards/BiographyCard'
@@ -33,6 +34,7 @@ import { UpcomingDatesCard } from './cards/UpcomingDatesCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useContactFavorite } from '@/features/contacts/hooks/useContactFavorite'
+import { getContrastingTextColor } from '@/lib/colors'
 import type {
   Contact,
   ContactAddress,
@@ -79,6 +81,7 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
   const { t } = useTranslation()
   const { isContactFavorite, toggleFavorite } = useContactFavorite()
   const isFavorite = isContactFavorite(contact)
+  const { data: groupsFetched } = useGroups()
 
   const handleCreatePhoneMutation = useCreateContactPhone()
   const handleUpdatePhoneMutation = useUpdateContactPhone()
@@ -263,20 +266,36 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
           </h1>
           {!!contact.contactGroups && contact.contactGroups.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {contact.contactGroups.map((group, i) => {
-                const filterValue = getGroupFilterValue(group.groupResource)
-                const name = getGroupName(group.groupResource)
+              {contact.contactGroups.map((cg, i) => {
+                const groupIri = getGroupFilterValue(cg.groupResource)
+                const name = getGroupName(cg.groupResource)
                 if (!name) {
                   return null
                 }
 
+                const fullGroup = groupsFetched?.find((g) => g['@id'] === groupIri)
+
                 return (
                   <Link
                     key={i}
-                    to={filterValue ? `/contacts?group=${encodeURIComponent(filterValue)}` : '#'}
+                    to={groupIri ? `/contacts?group=${encodeURIComponent(groupIri)}` : '#'}
                     className="hover:opacity-80"
                   >
-                    <Badge variant="secondary">{name}</Badge>
+                    <Badge
+                      variant="secondary"
+                      className={fullGroup?.color ? 'border-transparent' : ''}
+                      style={
+                        fullGroup?.color
+                          ? {
+                              backgroundColor: fullGroup.color,
+                              borderColor: fullGroup.color,
+                              color: getContrastingTextColor(fullGroup.color),
+                            }
+                          : undefined
+                      }
+                    >
+                      {name}
+                    </Badge>
                   </Link>
                 )
               })}

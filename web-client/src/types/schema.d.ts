@@ -1327,6 +1327,35 @@ export interface components {
              */
             tenant?: string;
         };
+        "AuditLog.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            user?: string;
+            entityType?: string;
+            entityId?: number | null;
+            ownerEntityType?: string | null;
+            ownerEntityId?: number | null;
+            action?: string;
+            changes?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotBefore?: {
+                [key: string]: string | null;
+            } | null;
+            snapshotAfter?: {
+                [key: string]: string | null;
+            } | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            tenant?: string;
+        };
         "AuditLog.jsonld-audit.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             /**
@@ -1350,24 +1379,6 @@ export interface components {
             } | null;
             /** Format: date-time */
             createdAt?: string;
-        };
-        Collection: {
-            /** @description Checks whether the collection is empty (contains no elements). */
-            readonly empty?: boolean;
-            /** @description Gets all keys/indices of the collection. */
-            readonly keys?: number[] | string[];
-            /** @description Gets all values of the collection. */
-            readonly values?: (string | null)[];
-            readonly iterator?: unknown;
-        };
-        "Collection.jsonld": {
-            /** @description Checks whether the collection is empty (contains no elements). */
-            readonly empty?: boolean;
-            /** @description Gets all keys/indices of the collection. */
-            readonly keys?: number[] | string[];
-            /** @description Gets all values of the collection. */
-            readonly values?: (string | null)[];
-            readonly iterator?: unknown;
         };
         /** @description Unprocessable entity */
         ConstraintViolation: {
@@ -1455,6 +1466,7 @@ export interface components {
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress-export"][];
             contactAddresses?: components["schemas"]["ContactAddress-export"][];
             contactGroups?: components["schemas"]["ContactGroup-export"][];
+            contactOrganizations?: components["schemas"]["ContactOrganization-export"][];
             contactBiographies?: components["schemas"]["ContactBiography-export"][];
             contactRelations?: components["schemas"]["ContactRelation-export"][];
         };
@@ -1491,6 +1503,7 @@ export interface components {
             contactEmailAdresses?: components["schemas"]["ContactEmailAdress.jsonld-export"][];
             contactAddresses?: components["schemas"]["ContactAddress.jsonld-export"][];
             contactGroups?: components["schemas"]["ContactGroup.jsonld-export"][];
+            contactOrganizations?: components["schemas"]["ContactOrganization.jsonld-export"][];
             contactBiographies?: components["schemas"]["ContactBiography.jsonld-export"][];
             contactRelations?: components["schemas"]["ContactRelation.jsonld-export"][];
         };
@@ -1980,6 +1993,17 @@ export interface components {
             jobDescription?: string | null;
             type?: string | null;
         };
+        "ContactOrganization-export": {
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
         "ContactOrganization.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             name?: string | null;
@@ -1995,6 +2019,17 @@ export interface components {
         "ContactOrganization.jsonld-contact_organization.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             contact?: components["schemas"]["Contact.jsonld-contact_organization.read"] | null;
+            name?: string | null;
+            department?: string | null;
+            title?: string | null;
+            /** Format: date-time */
+            startDate?: string | null;
+            /** Format: date-time */
+            endDate?: string | null;
+            jobDescription?: string | null;
+            type?: string | null;
+        };
+        "ContactOrganization.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
             name?: string | null;
             department?: string | null;
             title?: string | null;
@@ -2147,11 +2182,11 @@ export interface components {
         };
         ContactTimeline: {
             id?: number;
-            logs?: components["schemas"]["Collection"];
+            logs?: components["schemas"]["AuditLog"][];
         };
         "ContactTimeline.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
             id?: number;
-            logs?: components["schemas"]["Collection.jsonld"];
+            logs?: components["schemas"]["AuditLog.jsonld"][];
         };
         /** @description A representation of common errors. */
         Error: {
@@ -2208,15 +2243,19 @@ export interface components {
         };
         "Group-group.create": {
             name?: string;
+            color?: string | null;
         };
         "Group-group.create.jsonMergePatch": {
             name?: string;
+            color?: string | null;
         };
         "Group-group.read": {
             readonly id?: number;
             /** Format: uuid */
             uuid?: string;
             name?: string;
+            color?: string | null;
+            readonly contactsCount?: number;
         };
         "Group.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -2231,6 +2270,8 @@ export interface components {
             /** Format: uuid */
             uuid?: string;
             name?: string;
+            color?: string | null;
+            readonly contactsCount?: number;
         };
         HydraCollectionBaseSchema: components["schemas"]["HydraCollectionBaseSchemaNoPagination"] & {
             /**
@@ -2538,22 +2579,22 @@ export interface components {
         };
         "UserPref-user_pref.create_user_pref.update": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "favourite_group_name";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
             value?: string | null;
         };
         "UserPref-user_pref.create_user_pref.update.jsonMergePatch": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "favourite_group_name";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
             value?: string | null;
         };
         "UserPref-user_pref.read": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "favourite_group_name";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
             value?: string | null;
         };
         "UserPref.jsonld-user_pref.read": components["schemas"]["HydraItemBaseSchema"] & {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "favourite_group_name";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
             value?: string | null;
         };
         Token: {
@@ -2991,6 +3032,8 @@ export interface operations {
                 "contactGroups.groupResource[]"?: string[];
                 /** @description Search across name, email, phone number, and organization name */
                 search?: string;
+                "order[contactNames.given]"?: "asc" | "desc";
+                "order[contactNames.family]"?: "asc" | "desc";
             };
             header?: never;
             path?: never;
@@ -3090,6 +3133,8 @@ export interface operations {
                 "contactGroups.groupResource[]"?: string[];
                 /** @description Search across name, email, phone number, and organization name */
                 search?: string;
+                "order[contactNames.given]"?: "asc" | "desc";
+                "order[contactNames.family]"?: "asc" | "desc";
             };
             header?: never;
             path?: never;
@@ -6535,7 +6580,18 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        /** @description Import options */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description If true, adds a "google" group to all imported contacts.
+                     * @example true
+                     */
+                    add_google_group?: boolean;
+                };
+            };
+        };
         responses: {
             /** @description Contacts imported successfully */
             200: {
@@ -6627,6 +6683,7 @@ export interface operations {
             query?: {
                 /** @description The collection page number */
                 page?: number;
+                "order[name]"?: "asc" | "desc";
             };
             header?: never;
             path?: never;

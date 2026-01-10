@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { getContrastingTextColor } from '@/lib/colors'
 import { type Contact, type Group } from '@/types/models'
 
 interface ContactGroupInlineEditProps {
@@ -117,22 +118,32 @@ export function ContactGroupInlineEdit({ contact, groups, onUpdate }: ContactGro
         return null
       }
 
-      const group = groups.find((g) => g['@id'] === groupIri)
-      return group?.name || '...'
+      return groups.find((g) => g['@id'] === groupIri)
     })
-    .filter(Boolean) as string[]
+    .filter((g): g is Group => !!g)
 
   const visibleGroups = userGroups.slice(0, MAX_VISIBLE_GROUPS)
   const hiddenCount = userGroups.length - MAX_VISIBLE_GROUPS
 
   const content = (
     <div className="flex flex-wrap gap-1">
-      {visibleGroups.map((label, i) => (
+      {visibleGroups.map((group, i) => (
         <span
           key={i}
-          className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${
+            group.color ? 'border-transparent' : 'bg-blue-50 text-blue-700 ring-blue-700/10'
+          }`}
+          style={
+            group.color
+              ? {
+                  backgroundColor: group.color,
+                  borderColor: group.color,
+                  color: getContrastingTextColor(group.color),
+                }
+              : undefined
+          }
         >
-          {label}
+          {group.name}
         </span>
       ))}
       {hiddenCount > 0 && (
