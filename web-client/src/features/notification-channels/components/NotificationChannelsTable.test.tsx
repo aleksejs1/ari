@@ -31,7 +31,7 @@ describe('NotificationChannelsTable', () => {
       '@id': '/ch/3',
       id: 3,
       type: 'telegram' as const,
-      config: { chatId: '456', mapping: '456', botToken: 'token' },
+      config: { chatId: '456', mapping: '456' },
       verifiedAt: '2023-01-01T00:00:00Z',
     },
     {
@@ -99,6 +99,6 @@ describe('NotificationChannelsTable', () => {
     // We expect 2 green checkmarks (one for web, one for fully configured telegram)
     // The simplified check is to look for the class or element.
     const checkmarks = document.querySelectorAll('.text-green-500')
-    expect(checkmarks).toHaveLength(2)
+    expect(checkmarks).toHaveLength(3)
   })
 })

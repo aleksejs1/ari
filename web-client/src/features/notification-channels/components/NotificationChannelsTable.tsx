@@ -47,7 +47,7 @@ export function NotificationChannelsTable({
           return null
         }
 
-        if (config.botToken && config.chatId) {
+        if (config.chatId) {
           return <Check className="h-5 w-5 text-green-500" />
         }
 
