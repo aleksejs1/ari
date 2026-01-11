@@ -13,6 +13,26 @@
     "launch_demo": "Launch Live Demo",
     "view_source": "View Source"
   },
+  "meet_ari": {
+    "title": "Meet Ari.",
+    "subtitle_highlight": "Ari is not an assistant that tells you what to do.",
+    "text": "She’s a quiet presence that helps you stay thoughtful, consistent, and attentive in your relationships."
+  },
+  "feature_detail": {
+    "title": "How Ari helps you care — without being intrusive",
+    "remembers": {
+      "title": "Remembers for you",
+      "text": "Birthdays, anniversaries, important moments — Ari remembers quietly, so you don’t have to rely on memory or guilt."
+    },
+    "context": {
+      "title": "Preserves context",
+      "text": "Relationships evolve. Ari keeps a complete, immutable history so you never lose the story behind a contact."
+    },
+    "show_up": {
+      "title": "Helps you show up",
+      "text": "Sometimes a small gesture matters. Ari reminds you — at the right moment."
+    }
+  },
   "warning": {
     "title": "Development Status Warning",
     "text": "Ari is currently in active development. While your data is secure in the current session, the demo environment is periodically reset. Any user data added to the demo instance may be deleted without warning."

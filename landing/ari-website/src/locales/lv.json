@@ -13,6 +13,26 @@
         "launch_demo": "Atvērt Demo",
         "view_source": "Kods"
     },
+    "meet_ari": {
+        "title": "Iepazīstieties ar Ari.",
+        "subtitle_highlight": "Ari nav asistents, kas norāda, kas jādara.",
+        "text": "Tā ir klusa klātbūtne, kas palīdz jums būt uzmanīgam, konsekventam un vērīgam attiecībās."
+    },
+    "feature_detail": {
+        "title": "Kā Ari palīdz jums rūpēties — bez uzbāzības",
+        "remembers": {
+            "title": "Atceras jūsu vietā",
+            "text": "Dzimšanas dienas, gadadienas, svarīgi mirkļi — Ari klusi atceras, lai jums nebūtu jāpaļaujas uz atmiņu vai jājūt vainas apziņa."
+        },
+        "context": {
+            "title": "Saglabā kontekstu",
+            "text": "Attiecības attīstās. Ari saglabā pilnīgu, nemainīgu vēsturi, lai jūs nekad nepazaudētu stāstu, kas slēpjas aiz kontakta."
+        },
+        "show_up": {
+            "title": "Palīdz būt klāt",
+            "text": "Dažreiz mazs žests ir svarīgs. Ari atgādina jums — īstajā brīdī."
+        }
+    },
     "warning": {
         "title": "Izstrādes statuss",
         "text": "Ari pašlaik ir aktīvā izstrādes stadijā. Lai gan jūsu dati pašreizējā sesijā ir drošībā, demo vide periodiski tiek atiestatīta. Visi pievienotie lietotāja dati var tikt dzēsti bez brīdinājuma."

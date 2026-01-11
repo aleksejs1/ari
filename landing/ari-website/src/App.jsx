@@ -186,6 +186,93 @@ function App() {
         </div>
       </div>
 
+      {/* Meet Ari Section */}
+      <section className="py-20 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className="flex-1 text-center lg:text-left">
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">{t('meet_ari.title')}</h2>
+              <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed font-light">
+                <span className="text-slate-900 font-medium">{t('meet_ari.subtitle_highlight')}</span> {t('meet_ari.text')}
+              </p>
+            </div>
+            <div className="flex-1 relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-violet-100/50 to-purple-50/50 rounded-3xl transform rotate-3 scale-105 -z-10"></div>
+              <img
+                src="/assets/ari_working.png"
+                alt="Ari working"
+                className="w-full h-auto rounded-3xl shadow-xl border border-slate-100 transform -rotate-2 hover:rotate-0 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What Ari Actually Does Section */}
+      <section className="py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900">{t('feature_detail.title')}</h2>
+          </div>
+
+          <div className="space-y-32">
+            {/* Feature 1: Remembers */}
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 w-full relative group">
+                <div className="absolute -inset-4 bg-gradient-to-r from-blue-100 to-cyan-50 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-1000"></div>
+                <img
+                  src="/assets/ari_table.png"
+                  alt="Ari Table"
+                  className="w-full rounded-2xl shadow-lg border border-slate-200 relative bg-white transform group-hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+              <div className="flex-1 space-y-4">
+                <h3 className="text-2xl lg:text-3xl font-bold text-slate-900">{t('feature_detail.remembers.title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  {t('feature_detail.remembers.text')}
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 2: Context (Reversed) */}
+            <div className="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-20">
+              <div className="flex-1 w-full relative group">
+                <div className="absolute -inset-4 bg-gradient-to-r from-violet-100 to-fuchsia-50 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-1000"></div>
+                <img
+                  src="/assets/ari_phone.png"
+                  alt="Ari Phone"
+                  className="w-2/3 mx-auto md:w-full max-w-sm md:max-w-none rounded-[2.5rem] shadow-xl border-4 border-slate-900 relative bg-slate-900 transform group-hover:rotate-1 transition-transform duration-500"
+                />
+              </div>
+              <div className="flex-1 space-y-4">
+                <h3 className="text-2xl lg:text-3xl font-bold text-slate-900">{t('feature_detail.context.title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  {t('feature_detail.context.text')}
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 3: Helps you show up */}
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 w-full relative group">
+                <div className="absolute -inset-4 bg-gradient-to-r from-emerald-100 to-teal-50 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-1000"></div>
+                <img
+                  src="/assets/ari_flowers_help.png"
+                  alt="Ari Help"
+                  className="w-full rounded-2xl shadow-lg border border-slate-200 relative bg-white transform group-hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+              <div className="flex-1 space-y-4">
+                <h3 className="text-2xl lg:text-3xl font-bold text-slate-900">{t('feature_detail.show_up.title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  {t('feature_detail.show_up.text')}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
       <section id="features" className="py-24 bg-white/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -340,7 +427,7 @@ function App() {
         hasNext={true} // Carousel logic for now
         hasPrev={true}
       />
-    </div>
+    </div >
   );
 }
 
