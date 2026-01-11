@@ -284,7 +284,11 @@ class GoogleContactsService
                         ++$importedCount;
                     }
                 }
+                if ($importedCount >= $this->importLimit) {
+                    break;
+                }
             }
+
 
             $pageToken = $data['nextPageToken'] ?? null;
         } while ($pageToken && $importedCount < $this->importLimit);
