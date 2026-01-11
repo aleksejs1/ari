@@ -30,6 +30,10 @@ done
 # Clear cache for production
 php bin/console cache:clear --no-interaction
 
+# Start cron daemon in background
+echo "Starting crond..."
+crond -b
+
 # Go back to app root for the main command
 cd /app
 

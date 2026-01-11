@@ -79,3 +79,23 @@ docker compose -f compose.prod.yaml logs -f app
 Everything is stored in:
 - `database_data` volume (scoped to `ari-prod` project).
 - The `core/var` directory inside the container (though it's mostly logs and cache, ensure critical user data like uploads, if any, are handled).
+
+---
+
+## Background Tasks
+
+The application runs periodic tasks via `cron` inside the main application container.
+
+### Included Tasks:
+- **Notification Generation**: Runs every minute.
+- **Notification Processing**: Runs every minute.
+
+### Monitoring Tasks:
+You can check the cron logs inside the app container:
+```bash
+docker exec ari-prod-app tail -f /app/core/var/log/cron.log
+```
+Or check if `crond` is running:
+```bash
+docker exec ari-prod-app ps aux | grep crond
+```

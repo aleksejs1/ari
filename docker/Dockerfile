@@ -59,6 +59,10 @@ COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
+# Add crontab file
+COPY docker/crontab /etc/crontabs/www-data
+RUN chmod 0600 /etc/crontabs/www-data
+
 # Final permissions and cleanup
 RUN mkdir -p /app/core/var/cache /app/core/var/log \
     && chown -R www-data:www-data /app \

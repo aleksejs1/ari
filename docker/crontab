@@ -1,0 +1,3 @@
+# Cron jobs for Ari CRM
+* * * * * cd /app/core && php bin/console ari:notifications:generate >> /app/core/var/log/cron.log 2>&1
+* * * * * cd /app/core && php bin/console ari:notification:process >> /app/core/var/log/cron.log 2>&1
