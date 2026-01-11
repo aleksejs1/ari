@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(security: "is_granted('ROLE_USER') and object == user"),
         new Post(
-            processor: 'App\State\UserPasswordHasherProcessor',
+            processor: 'App\State\UserInitialSetupProcessor',
             denormalizationContext: ['groups' => ['user:create']],
             validationContext: ['groups' => ['Default', 'user:create']],
         ),

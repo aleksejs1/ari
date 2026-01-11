@@ -21,11 +21,9 @@ class TenantFilterConfigurator
     public function onKernelRequest(RequestEvent $event): void
     {
         $filter = $this->entityManager->getFilters()->enable('tenant');
-
         $user = $this->security->getUser();
         if (!$user instanceof User) {
             $filter->setParameter('currentTenant', 'NONE');
-
             return;
         }
 

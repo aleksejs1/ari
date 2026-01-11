@@ -63,6 +63,7 @@ Security is handled at the object level using Symfony Voters.
 - **Change Password**: `PUT /api/profile/change-password` allows users to change their password securely using `ChangePasswordDto` and `UserPasswordChangeProcessor`.
 - **Account Deletion**: `DELETE /api/profile` securely removes all user data. Multi-tenant data isolation is reinforced by `onDelete: CASCADE` on the `tenant_id` foreign key in `TenantAwareTrait`.
 - **vCard Export**: `GET /api/contacts/{id}/vcard` exports a contact in vCard 4.0 format using `VCardService` (powered by `sabre/vobject`).
+- **User Creation**: `POST /api/users` uses `UserInitialSetupProcessor` to automatically generate default notification channels ("web") and policies ("Default") for new users.
 
 ### 4. Audit Logging
 Changes to critical entities are tracked via `App\EventSubscriber\AuditLogSubscriber`.
