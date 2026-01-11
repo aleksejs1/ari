@@ -26,7 +26,7 @@ export default function GoogleImportPage() {
       setIsAuthenticating(true)
       setError(null)
       try {
-        await api.get('../connect/google', {
+        await api.get('connect/google', {
           params: { code: authCode },
           headers: {
             Accept: 'application/json',
@@ -52,7 +52,7 @@ export default function GoogleImportPage() {
   const handleAuthorize = async () => {
     setError(null)
     try {
-      const response = await api.get('../connect/google', {
+      const response = await api.get('connect/google', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',

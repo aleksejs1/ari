@@ -55,7 +55,7 @@ describe('GoogleImportPage', () => {
     fireEvent.click(screen.getByText('googleImport.authorize'))
 
     await waitFor(() => {
-      expect(api.get).toHaveBeenCalledWith('../connect/google', expect.any(Object))
+      expect(api.get).toHaveBeenCalledWith('connect/google', expect.any(Object))
       expect(window.open).toHaveBeenCalledWith('https://auth.url', '_blank')
     })
   })
@@ -72,7 +72,7 @@ describe('GoogleImportPage', () => {
     // It should automatically trigger verify
     await waitFor(() => {
       expect(api.get).toHaveBeenCalledWith(
-        '../connect/google',
+        'connect/google',
         expect.objectContaining({
           params: { code: '123' },
         }),
