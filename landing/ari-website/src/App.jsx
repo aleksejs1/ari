@@ -140,7 +140,7 @@ function App() {
               <a href="#features" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.features')}</a>
               <a href="#screenshots" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.screenshots')}</a>
               <a href="https://github.com/aleksejs1/ari" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.github')}</a>
-              <a href="http://app.personal-ari.com/" className="block w-full text-center mt-4 px-3 py-3 bg-violet-600 text-white font-bold rounded-lg shadow-md">{t('nav.demo')}</a>
+              <a href="https://app.personal-ari.com/" className="block w-full text-center mt-4 px-3 py-3 bg-violet-600 text-white font-bold rounded-lg shadow-md">{t('nav.demo')}</a>
             </div>
           </div>
         )}
@@ -163,7 +163,7 @@ function App() {
             {t('hero.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="http://app.personal-ari.com/" className="px-8 py-4 bg-violet-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-violet-500/30 hover:bg-violet-700 transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
+            <a href="https://app.personal-ari.com/" className="px-8 py-4 bg-violet-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-violet-500/30 hover:bg-violet-700 transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
               <Users className="w-5 h-5" />
               {t('hero.launch_demo')}
             </a>
