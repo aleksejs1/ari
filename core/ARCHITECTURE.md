@@ -59,7 +59,7 @@ Security is handled at the object level using Symfony Voters.
   - `*:read`: For read operations.
   - `*:create`/`*:update`: For write operations.
   - `export`: Specific groups for data export.
-- **Custom Operations**: Implemented using `#[Get]`, `#[Post]`, etc., pointing to custom Controllers or State Processors where standard CRUD is insufficient (e.g., XML Import/Export, vCard Export, Change Password).
+- **Custom Operations**: Implemented using `#[Get]`, `#[Post]`, etc., pointing to custom Controllers or State Processors where standard CRUD is insufficient (e.g., XML Import/Export, vCard Export, Change Password). XML Import is limited (default 70) to prevent memory issues, configurable via `XML_IMPORT_LIMIT`.
 - **Change Password**: `PUT /api/profile/change-password` allows users to change their password securely using `ChangePasswordDto` and `UserPasswordChangeProcessor`.
 - **Account Deletion**: `DELETE /api/profile` securely removes all user data. Multi-tenant data isolation is reinforced by `onDelete: CASCADE` on the `tenant_id` foreign key in `TenantAwareTrait`.
 - **vCard Export**: `GET /api/contacts/{id}/vcard` exports a contact in vCard 4.0 format using `VCardService` (powered by `sabre/vobject`).
@@ -84,7 +84,7 @@ Entity: `UserPref`.
 
 ### 7. Google Contacts Integration
 Location: `src/Service/Google/`.
-- **Import**: `GoogleContactsService` imports contacts from Google People API. Contacts are linked via `ImportMapping` entity.
+- **Import**: `GoogleContactsService` imports contacts from Google People API. Contacts are linked via `ImportMapping` entity. The number of contacts is limited (default 70) to prevent memory issues, configurable via `GOOGLE_CONTACTS_IMPORT_LIMIT`.
 - **Update Sync**: `GoogleContactUpdateService` pushes contact data (phones, emails, names, addresses, bios, orgs, dates) to Google when `UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE` is enabled.
 - **Event Subscriber**: `ContactSyncSubscriber` listens to changes in `Contact` and its related entities (phones, names, emails, addresses, bios, orgs, dates) and triggers the sync after flush.
 - **OAuth Scope**: Uses `https://www.googleapis.com/auth/contacts` for read/write access.

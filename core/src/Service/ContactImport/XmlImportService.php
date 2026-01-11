@@ -28,6 +28,7 @@ class XmlImportService
         private readonly EntityManagerInterface $entityManager,
         private readonly GroupRepository $groupRepository,
         private readonly ContactRepository $contactRepository,
+        private readonly int $importLimit,
     ) {
     }
 
@@ -47,7 +48,12 @@ class XmlImportService
 
         // Phase 2: Import Contacts (Base)
         $contactsMap = []; // Map UUID string -> Contact Entity
+        $importedCount = 0;
         foreach ($xml->contacts->contact as $contactNode) {
+            if ($importedCount >= $this->importLimit) {
+                break;
+            }
+
             // @var \SimpleXMLElement $contactNode
             $contact = $this->importContactBase($contactNode, $user);
             $uuid = $contact->getUuid()?->toRfc4122();
@@ -55,6 +61,7 @@ class XmlImportService
             if ('' !== $uuidStr) {
                 $contactsMap[$uuidStr] = $contact;
             }
+            ++$importedCount;
         }
         $this->entityManager->flush();
 

@@ -31,6 +31,7 @@ class GoogleContactsService
         private readonly HttpClientInterface $httpClient,
         private readonly ContactImportService $contactImportService,
         private readonly EntityManagerInterface $entityManager,
+        private readonly int $importLimit,
     ) {
     }
 
@@ -286,7 +287,7 @@ class GoogleContactsService
             }
 
             $pageToken = $data['nextPageToken'] ?? null;
-        } while ($pageToken);
+        } while ($pageToken && $importedCount < $this->importLimit);
 
         return $importedCount;
     }

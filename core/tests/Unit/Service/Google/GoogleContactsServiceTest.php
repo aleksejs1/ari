@@ -44,6 +44,7 @@ class GoogleContactsServiceTest extends TestCase
             $this->httpClient,
             $this->contactImportService,
             $this->entityManager,
+            70,
         );
     }
 
