@@ -201,6 +201,7 @@ export const notificationChannelSchema = z.object({
     .object({
       botToken: z.string().optional(),
       chatId: z.string().optional(),
+      mapping: z.string().optional(),
     })
     .optional()
     .nullable(),
