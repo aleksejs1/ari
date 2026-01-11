@@ -12,6 +12,9 @@ parameters:
     default_google_contacts_import_limit: 70
     app.xml.import_limit: '%env(int:default:default_xml_import_limit:XML_IMPORT_LIMIT)%'
     default_xml_import_limit: 70
+    telegram_bot_secret: '%env(default:empty_string:TELEGRAM_BOT_SECRET)%'
+    telegram_bot_name: '%env(default:empty_string:TELEGRAM_BOT_NAME)%'
+    empty_string: ''
 
 services:
 
@@ -21,6 +24,8 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $importLimit: '%app.google.contacts_import_limit%'
+            $telegramBotSecret: '%telegram_bot_secret%'
+            $telegramBotName: '%telegram_bot_name%'
 
     App\Service\ContactImport\XmlImportService:
         arguments:

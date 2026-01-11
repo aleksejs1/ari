@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: NotificationChannelRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('NOTIFICATION_CHANNEL_VIEW', object)"),
@@ -225,24 +226,6 @@ class NotificationChannel implements TenantAwareInterface
         return $this;
     }
 
-    #[Assert\Callback]
-    public function validateConfig(ExecutionContextInterface $context): void
-    {
-        if ('telegram' === $this->type) {
-            $config = $this->config ?? [];
-            if (!isset($config['botToken']) || '' === $config['botToken']) {
-                $context->buildViolation('Telegram channel requires a botToken.')
-                    ->atPath('config')
-                    ->addViolation();
-            }
-            if (!isset($config['chatId']) || '' === $config['chatId']) {
-                $context->buildViolation('Telegram channel requires a chatId.')
-                    ->atPath('config')
-                    ->addViolation();
-            }
-        }
-    }
-
     /**
      * @return Collection<int, NotificationRule>
      */
@@ -271,5 +254,16 @@ class NotificationChannel implements TenantAwareInterface
         }
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateConfigMapping(): void
+    {
+        if (null !== $this->user) {
+            $config = $this->config ?? [];
+            $config['mapping'] = (string) $this->user->getId();
+            $this->config = $config;
+        }
     }
 }

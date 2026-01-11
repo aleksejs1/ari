@@ -65,6 +65,7 @@ class NotificationChannelApiTest extends ApiTestCase
     public function testNotificationChannelCRUD(): void
     {
         $client = static::createClient();
+        $doctrine = static::getContainer()->get('doctrine');
 
         // 1. Create Channel
         $response = $client->request('POST', '/api/notification_channels', [
@@ -77,6 +78,14 @@ class NotificationChannelApiTest extends ApiTestCase
 
         self::assertResponseStatusCodeSame(201);
         $channelIri = $response->toArray()['@id'];
+        
+        // Verify mapping is added
+        self::assertJsonContains([
+            'config' => [
+                'address' => 'test@example.com',
+                'mapping' => (string) $doctrine->getManager()->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid])?->getId(),
+            ],
+        ]);
 
         // 2. GET Item
         $client->request('GET', $channelIri, [
@@ -99,7 +108,10 @@ class NotificationChannelApiTest extends ApiTestCase
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
             'type' => 'sms',
-            'config' => ['phone' => '+123456789'],
+            'config' => [
+                'phone' => '+123456789',
+                'mapping' => (string) $doctrine->getManager()->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid])?->getId(),
+            ],
         ]);
 
         // 4. PATCH (Partial update)
@@ -112,7 +124,10 @@ class NotificationChannelApiTest extends ApiTestCase
         ]);
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
-            'config' => ['phone' => '+987654321'],
+            'config' => [
+                'phone' => '+987654321',
+                'mapping' => (string) $doctrine->getManager()->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid])?->getId(),
+            ],
         ]);
 
         // 5. GET Collection (Only own items)

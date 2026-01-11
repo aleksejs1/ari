@@ -10,6 +10,7 @@ class TelegramSender implements NotificationSenderInterface
 {
     public function __construct(
         private readonly \App\Service\TelegramService $telegramService,
+        private readonly string $telegramBotSecret,
     ) {
     }
 
@@ -21,10 +22,9 @@ class TelegramSender implements NotificationSenderInterface
             return;
         }
         $config = $channel->getConfig();
-        $botToken = $config['botToken'] ?? null;
         $chatId = $config['chatId'] ?? null;
 
-        if (!is_string($botToken) || !is_string($chatId)) {
+        if (!is_string($chatId) || '' === $this->telegramBotSecret) {
             return;
         }
 
@@ -46,6 +46,6 @@ class TelegramSender implements NotificationSenderInterface
             $fullMessage .= "\n" . htmlspecialchars($messageBody, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
         }
 
-        $this->telegramService->sendMessage($botToken, $chatId, $fullMessage);
+        $this->telegramService->sendMessage($this->telegramBotSecret, $chatId, $fullMessage);
     }
 }

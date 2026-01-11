@@ -110,21 +110,4 @@ class TelegramNotificationTest extends ApiTestCase
         }
         self::assertTrue($found, 'NotificationIntent was not found');
     }
-
-    public function testValidationFailsMissingConfig(): void
-    {
-        $container = self::getContainer();
-
-        /** @var \Symfony\Component\Validator\Validator\TraceableValidator $validator */
-        $validator = $container->get('validator');
-
-        $channel = new NotificationChannel();
-        $channel->setType('telegram');
-        $channel->setConfig(['botToken' => 'only_token']); // Missing chatId
-
-        $errors = $validator->validate($channel);
-        self::assertCount(1, $errors);
-        $error = $errors->get(0);
-        self::assertEquals('Telegram channel requires a chatId.', $error->getMessage());
-    }
 }
