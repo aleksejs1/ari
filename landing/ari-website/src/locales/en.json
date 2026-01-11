@@ -1,0 +1,57 @@
+{
+  "nav": {
+    "features": "Features",
+    "screenshots": "Screenshots",
+    "github": "GitHub",
+    "demo": "Try Demo"
+  },
+  "hero": {
+    "status": "In Active Development",
+    "title_start": "The Personal CRM for",
+    "title_highlight": "Connections That Matter",
+    "subtitle": "Ari is a self-hosted personal CRM built on the principles of immutable history and reliable notifications. Own your data, forever.",
+    "launch_demo": "Launch Live Demo",
+    "view_source": "View Source"
+  },
+  "warning": {
+    "title": "Development Status Warning",
+    "text": "Ari is currently in active development. While your data is secure in the current session, the demo environment is periodically reset. Any user data added to the demo instance may be deleted without warning."
+  },
+  "features": {
+    "title": "Why Ari?",
+    "subtitle": "Built for those who value longevity and trust.",
+    "history": {
+      "title": "Immutable History",
+      "text": "Every change is recorded. Never lose context of how a relationship evolved or what data was modified. Ari puts history first."
+    },
+    "ownership": {
+      "title": "100% Data Ownership",
+      "text": "Self-hostable and open source. Your personal data stays with you, avoiding vendor lock-in and privacy concerns."
+    },
+    "notifications": {
+      "title": "Reliable Notifications",
+      "text": "Never miss an anniversary or birthday. Notifications are a first-class citizen, ensuring important dates are always remembered."
+    }
+  },
+  "screenshots": {
+    "title": "A Glimpse Inside",
+    "dashboard": {
+      "title": "Comprehensive Dashboard",
+      "text": "Get a quick overview of upcoming events, recent activity, and your most important groups.",
+      "list1": "Anniversary widgets",
+      "list2": "Activity timeline"
+    },
+    "contacts": {
+      "title": "Powerful Contact Management",
+      "text": "Manage complex relationships, multiple contact methods, and organization details with ease.",
+      "list1": "Bidirectional relationships",
+      "list2": "Rich tagging and filtering"
+    },
+    "search": "Search & Filtering",
+    "history": "Audit Logs"
+  },
+  "footer": {
+    "rights": "© 2026 Aleksejs. Open Source (MIT).",
+    "website": "Website"
+  }
+}
