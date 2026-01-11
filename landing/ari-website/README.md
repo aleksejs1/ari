@@ -55,3 +55,32 @@ This will generate a `dist` folder containing the compiled assets (HTML, CSS, JS
 - `src/App.jsx` - Main page structure and content.
 - `src/index.css` - Tailwind imports and custom animations.
 - `public/assets` - Images (screenshots, logo).
+
+### 🐳 Production Deployment (Docker)
+
+The project includes a production-ready Docker setup using a multi-stage build (Node.js build -> Nginx Alpine serve).
+
+#### 1. Configuration (Optional)
+
+The application listens on port `3000` by default. You can change this by creating a `.env` file or setting the environment variable in your shell.
+
+Copy the example configuration:
+```bash
+cp .env.prod.example .env
+```
+
+Edit `.env` and set your desired port:
+```ini
+PORT=8080
+```
+
+#### 2. Build and Run
+
+Run the application using Docker Compose:
+
+```bash
+docker-compose up -d --build
+```
+
+The site will be available at `http://localhost:3000` (or your configured port).
+The final image is based on `nginx:alpine` and is highly optimized for size and performance.

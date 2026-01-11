@@ -1,0 +1,12 @@
+services:
+  ari-landing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ari-landing:latest
+    container_name: ari-landing-prod
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:80"
+    environment:
+      - NODE_ENV=production
