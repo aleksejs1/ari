@@ -177,7 +177,7 @@ export function GlobalSearch() {
       </div>
 
       {open && query.length > 0 ? (
-        <div className="absolute right-0 top-full z-50 mt-2 w-full overflow-hidden rounded-lg border bg-white shadow-lg dark:bg-gray-800">
+        <div className="fixed left-4 right-4 top-[3.5rem] z-50 mt-2 overflow-hidden rounded-lg border bg-white shadow-lg dark:bg-gray-800 md:absolute md:left-0 md:right-0 md:top-full md:mt-2 md:w-full">
           <div className="flex border-b border-gray-200 dark:border-gray-700">
             {tabs.map((tab) => (
               <button

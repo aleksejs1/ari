@@ -24,7 +24,8 @@
         "changePassword": "Change Password",
         "deleteAccount": "Delete Account",
         "home": "Home"
-      }
+      },
+      "toggleMenu": "Toggle menu"
     }
   },
   "settings": {

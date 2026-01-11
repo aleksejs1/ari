@@ -135,4 +135,29 @@ describe('DashboardLayout', () => {
     const logo = screen.getByText('app.title')
     expect(logo.closest('a')).toHaveAttribute('href', '/')
   })
+
+  it('renders mobile menu button', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { uuid: 'test-user' },
+      login: vi.fn(),
+      logout: vi.fn(),
+      token: 'token',
+      isAuthenticated: true,
+      isLoading: false,
+    })
+
+    vi.mocked(useGroups).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: false,
+    } as unknown as UseQueryResult<Group[]>)
+
+    render(
+      <MemoryRouter>
+        <DashboardLayout />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('button', { name: 'app.navigation.toggleMenu' })).toBeInTheDocument()
+  })
 })

@@ -1,4 +1,4 @@
-import { LogOut, Settings, Menu, FileText } from 'lucide-react'
+import { LogOut, Settings, CircleUser, FileText } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -22,36 +22,40 @@ export function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-9 w-9">
-          <Menu className="h-5 w-5" />
+          <CircleUser className="h-5 w-5" />
           <span className="sr-only">Open user menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.uuid || 'User'}</p>
+      <DropdownMenuContent className="w-80 md:w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal" asChild>
+          <div className="flex flex-col space-y-1 p-4 md:p-2">
+            <p className="text-base font-medium leading-none md:text-sm">{user?.uuid || 'User'}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link to="/audit-logs" className="cursor-pointer">
-              <FileText className="mr-2 h-4 w-4" />
-              <span>{t('app.navigation.auditLogs', 'Audit Logs')}</span>
+            <Link to="/audit-logs" className="cursor-pointer p-4 md:px-2 md:py-1.5">
+              <FileText className="mr-3 h-5 w-5 md:mr-2 md:h-4 md:w-4" />
+              <span className="text-base md:text-sm">
+                {t('app.navigation.auditLogs', 'Audit Logs')}
+              </span>
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link to="/settings" className="cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>{t('app.navigation.settings', 'Settings')}</span>
+            <Link to="/settings" className="cursor-pointer p-4 md:px-2 md:py-1.5">
+              <Settings className="mr-3 h-5 w-5 md:mr-2 md:h-4 md:w-4" />
+              <span className="text-base md:text-sm">
+                {t('app.navigation.settings', 'Settings')}
+              </span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout} className="cursor-pointer">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>{t('auth.logout', 'Logout')}</span>
+        <DropdownMenuItem onClick={logout} className="cursor-pointer p-4 md:px-2 md:py-1.5">
+          <LogOut className="mr-3 h-5 w-5 md:mr-2 md:h-4 md:w-4" />
+          <span className="text-base md:text-sm">{t('auth.logout', 'Logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

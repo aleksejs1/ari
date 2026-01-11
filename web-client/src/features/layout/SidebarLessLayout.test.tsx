@@ -107,4 +107,23 @@ describe('SidebarLessLayout', () => {
     expect(contactsLink).toBeInTheDocument()
     expect(contactsLink).toHaveAttribute('href', '/contacts')
   })
+
+  it('renders mobile menu button', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { uuid: 'test-user' },
+      login: vi.fn(),
+      logout: vi.fn(),
+      token: 'token',
+      isAuthenticated: true,
+      isLoading: false,
+    })
+
+    render(
+      <MemoryRouter>
+        <SidebarLessLayout />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('button', { name: 'app.navigation.toggleMenu' })).toBeInTheDocument()
+  })
 })
