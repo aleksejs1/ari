@@ -111,7 +111,7 @@ function App() {
                 )}
               </div>
 
-              <a href="http://app.personal-ari.com/" target="_blank" rel="noopener noreferrer" className="bg-slate-900 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+              <a href="https://app.personal-ari.com/" target="_blank" rel="noopener noreferrer" className="bg-slate-900 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                 {t('nav.demo')}
               </a>
             </div>
