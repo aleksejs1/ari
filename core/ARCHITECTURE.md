@@ -72,9 +72,11 @@ Changes to critical entities are tracked via `App\EventSubscriber\AuditLogSubscr
 - **Scope**: Automatically audits any entity implementing `TenantAwareInterface` (unless explicitly excluded).
 
 ### 5. Notification System
-Entities: `NotificationRule`, `NotificationQueue`, `NotificationPolicy`.
+Entities: `NotificationRule`, `NotificationQueue`, `NotificationPolicy`, `NotificationChannel`.
 - **Logic**: Rules define when notifications are sent.
+- **Channels**: Supported delivery channels include `web` (Activity Feed) and `telegram`.
 - **Queue**: Pending notifications are stored in `NotificationQueue`.
+- **Delivery**: Processed by services implementing `NotificationSenderInterface` (e.g., `ActivityFeedSender`, `TelegramSender`), utilizing Symfony's `AsTaggedItem` for channel-specific logic.
 - **Cleanup**: `App\EventListener\NotificationRuleListener` ensures pending queue items are canceled when a rule is deleted.
 
 ### 6. User Preferences
