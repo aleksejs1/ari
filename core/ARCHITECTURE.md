@@ -77,6 +77,7 @@ Entities: `NotificationRule`, `NotificationQueue`, `NotificationPolicy`, `Notifi
 - **Channels**: Supported delivery channels include `web` (Activity Feed) and `telegram`.
 - **Queue**: Pending notifications are stored in `NotificationQueue`.
 - **Delivery**: Processed by services implementing `NotificationSenderInterface` (e.g., `ActivityFeedSender`, `TelegramSender`), utilizing Symfony's `AsTaggedItem` for channel-specific logic.
+- **Webhook**: `POST /webhook/telegram` receives updates from Telegram. It processes `/start {userId}_{channelId}` commands to link a Telegram chat to a `NotificationChannel` by updating its `chatId` in the configuration. This bypasses the multi-tenancy filter to find the channel by ID and then manually verifies ownership.
 - **Cleanup**: `App\EventListener\NotificationRuleListener` ensures pending queue items are canceled when a rule is deleted.
 
 ### 6. User Preferences
