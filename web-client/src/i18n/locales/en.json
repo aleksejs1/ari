@@ -267,8 +267,10 @@
     "config": "Configuration",
     "botToken": "Bot Token",
     "chatId": "Chat ID",
+    "activated": "Activated",
     "verified": "Verified",
     "notVerified": "Not Verified",
+    "activate": "Activate",
     "formDescription": "Fill in the details below to configure your notification channel.",
     "error": "Error loading notification channels.",
     "types": {

@@ -1,5 +1,5 @@
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { Edit, Trash2 } from 'lucide-react'
+import { Edit, Trash2, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -34,8 +34,11 @@ export function NotificationChannelsTable({
     },
     {
       accessorKey: 'config',
-      header: t('notificationChannels.config'),
+      header: t('notificationChannels.activated'),
       cell: ({ row }) => {
+        if (row.original.type === 'web') {
+          return <Check className="h-5 w-5 text-green-500" />
+        }
         if (row.original.type !== 'telegram') {
           return null
         }
@@ -43,26 +46,30 @@ export function NotificationChannelsTable({
         if (!config) {
           return null
         }
-        return (
-          <div className="text-sm text-gray-500">
-            <div>
-              {t('notificationChannels.chatId')}: {config.chatId}
+
+        if (config.botToken && config.chatId) {
+          return <Check className="h-5 w-5 text-green-500" />
+        }
+
+        if (config.mapping && !config.chatId) {
+          return (
+            <div className="mt-1">
+              <Button variant="outline" size="sm" asChild className="h-7 text-xs">
+                <a
+                  href={`https://t.me/ari_crm_test_notifications_bot?start=${config.mapping}_${row.original.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('notificationChannels.activate')}
+                </a>
+              </Button>
             </div>
-            <div className="w-40 truncate" title={config.botToken}>
-              {t('notificationChannels.botToken')}: {config.botToken}
-            </div>
-          </div>
-        )
+          )
+        }
+        return null
       },
     },
-    {
-      accessorKey: 'verifiedAt',
-      header: t('notificationChannels.verified'),
-      cell: ({ row }) => {
-        const date = row.original.verifiedAt
-        return date ? new Date(date).toLocaleString() : t('notificationChannels.notVerified')
-      },
-    },
+
     {
       id: 'actions',
       header: t('common.actions'),
