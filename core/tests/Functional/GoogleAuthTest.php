@@ -44,7 +44,7 @@ class GoogleAuthTest extends ApiTestCase
         $token = $this->getAuthToken();
         $client = self::createClient();
 
-        $response = $client->request('GET', '/connect/google', ['auth_bearer' => $token]);
+        $response = $client->request('GET', '/api/connect/google', ['auth_bearer' => $token]);
 
         self::assertResponseIsSuccessful();
         self::assertResponseHeaderSame('content-type', 'application/json');
@@ -59,10 +59,10 @@ class GoogleAuthTest extends ApiTestCase
     {
         $client = self::createClient();
 
-        $client->request('GET', '/connect/google/check');
+        $client->request('GET', '/api/connect/google/check');
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
-        $client->request('GET', '/connect/google/check', ['query' => ['code' => 'test']]);
+        $client->request('GET', '/api/connect/google/check', ['query' => ['code' => 'test']]);
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 }

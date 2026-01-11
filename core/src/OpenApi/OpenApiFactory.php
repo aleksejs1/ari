@@ -239,7 +239,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 description: 'Exchanges the authorization code for an access token and stores it.',
             ),
         );
-        $openApi->getPaths()->addPath('/connect/google/check', $connectGoogleCheckPath);
+        $openApi->getPaths()->addPath('/api/connect/google/check', $connectGoogleCheckPath);
 
         return $openApi;
     }
