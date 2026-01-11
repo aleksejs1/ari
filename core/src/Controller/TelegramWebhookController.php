@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class TelegramWebhookController extends AbstractController
 {
-    #[Route('/webhook/telegram', name: 'webhook_telegram', methods: ['POST'])]
+    #[Route('/api/webhook/telegram', name: 'webhook_telegram', methods: ['POST'])]
     public function handle(Request $request, TelegramWebhookService $webhookService): JsonResponse
     {
         $payload = json_decode($request->getContent(), true);

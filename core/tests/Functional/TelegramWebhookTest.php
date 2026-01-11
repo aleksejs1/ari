@@ -49,7 +49,7 @@ class TelegramWebhookTest extends ApiTestCase
             ]
         ];
 
-        $client->request('POST', '/webhook/telegram', [
+        $client->request('POST', '/api/webhook/telegram', [
             'json' => $payload
         ]);
 
@@ -110,7 +110,7 @@ class TelegramWebhookTest extends ApiTestCase
             ]
         ];
 
-        $client->request('POST', '/webhook/telegram', [
+        $client->request('POST', '/api/webhook/telegram', [
             'json' => $payload
         ]);
 
@@ -138,7 +138,7 @@ class TelegramWebhookTest extends ApiTestCase
             ]
         ];
 
-        $client->request('POST', '/webhook/telegram', [
+        $client->request('POST', '/api/webhook/telegram', [
             'json' => $payload
         ]);
 
