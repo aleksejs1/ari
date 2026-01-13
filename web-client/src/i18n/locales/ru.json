@@ -15,6 +15,7 @@
       "toggleMenu": "Меню",
       "sidebar": {
         "contacts": "Контакты",
+        "graph": "Граф",
         "auditLogs": "Логи аудита",
         "groups": "Группы",
         "manageGroups": "Управление группами",
@@ -465,5 +466,8 @@
   "notifications": {
     "errorLoading": "Не удалось загрузить уведомления",
     "empty": "Нет уведомлений"
+  },
+  "contactGraph": {
+    "title": "Граф контактов"
   }
 }

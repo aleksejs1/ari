@@ -23,6 +23,7 @@ interface SimilarContactsWidgetProps {
   existingRelations?: ContactRelation[]
 }
 
+// eslint-disable-next-line complexity
 const SimilarContactItem = ({
   contact,
   onAddRelation,

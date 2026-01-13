@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 
 import AuditLogsPage from './features/audit-logs/AuditLogsPage'
+import ContactGraphPage from './features/contact-graph/ContactGraphPage'
 import ContactDetailsPage from './features/contacts/ContactDetailsPage'
 import ContactsPage from './features/contacts/ContactsPage'
 import ContactTimelinePage from './features/contacts/ContactTimelinePage'
@@ -64,6 +65,10 @@ export default function App() {
             {
               path: '/contacts/:id/timeline',
               element: <ContactTimelinePage />,
+            },
+            {
+              path: '/contact-graph',
+              element: <ContactGraphPage />,
             },
           ],
         },

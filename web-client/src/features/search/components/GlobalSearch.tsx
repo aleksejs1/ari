@@ -29,11 +29,13 @@ export function GlobalSearch() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Contacts Search
-  const { data: contactsData } = useContacts(1, { search: debouncedQuery })
+  const { data: contactsData } = useContacts(1, { search: debouncedQuery }, undefined, {
+    enabled: debouncedQuery.length > 0,
+  })
   const contacts = getHydraMember(contactsData)
 
   // Groups Search
-  const { data: groupsData } = useGroups()
+  const { data: groupsData } = useGroups(undefined, { enabled: debouncedQuery.length > 0 })
   const groups = groupsData || []
   const filteredGroups = groups.filter((group) =>
     group.name?.toLowerCase().includes(debouncedQuery.toLowerCase()),

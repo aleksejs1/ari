@@ -1,4 +1,4 @@
-import { Users, Menu, Home } from 'lucide-react'
+import { Users, Menu, Home, Network } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
@@ -41,6 +41,14 @@ export default function SidebarLessLayout() {
                 <Users className="h-5 w-5" />
                 <span>{t('app.navigation.sidebar.contacts', 'Contacts')}</span>
               </Link>
+              <Link
+                to="/contact-graph"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 rounded-lg px-2 py-1 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+              >
+                <Network className="h-5 w-5" />
+                <span>{t('app.navigation.sidebar.graph', 'Graph')}</span>
+              </Link>
             </div>
           </SheetContent>
         </Sheet>
@@ -55,6 +63,12 @@ export default function SidebarLessLayout() {
             <Link to="/contacts" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               <span>{t('app.navigation.sidebar.contacts', 'Contacts')}</span>
+            </Link>
+          </Button>
+          <Button variant="ghost" asChild className="hidden md:flex">
+            <Link to="/contact-graph" className="flex items-center gap-2">
+              <Network className="h-4 w-4" />
+              <span>{t('app.navigation.sidebar.graph', 'Graph')}</span>
             </Link>
           </Button>
         </div>

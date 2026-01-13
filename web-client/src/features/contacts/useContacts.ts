@@ -22,6 +22,7 @@ export function useContacts(
   page = 1,
   filters?: { group?: string; search?: string },
   sort?: { id: string; desc: boolean },
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: ['contacts', page, filters, sort],
@@ -45,6 +46,7 @@ export function useContacts(
       return response.data
     },
     placeholderData: (previousData) => previousData,
+    enabled: options?.enabled,
   })
 }
 

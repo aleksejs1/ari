@@ -7,6 +7,7 @@ import { type Group } from '@/types/models'
 
 export function useGroups(
   params: Record<string, string | number | boolean> = { 'order[name]': 'asc' },
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: ['groups', params],
@@ -14,6 +15,7 @@ export function useGroups(
       const response = await api.get<HydraCollection<Group>>('/groups', { params })
       return getHydraMember(response.data)
     },
+    enabled: options?.enabled,
   })
 }
 
