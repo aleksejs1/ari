@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DataSet } from 'vis-data'
-import { Network } from 'vis-network'
+import { Network, type Edge, type Node } from 'vis-network'
 
 import type { GraphData } from '../api/useContactGraph'
 
@@ -36,7 +36,7 @@ export const ContactGraph = ({ data }: ContactGraphProps) => {
     }
 
     // Prepare data
-    const nodes = new DataSet(
+    const nodes = new DataSet<Node>(
       data.nodes.map((node) => ({
         id: node.id,
         label: node.user || node.id,
@@ -45,7 +45,7 @@ export const ContactGraph = ({ data }: ContactGraphProps) => {
       })),
     )
 
-    const edges = new DataSet(
+    const edges = new DataSet<Edge>(
       data.links.map((link) => ({
         from: typeof link.source === 'object' ? (link.source as any).id : link.source,
         to: typeof link.target === 'object' ? (link.target as any).id : link.target,
