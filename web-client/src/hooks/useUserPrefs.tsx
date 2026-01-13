@@ -15,6 +15,7 @@ type UserPrefType =
   | 'timeFormat'
   | 'favourite_group_name'
   | 'googleSyncOnUpdate'
+  | 'dashboard_notification_policy'
 type DateInput = Date | string | null | undefined
 
 interface UserPrefsProviderProps {
@@ -150,6 +151,7 @@ const useUserPrefsLogic = () => {
   const timeFormat = getPrefValue(prefs, 'timeFormat', '24h')
   const favouriteGroupName = getPrefValue(prefs, 'favourite_group_name', 'favourites')
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
+  const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
 
   useEffect(() => {
     void i18n.changeLanguage(language)
@@ -161,6 +163,7 @@ const useUserPrefsLogic = () => {
     timeFormat,
     favouriteGroupName,
     googleSyncOnUpdate,
+    dashboardNotificationPolicy,
     isLoading,
     savePrefMutation,
     i18n,
@@ -174,6 +177,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     timeFormat,
     favouriteGroupName,
     googleSyncOnUpdate,
+    dashboardNotificationPolicy, // Added
     isLoading,
     savePrefMutation,
     i18n,
@@ -200,6 +204,10 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     await savePrefMutation.mutateAsync({ type: 'googleSyncOnUpdate', value })
   }
 
+  const setDashboardNotificationPolicy = async (value: string) => {
+    await savePrefMutation.mutateAsync({ type: 'dashboard_notification_policy', value })
+  }
+
   const formatDate = (date: DateInput): string => {
     return formatDateHelper(date, dateFormat)
   }
@@ -216,11 +224,13 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
         timeFormat,
         favouriteGroupName,
         googleSyncOnUpdate,
+        dashboardNotificationPolicy,
         setLanguage,
         setDateFormat,
         setTimeFormat,
         setFavouriteGroupName,
         setGoogleSyncOnUpdate,
+        setDashboardNotificationPolicy,
         formatDate,
         formatTime,
         isLoading,

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useExportContacts, useImportContacts } from '@/features/contacts/useContacts'
+import { useNotificationPolicies } from '@/features/notification-policies/useNotificationPolicies'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 export default function SettingsPage() {
@@ -22,8 +23,12 @@ export default function SettingsPage() {
     setTimeFormat,
     setFavouriteGroupName,
     setGoogleSyncOnUpdate,
+
+    dashboardNotificationPolicy,
+    setDashboardNotificationPolicy,
     isLoading,
   } = useUserPrefs()
+  const { data: notificationPolicies } = useNotificationPolicies()
   const { mutate: exportContacts, isPending: isExporting } = useExportContacts()
   const { mutate: importContacts, isPending: isImporting } = useImportContacts()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -167,6 +172,31 @@ export default function SettingsPage() {
                 <Label htmlFor="google-sync-disabled">{t('settings.disabled')}</Label>
               </div>
             </RadioGroup>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.dashboardNotificationPolicy')}</CardTitle>
+            <CardDescription>
+              {t('settings.dashboardNotificationPolicyDescription')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <select
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                value={dashboardNotificationPolicy}
+                onChange={(e) => setDashboardNotificationPolicy(e.target.value)}
+              >
+                <option value="">{t('common.none')}</option>
+                {notificationPolicies?.map((policy) => (
+                  <option key={policy.id} value={String(policy.id)}>
+                    {policy.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </CardContent>
         </Card>
 

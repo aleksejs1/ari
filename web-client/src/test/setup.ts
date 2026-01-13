@@ -33,9 +33,15 @@ const formatDate = (date: Date | string | null | undefined) => {
 const defaultPrefs = {
   language: 'en',
   dateFormat: 'mm/dd/yyyy',
+  dashboardNotificationPolicy: '',
   setLanguage: vi.fn(),
   setDateFormat: vi.fn(),
+  setTimeFormat: vi.fn(),
+  setFavouriteGroupName: vi.fn(),
+  setGoogleSyncOnUpdate: vi.fn(),
+  setDashboardNotificationPolicy: vi.fn(),
   formatDate,
+  formatTime: vi.fn().mockReturnValue(''),
   isLoading: false,
 }
 

@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import SettingsPage from './Settings'
 
 import { useExportContacts, useImportContacts } from '@/features/contacts/useContacts'
+import { useNotificationPolicies } from '@/features/notification-policies/useNotificationPolicies'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 // Mock the hook
@@ -21,6 +22,11 @@ vi.mock('@/features/contacts/useContacts', () => ({
   useImportContacts: vi.fn(),
 }))
 
+// Mock useNotificationPolicies
+vi.mock('@/features/notification-policies/useNotificationPolicies', () => ({
+  useNotificationPolicies: vi.fn(),
+}))
+
 // Mock translation
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -35,6 +41,10 @@ vi.mock('react-i18next', () => ({
         'settings.exportDataDescription': 'Download all your contacts and data in XML format.',
         'settings.importData': 'Import Data',
         'settings.importDataDescription': 'Upload an XML file to import contacts.',
+        'settings.dashboardNotificationPolicy': 'Dashboard Notification Policy',
+        'settings.dashboardNotificationPolicyDescription':
+          'Select the default notification policy for the dashboard.',
+        'common.none': 'None',
         'app.loading': 'Loading...',
       }
       return map[key] || key
@@ -45,6 +55,7 @@ vi.mock('react-i18next', () => ({
 describe('SettingsPage', () => {
   const setLanguage = vi.fn()
   const setDateFormat = vi.fn()
+  const setDashboardNotificationPolicy = vi.fn()
   const exportContacts = vi.fn()
   const importContacts = vi.fn()
 
@@ -56,6 +67,8 @@ describe('SettingsPage', () => {
       dateFormat: 'mm/dd/yyyy',
       setLanguage,
       setDateFormat,
+      setDashboardNotificationPolicy,
+      dashboardNotificationPolicy: '',
     })
     ;(useExportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       mutate: exportContacts,
@@ -64,6 +77,12 @@ describe('SettingsPage', () => {
     ;(useImportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       mutate: importContacts,
       isPending: false,
+    })
+    ;(useNotificationPolicies as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: [
+        { id: 1, name: 'Policy 1' },
+        { id: 2, name: 'Policy 2' },
+      ],
     })
   })
 
@@ -157,5 +176,26 @@ describe('SettingsPage', () => {
 
     const importButton = screen.getByRole('button', { name: /loading/i })
     expect(importButton).toBeDisabled()
+  })
+
+  it('renders dashboard notification policy settings', () => {
+    render(<SettingsPage />)
+    expect(screen.getByText('Dashboard Notification Policy')).toBeInTheDocument()
+    expect(
+      screen.getByText('Select the default notification policy for the dashboard.'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+    expect(screen.getByText('None')).toBeInTheDocument()
+    expect(screen.getByText('Policy 1')).toBeInTheDocument()
+    expect(screen.getByText('Policy 2')).toBeInTheDocument()
+  })
+
+  it('calls setDashboardNotificationPolicy when policy changes', () => {
+    render(<SettingsPage />)
+
+    const select = screen.getByRole('combobox')
+    fireEvent.change(select, { target: { value: '1' } })
+
+    expect(setDashboardNotificationPolicy).toHaveBeenCalledWith('1')
   })
 })

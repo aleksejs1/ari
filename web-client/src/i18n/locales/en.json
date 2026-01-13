@@ -64,7 +64,9 @@
       "modalTitle": "Are you absolutely sure?",
       "modalDescription": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
       "confirmButton": "Yes, delete my account"
-    }
+    },
+    "dashboardNotificationPolicy": "Dashboard Notification Policy",
+    "dashboardNotificationPolicyDescription": "Select the default notification policy for the dashboard."
   },
   "auth": {
     "login": "Login",
@@ -298,7 +300,9 @@
     "loading": "Loading...",
     "noName": "No Name",
     "success": "Success",
-    "error": "Error"
+    "success": "Success",
+    "error": "Error",
+    "none": "None"
   },
   "globalSearch": {
     "placeholder": "Search contacts, groups, settings...",

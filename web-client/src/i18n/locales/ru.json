@@ -64,7 +64,9 @@
       "modalTitle": "Вы абсолютно уверены?",
       "modalDescription": "Это действие нельзя отменить. Ваш аккаунт и все связанные данные будут безвозвратно удалены.",
       "confirmButton": "Да, удалить мой аккаунт"
-    }
+    },
+    "dashboardNotificationPolicy": "Правило уведомлений дашборда",
+    "dashboardNotificationPolicyDescription": "Выберите правило уведомлений по умолчанию для дашборда."
   },
   "auth": {
     "login": "Вход",
@@ -296,7 +298,9 @@
     "loading": "Загрузка...",
     "noName": "Без имени",
     "success": "Успех",
-    "error": "Ошибка"
+    "success": "Успех",
+    "error": "Ошибка",
+    "none": "Нет"
   },
   "globalSearch": {
     "placeholder": "Поиск контактов, групп, настроек...",
