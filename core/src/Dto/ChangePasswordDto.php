@@ -13,6 +13,6 @@ final class ChangePasswordDto
     public ?string $currentPassword = null;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 8)]
+    #[Assert\Length(min: 6)]
     public ?string $newPassword = null;
 }

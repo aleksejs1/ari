@@ -5,11 +5,29 @@ namespace App\Filter;
 use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
+use App\Entity\NotificationPolicy;
+use App\Entity\User;
+use App\Entity\UserPref;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PropertyInfo\Type;
 
 final class UpcomingAnniversaryOrderFilter extends AbstractFilter
 {
+    /**
+     * @param array<string, mixed>|null $properties
+     */
+    public function __construct(
+        ManagerRegistry $managerRegistry,
+        private readonly Security $security,
+        ?LoggerInterface $logger = null,
+        ?array $properties = null,
+    ) {
+        parent::__construct($managerRegistry, $logger, $properties);
+    }
+
     #[\Override]
     protected function filterProperty(
         string $property,
@@ -35,6 +53,7 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
             return;
         }
 
+        $this->applyPolicyFiltering($queryBuilder, $queryNameGenerator);
 
         $direction = strtoupper($value);
         if (!in_array($direction, ['ASC', 'DESC'], true)) {
@@ -67,6 +86,105 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
         $queryBuilder->addOrderBy('is_next_year', $direction);
         $queryBuilder->addOrderBy('m', $direction);
         $queryBuilder->addOrderBy('d', $direction);
+    }
+
+    private function applyPolicyFiltering(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator): void
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            return;
+        }
+
+        if (null === $this->managerRegistry) {
+            return;
+        }
+
+        $entityManager = $this->managerRegistry->getManagerForClass(UserPref::class);
+        if (null === $entityManager) {
+            return;
+        }
+
+        $pref = $entityManager->getRepository(UserPref::class)->findOneBy([
+            'user' => $user,
+            'type' => UserPref::TYPE_DASHBOARD_NOTIFICATION_POLICY,
+        ]);
+
+        $policyId = $pref?->getValue();
+        if (null === $policyId || '' === $policyId || '0' === $policyId) {
+            return;
+        }
+
+        /** @var \Doctrine\ORM\EntityManagerInterface $entityManager */
+        $policy = $entityManager->getRepository(NotificationPolicy::class)->find($policyId);
+        if (!$policy instanceof NotificationPolicy || $policy->getUser()?->getId() !== $user->getId()) {
+            return;
+        }
+
+        $rules = $policy->getNotificationRules();
+        if ($rules->isEmpty()) {
+            // If policy has no rules, maybe we should show nothing? 
+            // The requirement says "if pref exists, take from rules".
+            // If there are no rules, then nothing matches.
+            $queryBuilder->andWhere('1 = 0');
+
+            return;
+        }
+
+        $orX = $queryBuilder->expr()->orX();
+        $alias = $queryBuilder->getRootAliases()[0];
+
+        foreach ($rules as $rule) {
+            $ruleExpr = $queryBuilder->expr()->andX();
+            $targetType = strtoupper((string) $rule->getTargetType());
+            $eventType = $rule->getEventType();
+
+            // 1. Target Type filtering
+            if ('GROUP' === $targetType) {
+                $group = $rule->getContactGroup();
+                if (null === $group) {
+                    continue;
+                }
+                $groupParam = $queryNameGenerator->generateParameterName('group');
+                $queryBuilder->setParameter($groupParam, $group);
+                
+                $cgAlias = $queryNameGenerator->generateParameterName('cg');
+                $ruleExpr->add("EXISTS (
+                    SELECT 1 FROM App\Entity\ContactGroup {$cgAlias} 
+                    WHERE {$cgAlias}.contact = {$alias}.contact 
+                    AND {$cgAlias}.groupResource = :{$groupParam}
+                )");
+            } elseif ('CONTACT' === $targetType) {
+                $contact = $rule->getContact();
+                if (null === $contact) {
+                    continue;
+                }
+                $contactParam = $queryNameGenerator->generateParameterName('contact');
+                $queryBuilder->setParameter($contactParam, $contact);
+                $ruleExpr->add("{$alias}.contact = :{$contactParam}");
+            }
+            // For 'ALL' targetType, we don't add extra contact/group constraints.
+
+            // 2. Event Type filtering
+            if (null !== $eventType) {
+                $eventTypeParam = $queryNameGenerator->generateParameterName('eventType');
+                $queryBuilder->setParameter($eventTypeParam, $eventType);
+                $ruleExpr->add("LOWER({$alias}.text) = LOWER(:{$eventTypeParam})");
+            }
+
+            if ($ruleExpr->count() > 0) {
+                $orX->add($ruleExpr);
+            } else {
+                // If it's an 'ALL' rule with no eventType, it matches everything
+                // So we can return early as the whole query will match everything
+                return;
+            }
+        }
+
+        if ($orX->count() > 0) {
+            $queryBuilder->andWhere($orX);
+        } else {
+            $queryBuilder->andWhere('1 = 0');
+        }
     }
 
     #[\Override]

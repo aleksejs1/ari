@@ -64,6 +64,7 @@ class UserPref implements TenantAwareInterface
     public const TYPE_TIME_FORMAT = 'timeFormat';
     public const TYPE_FAVOURITE_GROUP_NAME = 'favourite_group_name';
     public const TYPE_GOOGLE_SYNC_ON_UPDATE = 'googleSyncOnUpdate';
+    public const TYPE_DASHBOARD_NOTIFICATION_POLICY = 'dashboard_notification_policy';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -71,6 +72,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_TIME_FORMAT,
         self::TYPE_FAVOURITE_GROUP_NAME,
         self::TYPE_GOOGLE_SYNC_ON_UPDATE,
+        self::TYPE_DASHBOARD_NOTIFICATION_POLICY,
     ];
 
     public const DEFAULTS = [
@@ -79,6 +81,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_TIME_FORMAT => '24h',
         self::TYPE_FAVOURITE_GROUP_NAME => 'favourite',
         self::TYPE_GOOGLE_SYNC_ON_UPDATE => '0',
+        self::TYPE_DASHBOARD_NOTIFICATION_POLICY => '0',
     ];
 
     #[ORM\Id]
@@ -128,6 +131,12 @@ class UserPref implements TenantAwareInterface
         } elseif (self::TYPE_GOOGLE_SYNC_ON_UPDATE === $this->type) {
             if (!in_array($this->value, ['0', '1'], true)) {
                 $context->buildViolation('Invalid value for googleSyncOnUpdate. Must be "0" or "1".')
+                   ->atPath('value')
+                   ->addViolation();
+            }
+        } elseif (self::TYPE_DASHBOARD_NOTIFICATION_POLICY === $this->type) {
+            if (null !== $this->value && '' !== $this->value && !is_numeric($this->value)) {
+                $context->buildViolation('Invalid value for dashboard_notification_policy. Must be a numeric ID.')
                    ->atPath('value')
                    ->addViolation();
             }

@@ -137,3 +137,13 @@ When modifying the system, pay attention to:
 - **`src/State/AutocompleteProvider.php`**: Provides data for the autocomplete API.
 - **`composer.json`**: Describes dependencies and QA scripts.
 
+### Contact Dates Filtering
+
+The `ContactDate` collection (Dashboard Upcoming Anniversaries) supports filtering based on the current user's `NotificationPolicy`.
+
+1.  **Preference**: A `UserPref` of type `dashboard_notification_policy` holds the ID of the active `NotificationPolicy`.
+2.  **Filter**: `UpcomingAnniversaryOrderFilter` implements the logic.
+    *   It checks the `dashboard_notification_policy` preference.
+    *   If a policy is set, it iterates over its `NotificationRule`s.
+    *   It dynamically constructs DQL using `OR` between rules, filtering by `contactGroup` (using `EXISTS`), specific `contact`, and `eventType` (case-insensitive text matching).
+    *   If no rules are active for a policy, the collection returns empty by default to respect the policy constraints.
