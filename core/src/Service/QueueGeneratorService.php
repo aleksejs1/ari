@@ -210,6 +210,9 @@ class QueueGeneratorService
             'subject_contact_name' => $sourceContact->getDisplayName(),
             'event_date' => $eventDate->format('Y-m-d'),
             'message' => $message,
+            'display_name' => $sourceContact->getDisplayName(),
+            'source_event' => $sourceEvent->getText(),
+            'offset' => $offset,
         ];
         $queue->setPayload($payload);
 
