@@ -134,7 +134,9 @@ When modifying the system, pay attention to:
 - **`src/Security/Voter/*`**: Update voters when adding new entities or permissions.
 - **`src/EventSubscriber/AuditLogSubscriber.php`**: Ensure new entities are audited if needed.
 - **`src/ApiResource/Autocomplete.php`**: Custom API for form suggestions.
+- **`src/ApiResource/ContactGraph.php`**: Custom API for contact graph visualization.
 - **`src/State/AutocompleteProvider.php`**: Provides data for the autocomplete API.
+- **`src/State/ContactGraphProvider.php`**: Provides data for the contact graph API.
 - **`composer.json`**: Describes dependencies and QA scripts.
 
 ### Contact Dates Filtering
