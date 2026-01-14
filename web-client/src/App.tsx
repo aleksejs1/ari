@@ -1,26 +1,31 @@
+import { Loader2 } from 'lucide-react'
+import { Suspense, lazy } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 
-import AuditLogsPage from './features/audit-logs/AuditLogsPage'
-import ContactGraphPage from './features/contact-graph/ContactGraphPage'
-import ContactDetailsPage from './features/contacts/ContactDetailsPage'
-import ContactsPage from './features/contacts/ContactsPage'
-import ContactTimelinePage from './features/contacts/ContactTimelinePage'
-import GoogleImportPage from './features/google-import/GoogleImportPage'
-import GroupsPage from './features/groups/GroupsPage'
 import DashboardLayout from './features/layout/DashboardLayout'
 import SidebarLessLayout from './features/layout/SidebarLessLayout'
-import NotificationChannelsPage from './features/notification-channels/NotificationChannelsPage'
-import LoginPage from './pages/auth/LoginPage'
-import RegisterPage from './pages/auth/RegisterPage'
-import HomePage from './pages/HomePage'
-import NotificationPoliciesPage from './pages/NotificationPoliciesPage'
-import NotificationPolicyFormPage from './pages/NotificationPolicyFormPage'
-import SettingsPage from './pages/Settings'
 
-import ChangePasswordPage from '@/features/users/ChangePasswordPage'
-import DeleteAccountPage from '@/features/users/DeleteAccountPage'
 import { useAuth } from '@/hooks/useAuth'
+
+const AuditLogsPage = lazy(() => import('./features/audit-logs/AuditLogsPage'))
+const ContactDetailsPage = lazy(() => import('./features/contacts/ContactDetailsPage'))
+const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
+const ContactTimelinePage = lazy(() => import('./features/contacts/ContactTimelinePage'))
+const ContactGraphPage = lazy(() => import('./features/contact-graph/ContactGraphPage'))
+const GoogleImportPage = lazy(() => import('./features/google-import/GoogleImportPage'))
+const GroupsPage = lazy(() => import('./features/groups/GroupsPage'))
+const NotificationChannelsPage = lazy(
+  () => import('./features/notification-channels/NotificationChannelsPage'),
+)
+const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))
+const NotificationPolicyFormPage = lazy(() => import('./pages/NotificationPolicyFormPage'))
+const SettingsPage = lazy(() => import('./pages/Settings'))
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
+const HomePage = lazy(() => import('./pages/HomePage'))
+const ChangePasswordPage = lazy(() => import('@/features/users/ChangePasswordPage'))
+const DeleteAccountPage = lazy(() => import('@/features/users/DeleteAccountPage'))
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -40,6 +45,12 @@ const PublicRoute = () => {
   return isAuthenticated ? <Navigate to="/" /> : <Outlet />
 }
 
+const PageLoader = () => (
+  <div className="flex h-full items-center justify-center">
+    <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+  </div>
+)
+
 export default function App() {
   useTranslation()
 
@@ -52,23 +63,43 @@ export default function App() {
           children: [
             {
               path: '/',
-              element: <HomePage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <HomePage />
+                </Suspense>
+              ),
             },
             {
               path: '/contacts',
-              element: <ContactsPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <ContactsPage />
+                </Suspense>
+              ),
             },
             {
               path: '/contacts/:id',
-              element: <ContactDetailsPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <ContactDetailsPage />
+                </Suspense>
+              ),
             },
             {
               path: '/contacts/:id/timeline',
-              element: <ContactTimelinePage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <ContactTimelinePage />
+                </Suspense>
+              ),
             },
             {
               path: '/contact-graph',
-              element: <ContactGraphPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <ContactGraphPage />
+                </Suspense>
+              ),
             },
           ],
         },
@@ -77,43 +108,83 @@ export default function App() {
           children: [
             {
               path: '/audit-logs',
-              element: <AuditLogsPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <AuditLogsPage />
+                </Suspense>
+              ),
             },
             {
               path: '/notification-channels',
-              element: <NotificationChannelsPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <NotificationChannelsPage />
+                </Suspense>
+              ),
             },
             {
               path: '/groups',
-              element: <GroupsPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <GroupsPage />
+                </Suspense>
+              ),
             },
             {
               path: '/google-import',
-              element: <GoogleImportPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <GoogleImportPage />
+                </Suspense>
+              ),
             },
             {
               path: '/settings',
-              element: <SettingsPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <SettingsPage />
+                </Suspense>
+              ),
             },
             {
               path: '/change-password',
-              element: <ChangePasswordPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <ChangePasswordPage />
+                </Suspense>
+              ),
             },
             {
               path: '/delete-account',
-              element: <DeleteAccountPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <DeleteAccountPage />
+                </Suspense>
+              ),
             },
             {
               path: '/settings/notification-policies',
-              element: <NotificationPoliciesPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <NotificationPoliciesPage />
+                </Suspense>
+              ),
             },
             {
               path: '/settings/notification-policies/new',
-              element: <NotificationPolicyFormPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <NotificationPolicyFormPage />
+                </Suspense>
+              ),
             },
             {
               path: '/settings/notification-policies/:id',
-              element: <NotificationPolicyFormPage />,
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <NotificationPolicyFormPage />
+                </Suspense>
+              ),
             },
           ],
         },
@@ -124,11 +195,19 @@ export default function App() {
       children: [
         {
           path: '/login',
-          element: <LoginPage />,
+          element: (
+            <Suspense fallback={<PageLoader />}>
+              <LoginPage />
+            </Suspense>
+          ),
         },
         {
           path: '/register',
-          element: <RegisterPage />,
+          element: (
+            <Suspense fallback={<PageLoader />}>
+              <RegisterPage />
+            </Suspense>
+          ),
         },
       ],
     },

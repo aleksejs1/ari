@@ -1,6 +1,7 @@
 import path from 'path'
 
 import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vitest/config'
 
 // https://vite.dev/config/
@@ -13,6 +14,11 @@ export default defineConfig({
           ['babel-plugin-react-compiler', { compilationMode: 'annotation' }],
         ],
       },
+    }),
+    visualizer({
+      open: false,
+      gzipSize: true,
+      brotliSize: true,
     }),
   ],
   resolve: {

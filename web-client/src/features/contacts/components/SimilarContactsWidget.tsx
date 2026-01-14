@@ -23,7 +23,22 @@ interface SimilarContactsWidgetProps {
   existingRelations?: ContactRelation[]
 }
 
-// eslint-disable-next-line complexity
+const getContactDisplayName = (contact: Contact, t: (key: string) => string) => {
+  if (contact.displayName) {
+    return contact.displayName
+  }
+
+  const name = contact.contactNames?.[0]
+  if (name) {
+    const fullName = `${name.given ?? ''} ${name.family ?? ''}`.trim()
+    if (fullName) {
+      return fullName
+    }
+  }
+
+  return t('contacts.noName')
+}
+
 const SimilarContactItem = ({
   contact,
   onAddRelation,
@@ -35,18 +50,16 @@ const SimilarContactItem = ({
 }) => {
   const { t } = useTranslation()
   const id = contact['@id']?.split('/').pop()
+  const displayName = getContactDisplayName(contact, t)
+  const organizationName = contact.contactOrganizations?.[0]?.name
 
   return (
     <li className="flex items-center justify-between">
       <div className="flex flex-col">
         <Link to={`/contacts/${id}`} className="font-medium hover:underline">
-          {contact.displayName ||
-            `${contact.contactNames?.[0]?.given ?? ''} ${contact.contactNames?.[0]?.family ?? ''}`.trim() ||
-            t('contacts.noName')}
+          {displayName}
         </Link>
-        <span className="text-sm text-muted-foreground">
-          {contact.contactOrganizations?.[0]?.name}
-        </span>
+        <span className="text-sm text-muted-foreground">{organizationName}</span>
       </div>
       {!isAlreadyRelated && (
         <Button

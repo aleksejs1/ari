@@ -21,7 +21,7 @@ vi.mock('./hooks/useUserPrefs', async (importOriginal) => {
 })
 
 describe('App Smoke Test', () => {
-  it('renders login page by default', () => {
+  it('renders login page by default', async () => {
     ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
@@ -49,6 +49,6 @@ describe('App Smoke Test', () => {
     )
 
     // Check for Login button
-    expect(screen.getByRole('button', { name: 'auth.signIn' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'auth.signIn' })).toBeInTheDocument()
   })
 })

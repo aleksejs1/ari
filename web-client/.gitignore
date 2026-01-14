@@ -29,3 +29,5 @@ coverage
 .eslintcache
 .stylelintcache
 .husky/_
+
+stats.html
