@@ -2,18 +2,74 @@
 
 This guide provides step-by-step recipes for adding new settings to the Ari Web Client.
 
-## Prerequisites
+## 1. Creating a New Settings Tab
 
-Before adding a setting to the UI, ensure the state is managed in `src/hooks/useUserPrefs.tsx`.
+To add a new section to the Settings page, you need to create a `SettingTab`.
 
-1.  Add the property to the `UserPrefType` union type.
-2.  Add a getter in `useUserPrefsLogic` (using `getPrefValue`).
-3.  Add a setter function in `UserPrefsProvider`.
-4.  Expose both in the context.
+### Step A: Create the Component
+Create a component that uses the `Setting` builder to define your UI.
 
-## Base Template
+```typescript
+// src/features/my-feature/MySettings.component.tsx
+import { useMemo } from 'react'
+import { Setting } from '@/lib/settings/Setting'
+import { SettingItem } from '@/lib/settings/components/SettingItem'
 
-All settings follow this pattern in `src/pages/Settings.tsx`:
+export function MySettings() {
+  const settings = useMemo(() => {
+    const container = []
+    
+    new Setting(container)
+      .setName('My Setting')
+      .addText(text => text.setPlaceholder('Value...'))
+      
+    return container
+  }, [])
+
+  return (
+    <div className="space-y-6">
+       <div className="grid gap-6">
+        {settings.map((s, i) => <SettingItem key={i} setting={s} />)}
+      </div>
+    </div>
+  )
+}
+```
+
+### Step B: Create the Tab Class
+Extend the `SettingTab` abstract class.
+
+```typescript
+// src/features/my-feature/MySettingsTab.ts
+import { SettingTab } from '@/lib/settings/SettingTab'
+import { MySettings } from './MySettings.component'
+
+export class MySettingsTab extends SettingTab {
+  constructor() {
+    super('my-feature', 'My Feature') // ID, Display Name (or translation key)
+  }
+
+  get Component() {
+    return MySettings
+  }
+}
+```
+
+### Step C: Register the Tab
+Register your tab in `src/main.tsx` (or your plugin entry point).
+
+```typescript
+import { settingsRegistry } from '@/lib/settings/SettingsRegistry'
+import { MySettingsTab } from './features/my-feature/MySettingsTab'
+
+settingsRegistry.registerTab(new MySettingsTab())
+```
+
+## 2. Adding Settings to an Existing Tab
+
+If you want to add settings to an existing component (like `GeneralSettings`), follow usage of the **Setting Builder**.
+
+### Base Pattern
 
 ```typescript
 new Setting(settings)
@@ -22,92 +78,57 @@ new Setting(settings)
   // .addControl(...)
 ```
 
-## Recipes
+### Control Recipes
 
-### 1. Simple Text Input
-
-Useful for names, API keys, or custom strings.
+#### Simple Text Input
 
 ```typescript
 new Setting(settings)
-  .setName(t('settings.apiKey'))
-  .setDesc(t('settings.apiKeyDesc'))
+  .setName('API Key')
   .addText((text) =>
     text
-      .setPlaceholder('Enter key...')
       .setValue(apiKey)
       .onChange((val) => setApiKey(val)),
   )
 ```
 
-### 2. Radio Group (Toggle/Choice)
-
-Useful for mutually exclusive options (e.g., On/Off, Layout Mode).
+#### Radio Group (Toggle/Choice)
 
 ```typescript
 new Setting(settings)
-  .setName(t('settings.theme'))
-  .setDesc(t('settings.themeDesc'))
+  .setName('Theme')
   .addRadio((radio) =>
     radio
-      .addOption('light', t('theme.light'))
-      .addOption('dark', t('theme.dark'))
+      .addOption('light', 'Light')
+      .addOption('dark', 'Dark')
       .setValue(theme)
       .onChange((val) => setTheme(val)),
   )
 ```
 
-### 3. Dropdown (Select)
-
-Useful when there are many options.
+#### Dropdown (Select)
 
 ```typescript
 new Setting(settings)
-  .setName(t('settings.notificationPolicy'))
-  .setDesc(t('settings.choosePolicy'))
+  .setName('Policy')
   .addDropdown((dropdown) => {
-     // You can use logic inside the callback
     dropdown
-      .addOption('', t('common.none'))
-      .setValue(policyId)
-      .onChange((val) => setPolicyId(val))
-
-    // Dynamic options
-    policies.forEach(p => {
-        dropdown.addOption(p.id, p.name)
-    })
+      .addOption('a', 'Policy A')
+      .addOption('b', 'Policy B')
+      .setValue(currentPolicy)
+      .onChange(val => setPolicy(val))
   })
 ```
 
-### 4. Action Button
-
-Useful for triggering actions like Import/Export, Reset, or API calls.
+#### Action Button
 
 ```typescript
-const handleSync = async () => {
-    await api.sync();
-}
-
 new Setting(settings)
-  .setName(t('settings.sync'))
-  .setDesc(t('settings.syncDesc'))
+  .setName('Sync')
   .addButton((btn) =>
     btn
-      .setButtonText(t('settings.syncNow'))
-      .setVariant('default') // 'default' | 'secondary' | 'destructive' | 'outline'
+      .setButtonText('Sync Now')
       .setDisabled(isSyncing)
       .onClick(handleSync),
   )
-```
-
-### 5. Multiple Controls in One Setting
-
-You can chain multiple controls to appear in the same setting block.
-
-```typescript
-new Setting(settings)
-  .setName('Complex Setting')
-  .setDesc('This setting has two inputs')
-  .addText(t => t.setPlaceholder('Host'))
-  .addText(t => t.setPlaceholder('Port'))
 ```

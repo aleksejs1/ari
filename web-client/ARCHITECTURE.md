@@ -52,7 +52,7 @@ src/
 - **Data Fetching**: Data access logic is encapsulated in custom hooks within each feature (e.g., `features/contacts/useContacts.ts`). We use TanStack Query for caching and state management.
 - **Authentication**: JWT-based authentication handled via `AuthContext` and Axios interceptors in `src/lib/axios.ts`.
 - **User Preferences**: Global preferences (language, date format, google sync, dashboard notification policy) are managed via `useUserPrefs` hook and persisted to backend.
-- **Settings Page**: The Settings page is built using a Fluent API (Builder Pattern) via the `Setting` class, allowing for declarative configuration of settings UI. This architecture (inspired by Obsidian Plugin API) serves as a foundation for future plugin extensibility.
+- **Settings System**: Implements a **Dynamic Registry** pattern (`SettingsRegistry`). Features and plugins can register their own settings tabs (`SettingTab`) independently. The Settings page acts as a shell that renders these registered tabs. Core settings are migrated to `GeneralSettingsTab`.
 - **Notification Channels**: Support for multiple types (Telegram, Web). Telegram required config (token, ID), Web is config-less.
 - **Validation**: All forms use Zod schemas defined in `src/types/models.ts` or co-located with forms ensures type safety between API and UI.
 - **Favorites**: Contact favorites are managed via a special group (default `favourites`, configurable in User Settings).

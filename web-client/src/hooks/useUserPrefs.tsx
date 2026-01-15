@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useCallback, useMemo, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -183,62 +183,101 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     i18n,
   } = useUserPrefsLogic()
 
-  const setLanguage = async (lang: string) => {
-    await i18n.changeLanguage(lang)
-    await savePrefMutation.mutateAsync({ type: 'language', value: lang })
-  }
-
-  const setDateFormat = async (format: string) => {
-    await savePrefMutation.mutateAsync({ type: 'dateFormat', value: format })
-  }
-
-  const setTimeFormat = async (format: string) => {
-    await savePrefMutation.mutateAsync({ type: 'timeFormat', value: format })
-  }
-
-  const setFavouriteGroupName = async (name: string) => {
-    await savePrefMutation.mutateAsync({ type: 'favourite_group_name', value: name })
-  }
-
-  const setGoogleSyncOnUpdate = async (value: string) => {
-    await savePrefMutation.mutateAsync({ type: 'googleSyncOnUpdate', value })
-  }
-
-  const setDashboardNotificationPolicy = async (value: string) => {
-    await savePrefMutation.mutateAsync({ type: 'dashboard_notification_policy', value })
-  }
-
-  const formatDate = (date: DateInput): string => {
-    return formatDateHelper(date, dateFormat)
-  }
-
-  const formatTime = (date: DateInput): string => {
-    return formatTimeHelper(date, timeFormat)
-  }
-
-  return (
-    <UserPrefsProviderContext
-      value={{
-        language,
-        dateFormat,
-        timeFormat,
-        favouriteGroupName,
-        googleSyncOnUpdate,
-        dashboardNotificationPolicy,
-        setLanguage,
-        setDateFormat,
-        setTimeFormat,
-        setFavouriteGroupName,
-        setGoogleSyncOnUpdate,
-        setDashboardNotificationPolicy,
-        formatDate,
-        formatTime,
-        isLoading,
-      }}
-    >
-      {children}
-    </UserPrefsProviderContext>
+  const setLanguage = useCallback(
+    async (lang: string) => {
+      await i18n.changeLanguage(lang)
+      await savePrefMutation.mutateAsync({ type: 'language', value: lang })
+    },
+    [i18n, savePrefMutation],
   )
+
+  const setDateFormat = useCallback(
+    async (format: string) => {
+      await savePrefMutation.mutateAsync({ type: 'dateFormat', value: format })
+    },
+    [savePrefMutation],
+  )
+
+  const setTimeFormat = useCallback(
+    async (format: string) => {
+      await savePrefMutation.mutateAsync({ type: 'timeFormat', value: format })
+    },
+    [savePrefMutation],
+  )
+
+  const setFavouriteGroupName = useCallback(
+    async (name: string) => {
+      await savePrefMutation.mutateAsync({ type: 'favourite_group_name', value: name })
+    },
+    [savePrefMutation],
+  )
+
+  const setGoogleSyncOnUpdate = useCallback(
+    async (value: string) => {
+      await savePrefMutation.mutateAsync({ type: 'googleSyncOnUpdate', value })
+    },
+    [savePrefMutation],
+  )
+
+  const setDashboardNotificationPolicy = useCallback(
+    async (value: string) => {
+      await savePrefMutation.mutateAsync({ type: 'dashboard_notification_policy', value })
+    },
+    [savePrefMutation],
+  )
+
+  const formatDate = useCallback(
+    (date: DateInput): string => {
+      return formatDateHelper(date, dateFormat)
+    },
+    [dateFormat],
+  )
+
+  const formatTime = useCallback(
+    (date: DateInput): string => {
+      return formatTimeHelper(date, timeFormat)
+    },
+    [timeFormat],
+  )
+
+  const contextValue = useMemo(
+    () => ({
+      language,
+      dateFormat,
+      timeFormat,
+      favouriteGroupName,
+      googleSyncOnUpdate,
+      dashboardNotificationPolicy,
+      setLanguage,
+      setDateFormat,
+      setTimeFormat,
+      setFavouriteGroupName,
+      setGoogleSyncOnUpdate,
+      setDashboardNotificationPolicy,
+      formatDate,
+      formatTime,
+      isLoading,
+    }),
+    [
+      language,
+      dateFormat,
+      timeFormat,
+      favouriteGroupName,
+      googleSyncOnUpdate,
+      dashboardNotificationPolicy,
+      setLanguage,
+      setDateFormat,
+      setTimeFormat,
+      setFavouriteGroupName,
+      setGoogleSyncOnUpdate,
+      setDashboardNotificationPolicy,
+      formatDate,
+      formatTime,
+      isLoading,
+    ],
+  )
+
+  return <UserPrefsProviderContext value={contextValue}>{children}</UserPrefsProviderContext>
 }
 
 function UserPrefsProviderContext({

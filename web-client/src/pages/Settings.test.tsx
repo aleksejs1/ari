@@ -1,207 +1,78 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import SettingsPage from './Settings'
 
-import { useExportContacts, useImportContacts } from '@/features/contacts/useContacts'
-import { useNotificationPolicies } from '@/features/notification-policies/useNotificationPolicies'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useSettingsTabs } from '@/lib/settings/SettingsRegistry'
+import { SettingTab } from '@/lib/settings/SettingTab'
 
-// Mock the hook
-vi.mock('@/hooks/useUserPrefs.hook', async () => {
-  const actual = await vi.importActual('@/hooks/useUserPrefs.hook')
-  return {
-    ...actual,
-    useUserPrefs: vi.fn(),
+// Mock components
+const MockGeneralSettings = () => <div>Mock General Components</div>
+const MockOtherSettings = () => <div>Mock Other Components</div>
+
+class MockTab extends SettingTab {
+  constructor(
+    id: string,
+    name: string,
+    private component: React.ComponentType,
+  ) {
+    super(id, name)
   }
-})
+  get Component() {
+    return this.component
+  }
+}
 
-// Mock useExportContacts
-vi.mock('@/features/contacts/useContacts', () => ({
-  useExportContacts: vi.fn(),
-  useImportContacts: vi.fn(),
-}))
-
-// Mock useNotificationPolicies
-vi.mock('@/features/notification-policies/useNotificationPolicies', () => ({
-  useNotificationPolicies: vi.fn(),
-}))
-
-// Mock translation
+// Mock translations
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
-      const map: Record<string, string> = {
-        'settings.title': 'Settings',
-        'settings.language': 'Language',
-        'settings.languageDescription': 'Select your preferred language.',
-        'settings.dateFormat': 'Date Format',
-        'settings.dateFormatDescription': 'Select how dates should be displayed.',
-        'settings.exportData': 'Export Data',
-        'settings.exportDataDescription': 'Download all your contacts and data in XML format.',
-        'settings.importData': 'Import Data',
-        'settings.importDataDescription': 'Upload an XML file to import contacts.',
-        'settings.dashboardNotificationPolicy': 'Dashboard Notification Policy',
-        'settings.dashboardNotificationPolicyDescription':
-          'Select the default notification policy for the dashboard.',
-        'common.none': 'None',
-        'app.loading': 'Loading...',
-      }
-      return map[key] || key
-    },
+    t: (key: string) => key,
   }),
 }))
 
-describe('SettingsPage', () => {
-  const setLanguage = vi.fn()
-  const setDateFormat = vi.fn()
-  const setDashboardNotificationPolicy = vi.fn()
-  const exportContacts = vi.fn()
-  const importContacts = vi.fn()
+// Let's mock the hook completely for this test file
+vi.mock('@/lib/settings/SettingsRegistry', async () => {
+  const actual = await vi.importActual('@/lib/settings/SettingsRegistry')
+  return {
+    ...actual,
+    useSettingsTabs: vi.fn(),
+  }
+})
+
+describe('SettingsPage Component', () => {
+  const mockTabs = [
+    new MockTab('general', 'General', MockGeneralSettings),
+    new MockTab('advanced', 'Advanced', MockOtherSettings),
+  ]
 
   beforeEach(() => {
-    vi.clearAllMocks()
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      isLoading: false,
-      language: 'en',
-      dateFormat: 'mm/dd/yyyy',
-      timeFormat: '24h',
-      favouriteGroupName: 'favourites',
-      googleSyncOnUpdate: '0',
-      setLanguage,
-      setDateFormat,
-      setTimeFormat: vi.fn(),
-      setFavouriteGroupName: vi.fn(),
-      setGoogleSyncOnUpdate: vi.fn(),
-      setDashboardNotificationPolicy,
-      dashboardNotificationPolicy: '',
-    })
-    ;(useExportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      mutate: exportContacts,
-      isPending: false,
-    })
-    ;(useImportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      mutate: importContacts,
-      isPending: false,
-    })
-    ;(useNotificationPolicies as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      data: [
-        { id: 1, name: 'Policy 1' },
-        { id: 2, name: 'Policy 2' },
-      ],
-    })
+    vi.mocked(useSettingsTabs).mockReturnValue(mockTabs)
   })
 
-  it('renders loading state', () => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      isLoading: true,
-    })
+  it('renders sidebar with tabs', () => {
     render(<SettingsPage />)
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
+    expect(screen.getByText('General')).toBeInTheDocument()
+    expect(screen.getByText('Advanced')).toBeInTheDocument()
   })
 
-  it('renders settings when loaded', () => {
+  it('renders first tab by default', () => {
     render(<SettingsPage />)
-    expect(screen.getByText('Settings')).toBeInTheDocument()
-    expect(screen.getByText('Language')).toBeInTheDocument()
-    expect(screen.getByText('Date Format')).toBeInTheDocument()
-
-    // Checking radio buttons
-    const enRadio = screen.getByLabelText('English')
-    expect(enRadio).toBeChecked()
-
-    const dateRadio = screen.getByLabelText('MM/DD/YYYY (12/31/2024)')
-    expect(dateRadio).toBeChecked()
+    expect(screen.getByText('Mock General Components')).toBeInTheDocument()
+    expect(screen.queryByText('Mock Other Components')).not.toBeInTheDocument()
   })
 
-  it('calls setLanguage when language changes', async () => {
+  it('switches tabs on click', () => {
     render(<SettingsPage />)
 
-    const ruRadio = screen.getByLabelText('Русский')
-    fireEvent.click(ruRadio)
+    fireEvent.click(screen.getByText('Advanced'))
 
-    await waitFor(() => {
-      expect(setLanguage).toHaveBeenCalledWith('ru')
-    })
+    expect(screen.getByText('Mock Other Components')).toBeInTheDocument()
+    expect(screen.queryByText('Mock General Components')).not.toBeInTheDocument()
   })
 
-  it('calls setDateFormat when format changes', async () => {
+  it('handles empty tabs', () => {
+    vi.mocked(useSettingsTabs).mockReturnValue([])
     render(<SettingsPage />)
-
-    const euRadio = screen.getByLabelText('DD.MM.YYYY (31.12.2024)')
-    fireEvent.click(euRadio)
-
-    await waitFor(() => {
-      expect(setDateFormat).toHaveBeenCalledWith('dd.mm.yyyy')
-    })
-  })
-
-  it('calls exportContacts when export button is clicked', async () => {
-    render(<SettingsPage />)
-
-    const exportButton = screen.getByRole('button', { name: 'Export Data' })
-    fireEvent.click(exportButton)
-
-    expect(exportContacts).toHaveBeenCalled()
-  })
-
-  it('disables export button when exporting', () => {
-    ;(useExportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      mutate: exportContacts,
-      isPending: true,
-    })
-
-    render(<SettingsPage />)
-
-    const exportButton = screen.getByRole('button', { name: /loading/i })
-    expect(exportButton).toBeDisabled()
-  })
-
-  it('calls importContacts when file is selected', async () => {
-    render(<SettingsPage />)
-
-    const file = new File(['(⌐□_□)'], 'contacts.xml', { type: 'application/xml' })
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement
-
-    if (input) {
-      fireEvent.change(input, { target: { files: [file] } })
-    }
-
-    expect(importContacts).toHaveBeenCalled()
-    // Verify the arguments passed to importContacts (it's called with the file)
-    expect(importContacts).toHaveBeenCalledWith(file, expect.any(Object))
-  })
-
-  it('disables import button when importing', () => {
-    ;(useImportContacts as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      mutate: importContacts,
-      isPending: true,
-    })
-
-    render(<SettingsPage />)
-
-    const importButton = screen.getByRole('button', { name: /loading/i })
-    expect(importButton).toBeDisabled()
-  })
-
-  it('renders dashboard notification policy settings', () => {
-    render(<SettingsPage />)
-    expect(screen.getByText('Dashboard Notification Policy')).toBeInTheDocument()
-    expect(
-      screen.getByText('Select the default notification policy for the dashboard.'),
-    ).toBeInTheDocument()
-    expect(screen.getByRole('combobox')).toBeInTheDocument()
-    expect(screen.getByText('None')).toBeInTheDocument()
-    expect(screen.getByText('Policy 1')).toBeInTheDocument()
-    expect(screen.getByText('Policy 2')).toBeInTheDocument()
-  })
-
-  it('calls setDashboardNotificationPolicy when policy changes', () => {
-    render(<SettingsPage />)
-
-    const select = screen.getByRole('combobox')
-    fireEvent.change(select, { target: { value: '1' } })
-
-    expect(setDashboardNotificationPolicy).toHaveBeenCalledWith('1')
+    expect(screen.getByText('No settings active.')).toBeInTheDocument()
   })
 })
