@@ -1,14 +1,12 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useExportContacts, useImportContacts } from '@/features/contacts/useContacts'
 import { useNotificationPolicies } from '@/features/notification-policies/useNotificationPolicies'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { SettingItem } from '@/lib/settings/components/SettingItem'
+import { Setting } from '@/lib/settings/Setting'
+import type { SettingConfig } from '@/lib/settings/types'
 
 export default function SettingsPage() {
   const { t } = useTranslation()
@@ -60,181 +58,130 @@ export default function SettingsPage() {
     return <div>{t('app.loading')}</div>
   }
 
+  const settings: SettingConfig[] = []
+
+  // Language
+  new Setting(settings)
+    .setName(t('settings.language'))
+    .setDesc(t('settings.languageDescription'))
+    .addRadio((radio) =>
+      radio
+        .addOption('en', 'English')
+        .addOption('ru', 'Русский')
+        .setValue(language)
+        .onChange((val) => setLanguage(val)),
+    )
+
+  // Date Format
+  new Setting(settings)
+    .setName(t('settings.dateFormat'))
+    .setDesc(t('settings.dateFormatDescription'))
+    .addRadio((radio) =>
+      radio
+        .addOption('mm/dd/yyyy', 'MM/DD/YYYY (12/31/2024)')
+        .addOption('dd.mm.yyyy', 'DD.MM.YYYY (31.12.2024)')
+        .setValue(dateFormat)
+        .onChange((val) => setDateFormat(val)),
+    )
+
+  // Time Format
+  new Setting(settings)
+    .setName(t('settings.timeFormat'))
+    .setDesc(t('settings.timeFormatDescription'))
+    .addRadio((radio) =>
+      radio
+        .addOption('24h', '24h (21:00)')
+        .addOption('12h', '12h (09:00 PM)')
+        .setValue(timeFormat)
+        .onChange((val) => setTimeFormat(val)),
+    )
+
+  // Favourite Group Name
+  new Setting(settings)
+    .setName(t('settings.favouriteGroupName'))
+    .setDesc(t('settings.favouriteGroupNameDescription'))
+    .addText((text) =>
+      text
+        .setLabel(t('settings.groupName'))
+        .setValue(favouriteGroupName)
+        .onChange((val) => setFavouriteGroupName(val)),
+    )
+
+  // Google Sync
+  new Setting(settings)
+    .setName(t('settings.googleSyncOnUpdate'))
+    .setDesc(t('settings.googleSyncOnUpdateDescription'))
+    .addRadio((radio) =>
+      radio
+        .addOption('1', t('settings.enabled'))
+        .addOption('0', t('settings.disabled'))
+        .setValue(googleSyncOnUpdate)
+        .onChange((val) => setGoogleSyncOnUpdate(val)),
+    )
+
+  // Dashboard Notification Policy
+  const notificationPolicyBuilder = new Setting(settings)
+    .setName(t('settings.dashboardNotificationPolicy'))
+    .setDesc(t('settings.dashboardNotificationPolicyDescription'))
+
+  notificationPolicyBuilder.addDropdown((dropdown) => {
+    dropdown
+      .addOption('', t('common.none'))
+      .setValue(dashboardNotificationPolicy)
+      .onChange((val) => setDashboardNotificationPolicy(val))
+
+    if (notificationPolicies) {
+      notificationPolicies.forEach((p) => {
+        dropdown.addOption(String(p.id), p.name || '')
+      })
+    }
+  })
+
+  // Export Data
+  new Setting(settings)
+    .setName(t('settings.exportData'))
+    .setDesc(t('settings.exportDataDescription'))
+    .addButton((btn) =>
+      btn
+        .setButtonText(isExporting ? t('common.loading') : t('settings.exportData'))
+        .setDisabled(isExporting)
+        .onClick(() => exportContacts()),
+    )
+
+  // Import Data
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  new Setting(settings)
+    .setName(t('settings.importData'))
+    .setDesc(t('settings.importDataDescription'))
+    // eslint-disable-next-line
+    .addButton((btn) =>
+      btn
+        .setButtonText(isImporting ? t('common.loading') : t('settings.importData'))
+        .setVariant('secondary')
+        .setDisabled(isImporting)
+        .onClick(handleImportClick),
+    )
+
   return (
     <div className="container mx-auto py-6">
       <h1 className="mb-6 text-3xl font-bold">{t('settings.title')}</h1>
 
       <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.language')}</CardTitle>
-            <CardDescription>{t('settings.languageDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup
-              value={language}
-              onValueChange={(val) => setLanguage(val)}
-              className="flex flex-col space-y-1"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="en" id="lang-en" />
-                <Label htmlFor="lang-en">English</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="ru" id="lang-ru" />
-                <Label htmlFor="lang-ru">Русский</Label>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.dateFormat')}</CardTitle>
-            <CardDescription>{t('settings.dateFormatDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup
-              value={dateFormat}
-              onValueChange={(val) => setDateFormat(val)}
-              className="flex flex-col space-y-1"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="mm/dd/yyyy" id="format-us" />
-                <Label htmlFor="format-us">MM/DD/YYYY (12/31/2024)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="dd.mm.yyyy" id="format-eu" />
-                <Label htmlFor="format-eu">DD.MM.YYYY (31.12.2024)</Label>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.timeFormat')}</CardTitle>
-            <CardDescription>{t('settings.timeFormatDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup
-              value={timeFormat}
-              onValueChange={(val) => setTimeFormat(val)}
-              className="flex flex-col space-y-1"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="24h" id="format-24h" />
-                <Label htmlFor="format-24h">24h (21:00)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="12h" id="format-12h" />
-                <Label htmlFor="format-12h">12h (09:00 PM)</Label>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.favouriteGroupName')}</CardTitle>
-            <CardDescription>{t('settings.favouriteGroupNameDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="fav-group-name">{t('settings.groupName')}</Label>
-              <Input
-                type="text"
-                id="fav-group-name"
-                value={favouriteGroupName}
-                onChange={(e) => setFavouriteGroupName(e.target.value)}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.googleSyncOnUpdate')}</CardTitle>
-            <CardDescription>{t('settings.googleSyncOnUpdateDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup
-              value={googleSyncOnUpdate}
-              onValueChange={(val) => setGoogleSyncOnUpdate(val)}
-              className="flex flex-col space-y-1"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="1" id="google-sync-enabled" />
-                <Label htmlFor="google-sync-enabled">{t('settings.enabled')}</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="0" id="google-sync-disabled" />
-                <Label htmlFor="google-sync-disabled">{t('settings.disabled')}</Label>
-              </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.dashboardNotificationPolicy')}</CardTitle>
-            <CardDescription>
-              {t('settings.dashboardNotificationPolicyDescription')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <select
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                value={dashboardNotificationPolicy}
-                onChange={(e) => setDashboardNotificationPolicy(e.target.value)}
-              >
-                <option value="">{t('common.none')}</option>
-                {notificationPolicies?.map((policy) => (
-                  <option key={policy.id} value={String(policy.id)}>
-                    {policy.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.exportData')}</CardTitle>
-            <CardDescription>{t('settings.exportDataDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => exportContacts()} disabled={isExporting}>
-              {isExporting ? t('common.loading') : t('settings.exportData')}
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.importData')}</CardTitle>
-            <CardDescription>{t('settings.importDataDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <input
-              type="file"
-              accept=".xml"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleImport}
-            />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isImporting}
-              variant="secondary"
-            >
-              {isImporting ? t('common.loading') : t('settings.importData')}
-            </Button>
-          </CardContent>
-        </Card>
+        {settings.map((setting, idx) => (
+          <SettingItem key={idx} setting={setting} />
+        ))}
       </div>
+
+      <input
+        type="file"
+        accept=".xml"
+        className="hidden"
+        ref={fileInputRef}
+        onChange={handleImport}
+      />
     </div>
   )
 }
