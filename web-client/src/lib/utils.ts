@@ -23,7 +23,11 @@ export function formatLocalizedDate(
   language = 'en',
   pattern = 'PPP',
 ): string {
-  const d = typeof date === 'string' ? new Date(date) : date
+  const d = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date
+
+  if (isNaN(d.getTime())) {
+    return typeof date === 'string' ? date : ''
+  }
   return format(d, pattern, { locale: locales[language] || enUS })
 }
 

@@ -42,7 +42,7 @@ export function ContactEmailsCell({ contact }: ContactEmailsCellProps) {
 
   const emails = contact.contactEmailAdresses?.length
     ? (contact.contactEmailAdresses as ContactEmailAdress[])
-    : ([{ email: '', type: '' }] as ContactEmailAdress[])
+    : ([{ value: '', type: '' }] as ContactEmailAdress[])
 
   return (
     <div className="flex flex-col gap-1">

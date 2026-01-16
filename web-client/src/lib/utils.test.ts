@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-import { cn, formatApiDate } from './utils'
+import { cn, formatApiDate, formatLocalizedDate } from './utils'
 
 describe('cn utility', () => {
   it('should merge classes correctly', () => {
@@ -28,5 +28,11 @@ describe('formatApiDate utility', () => {
 
   it('should handle string input', () => {
     expect(formatApiDate('2025-12-02T12:34:56Z')).toBe('2025-12-02T12:34:56+00:00')
+  })
+})
+
+describe('formatLocalizedDate utility', () => {
+  it('should return original string on invalid date string', () => {
+    expect(formatLocalizedDate('invalid-date')).toBe('invalid-date')
   })
 })

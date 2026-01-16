@@ -33,6 +33,13 @@ describe('audit-logs/utils', () => {
       const log = { action: 'UPDATE', entityType: 'App\\Entity\\ContactName' } as TimelineEvent
       expect(getLogDescription(log, t as any)).toBe('UPDATE ContactName')
     })
+
+    it('handles undefined entityType gracefully', () => {
+      const t = vi.fn().mockImplementation((key) => key)
+
+      const log = { action: 'INSERT' } as TimelineEvent
+      expect(getLogDescription(log, t as any)).toBe('INSERT ')
+    })
   })
 
   describe('getBadgeStyles', () => {

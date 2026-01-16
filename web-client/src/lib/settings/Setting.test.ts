@@ -51,7 +51,7 @@ describe('Setting Builder', () => {
 
     const control = container[0].controls[0]
     expect(control.type).toBe('button')
-    // @ts-expect-error - we know it's a button
+
     expect(control.label).toBe('Click Me')
 
     if (control.onChange) {

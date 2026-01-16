@@ -6,7 +6,7 @@ import { type TimelineEvent } from '@/types/models'
 
 export const getLogDescription = (log: TimelineEvent, t: TFunction): string => {
   const { action, entityType } = log
-  const type = entityType.replace(/^App\\Entity\\/, '')
+  const type = (entityType || '').replace(/^App\\Entity\\/, '')
   const key = `auditLogs.entities.${type}.${action}`
   const translated = t(key)
 
@@ -19,10 +19,10 @@ export const getLogDescription = (log: TimelineEvent, t: TFunction): string => {
 }
 
 const getDirectContactId = (
-  entityType: string,
+  entityType: string | undefined,
   entityId: string | number | undefined,
 ): string | null => {
-  const type = entityType.replace(/^App\\Entity\\/, '')
+  const type = (entityType || '').replace(/^App\\Entity\\/, '')
   if (type === 'Contact' && entityId) {
     return entityId.toString()
   }

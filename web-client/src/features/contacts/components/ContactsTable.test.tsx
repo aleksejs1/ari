@@ -1,4 +1,4 @@
-import { createColumnHelper } from '@tanstack/react-table'
+import { createColumnHelper, type ColumnDef } from '@tanstack/react-table'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
@@ -19,7 +19,7 @@ vi.mock('react-router-dom', async () => {
 
 describe('ContactsTable', () => {
   const columnHelper = createColumnHelper<Contact>()
-  const mockColumns = [
+  const mockColumns: ColumnDef<Contact, any>[] = [
     columnHelper.accessor('contactNames', {
       header: 'Name',
       cell: (info) => {
@@ -31,7 +31,7 @@ describe('ContactsTable', () => {
       header: 'Dates',
       cell: (info) => {
         const dates = info.getValue()
-        return dates?.map((d) => d.text).join(', ') ?? ''
+        return dates?.map((d: { text: string }) => d.text).join(', ') ?? ''
       },
     }),
     columnHelper.accessor('contactEmailAdresses', {
@@ -39,7 +39,7 @@ describe('ContactsTable', () => {
       cell: (info) =>
         info
           .getValue()
-          ?.map((e) => e.value)
+          ?.map((e: { value: string }) => e.value)
           .join(', ') ?? '',
     }),
     columnHelper.accessor('phoneNumbers', {
@@ -47,7 +47,7 @@ describe('ContactsTable', () => {
       cell: (info) =>
         info
           .getValue()
-          ?.map((p) => p.value)
+          ?.map((p: { value: string }) => p.value)
           .join(', ') ?? '',
     }),
     columnHelper.accessor('contactGroups', {
@@ -55,7 +55,7 @@ describe('ContactsTable', () => {
       cell: (info) => {
         // Mock implementation for groups
         const groups = info.getValue()
-        return groups?.map((g) => (g.groupResource as any).name).join(', ') ?? '' // Simplified mock access
+        return groups?.map((g: any) => (g.groupResource as any).name).join(', ') ?? '' // Simplified mock access
       },
     }),
     columnHelper.display({
@@ -66,6 +66,8 @@ describe('ContactsTable', () => {
             aria-label="common.edit"
             onClick={(e) => {
               e.stopPropagation()
+              e.stopPropagation()
+              // @ts-expect-error - meta is not typed in the test setup
               table.options.meta?.onEdit?.(row.original)
             }}
           >

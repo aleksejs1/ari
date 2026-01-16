@@ -11,12 +11,11 @@ const MockGeneralSettings = () => <div>Mock General Components</div>
 const MockOtherSettings = () => <div>Mock Other Components</div>
 
 class MockTab extends SettingTab {
-  constructor(
-    id: string,
-    name: string,
-    private component: React.ComponentType,
-  ) {
+  private component: React.ComponentType
+
+  constructor(id: string, name: string, component: React.ComponentType) {
     super(id, name)
+    this.component = component
   }
   get Component() {
     return this.component
