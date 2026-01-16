@@ -2,28 +2,34 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Doctrine\Filter\SafeOrderFilter;
 use App\Repository\AuditLogRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['audit:read']],
-    security: "is_granted('ROLE_USER')",
+    operations: [
+        new GetCollection(),
+    ],
+    normalizationContext: ['groups' => ['audit_log:read', 'audit:read'], 'enable_max_depth' => true],
+    order: ['createdAt' => 'DESC'],
+    security: "is_granted('ROLE_USER')"
 )]
 #[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['createdAt' => 'DESC'])]
+#[ApiFilter(SafeOrderFilter::class, properties: ['createdAt' => 'DESC'])]
 class AuditLog implements TenantAwareInterface
 {
     use TenantAwareTrait;
 
-    #[Groups(['audit:read'])]
+    #[Groups(['audit_log:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

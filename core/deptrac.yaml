@@ -87,6 +87,7 @@ deptrac:
       - Repository
       - Security
       - Vendor
+      - Doctrine
     Repository:
       - Entity
       - Vendor

@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
+use App\Doctrine\Filter\SafeOrderFilter;
 use App\Entity\Traits\ContactAddressesTrait;
 use App\Entity\Traits\ContactBiographiesTrait;
 use App\Entity\Traits\ContactDatesTrait;

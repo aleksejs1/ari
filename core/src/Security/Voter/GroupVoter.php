@@ -15,11 +15,12 @@ final class GroupVoter extends Voter
     public const EDIT = 'GROUP_EDIT';
     public const VIEW = 'GROUP_VIEW';
     public const ADD = 'GROUP_ADD';
+    public const DELETE = 'GROUP_DELETE';
 
     #[\Override]
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::VIEW, self::ADD], true)
+        return in_array($attribute, [self::EDIT, self::VIEW, self::ADD, self::DELETE], true)
             && $subject instanceof TenantAwareInterface;
     }
 
@@ -34,6 +35,7 @@ final class GroupVoter extends Voter
 
         switch ($attribute) {
             case self::EDIT:
+            case self::DELETE:
                 if ($subject->getTenant() === $user) {
                     return true;
                 }

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -11,40 +10,39 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Doctrine\Filter\SafeOrderFilter;
 use App\Repository\GroupRepository;
 use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`group`')]
 #[ORM\UniqueConstraint(name: 'unique_group_uuid_per_user', columns: ['uuid', 'user_id'])]
 #[ApiResource(
-    security: "is_granted('ROLE_USER')",
+    operations: [
+        new GetCollection(),
+        new Get(security: "is_granted('GROUP_VIEW', object)"),
+        new Post(securityPostDenormalize: "is_granted('GROUP_ADD', object)"),
+        new Put(security: "is_granted('GROUP_EDIT', object)"),
+        new Patch(security: "is_granted('GROUP_EDIT', object)"),
+        new Delete(security: "is_granted('GROUP_DELETE', object)"),
+    ],
     normalizationContext: ['groups' => ['group:read']],
     denormalizationContext: ['groups' => ['group:create']],
-)]
-#[ApiFilter(OrderFilter::class, properties: ['name' => 'ASC'])]
-#[Get(security: "is_granted('GROUP_VIEW', object)")]
-#[GetCollection]
-#[Put(
-    security: "is_granted('GROUP_EDIT', object)",
+    order: ['name' => 'ASC'],
+    security: "is_granted('ROLE_USER')",
     processor: 'App\State\UserOwnerProcessor',
 )]
-#[Patch(
-    security: "is_granted('GROUP_EDIT', object)",
-    processor: 'App\State\UserOwnerProcessor',
-)]
-#[Delete(security: "is_granted('GROUP_EDIT', object)")]
-#[Post(
-    securityPostDenormalize: "is_granted('GROUP_ADD', object)",
-    processor: 'App\State\UserOwnerProcessor',
-)]
+#[ApiFilter(SafeOrderFilter::class, properties: ['name' => 'ASC'])]
+
 class Group implements TenantAwareInterface
 {
     use TenantAwareTrait;
