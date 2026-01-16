@@ -308,6 +308,8 @@
     "success": "Success",
     "success": "Success",
     "error": "Error",
+    "columns": "Columns",
+    "toggleColumns": "Toggle Columns",
     "none": "None"
   },
   "globalSearch": {

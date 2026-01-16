@@ -9,3 +9,7 @@ This directory contains architectural documentation and cookbooks for the applic
 ## Widget System
 - [Architecture](./widget-architecture.md) - Overview of the dynamic widget registry architecture.
 - [Cookbook](./widget-cookbook.md) - How to create and register new dashboard widgets.
+
+## Contacts System
+- [Architecture](./contacts-architecture.md) - Plugin-first architecture with Smart Cells.
+- [Cookbook](./contacts-cookbook.md) - How to add new contact columns.

@@ -306,6 +306,8 @@
     "success": "Успех",
     "success": "Успех",
     "error": "Ошибка",
+    "columns": "Колонки",
+    "toggleColumns": "Переключить колонки",
     "none": "Нет"
   },
   "globalSearch": {

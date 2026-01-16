@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { type Contact } from '@/types/models'
 
-interface ContactsTableActionsProps {
+interface ContactActionsCellProps {
   contact: Contact
   onEdit: (contact: Contact) => void
 }
 
-export function ContactsTableActions({ contact, onEdit }: ContactsTableActionsProps) {
+export function ContactActionsCell({ contact, onEdit }: ContactActionsCellProps) {
   const { t } = useTranslation()
 
   return (

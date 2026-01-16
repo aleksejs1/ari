@@ -1,19 +1,25 @@
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, ArrowUpDown, Star } from 'lucide-react'
-import { useCallback, useMemo } from 'react'
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type VisibilityState,
+  type SortingState,
+} from '@tanstack/react-table'
+import { ChevronDown, Settings2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { useContactFavorite } from '../hooks/useContactFavorite'
-import { useGroups } from '../useContacts'
-
-import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
-import { ContactsTableActions } from './ContactsTableActions'
-import { ContactsTableDates } from './ContactsTableDates'
-import { ContactsTableEmails } from './ContactsTableEmails'
-import { ContactsTableNames } from './ContactsTableNames'
-import { ContactsTablePhones } from './ContactsTablePhones'
-
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Table,
   TableBody,
@@ -22,268 +28,135 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  type Contact,
-  type ContactDate,
-  type ContactName,
-  type ContactPhoneNumber,
-  type ContactEmailAdress,
-} from '@/types/models'
+import { type Contact } from '@/types/models'
 
 interface ContactsTableProps {
   data: Contact[]
+  columns: ColumnDef<Contact>[]
   onEdit: (contact: Contact) => void
-  onUpdateDate: (contact: Contact, date: ContactDate) => void
-  onDeleteDate: (contact: Contact, date: ContactDate) => void
-  onUpdateGroups: (contact: Contact, groupIds: string[]) => void
-  onUpdateEmail: (contact: Contact, email: ContactEmailAdress) => void
-  onDeleteEmail: (contact: Contact, email: ContactEmailAdress) => void
-  onUpdatePhone: (contact: Contact, phone: ContactPhoneNumber) => void
-  onDeletePhone: (contact: Contact, phone: ContactPhoneNumber) => void
-  onUpdateName: (contact: Contact, name: ContactName) => void
-  onDeleteName: (contact: Contact, name: ContactName) => void
   onSort?: (id: string, desc: boolean) => void
   sorting?: { id: string; desc: boolean }
 }
 
-export function ContactsTable({
-  data,
-  onEdit,
-  onUpdateDate,
-  onDeleteDate,
-  onUpdateGroups,
-  onUpdateEmail,
-  onDeleteEmail,
-  onUpdatePhone,
-  onDeletePhone,
-  onUpdateName,
-  onDeleteName,
-  onSort,
-  sorting,
-}: ContactsTableProps) {
+export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
   'use no memo'
-  const onExchangeDate = onUpdateDate
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { data: groups } = useGroups()
-  const { toggleFavorite, isContactFavorite } = useContactFavorite()
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
-  const onToggleFavorite = useCallback(
-    async (contact: Contact, e: React.MouseEvent) => {
-      e.stopPropagation()
-      await toggleFavorite(contact)
-    },
-    [toggleFavorite],
-  )
+  const sortingState: SortingState = useMemo(() => {
+    return sorting ? [{ id: sorting.id, desc: sorting.desc }] : []
+  }, [sorting])
 
-  const columns = useMemo<ColumnDef<Contact>[]>(
-    () => [
-      {
-        id: 'favorite',
-        header: '',
-        cell: ({ row }) => {
-          const isFavorite = isContactFavorite(row.original)
-          return (
-            <div className="flex items-center justify-center">
-              <Star
-                className={`h-4 w-4 cursor-pointer transition-transform hover:scale-110 ${
-                  isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
-                }`}
-                onClick={(e) => onToggleFavorite(row.original, e)}
-              />
-            </div>
-          )
-        },
-        size: 40,
-      },
-      {
-        accessorKey: 'contactNames',
-        header: () => {
-          const isSorted = sorting?.id === 'contactNames.given'
-          let SortIcon = ArrowUpDown
-          if (isSorted) {
-            SortIcon = sorting.desc ? ArrowDown : ArrowUp
-          }
-          const iconClassName = isSorted ? 'h-4 w-4' : 'h-4 w-4 opacity-50'
-
-          return (
-            <div
-              className="flex cursor-pointer items-center gap-1 hover:text-foreground"
-              onClick={() => {
-                if (!onSort) {
-                  return
-                }
-                const isAsc = sorting?.id === 'contactNames.given' && !sorting.desc
-                onSort('contactNames.given', isAsc) // toggle to desc if already asc
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  if (!onSort) {
-                    return
-                  }
-                  const isAsc = sorting?.id === 'contactNames.given' && !sorting.desc
-                  onSort('contactNames.given', isAsc)
-                }
-              }}
-              role="button"
-              tabIndex={0}
-            >
-              {t('contacts.name')}
-              <SortIcon className={iconClassName} />
-            </div>
-          )
-        },
-        cell: ({ row }) => {
-          const names = row.original.contactNames?.length
-            ? row.original.contactNames
-            : [{ given: '', family: '' } as ContactName]
-
-          return (
-            <ContactsTableNames
-              contact={row.original}
-              names={names}
-              onUpdateName={onUpdateName}
-              onDeleteName={onDeleteName}
-            />
-          )
-        },
-      },
-      {
-        accessorKey: 'phoneNumbers',
-        header: t('contacts.phoneNumbers'),
-        cell: ({ row }) => {
-          const phones = (row.original.phoneNumbers || []) as ContactPhoneNumber[]
-          return (
-            <ContactsTablePhones
-              contact={row.original}
-              phones={phones}
-              onUpdatePhone={onUpdatePhone}
-              onDeletePhone={onDeletePhone}
-            />
-          )
-        },
-      },
-      {
-        accessorKey: 'contactEmailAdresses',
-        header: t('contacts.emailAddresses'),
-        cell: ({ row }) => {
-          const emails = (row.original.contactEmailAdresses || []) as ContactEmailAdress[]
-          return (
-            <ContactsTableEmails
-              contact={row.original}
-              emails={emails}
-              onUpdateEmail={onUpdateEmail}
-              onDeleteEmail={onDeleteEmail}
-            />
-          )
-        },
-      },
-      {
-        accessorKey: 'contactGroups',
-        header: t('contacts.groups'),
-        cell: ({ row }) => (
-          <ContactGroupInlineEdit
-            contact={row.original}
-            groups={groups || []}
-            onUpdate={onUpdateGroups}
-          />
-        ),
-      },
-      {
-        accessorKey: 'contactDates',
-        header: t('contacts.dates'),
-        cell: ({ row }) => {
-          const dates = row.original.contactDates?.length
-            ? row.original.contactDates
-            : [{ date: '', text: '' } as ContactDate]
-
-          return (
-            <ContactsTableDates
-              contact={row.original}
-              dates={dates}
-              onUpdateDate={onExchangeDate}
-              onDeleteDate={onDeleteDate}
-            />
-          )
-        },
-      },
-      {
-        id: 'actions',
-        header: t('common.actions'),
-        cell: ({ row }) => {
-          return <ContactsTableActions contact={row.original} onEdit={onEdit} />
-        },
-      },
-    ],
-    [
-      t,
-      onExchangeDate,
-      onDeleteDate,
-      onEdit,
-      groups,
-      onToggleFavorite,
-      isContactFavorite,
-      onUpdateGroups,
-      onUpdateEmail,
-      onDeleteEmail,
-      onUpdatePhone,
-      onDeletePhone,
-      onUpdateName,
-      onDeleteName,
-      onSort,
-      sorting,
-    ],
-  )
+  // We need to pass onEdit to the table meta so that cells can access it if needed
+  // (e.g. ActionCell)
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting: sortingState,
+      columnVisibility,
+    },
+    manualSorting: true,
+    meta: {
+      onEdit,
+      onSort,
+      sorting,
+    },
+    onSortingChange: (updaterOrValue) => {
+      // We only support single column sorting for now
+      if (typeof updaterOrValue === 'function') {
+        const newSorting = updaterOrValue(sortingState)
+        if (newSorting.length > 0 && onSort) {
+          onSort(newSorting[0].id, newSorting[0].desc)
+        }
+      } else if (Array.isArray(updaterOrValue) && updaterOrValue.length > 0 && onSort) {
+        onSort(updaterOrValue[0].id, updaterOrValue[0].desc)
+      }
+    },
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
   })
 
   return (
-    <div>
-      <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
+    <div className="space-y-4">
+      <div className="flex items-center justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              <Settings2 className="mr-2 h-4 w-4" />
+              {t('common.columns') || 'Columns'}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>{t('common.toggleColumns') || 'Toggle Columns'}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
                 return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {/* Try to use the column header as label if it's a string, otherwise ID */}
+                    {typeof column.columnDef.header === 'string'
+                      ? column.columnDef.header
+                      : column.id}
+                  </DropdownMenuCheckboxItem>
                 )
               })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                className="group/row cursor-pointer"
-                onClick={() => navigate(`/contacts/${row.original.id}`)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className="rounded-md border">
+        <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                {t('contacts.noContacts')}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  className="group/row cursor-pointer"
+                  onClick={() => navigate(`/contacts/${row.original.id}`)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  {t('contacts.noContacts')}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

@@ -2,36 +2,18 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
+import { registerDefaultColumns } from './columns'
 import { ContactModal } from './components/ContactModal'
 import { ContactsHeader } from './components/ContactsHeader'
 import { ContactsPagination } from './components/ContactsPagination'
 import { ContactsTable } from './components/ContactsTable'
-import {
-  useContacts,
-  useDeleteContact,
-  useUpdateContactDate,
-  useCreateContactDate,
-  useUpdateContactGroups,
-  useCreateContactEmail,
-  useUpdateContactEmail,
-  useDeleteContactEmail,
-  useCreateContactPhone,
-  useUpdateContactPhone,
-  useDeleteContactPhone,
-  useCreateContactName,
-  useUpdateContactName,
-  useDeleteContactName,
-  getHydraMember,
-  getHydraPagination,
-} from './useContacts'
+import { getHydraMember, getHydraPagination, useContacts } from './useContacts'
 
-import {
-  type Contact,
-  type ContactDate,
-  type ContactEmailAdress,
-  type ContactPhoneNumber,
-  type ContactName,
-} from '@/types/models'
+import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
+import { type Contact } from '@/types/models'
+
+// Ensure default columns are registered
+registerDefaultColumns()
 
 export default function ContactsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -78,136 +60,6 @@ export default function ContactsPage() {
     setIsSheetOpen(true)
   }
 
-  const handleUpdateDateMutation = useUpdateContactDate()
-  const handleCreateDateMutation = useCreateContactDate()
-  const handleDeleteDateMutation = useDeleteContact()
-  const handleUpdateGroupsMutation = useUpdateContactGroups()
-
-  const handleCreateEmailMutation = useCreateContactEmail()
-  const handleUpdateEmailMutation = useUpdateContactEmail()
-  const handleDeleteEmailMutation = useDeleteContactEmail()
-
-  const handleCreatePhoneMutation = useCreateContactPhone()
-  const handleUpdatePhoneMutation = useUpdateContactPhone()
-  const handleDeletePhoneMutation = useDeleteContactPhone()
-
-  const handleCreateNameMutation = useCreateContactName()
-  const handleUpdateNameMutation = useUpdateContactName()
-  const handleDeleteNameMutation = useDeleteContactName()
-
-  const handleUpdateDate = async (contact: Contact, date: ContactDate) => {
-    if (date['@id']) {
-      await handleUpdateDateMutation.mutateAsync({ id: date['@id'], data: date })
-    } else if (contact['@id']) {
-      // Create new date
-      await handleCreateDateMutation.mutateAsync({
-        ...date,
-        contact: contact['@id'],
-      })
-    }
-  }
-
-  const handleDeleteDate = async (_contact: Contact, date: ContactDate) => {
-    if (!date['@id']) {
-      return
-    }
-    await handleDeleteDateMutation.mutateAsync(date['@id'])
-  }
-
-  const handleUpdateGroups = async (contact: Contact, groupIds: string[]) => {
-    if (!contact['@id']) {
-      return
-    }
-    await handleUpdateGroupsMutation.mutateAsync({
-      contactId: contact['@id'],
-      groupIds,
-    })
-  }
-
-  const handleUpdateEmail = async (contact: Contact, email: ContactEmailAdress) => {
-    if (!contact['@id']) {
-      return
-    }
-
-    if (email['@id']) {
-      // Update existing
-      await handleUpdateEmailMutation.mutateAsync({
-        id: email['@id'],
-        data: email,
-      })
-    } else {
-      // Create new
-      await handleCreateEmailMutation.mutateAsync({
-        ...email,
-        contact: contact['@id'],
-      })
-    }
-  }
-
-  const handleDeleteEmail = async (_contact: Contact, email: ContactEmailAdress) => {
-    if (!email['@id']) {
-      return
-    }
-
-    await handleDeleteEmailMutation.mutateAsync(email['@id'])
-  }
-
-  const handleUpdatePhone = async (contact: Contact, phone: ContactPhoneNumber) => {
-    if (!contact['@id']) {
-      return
-    }
-
-    if (phone['@id']) {
-      // Update existing
-      await handleUpdatePhoneMutation.mutateAsync({
-        id: phone['@id'],
-        data: phone,
-      })
-    } else {
-      // Create new
-      await handleCreatePhoneMutation.mutateAsync({
-        ...phone,
-        contact: contact['@id'],
-      })
-    }
-  }
-
-  const handleDeletePhone = async (_contact: Contact, phone: ContactPhoneNumber) => {
-    if (!phone['@id']) {
-      return
-    }
-
-    await handleDeletePhoneMutation.mutateAsync(phone['@id'])
-  }
-
-  const handleUpdateName = async (contact: Contact, name: ContactName) => {
-    if (!contact['@id']) {
-      return
-    }
-
-    if (name['@id']) {
-      // Update existing
-      await handleUpdateNameMutation.mutateAsync({
-        id: name['@id'],
-        data: name,
-      })
-    } else {
-      // Create new
-      await handleCreateNameMutation.mutateAsync({
-        ...name,
-        contact: contact['@id'],
-      })
-    }
-  }
-
-  const handleDeleteName = async (_contact: Contact, name: ContactName) => {
-    if (!name['@id']) {
-      return
-    }
-
-    await handleDeleteNameMutation.mutateAsync(name['@id'])
-  }
-
   if (isLoading && !isPlaceholderData) {
     return <div>{t('contacts.loading')}</div>
   }
@@ -217,6 +69,7 @@ export default function ContactsPage() {
 
   const contacts = getHydraMember(data)
   const { totalPages, hasNext, hasPrevious } = getHydraPagination(data, page)
+  const columns = contactColumnRegistry.getAll()
 
   return (
     <div className={`space-y-6 ${isPlaceholderData ? 'opacity-50' : ''}`}>
@@ -226,16 +79,8 @@ export default function ContactsPage() {
         <div className="flex-1">
           <ContactsTable
             data={contacts}
+            columns={columns}
             onEdit={handleEdit}
-            onUpdateDate={handleUpdateDate}
-            onDeleteDate={handleDeleteDate}
-            onUpdateGroups={handleUpdateGroups}
-            onUpdateEmail={handleUpdateEmail}
-            onDeleteEmail={handleDeleteEmail}
-            onUpdatePhone={handleUpdatePhone}
-            onDeletePhone={handleDeletePhone}
-            onUpdateName={handleUpdateName}
-            onDeleteName={handleDeleteName}
             onSort={handleSort}
             sorting={sorting}
           />
