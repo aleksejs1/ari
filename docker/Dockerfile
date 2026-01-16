@@ -30,6 +30,7 @@ RUN apk add --no-cache \
 RUN install-php-extensions \
     intl \
     pdo_mysql \
+    pdo_sqlite \
     zip \
     opcache \
     apcu

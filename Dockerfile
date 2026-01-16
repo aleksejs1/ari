@@ -19,6 +19,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions \
     intl \
     pdo_mysql \
+    pdo_sqlite \
     zip \
     opcache \
     apcu \

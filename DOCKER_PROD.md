@@ -1,101 +1,109 @@
 # Ari CRM: Production Deployment Guide (Docker)
 
-This guide explains how to deploy Ari CRM in a production-ready environment, such as a personal NAS (Synology, QNAP, Unraid) or a VPS, using the optimized **FrankenPHP** setup.
+This guide explains how to deploy Ari CRM in a production-ready environment using the optimized **FrankenPHP** setup.
 
 ## Prerequisites
 
 - **Docker** and **Docker Compose** installed.
 - **Port 8080** (or your chosen port) available.
-- **MariaDB/MySQL** (included in the compose file).
+- **MariaDB/MySQL** (optional, opt-in).
 
 ---
 
-## 1. Prepare Environment Variables
+## 1. Database Configuration
 
-## 1. Prepare Environment Variables
+Ari CRM supports two database modes: **SQLite** (default) and **MySQL/MariaDB**.
 
-## 1. Prepare Environment Variables
+### Option A: SQLite (Default)
+**Best for:** Personal use, small teams, simplest setup.
+- Zero configuration required.
+- Data stored in `core/var/data.db`.
+- No additional database container running.
 
-Since `compose.prod.yaml` is part of the code repository, you should **not** put your real passwords in it. Instead, use a `.env` file on your NAS.
+### Option B: MySQL / MariaDB (Opt-out)
+**Best for:** Larger datasets, high concurrency, existing infrastructure.
+- Requires enabling the `mysql` Docker profile.
+- Uses a separate `database` container.
+- Requires configuration in `.env`.
+
+---
+
+## 2. Prepare Environment Variables
+
+Use the provided helper script or manually create a `.env` file.
 
 **Option A: Automatic Setup (Recommended)**
-Run the helper script to generate a `.env` file with secure random passwords:
-
 ```bash
 ./setup_prod.sh
 ```
 
 **Option B: Manual Setup**
-1. Create a file named `.env` in the same folder as `compose.prod.yaml`.
-2. Copy the contents of `.env.prod.example` into it.
-3. Change the passwords to your own secure values.
+1. Create a `.env` file from `.env.prod.example`.
+2. **If using MySQL**: Uncomment and fill in `DB_CONNECTION=mysql` and the `MARIADB_` variables.
+3. **If using SQLite**: You can leave the database variables commented out or remove them; it defaults to SQLite.
 
 ---
 
----
+## 3. Build and Start the Containers
 
-## 2. Build and Start the Containers
+### For SQLite (Default)
+```bash
+docker compose -f compose.prod.yaml up -d --build
+```
 
-Run the following command from the project root:
+### For MySQL
+You need to activate the `mysql` profile and ensure `DB_CONNECTION=mysql` is set in your environment (or `.env` file).
 
 ```bash
+# Set env var for this session or add to .env
+export COMPOSE_PROFILES=mysql
 docker compose -f compose.prod.yaml up -d --build
 ```
 
 ### What happens automatically:
 - **JWT Keys**: Generated on the first run.
-- **Database**: Migrations are applied automatically.
+- **Database**: 
+    - **SQLite**: The database file is created and schema updated automatically.
+    - **MySQL**: Migrations are applied automatically.
 - **Frontend/Backend**: Served via FrankenPHP on the configured port.
 
 ---
 
-## 3. Access the Application
+## 4. Access the Application
 
 Open your browser and navigate to:
 `http://<your-nas-ip>:8080` (or your custom port)
-
-If this is your first time, you can register a new account.
 
 ---
 
 ## Maintenance and Updates
 
 ### Pulling Updates
-To update the application to the latest version:
 ```bash
 git pull
+# Re-run the start command appropriate for your DB choice
 docker compose -f compose.prod.yaml up -d --build
 ```
-The application will automatically detect new migrations and apply them on restart.
 
 ### Viewing Logs
 ```bash
 docker compose -f compose.prod.yaml logs -f app
-# Or directly by container name:
-# docker logs -f ari-prod-app
 ```
 
 ### Backup
-Everything is stored in:
-- `database_data` volume (scoped to `ari-prod` project).
-- The `core/var` directory inside the container (though it's mostly logs and cache, ensure critical user data like uploads, if any, are handled).
+**SQLite**:
+- Backup the `core/var/data.db` file.
+
+**MySQL**:
+- Backup the `database_data` volume or use `mysqldump`.
 
 ---
 
 ## Background Tasks
 
-The application runs periodic tasks via `cron` inside the main application container.
-
-### Included Tasks:
-- **Notification Generation**: Runs every minute.
-- **Notification Processing**: Runs every minute.
+The application runs periodic tasks via `cron` inside the main application container (Notification Generation & Processing).
 
 ### Monitoring Tasks:
-You can check the cron logs inside the app container:
 ```bash
 docker exec ari-prod-app tail -f /app/core/var/log/cron.log
-```
-Or check if `crond` is running:
-```bash
-docker exec ari-prod-app ps aux | grep crond
 ```

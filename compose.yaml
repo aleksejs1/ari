@@ -9,12 +9,16 @@ services:
     stdin_open: true
     tty: true
     environment:
-      DATABASE_URL: "mysql://${MARIADB_USER:-app}:${MARIADB_PASSWORD:-!ChangeMe!}@database:3306/${MARIADB_DB:-app}?serverVersion=11.4.9-MariaDB&charset=utf8mb4"
-    depends_on:
-      database:
-        condition: service_healthy
+      DB_CONNECTION: "${DB_CONNECTION:-sqlite}"
+      DB_HOST: "database"
+      DB_PORT: "3306"
+      DB_USER: "${MARIADB_USER:-app}"
+      DB_PASSWORD: "${MARIADB_PASSWORD:-!ChangeMe!}"
+      DB_NAME: "${MARIADB_DB:-app}"
+      DB_VERSION: "11.4.9-MariaDB"
 
   database:
+    profiles: [ "mysql" ]
     image: mariadb:${MARIADB_VERSION:-11.4}
     environment:
       MARIADB_DATABASE: ${MARIADB_DB:-app}

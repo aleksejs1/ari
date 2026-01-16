@@ -4,6 +4,31 @@ set -e
 # Navigate to core directory for commands
 cd /app/core
 
+# Configure Database Connection
+if [ -z "$DATABASE_URL" ]; then
+    DB_CONNECTION=${DB_CONNECTION:-sqlite}
+    
+    if [ "$DB_CONNECTION" = "mysql" ]; then
+        echo "Configuring for MySQL/MariaDB..."
+        # Default mysql port
+        DB_PORT=${DB_PORT:-3306}
+        # Construct DATABASE_URL for MySQL
+        export DATABASE_URL="mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=${DB_VERSION}&charset=utf8mb4"
+    else
+        echo "Configuring for SQLite..."
+        # Create data directory if it doesn't exist
+        mkdir -p var
+        touch var/data.db
+        chmod 666 var/data.db
+        # Construct DATABASE_URL for SQLite
+        export DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+    fi
+    
+    # Write to .env.local so CLI commands (docker exec) can pick it up
+    echo "DATABASE_URL=\"$DATABASE_URL\"" > .env.local
+fi
+
+
 # Generate JWT keys if they don't exist
 if [ ! -f config/jwt/private.pem ]; then
     echo "Generating JWT keys..."
@@ -18,14 +43,20 @@ chmod 640 config/jwt/private.pem
 chmod 644 config/jwt/public.pem
 
 # Run migrations
-echo "Running database migrations..."
-max_retries=20
-count=0
-until php bin/console doctrine:migrations:migrate --no-interaction || [ $count -eq $max_retries ]; do
-    echo "Waiting for database to be ready (attempt $((count + 1))/$max_retries)..."
-    sleep 3
-    count=$((count + 1))
-done
+# Run migrations or schema update
+if [ "${DB_CONNECTION}" = "sqlite" ]; then
+    echo "Updating schema for SQLite..."
+    php bin/console doctrine:schema:update --force --complete
+else
+    echo "Running database migrations..."
+    max_retries=20
+    count=0
+    until php bin/console doctrine:migrations:migrate --no-interaction || [ $count -eq $max_retries ]; do
+        echo "Waiting for database to be ready (attempt $((count + 1))/$max_retries)..."
+        sleep 3
+        count=$((count + 1))
+    done
+fi
 
 # Clear cache for production
 php bin/console cache:clear --no-interaction

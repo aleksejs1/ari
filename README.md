@@ -141,7 +141,7 @@ Workflows are being polished, and parts of the system are intentionally over-eng
 - **PHP 8.5**
 - **Symfony 7.4**
 - **API Platform** (OpenAPI-first)
-- **MariaDB**
+- **MariaDB / SQLite**
 - Token-based authentication
 - Strict user data isolation at the Doctrine level
 - Audit logging via Doctrine event subscribers
