@@ -24,6 +24,8 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
+import { registerDashboardWidgets } from '@/features/dashboard/widgets/registerWidgets'
+
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -41,6 +43,7 @@ const createWrapper = () => {
 describe('HomePage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    registerDashboardWidgets()
   })
 
   it('renders dashboard title', () => {

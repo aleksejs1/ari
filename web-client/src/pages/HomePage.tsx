@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next'
 
-import GroupsWidget from '@/features/dashboard/GroupsWidget'
-import RecentAuditLogsWidget from '@/features/dashboard/RecentAuditLogsWidget'
-import UpcomingAnniversariesWidget from '@/features/dashboard/UpcomingAnniversariesWidget'
+import DynamicDashboard from '@/features/dashboard/DynamicDashboard'
 
 export default function HomePage() {
   const { t } = useTranslation()
+
+  // This would eventually come from user settings/API
+  const defaultLayout = ['groups', 'upcoming-anniversaries', 'recent-audit-logs']
 
   return (
     <div className="space-y-6">
@@ -13,17 +14,7 @@ export default function HomePage() {
         <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h1>
       </div>
 
-      <GroupsWidget />
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="md:col-span-1 lg:col-span-3">
-          <UpcomingAnniversariesWidget />
-        </div>
-        {/* Placeholder for other potential widgets */}
-        <div className="md:col-span-1 lg:col-span-4">
-          <RecentAuditLogsWidget />
-        </div>
-      </div>
+      <DynamicDashboard layout={defaultLayout} />
     </div>
   )
 }
