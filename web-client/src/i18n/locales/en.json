@@ -77,6 +77,7 @@
     "showLogo": "Show Logo",
     "showLogoDescription": "Toggle between the application logo and a Home button in the layout.",
     "theme": "Theme",
+    "themeDescription": "Choose your preferred color theme for the application.",
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystem": "System"

@@ -21,6 +21,8 @@ export function GeneralSettings() {
     setDashboardNotificationPolicy,
     showLogo,
     setShowLogo,
+    theme,
+    setTheme,
     isLoading,
   } = useUserPrefs()
   const { data: notificationPolicies } = useNotificationPolicies()
@@ -93,6 +95,19 @@ export function GeneralSettings() {
           .onChange((val) => setShowLogo(val)),
       )
 
+    // Theme Selection
+    new Setting(settingsContainer)
+      .setName(t('settings.theme'))
+      .setDesc(t('settings.themeDescription'))
+      .addRadio((radio) =>
+        radio
+          .addOption('light', t('settings.themeLight'))
+          .addOption('dark', t('settings.themeDark'))
+          .addOption('system', t('settings.themeSystem'))
+          .setValue(theme)
+          .onChange((val) => setTheme(val as 'light' | 'dark' | 'system')),
+      )
+
     return settingsContainer
   }, [
     t,
@@ -101,12 +116,14 @@ export function GeneralSettings() {
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
     showLogo,
+    theme,
     notificationPolicies,
     setLanguage,
     setFavouriteGroupName,
     setGoogleSyncOnUpdate,
     setDashboardNotificationPolicy,
     setShowLogo,
+    setTheme,
   ])
 
   if (isLoading) {
