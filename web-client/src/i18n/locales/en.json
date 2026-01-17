@@ -24,7 +24,8 @@
         "settings": "Settings",
         "changePassword": "Change Password",
         "deleteAccount": "Delete Account",
-        "home": "Home"
+        "home": "Home",
+        "sessions": "Sessions"
       },
       "toggleMenu": "Toggle menu"
     }
@@ -475,5 +476,12 @@
   },
   "contactGraph": {
     "title": "Contact Graph"
+  },
+  "sessions": {
+    "title": "Sessions",
+    "current": "Current session",
+    "empty": "No active sessions found",
+    "terminateTitle": "Terminate Session?",
+    "terminateDescription": "Are you sure you want to terminate this session? The user will be logged out on that device."
   }
 }

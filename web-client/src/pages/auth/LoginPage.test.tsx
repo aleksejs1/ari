@@ -59,7 +59,9 @@ describe('LoginPage', () => {
   })
 
   it('handles successful login', async () => {
-    vi.mocked(api.post).mockResolvedValue({ data: { token: 'fake-token' } })
+    vi.mocked(api.post).mockResolvedValue({
+      data: { token: 'fake-token', refresh_token: 'fake-refresh-token' },
+    })
 
     render(
       <MemoryRouter>
@@ -80,7 +82,7 @@ describe('LoginPage', () => {
     })
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('fake-token')
+      expect(mockLogin).toHaveBeenCalledWith('fake-token', 'fake-refresh-token')
       expect(mockNavigate).toHaveBeenCalledWith('/')
     })
   })
@@ -130,7 +132,9 @@ describe('LoginPage', () => {
   it('handles successful demo login', async () => {
     vi.mocked(api.post)
       .mockResolvedValueOnce({ data: { username: 'demo-user-123' } }) // /demo-account
-      .mockResolvedValueOnce({ data: { token: 'demo-token' } }) // /login_check
+      .mockResolvedValueOnce({
+        data: { token: 'demo-token', refresh_token: 'demo-refresh-token' },
+      }) // /login_check
 
     render(
       <MemoryRouter>
@@ -153,7 +157,7 @@ describe('LoginPage', () => {
     })
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('demo-token')
+      expect(mockLogin).toHaveBeenCalledWith('demo-token', 'demo-refresh-token')
       expect(mockNavigate).toHaveBeenCalledWith('/')
     })
   })

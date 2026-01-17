@@ -1,4 +1,4 @@
-import { Users, History, Bell, Download, Settings, Lock, UserX } from 'lucide-react'
+import { Users, History, Bell, Download, Settings, Lock, UserX, Monitor } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -61,6 +61,14 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
         >
           <Download className="h-5 w-5" />
           <span>{t('app.navigation.sidebar.googleImport', 'Google Import')}</span>
+        </Link>
+        <Link
+          to="/sessions"
+          onClick={onNavigate}
+          className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+        >
+          <Monitor className="h-5 w-5" />
+          <span>{t('app.navigation.sidebar.sessions', 'Sessions')}</span>
         </Link>
         <Link
           to="/settings"

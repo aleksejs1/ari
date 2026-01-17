@@ -50,7 +50,10 @@ src/
 
 - **API Client**: We use a `schema.d.ts` file generated from the backend OpenAPI/Swagger definition (`npm run gen:types`).
 - **Data Fetching**: Data access logic is encapsulated in custom hooks within each feature (e.g., `features/contacts/useContacts.ts`). We use TanStack Query for caching and state management.
-- **Authentication**: JWT-based authentication handled via `AuthContext` and Axios interceptors in `src/lib/axios.ts`.
+- **Authentication & Sessions**:
+  - **JWT Refresh**: Implemented via Axios interceptors. On 401 Unauthorized, the client attempts to refresh the access token using a stored `refresh_token`. Concurrent requests are queued during refresh to prevent race conditions. If refresh fails, the user is logged out.
+  - **Session Management**: Users can view active sessions (device, IP, time) via the Sessions page and terminate individual sessions remotely.
+  - **State**: `AuthContext` manages global auth state (user, token, refresh_token).
 - **User Preferences**: Global preferences (language, date format, google sync, dashboard notification policy) are managed via `useUserPrefs` hook and persisted to backend.
 - **Settings System**: Implements a **Dynamic Registry** pattern (`SettingsRegistry`). Features and plugins can register their own settings tabs (`SettingTab`) independently. The Settings page acts as a shell that renders these registered tabs. Core settings are migrated to `GeneralSettingsTab`.
 - **Notification Channels**: Support for multiple types (Telegram, Web). Telegram required config (token, ID), Web is config-less.

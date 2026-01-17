@@ -54,7 +54,7 @@ export default function LoginPage() {
         username: values.username,
         password: values.password,
       })
-      login(response.data.token)
+      login(response.data.token, response.data.refresh_token)
       await navigate('/')
     } catch (err: unknown) {
       console.error(err)
@@ -74,7 +74,7 @@ export default function LoginPage() {
         // eslint-disable-next-line sonarjs/no-hardcoded-passwords
         password: 'demo',
       })
-      login(loginResponse.data.token)
+      login(loginResponse.data.token, loginResponse.data.refresh_token)
       await navigate('/')
     } catch (err: unknown) {
       console.error(err)

@@ -90,7 +90,9 @@ describe('RegisterPage', () => {
 
   it('handles successful registration', async () => {
     vi.mocked(api.post).mockResolvedValueOnce({}) // Create User
-    vi.mocked(api.post).mockResolvedValueOnce({ data: { token: 'fake-token' } }) // Login
+    vi.mocked(api.post).mockResolvedValueOnce({
+      data: { token: 'fake-token', refresh_token: 'fake-refresh-token' },
+    }) // Login
 
     render(
       <MemoryRouter>
@@ -117,7 +119,7 @@ describe('RegisterPage', () => {
         username: 'testuser',
         password: TEST_PASSWORD,
       })
-      expect(login).toHaveBeenCalledWith('fake-token')
+      expect(login).toHaveBeenCalledWith('fake-token', 'fake-refresh-token')
       expect(navigate).toHaveBeenCalledWith('/')
     })
   })

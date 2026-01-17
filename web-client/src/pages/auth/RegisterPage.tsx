@@ -68,7 +68,7 @@ export default function RegisterPage() {
         username: values.uuid,
         password: values.password,
       })
-      login(response.data.token)
+      login(response.data.token, response.data.refresh_token)
       await navigate('/')
     } catch (err: unknown) {
       console.error(err)

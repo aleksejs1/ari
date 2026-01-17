@@ -58,6 +58,7 @@ describe('axios api', () => {
 
     const error = {
       response: { status: 401 },
+      config: {},
     }
 
     try {
@@ -67,6 +68,7 @@ describe('axios api', () => {
     }
 
     expect(localStorage.removeItem).toHaveBeenCalledWith('token')
+    expect(localStorage.removeItem).toHaveBeenCalledWith('refresh_token')
     expect(window.location.href).toBe('/login')
   })
 

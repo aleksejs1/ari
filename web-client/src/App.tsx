@@ -20,6 +20,7 @@ const NotificationChannelsPage = lazy(
 )
 const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))
 const NotificationPolicyFormPage = lazy(() => import('./pages/NotificationPolicyFormPage'))
+const SessionsPage = lazy(() => import('./pages/SessionsPage'))
 const SettingsPage = lazy(() => import('./pages/Settings'))
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
@@ -135,6 +136,14 @@ export default function App() {
               element: (
                 <Suspense fallback={<PageLoader />}>
                   <GoogleImportPage />
+                </Suspense>
+              ),
+            },
+            {
+              path: '/sessions',
+              element: (
+                <Suspense fallback={<PageLoader />}>
+                  <SessionsPage />
                 </Suspense>
               ),
             },
