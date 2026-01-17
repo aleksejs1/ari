@@ -33,3 +33,13 @@ Refresh Tokens are strictly scoped to the `Tenant` (User).
 - `POST /api/token/refresh`: Exchange a refresh token for a new JWT.
 - `GET /api/active-sessions`: List active refresh tokens.
 - `DELETE /api/active-sessions/{id}`: Revoke a refresh token.
+- `POST /api/logout`: Revokes the current refresh token.
+
+### Security Considerations
+
+#### Public Logout Endpoint
+The `/api/logout` endpoint is deliberately configured with `PUBLIC_ACCESS`.
+
+1.  **Credential Possession**: The "authentication" for this endpoint is the possession of the Refresh Token itself (passed via boolean/cookie). This 128-char random string is a high-security credential. Brute-forcing it is computationally infeasible.
+2.  **Expired Access Tokens**: Use case: A user returns to the app after 10 minutes. Their Access Token (TTL 5m) is expired. They want to "Log Out". If the endpoint required a valid Access Token, the request would be rejected (401), effectively preventing them from invalidating the Refresh Token without first refreshing it (poor UX).
+3.  **Consistency**: This matches the security model of `/api/token/refresh`, which is also public for the exact same reason (you can't use an expired access token to get a new token; you use the credentials: the refresh token).
