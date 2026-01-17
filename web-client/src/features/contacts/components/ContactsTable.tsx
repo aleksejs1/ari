@@ -28,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Contact } from '@/types/models'
 
 interface ContactsTableProps {
@@ -42,7 +43,15 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
   'use no memo'
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const { contactTableSettings, setContactTableSettings } = useUserPrefs()
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
+    try {
+      return JSON.parse(contactTableSettings)
+    } catch {
+      return {}
+    }
+  })
 
   const sortingState: SortingState = useMemo(() => {
     return sorting ? [{ id: sorting.id, desc: sorting.desc }] : []
@@ -75,7 +84,12 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
         onSort(updaterOrValue[0].id, updaterOrValue[0].desc)
       }
     },
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: (updaterOrValue) => {
+      const next =
+        typeof updaterOrValue === 'function' ? updaterOrValue(columnVisibility) : updaterOrValue
+      setColumnVisibility(next)
+      void setContactTableSettings(JSON.stringify(next))
+    },
     getCoreRowModel: getCoreRowModel(),
   })
 

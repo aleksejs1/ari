@@ -16,6 +16,7 @@ type UserPrefType =
   | 'favourite_group_name'
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
+  | 'contact_table_settings'
 type DateInput = Date | string | null | undefined
 
 interface UserPrefsProviderProps {
@@ -152,6 +153,7 @@ const useUserPrefsLogic = () => {
   const favouriteGroupName = getPrefValue(prefs, 'favourite_group_name', 'favourites')
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
+  const contactTableSettings = getPrefValue(prefs, 'contact_table_settings', '{}')
 
   useEffect(() => {
     void i18n.changeLanguage(language)
@@ -164,6 +166,7 @@ const useUserPrefsLogic = () => {
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
+    contactTableSettings,
     isLoading,
     savePrefMutation,
     i18n,
@@ -177,7 +180,8 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     timeFormat,
     favouriteGroupName,
     googleSyncOnUpdate,
-    dashboardNotificationPolicy, // Added
+    dashboardNotificationPolicy,
+    contactTableSettings, // Added
     isLoading,
     savePrefMutation,
     i18n,
@@ -226,6 +230,13 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     [savePrefMutation],
   )
 
+  const setContactTableSettings = useCallback(
+    async (value: string) => {
+      await savePrefMutation.mutateAsync({ type: 'contact_table_settings', value })
+    },
+    [savePrefMutation],
+  )
+
   const formatDate = useCallback(
     (date: DateInput): string => {
       return formatDateHelper(date, dateFormat)
@@ -248,12 +259,14 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       favouriteGroupName,
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
+      contactTableSettings,
       setLanguage,
       setDateFormat,
       setTimeFormat,
       setFavouriteGroupName,
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
+      setContactTableSettings,
       formatDate,
       formatTime,
       isLoading,
@@ -265,12 +278,14 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       favouriteGroupName,
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
+      contactTableSettings,
       setLanguage,
       setDateFormat,
       setTimeFormat,
       setFavouriteGroupName,
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
+      setContactTableSettings,
       formatDate,
       formatTime,
       isLoading,
