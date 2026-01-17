@@ -66,6 +66,8 @@ class UserPref implements TenantAwareInterface
     public const TYPE_GOOGLE_SYNC_ON_UPDATE = 'googleSyncOnUpdate';
     public const TYPE_DASHBOARD_NOTIFICATION_POLICY = 'dashboard_notification_policy';
     public const TYPE_CONTACT_TABLE_SETTINGS = 'contact_table_settings';
+    public const TYPE_THEME = 'theme';
+    public const TYPE_SHOW_LOGO = 'show_logo';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -75,6 +77,8 @@ class UserPref implements TenantAwareInterface
         self::TYPE_GOOGLE_SYNC_ON_UPDATE,
         self::TYPE_DASHBOARD_NOTIFICATION_POLICY,
         self::TYPE_CONTACT_TABLE_SETTINGS,
+        self::TYPE_THEME,
+        self::TYPE_SHOW_LOGO,
     ];
 
     public const DEFAULTS = [
@@ -85,6 +89,8 @@ class UserPref implements TenantAwareInterface
         self::TYPE_GOOGLE_SYNC_ON_UPDATE => '0',
         self::TYPE_DASHBOARD_NOTIFICATION_POLICY => '0',
         self::TYPE_CONTACT_TABLE_SETTINGS => '{}',
+        self::TYPE_THEME => 'system',
+        self::TYPE_SHOW_LOGO => '1',
     ];
 
     #[ORM\Id]
@@ -112,6 +118,18 @@ class UserPref implements TenantAwareInterface
         if (self::TYPE_LANGUAGE === $this->type) {
             if (!in_array($this->value, ['ru', 'en'], true)) {
                 $context->buildViolation('Invalid language')
+                    ->atPath('value')
+                    ->addViolation();
+            }
+        } elseif (self::TYPE_THEME === $this->type) {
+            if (!in_array($this->value, ['light', 'dark', 'system'], true)) {
+                $context->buildViolation('Invalid theme. Must be "light", "dark", or "system".')
+                    ->atPath('value')
+                    ->addViolation();
+            }
+        } elseif (self::TYPE_SHOW_LOGO === $this->type) {
+            if (!in_array($this->value, ['0', '1'], true)) {
+                $context->buildViolation('Invalid value for show_logo. Must be "0" or "1".')
                     ->atPath('value')
                     ->addViolation();
             }

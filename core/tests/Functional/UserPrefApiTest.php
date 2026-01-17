@@ -279,4 +279,62 @@ class UserPrefApiTest extends AbstractApiTestCase
         ]);
         self::assertResponseStatusCodeSame(422);
     }
+
+    public function testUpdateTheme(): void
+    {
+        $client = static::createClient();
+
+        // 1. Update to 'dark'
+        $response = $client->request('PATCH', '/api/user_prefs/theme', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'theme',
+                'value' => 'dark',
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertEquals('dark', $data['value']);
+
+        // 2. Invalid theme
+        $client->request('PATCH', '/api/user_prefs/theme', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'theme',
+                'value' => 'fancy-pink',
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(422);
+    }
+
+    public function testUpdateShowLogo(): void
+    {
+        $client = static::createClient();
+
+        // 1. Set to '0' (hidden)
+        $response = $client->request('PATCH', '/api/user_prefs/show_logo', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'show_logo',
+                'value' => '0',
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertEquals('0', $data['value']);
+
+        // 2. Invalid value
+        $client->request('PATCH', '/api/user_prefs/show_logo', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'show_logo',
+                'value' => 'yes',
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(422);
+    }
 }
