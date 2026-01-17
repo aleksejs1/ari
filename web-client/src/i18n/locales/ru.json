@@ -74,6 +74,8 @@
     },
     "dashboardNotificationPolicy": "Правило уведомлений дашборда",
     "dashboardNotificationPolicyDescription": "Выберите правило уведомлений по умолчанию для дашборда.",
+    "showLogo": "Показывать Логотип",
+    "showLogoDescription": "Переключение между логотипом приложения и кнопкой На главную.",
     "theme": "Тема",
     "themeLight": "Светлая",
     "themeDark": "Темная",

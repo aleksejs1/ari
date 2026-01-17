@@ -74,6 +74,8 @@
     },
     "dashboardNotificationPolicy": "Dashboard Notification Policy",
     "dashboardNotificationPolicyDescription": "Select the default notification policy for the dashboard.",
+    "showLogo": "Show Logo",
+    "showLogoDescription": "Toggle between the application logo and a Home button in the layout.",
     "theme": "Theme",
     "themeLight": "Light",
     "themeDark": "Dark",

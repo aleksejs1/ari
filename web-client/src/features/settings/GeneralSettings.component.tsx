@@ -19,6 +19,8 @@ export function GeneralSettings() {
 
     dashboardNotificationPolicy,
     setDashboardNotificationPolicy,
+    showLogo,
+    setShowLogo,
     isLoading,
   } = useUserPrefs()
   const { data: notificationPolicies } = useNotificationPolicies()
@@ -79,6 +81,18 @@ export function GeneralSettings() {
       }
     })
 
+    // Show Logo
+    new Setting(settingsContainer)
+      .setName(t('settings.showLogo'))
+      .setDesc(t('settings.showLogoDescription'))
+      .addRadio((radio) =>
+        radio
+          .addOption('1', t('settings.enabled'))
+          .addOption('0', t('settings.disabled'))
+          .setValue(showLogo)
+          .onChange((val) => setShowLogo(val)),
+      )
+
     return settingsContainer
   }, [
     t,
@@ -86,11 +100,13 @@ export function GeneralSettings() {
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
+    showLogo,
     notificationPolicies,
     setLanguage,
     setFavouriteGroupName,
     setGoogleSyncOnUpdate,
     setDashboardNotificationPolicy,
+    setShowLogo,
   ])
 
   if (isLoading) {

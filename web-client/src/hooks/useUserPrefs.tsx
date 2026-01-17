@@ -17,6 +17,7 @@ type UserPrefType =
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
   | 'contact_table_settings'
+  | 'show_logo'
   | 'theme'
 type Theme = 'light' | 'dark' | 'system'
 type DateInput = Date | string | null | undefined
@@ -156,6 +157,7 @@ const useUserPrefsLogic = () => {
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
   const contactTableSettings = getPrefValue(prefs, 'contact_table_settings', '{}')
+  const showLogo = getPrefValue(prefs, 'show_logo', '1')
   const themeFromPrefs = getPrefValue(prefs, 'theme', '') as Theme | ''
 
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -214,6 +216,13 @@ const useUserPrefsLogic = () => {
     [isAuthenticated, savePrefMutation],
   )
 
+  const setShowLogo = useCallback(
+    async (value: string) => {
+      await savePrefMutation.mutateAsync({ type: 'show_logo', value })
+    },
+    [savePrefMutation],
+  )
+
   useEffect(() => {
     void i18n.changeLanguage(language)
   }, [language, i18n])
@@ -226,8 +235,10 @@ const useUserPrefsLogic = () => {
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
     contactTableSettings,
+    showLogo,
     theme,
     setTheme,
+    setShowLogo,
     isLoading,
     savePrefMutation,
     i18n,
@@ -243,8 +254,10 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
     contactTableSettings,
+    showLogo,
     theme,
     setTheme: setThemeLogic,
+    setShowLogo: setShowLogoLogic,
     isLoading,
     savePrefMutation,
     i18n,
@@ -307,6 +320,13 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     [setThemeLogic],
   )
 
+  const setShowLogo = useCallback(
+    async (value: string) => {
+      await setShowLogoLogic(value)
+    },
+    [setShowLogoLogic],
+  )
+
   const formatDate = useCallback(
     (date: DateInput): string => {
       return formatDateHelper(date, dateFormat)
@@ -330,6 +350,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
       contactTableSettings,
+      showLogo,
       theme,
       setLanguage,
       setDateFormat,
@@ -338,6 +359,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
       setContactTableSettings,
+      setShowLogo,
       setTheme,
       formatDate,
       formatTime,
@@ -351,6 +373,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
       contactTableSettings,
+      showLogo,
       theme,
       setLanguage,
       setDateFormat,
@@ -359,6 +382,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
       setContactTableSettings,
+      setShowLogo,
       setTheme,
       formatDate,
       formatTime,

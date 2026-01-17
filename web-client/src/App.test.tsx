@@ -26,8 +26,10 @@ describe('App Smoke Test', () => {
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
       dateFormat: 'mm/dd/yyyy',
+      showLogo: '1',
       setLanguage: vi.fn(),
       setDateFormat: vi.fn(),
+      setShowLogo: vi.fn(),
     })
 
     const queryClient = new QueryClient({

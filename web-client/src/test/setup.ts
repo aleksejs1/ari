@@ -55,6 +55,8 @@ const defaultPrefs = {
   setGoogleSyncOnUpdate: vi.fn(),
   setDashboardNotificationPolicy: vi.fn(),
   setContactTableSettings: vi.fn(),
+  showLogo: '1',
+  setShowLogo: vi.fn(),
   theme: 'system',
   setTheme: vi.fn(),
   formatDate,
