@@ -110,7 +110,7 @@
             "@psalm",
             "@deptrac",
             "@test",
-            "@security:check"
+            "composer audit"
         ],
         "security:check": "symfony security:check"
     },
