@@ -122,7 +122,7 @@ class AuditLogSubscriber
                             $entityId,
                             $ownerEntityId,
                             $ownerEntityType,
-                            json_encode($auditLog->getSnapshotAfter()),
+                            json_encode($this->maskSensitiveData($auditLog->getSnapshotAfter())),
                             $auditLog->getId(),
                         ],
                     );
@@ -152,6 +152,8 @@ class AuditLogSubscriber
         return $entity instanceof TenantAwareInterface;
     }
 
+    private const SENSITIVE_FIELDS = ['refreshToken', 'password', 'token'];
+
     /**
      * @param array<string, mixed>|null $changes
      * @param array<string, mixed>|null $snapshotBefore
@@ -165,7 +167,13 @@ class AuditLogSubscriber
         ?array $snapshotBefore = null,
         ?array $snapshotAfter = null,
     ): AuditLog {
-        $auditLog = $this->createAuditLogEntity($entity, $action, $changes, $snapshotBefore, $snapshotAfter);
+        $auditLog = $this->createAuditLogEntity(
+            $entity,
+            $action,
+            $this->maskSensitiveData($changes),
+            $this->maskSensitiveData($snapshotBefore),
+            $this->maskSensitiveData($snapshotAfter)
+        );
 
         $em->persist($auditLog);
         $uow = $em->getUnitOfWork();
@@ -207,9 +215,9 @@ class AuditLogSubscriber
         }
 
         $auditLog->setAction($action);
-        $auditLog->setChanges($changes);
-        $auditLog->setSnapshotBefore($snapshotBefore);
-        $auditLog->setSnapshotAfter($snapshotAfter);
+        $auditLog->setChanges($changes); // Already masked in logChange
+        $auditLog->setSnapshotBefore($snapshotBefore); // Already masked in logChange
+        $auditLog->setSnapshotAfter($snapshotAfter); // Already masked in logChange
 
         $user = $this->security->getUser();
 
@@ -284,5 +292,45 @@ class AuditLogSubscriber
         }
 
         return $changeSet;
+    }
+
+    /**
+     * @param array<string, mixed>|null $data
+     *
+     * @return array<string, mixed>|null
+     */
+    private function maskSensitiveData(?array $data): ?array
+    {
+        if (null === $data) {
+            return null;
+        }
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, self::SENSITIVE_FIELDS, true)) {
+                if (is_string($value)) {
+                    $length = strlen($value);
+                    if ($length <= 10) {
+                        $data[$key] = '********';
+                    } else {
+                        $data[$key] = substr($value, 0, 6) . '********' . substr($value, -4);
+                    }
+                } elseif (is_array($value)) {
+                    // Handle change sets [old, new]
+                    foreach ($value as $k => $v) {
+                        if (is_string($v)) {
+                            $len = strlen($v);
+                            if ($len <= 10) {
+                                $value[$k] = '********';
+                            } else {
+                                $value[$k] = substr($v, 0, 6) . '********' . substr($v, -4);
+                            }
+                        }
+                    }
+                    $data[$key] = $value;
+                }
+            }
+        }
+
+        return $data;
     }
 }
