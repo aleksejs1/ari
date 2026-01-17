@@ -18,12 +18,13 @@ class ContactTimelineServiceTest extends TestCase
     public function testGetTimelineSortsContactEntityLastWhenDatesAreEqual(): void
     {
         // Mock Dependencies
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $auditLogRepository = $this->createMock(AuditLogRepository::class);
+        $entityManager = self::createStub(EntityManagerInterface::class);
+        $auditLogRepository = self::createStub(AuditLogRepository::class);
 
         $entityManager->method('getRepository')
-            ->with(AuditLog::class)
-            ->willReturn($auditLogRepository);
+            ->willReturnMap([
+                [AuditLog::class, $auditLogRepository],
+            ]);
 
         // Setup Audit Logs
         $date = new \DateTime('2025-01-01 12:00:00');

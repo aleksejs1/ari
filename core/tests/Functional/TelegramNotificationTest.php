@@ -70,14 +70,17 @@ class TelegramNotificationTest extends ApiTestCase
 
         $em->flush();
 
-        // 2. Mock TelegramService
-        $telegramServiceMock = $this->createMock(TelegramService::class);
-        $telegramServiceMock->expects(self::atLeastOnce())
-            ->method('sendMessage')
-            ->with(self::anything(), self::anything(), self::stringContains('Birthday'));
+        // 2. Mock TelegramService with Stub + Callback (Spy)
+        $telegramServiceStub = self::createStub(TelegramService::class);
+        $messageSent = false;
+        $telegramServiceStub->method('sendMessage')->willReturnCallback(function($token, $chatId, $message) use (&$messageSent) {
+             if (str_contains($message, 'Birthday')) {
+                 $messageSent = true;
+             }
+        });
 
         // Replace service in container
-        $testContainer->set(TelegramService::class, $telegramServiceMock);
+        $testContainer->set(TelegramService::class, $telegramServiceStub);
 
         // 3. Run Command
         $em->clear();
@@ -87,6 +90,9 @@ class TelegramNotificationTest extends ApiTestCase
 
         $commandTester->assertCommandIsSuccessful();
         self::assertStringContainsString('Notification sent', $commandTester->getDisplay());
+        
+        // Verify Spy
+        self::assertTrue($messageSent, 'TelegramService::sendMessage was not called with expected message.');
 
         // 4. Verify NotificationIntent was created
         // Clear EM to ensure fresh data

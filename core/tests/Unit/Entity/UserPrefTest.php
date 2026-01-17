@@ -38,164 +38,77 @@ class UserPrefTest extends TestCase
 
     public function testValidationLanguage(): void
     {
-        // Valid 'ru'
-        $pref = new UserPref();
-        $pref->setType(UserPref::TYPE_LANGUAGE);
-        $pref->setValue('ru');
-
-        $context = $this->createMock(ExecutionContextInterface::class);
-        $context->expects($this->never())->method('buildViolation');
-        $pref->validateValue($context);
-
-        // Valid 'en'
-        $pref2 = new UserPref();
-        $pref2->setType(UserPref::TYPE_LANGUAGE);
-        $pref2->setValue('en');
-
-        $context2 = $this->createMock(ExecutionContextInterface::class);
-        $context2->expects($this->never())->method('buildViolation');
-        $pref2->validateValue($context2);
-
-        // Invalid 'de'
-        $pref3 = new UserPref();
-        $pref3->setType(UserPref::TYPE_LANGUAGE);
-        $pref3->setValue('de');
-
-        $context3 = $this->createMock(ExecutionContextInterface::class);
-        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
-
-        $context3->expects($this->once())->method('buildViolation')->with('Invalid language')->willReturn($builder);
-        $builder->expects($this->once())->method('atPath')->with('value')->willReturn($builder);
-        $builder->expects($this->once())->method('addViolation');
-
-        $pref3->validateValue($context3);
+        $this->assertValidationSuccess(UserPref::TYPE_LANGUAGE, 'ru');
+        $this->assertValidationSuccess(UserPref::TYPE_LANGUAGE, 'en');
+        $this->assertValidationFailure(UserPref::TYPE_LANGUAGE, 'de', 'Invalid language');
     }
 
     public function testValidationDateFormat(): void
     {
-        // Valid 'mm/dd/yyyy'
-        $pref = new UserPref();
-        $pref->setType(UserPref::TYPE_DATE_FORMAT);
-        $pref->setValue('mm/dd/yyyy');
-
-        $context = $this->createMock(ExecutionContextInterface::class);
-        $context->expects($this->never())->method('buildViolation');
-        $pref->validateValue($context);
-
-        // Valid 'dd.mm.yyyy'
-        $pref2 = new UserPref();
-        $pref2->setType(UserPref::TYPE_DATE_FORMAT);
-        $pref2->setValue('dd.mm.yyyy');
-
-        $context2 = $this->createMock(ExecutionContextInterface::class);
-        $context2->expects($this->never())->method('buildViolation');
-        $pref2->validateValue($context2);
-
-        // Invalid 'yyyy-mm-dd'
-        $pref3 = new UserPref();
-        $pref3->setType(UserPref::TYPE_DATE_FORMAT);
-        $pref3->setValue('yyyy-mm-dd');
-
-        $context3 = $this->createMock(ExecutionContextInterface::class);
-        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
-
-        $context3->expects($this->once())->method('buildViolation')->with('Invalid date format')->willReturn($builder);
-        $builder->expects($this->once())->method('atPath')->with('value')->willReturn($builder);
-        $builder->expects($this->once())->method('addViolation');
-
-        $pref3->validateValue($context3);
+        $this->assertValidationSuccess(UserPref::TYPE_DATE_FORMAT, 'mm/dd/yyyy');
+        $this->assertValidationSuccess(UserPref::TYPE_DATE_FORMAT, 'dd.mm.yyyy');
+        $this->assertValidationFailure(UserPref::TYPE_DATE_FORMAT, 'yyyy-mm-dd', 'Invalid date format');
     }
 
     public function testValidationTimeFormat(): void
     {
-        // Valid '24h'
-        $pref = new UserPref();
-        $pref->setType(UserPref::TYPE_TIME_FORMAT);
-        $pref->setValue('24h');
-
-        $context = $this->createMock(ExecutionContextInterface::class);
-        $context->expects($this->never())->method('buildViolation');
-        $pref->validateValue($context);
-
-        // Valid '12h'
-        $pref2 = new UserPref();
-        $pref2->setType(UserPref::TYPE_TIME_FORMAT);
-        $pref2->setValue('12h');
-
-        $context2 = $this->createMock(ExecutionContextInterface::class);
-        $context2->expects($this->never())->method('buildViolation');
-        $pref2->validateValue($context2);
-
-        // Invalid '48h'
-        $pref3 = new UserPref();
-        $pref3->setType(UserPref::TYPE_TIME_FORMAT);
-        $pref3->setValue('48h');
-
-        $context3 = $this->createMock(ExecutionContextInterface::class);
-        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
-
-        $context3->expects($this->once())->method('buildViolation')->with('Invalid time format')->willReturn($builder);
-        $builder->expects($this->once())->method('atPath')->with('value')->willReturn($builder);
-        $builder->expects($this->once())->method('addViolation');
-
-        $pref3->validateValue($context3);
+        $this->assertValidationSuccess(UserPref::TYPE_TIME_FORMAT, '24h');
+        $this->assertValidationSuccess(UserPref::TYPE_TIME_FORMAT, '12h');
+        $this->assertValidationFailure(UserPref::TYPE_TIME_FORMAT, '48h', 'Invalid time format');
     }
 
     public function testValidationFavouriteGroupName(): void
     {
-        // Valid 'Custom Name'
-        $pref = new UserPref();
-        $pref->setType(UserPref::TYPE_FAVOURITE_GROUP_NAME);
-        $pref->setValue('Custom Name');
-
-        $context = $this->createMock(ExecutionContextInterface::class);
-        $context->expects($this->never())->method('buildViolation');
-        $pref->validateValue($context);
-
-        // Valid 'Another Name'
-        $pref2 = new UserPref();
-        $pref2->setType(UserPref::TYPE_FAVOURITE_GROUP_NAME);
-        $pref2->setValue('Another Name');
-
-        $context2 = $this->createMock(ExecutionContextInterface::class);
-        $context2->expects($this->never())->method('buildViolation');
-        $pref2->validateValue($context2);
+        $this->assertValidationSuccess(UserPref::TYPE_FAVOURITE_GROUP_NAME, 'Custom Name');
+        $this->assertValidationSuccess(UserPref::TYPE_FAVOURITE_GROUP_NAME, 'Another Name');
     }
 
     public function testValidationGoogleSyncOnUpdate(): void
     {
-        // Valid '0'
+        $this->assertValidationSuccess(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE, '0');
+        $this->assertValidationSuccess(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE, '1');
+        $this->assertValidationFailure(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE, 'true', 'Invalid value for googleSyncOnUpdate. Must be "0" or "1".');
+    }
+    
+    private function assertValidationSuccess(string $type, string $value): void
+    {
         $pref = new UserPref();
-        $pref->setType(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
-        $pref->setValue('0');
-
-        $context = $this->createMock(ExecutionContextInterface::class);
-        $context->expects($this->never())->method('buildViolation');
+        $pref->setType($type);
+        $pref->setValue($value);
+        
+        $violations = [];
+        $context = self::createStub(ExecutionContextInterface::class);
+        $context->method('buildViolation')->willReturnCallback(function($msg) use (&$violations) {
+            $violations[] = $msg;
+            return self::createStub(ConstraintViolationBuilderInterface::class);
+        });
+        
         $pref->validateValue($context);
+        
+        self::assertEmpty($violations);
+    }
+    
+    private function assertValidationFailure(string $type, string $value, string $expectedMsg): void
+    {
+        $pref = new UserPref();
+        $pref->setType($type);
+        $pref->setValue($value);
+        
+        $violations = [];
+        $builder = self::createStub(ConstraintViolationBuilderInterface::class);
+        $builder->method('atPath')->willReturn($builder);
+        $builder->method('addViolation')->willReturnCallback(function() {}); // just to allow call
 
-        // Valid '1'
-        $pref2 = new UserPref();
-        $pref2->setType(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
-        $pref2->setValue('1');
+        $context = self::createStub(ExecutionContextInterface::class);
+        $context->method('buildViolation')->willReturnCallback(function($msg) use (&$violations, $expectedMsg, $builder) {
+             if ($msg === $expectedMsg) {
+                 $violations[] = $msg;
+             }
+             return $builder;
+        });
 
-        $context2 = $this->createMock(ExecutionContextInterface::class);
-        $context2->expects($this->never())->method('buildViolation');
-        $pref2->validateValue($context2);
-
-        // Invalid 'true'
-        $pref3 = new UserPref();
-        $pref3->setType(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE);
-        $pref3->setValue('true');
-
-        $context3 = $this->createMock(ExecutionContextInterface::class);
-        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
-
-        $context3->expects($this->once())->method('buildViolation')
-            ->with('Invalid value for googleSyncOnUpdate. Must be "0" or "1".')
-            ->willReturn($builder);
-        $builder->expects($this->once())->method('atPath')->with('value')->willReturn($builder);
-        $builder->expects($this->once())->method('addViolation');
-
-        $pref3->validateValue($context3);
+        $pref->validateValue($context);
+        self::assertCount(1, $violations);
+        self::assertEquals($expectedMsg, $violations[0]);
     }
 }

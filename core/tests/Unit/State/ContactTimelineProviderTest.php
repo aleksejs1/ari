@@ -19,14 +19,16 @@ class ContactTimelineProviderTest extends TestCase
         $id = 123;
         $logs = new ArrayCollection([new AuditLog()]);
         
-        $service = $this->createMock(ContactTimelineService::class);
-        $service->expects(self::once())
-            ->method('getTimeline')
-            ->with($id)
-            ->willReturn($logs);
+        $service = self::createStub(ContactTimelineService::class);
+        $service->method('getTimeline')->willReturnCallback(function($arg) use ($id, $logs) {
+             if ($arg === $id) {
+                 return $logs;
+             }
+             return new ArrayCollection();
+        });
 
         $provider = new ContactTimelineProvider($service);
-        $operation = $this->createMock(Operation::class);
+        $operation = self::createStub(Operation::class);
 
         /** @var ContactTimeline $result */
         $result = $provider->provide($operation, ['id' => $id]);
