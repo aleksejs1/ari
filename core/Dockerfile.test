@@ -20,8 +20,13 @@ RUN install-php-extensions \
     opcache \
     pcov
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+
 # Configure PCov
-RUN echo "pcov.enabled=0" > /usr/local/etc/php/conf.d/pcov.ini
+RUN echo "pcov.enabled=0" > /usr/local/etc/php/conf.d/pcov.ini \
+    && echo "memory_limit=-1" > /usr/local/etc/php/conf.d/memory-limit.ini
 
 # Configure user
 RUN addgroup -g 1000 developer \
