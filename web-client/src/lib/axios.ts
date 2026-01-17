@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 export const api = axios.create({
   baseURL: import.meta.env.PROD ? '/api' : 'http://localhost:8000/api',
@@ -8,29 +9,89 @@ export const api = axios.create({
   },
 })
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
-
-const failedQueue: ((token: string) => void)[] = []
+const failedQueue: { resolve: (token: string) => void; reject: (error: Error) => void }[] = []
 let isRefreshing = false
 
 const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
-      // If refresh failed, we reject the queued requests
-      // But here we stored callbacks that resolve the promise with a token
-      // logic below handles the actual retry
+      prom.reject(error)
     } else if (token) {
-      prom(token)
+      prom.resolve(token)
     }
   })
   failedQueue.length = 0
 }
+
+const refreshToken = async (): Promise<string> => {
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject })
+    })
+  }
+
+  isRefreshing = true
+  const currentRefreshToken = localStorage.getItem('refresh_token')
+
+  if (!currentRefreshToken) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('refresh_token')
+    window.location.href = '/login'
+    throw new Error('No refresh token')
+  }
+
+  try {
+    const { data } = await axios.post(
+      `${api.defaults.baseURL}/token/refresh`,
+      {
+        refresh_token: currentRefreshToken,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+
+    const { token, refresh_token: newRefreshToken } = data
+
+    localStorage.setItem('token', token)
+    localStorage.setItem('refresh_token', newRefreshToken)
+
+    api.defaults.headers.common.Authorization = `Bearer ${token}`
+
+    processQueue(null, token)
+    return token
+  } catch (err) {
+    processQueue(err as Error, null)
+    localStorage.removeItem('token')
+    localStorage.removeItem('refresh_token')
+    window.location.href = '/login'
+    throw err
+  } finally {
+    isRefreshing = false
+  }
+}
+
+api.interceptors.request.use(async (config) => {
+  let token = localStorage.getItem('token')
+
+  if (token) {
+    const { exp } = jwtDecode<{ exp: number }>(token)
+    if (exp) {
+      const now = Math.floor(Date.now() / 1000)
+      // If token expires in less than 30 seconds, refresh it
+      if (now >= exp - 30) {
+        token = await refreshToken()
+      }
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
 api.interceptors.response.use(
   (response) => response,
@@ -38,59 +99,14 @@ api.interceptors.response.use(
     const originalRequest = error.config
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise(function (resolve) {
-          failedQueue.push((token: string) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`
-            resolve(api(originalRequest))
-          })
-        })
-      }
-
       originalRequest._retry = true
-      isRefreshing = true
-
-      const refreshToken = localStorage.getItem('refresh_token')
-
-      if (!refreshToken) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('refresh_token')
-        window.location.href = '/login'
-        return Promise.reject(error)
-      }
 
       try {
-        const { data } = await axios.post(
-          `${api.defaults.baseURL}/token/refresh`,
-          {
-            refresh_token: refreshToken,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        )
-
-        const { token, refresh_token: newRefreshToken } = data
-
-        localStorage.setItem('token', token)
-        localStorage.setItem('refresh_token', newRefreshToken)
-
-        api.defaults.headers.common.Authorization = `Bearer ${token}`
+        const token = await refreshToken()
         originalRequest.headers.Authorization = `Bearer ${token}`
-
-        processQueue(null, token)
-
         return api(originalRequest)
       } catch (err) {
-        processQueue(err as Error, null)
-        localStorage.removeItem('token')
-        localStorage.removeItem('refresh_token')
-        window.location.href = '/login'
         return Promise.reject(err)
-      } finally {
-        isRefreshing = false
       }
     }
 
