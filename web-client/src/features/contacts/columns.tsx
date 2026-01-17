@@ -19,6 +19,7 @@ export function registerDefaultColumns() {
       header: '',
       cell: ({ row }) => <ContactFavoriteCell contact={row.original} />,
       size: 40,
+      meta: { titleKey: 'contacts.favorite' },
     }),
   })
 
@@ -30,6 +31,7 @@ export function registerDefaultColumns() {
       accessorKey: 'contactNames',
       header: ContactNameHeader,
       cell: ({ row }) => <ContactNameCell contact={row.original} />,
+      meta: { titleKey: 'contacts.name' },
     }),
   })
 
@@ -40,6 +42,7 @@ export function registerDefaultColumns() {
       accessorKey: 'phoneNumbers',
       header: () => <LocalizedHeader name="contacts.phoneNumbers" />,
       cell: ({ row }) => <ContactPhonesCell contact={row.original} />,
+      meta: { titleKey: 'contacts.phoneNumbers' },
     }),
   })
 
@@ -50,6 +53,7 @@ export function registerDefaultColumns() {
       accessorKey: 'contactEmailAdresses',
       header: () => <LocalizedHeader name="contacts.emailAddresses" />,
       cell: ({ row }) => <ContactEmailsCell contact={row.original} />,
+      meta: { titleKey: 'contacts.emailAddresses' },
     }),
   })
 
@@ -60,6 +64,7 @@ export function registerDefaultColumns() {
       accessorKey: 'contactGroups',
       header: () => <LocalizedHeader name="contacts.groups" />,
       cell: ({ row }) => <ContactGroupsCell contact={row.original} />,
+      meta: { titleKey: 'contacts.groups' },
     }),
   })
 
@@ -70,6 +75,7 @@ export function registerDefaultColumns() {
       accessorKey: 'contactDates',
       header: () => <LocalizedHeader name="contacts.dates" />,
       cell: ({ row }) => <ContactDatesCell contact={row.original} />,
+      meta: { titleKey: 'contacts.dates' },
     }),
   })
 
@@ -84,6 +90,7 @@ export function registerDefaultColumns() {
         const onEdit = table.options.meta?.onEdit
         return <ContactActionsCell contact={row.original} onEdit={onEdit} />
       },
+      meta: { titleKey: 'common.actions' },
     }),
   })
 }

@@ -136,6 +136,16 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                // @ts-expect-error meta is user-defined
+                const titleKey = column.columnDef.meta?.titleKey
+                let label: string = column.id
+
+                if (titleKey) {
+                  label = t(titleKey)
+                } else if (typeof column.columnDef.header === 'string') {
+                  label = column.columnDef.header
+                }
+
                 return (
                   <div key={column.id} className="flex items-center justify-between pr-2">
                     <DropdownMenuCheckboxItem
@@ -143,10 +153,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {/* Try to use the column header as label if it's a string, otherwise ID */}
-                      {typeof column.columnDef.header === 'string'
-                        ? column.columnDef.header
-                        : column.id}
+                      {label}
                     </DropdownMenuCheckboxItem>
                     <div className="flex items-center space-x-1">
                       <Button
