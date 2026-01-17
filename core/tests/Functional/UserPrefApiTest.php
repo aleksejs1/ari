@@ -236,4 +236,47 @@ class UserPrefApiTest extends AbstractApiTestCase
         ]);
         self::assertEquals('ru', $responseA->toArray()['value']);
     }
+
+    public function testUpdateContactTableSettings(): void
+    {
+        $client = static::createClient();
+
+        $jsonValue = json_encode([
+            'columns' => ['id', 'name', 'email'],
+            'order' => ['name' => 'asc'],
+            'hidden' => ['tags'],
+            'large_data_test' => str_repeat('a', 500),
+        ]);
+
+        // 1. Update with valid JSON
+        $response = $client->request('PATCH', '/api/user_prefs/contact_table_settings', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'contact_table_settings',
+                'value' => $jsonValue,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertEquals($jsonValue, $data['value']);
+
+        // 2. Persist check (GET)
+        $response = $client->request('GET', '/api/user_prefs/contact_table_settings', [
+            'auth_bearer' => $this->token,
+        ]);
+        $data = $response->toArray();
+        self::assertEquals($jsonValue, $data['value']);
+
+        // 3. Invalid JSON check
+        $client->request('PATCH', '/api/user_prefs/contact_table_settings', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'contact_table_settings',
+                'value' => '{invalid_json}',
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(422);
+    }
 }

@@ -65,6 +65,7 @@ class UserPref implements TenantAwareInterface
     public const TYPE_FAVOURITE_GROUP_NAME = 'favourite_group_name';
     public const TYPE_GOOGLE_SYNC_ON_UPDATE = 'googleSyncOnUpdate';
     public const TYPE_DASHBOARD_NOTIFICATION_POLICY = 'dashboard_notification_policy';
+    public const TYPE_CONTACT_TABLE_SETTINGS = 'contact_table_settings';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -73,6 +74,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_FAVOURITE_GROUP_NAME,
         self::TYPE_GOOGLE_SYNC_ON_UPDATE,
         self::TYPE_DASHBOARD_NOTIFICATION_POLICY,
+        self::TYPE_CONTACT_TABLE_SETTINGS,
     ];
 
     public const DEFAULTS = [
@@ -82,6 +84,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_FAVOURITE_GROUP_NAME => 'favourite',
         self::TYPE_GOOGLE_SYNC_ON_UPDATE => '0',
         self::TYPE_DASHBOARD_NOTIFICATION_POLICY => '0',
+        self::TYPE_CONTACT_TABLE_SETTINGS => '{}',
     ];
 
     #[ORM\Id]
@@ -100,7 +103,7 @@ class UserPref implements TenantAwareInterface
     #[ApiProperty(identifier: true)]
     private ?string $type = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     #[Groups(['user_pref:read', 'user_pref:create', 'user_pref:update'])]
     private ?string $value = null;
 
@@ -109,6 +112,12 @@ class UserPref implements TenantAwareInterface
         if (self::TYPE_LANGUAGE === $this->type) {
             if (!in_array($this->value, ['ru', 'en'], true)) {
                 $context->buildViolation('Invalid language')
+                    ->atPath('value')
+                    ->addViolation();
+            }
+        } elseif (self::TYPE_CONTACT_TABLE_SETTINGS === $this->type) {
+            if (null !== $this->value && '' !== $this->value && !json_validate($this->value)) {
+                $context->buildViolation('Invalid JSON for contact table settings.')
                     ->atPath('value')
                     ->addViolation();
             }
