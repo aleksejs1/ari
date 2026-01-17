@@ -37,3 +37,4 @@
 ###< infection/infection ###
 
 .env
+/coverage
