@@ -17,6 +17,7 @@ type UserPrefType =
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
   | 'contact_table_settings'
+  | 'theme'
 type Theme = 'light' | 'dark' | 'system'
 type DateInput = Date | string | null | undefined
 
@@ -155,9 +156,27 @@ const useUserPrefsLogic = () => {
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
   const contactTableSettings = getPrefValue(prefs, 'contact_table_settings', '{}')
+  const themeFromPrefs = getPrefValue(prefs, 'theme', '') as Theme | ''
+
   const [theme, setThemeState] = useState<Theme>(() => {
-    return (localStorage.getItem('theme') as Theme) || 'system'
+    const local = localStorage.getItem('theme') as Theme | null
+    if (local) {
+      return local
+    }
+    if (themeFromPrefs !== '') {
+      return themeFromPrefs
+    }
+    return 'system'
   })
+
+  // Update local state ONLY when backend pref changes and differs from current local state
+  // We use this to sync across devices/sessions when the backend data finally arrives
+  useEffect(() => {
+    if (themeFromPrefs && themeFromPrefs !== '' && themeFromPrefs !== theme) {
+      setThemeState(themeFromPrefs) // eslint-disable-line react-hooks/set-state-in-effect
+      localStorage.setItem('theme', themeFromPrefs)
+    }
+  }, [themeFromPrefs]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -184,10 +203,16 @@ const useUserPrefsLogic = () => {
     }
   }, [theme])
 
-  const setTheme = useCallback((newTheme: Theme) => {
-    setThemeState(newTheme)
-    localStorage.setItem('theme', newTheme)
-  }, [])
+  const setTheme = useCallback(
+    async (newTheme: Theme) => {
+      setThemeState(newTheme)
+      localStorage.setItem('theme', newTheme)
+      if (isAuthenticated) {
+        await savePrefMutation.mutateAsync({ type: 'theme', value: newTheme })
+      }
+    },
+    [isAuthenticated, savePrefMutation],
+  )
 
   useEffect(() => {
     void i18n.changeLanguage(language)
