@@ -8,6 +8,7 @@ export interface UserPrefsContextType {
   googleSyncOnUpdate: string
   dashboardNotificationPolicy: string
   contactTableSettings: string
+  theme: 'light' | 'dark' | 'system'
   setLanguage: (lang: string) => Promise<void>
   setDateFormat: (format: string) => Promise<void>
   setTimeFormat: (format: string) => Promise<void>
@@ -15,6 +16,7 @@ export interface UserPrefsContextType {
   setGoogleSyncOnUpdate: (value: string) => Promise<void>
   setDashboardNotificationPolicy: (value: string) => Promise<void>
   setContactTableSettings: (value: string) => Promise<void>
+  setTheme: (theme: 'light' | 'dark' | 'system') => Promise<void>
   formatDate: (date: Date | string | null | undefined) => string
   formatTime: (date: Date | string | null | undefined) => string
   isLoading: boolean
@@ -28,6 +30,7 @@ export const UserPrefsContext = createContext<UserPrefsContextType>({
   googleSyncOnUpdate: '0',
   dashboardNotificationPolicy: '',
   contactTableSettings: '{}',
+  theme: 'system',
   setLanguage: async () => {
     /* noop */
   },
@@ -47,6 +50,9 @@ export const UserPrefsContext = createContext<UserPrefsContextType>({
     /* noop */
   },
   setContactTableSettings: async () => {
+    /* noop */
+  },
+  setTheme: async () => {
     /* noop */
   },
   formatDate: () => '',

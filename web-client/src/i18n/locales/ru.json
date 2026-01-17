@@ -73,7 +73,11 @@
       "confirmButton": "Да, удалить мой аккаунт"
     },
     "dashboardNotificationPolicy": "Правило уведомлений дашборда",
-    "dashboardNotificationPolicyDescription": "Выберите правило уведомлений по умолчанию для дашборда."
+    "dashboardNotificationPolicyDescription": "Выберите правило уведомлений по умолчанию для дашборда.",
+    "theme": "Тема",
+    "themeLight": "Светлая",
+    "themeDark": "Темная",
+    "themeSystem": "Системная"
   },
   "auth": {
     "login": "Вход",

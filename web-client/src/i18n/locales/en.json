@@ -73,7 +73,11 @@
       "confirmButton": "Yes, delete my account"
     },
     "dashboardNotificationPolicy": "Dashboard Notification Policy",
-    "dashboardNotificationPolicyDescription": "Select the default notification policy for the dashboard."
+    "dashboardNotificationPolicyDescription": "Select the default notification policy for the dashboard.",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System"
   },
   "auth": {
     "login": "Login",

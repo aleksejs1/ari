@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
-import { useEffect, useCallback, useMemo, type ReactNode } from 'react'
+import { useEffect, useCallback, useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '@/hooks/useAuth'
@@ -17,6 +17,7 @@ type UserPrefType =
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
   | 'contact_table_settings'
+type Theme = 'light' | 'dark' | 'system'
 type DateInput = Date | string | null | undefined
 
 interface UserPrefsProviderProps {
@@ -154,6 +155,39 @@ const useUserPrefsLogic = () => {
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
   const contactTableSettings = getPrefValue(prefs, 'contact_table_settings', '{}')
+  const [theme, setThemeState] = useState<Theme>(() => {
+    return (localStorage.getItem('theme') as Theme) || 'system'
+  })
+
+  useEffect(() => {
+    const root = window.document.documentElement
+    root.classList.remove('light', 'dark')
+
+    const applyTheme = (t: Theme) => {
+      if (t === 'system') {
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        root.classList.add(systemTheme)
+      } else {
+        root.classList.add(t)
+      }
+    }
+
+    applyTheme(theme)
+
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const handleChange = () => applyTheme('system')
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
+    }
+  }, [theme])
+
+  const setTheme = useCallback((newTheme: Theme) => {
+    setThemeState(newTheme)
+    localStorage.setItem('theme', newTheme)
+  }, [])
 
   useEffect(() => {
     void i18n.changeLanguage(language)
@@ -167,6 +201,8 @@ const useUserPrefsLogic = () => {
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
     contactTableSettings,
+    theme,
+    setTheme,
     isLoading,
     savePrefMutation,
     i18n,
@@ -181,7 +217,9 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
-    contactTableSettings, // Added
+    contactTableSettings,
+    theme,
+    setTheme: setThemeLogic,
     isLoading,
     savePrefMutation,
     i18n,
@@ -237,6 +275,13 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     [savePrefMutation],
   )
 
+  const setTheme = useCallback(
+    async (value: Theme) => {
+      await setThemeLogic(value)
+    },
+    [setThemeLogic],
+  )
+
   const formatDate = useCallback(
     (date: DateInput): string => {
       return formatDateHelper(date, dateFormat)
@@ -260,6 +305,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
       contactTableSettings,
+      theme,
       setLanguage,
       setDateFormat,
       setTimeFormat,
@@ -267,6 +313,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
       setContactTableSettings,
+      setTheme,
       formatDate,
       formatTime,
       isLoading,
@@ -279,6 +326,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
       contactTableSettings,
+      theme,
       setLanguage,
       setDateFormat,
       setTimeFormat,
@@ -286,6 +334,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
       setContactTableSettings,
+      setTheme,
       formatDate,
       formatTime,
       isLoading,
