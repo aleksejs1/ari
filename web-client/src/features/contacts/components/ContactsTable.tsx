@@ -5,8 +5,9 @@ import {
   useReactTable,
   type VisibilityState,
   type SortingState,
+  type ColumnOrderState,
 } from '@tanstack/react-table'
-import { ChevronDown, Settings2 } from 'lucide-react'
+import { ChevronDown, Settings2, ArrowUp, ArrowDown } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -39,19 +40,32 @@ interface ContactsTableProps {
   sorting?: { id: string; desc: boolean }
 }
 
+interface TableSettings {
+  visibility: VisibilityState
+  order: ColumnOrderState
+}
+
 export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
   'use no memo'
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { contactTableSettings, setContactTableSettings } = useUserPrefs()
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
+  const [settings, setSettings] = useState<TableSettings>(() => {
     try {
-      return JSON.parse(contactTableSettings)
+      const parsed = JSON.parse(contactTableSettings)
+      // Migration: if it's just a flat object, assume it's the old visibility state
+      if (parsed && typeof parsed === 'object' && !('visibility' in parsed)) {
+        return { visibility: parsed as VisibilityState, order: [] }
+      }
+      return (parsed as TableSettings) || { visibility: {}, order: [] }
     } catch {
-      return {}
+      return { visibility: {}, order: [] }
     }
   })
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(settings.visibility)
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(settings.order)
 
   const sortingState: SortingState = useMemo(() => {
     return sorting ? [{ id: sorting.id, desc: sorting.desc }] : []
@@ -66,6 +80,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     state: {
       sorting: sortingState,
       columnVisibility,
+      columnOrder,
     },
     manualSorting: true,
     meta: {
@@ -88,7 +103,17 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
       const next =
         typeof updaterOrValue === 'function' ? updaterOrValue(columnVisibility) : updaterOrValue
       setColumnVisibility(next)
-      void setContactTableSettings(JSON.stringify(next))
+      const newSettings = { ...settings, visibility: next }
+      setSettings(newSettings)
+      void setContactTableSettings(JSON.stringify(newSettings))
+    },
+    onColumnOrderChange: (updaterOrValue) => {
+      const next =
+        typeof updaterOrValue === 'function' ? updaterOrValue(columnOrder) : updaterOrValue
+      setColumnOrder(next)
+      const newSettings = { ...settings, order: next }
+      setSettings(newSettings)
+      void setContactTableSettings(JSON.stringify(newSettings))
     },
     getCoreRowModel: getCoreRowModel(),
   })
@@ -112,17 +137,64 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
               .filter((column) => column.getCanHide())
               .map((column) => {
                 return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {/* Try to use the column header as label if it's a string, otherwise ID */}
-                    {typeof column.columnDef.header === 'string'
-                      ? column.columnDef.header
-                      : column.id}
-                  </DropdownMenuCheckboxItem>
+                  <div key={column.id} className="flex items-center justify-between pr-2">
+                    <DropdownMenuCheckboxItem
+                      className="flex-1 capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    >
+                      {/* Try to use the column header as label if it's a string, otherwise ID */}
+                      {typeof column.columnDef.header === 'string'
+                        ? column.columnDef.header
+                        : column.id}
+                    </DropdownMenuCheckboxItem>
+                    <div className="flex items-center space-x-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          const allOrder = table.getState().columnOrder.length
+                            ? table.getState().columnOrder
+                            : table.getAllLeafColumns().map((c) => c.id)
+                          const index = allOrder.indexOf(column.id)
+                          if (index > 0) {
+                            const newOrder = [...allOrder]
+                            const temp = newOrder[index]
+                            newOrder[index] = newOrder[index - 1]
+                            newOrder[index - 1] = temp
+                            table.setColumnOrder(newOrder)
+                          }
+                        }}
+                      >
+                        <ArrowUp className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          const allOrder = table.getState().columnOrder.length
+                            ? table.getState().columnOrder
+                            : table.getAllLeafColumns().map((c) => c.id)
+                          const index = allOrder.indexOf(column.id)
+                          if (index < allOrder.length - 1) {
+                            const newOrder = [...allOrder]
+                            const temp = newOrder[index]
+                            newOrder[index] = newOrder[index + 1]
+                            newOrder[index + 1] = temp
+                            table.setColumnOrder(newOrder)
+                          }
+                        }}
+                      >
+                        <ArrowDown className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
                 )
               })}
           </DropdownMenuContent>
