@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /app/src/Entity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../_css/bootstrap.min.css?v=12.5.2" rel="stylesheet" type="text/css">
+  <link href="../_css/billboard.min.css?v=12.5.2" rel="stylesheet" type="text/css">
+  <link href="../_css/style.css?v=12.5.2" rel="stylesheet" type="text/css">
+  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../index.html">/app/src</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Entity</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="User.php.html#21">App\Entity\User</a></td><td class="text-right">46%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#22">App\Entity\NotificationChannel</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="RefreshToken.php.html#15">App\Entity\RefreshToken</a></td><td class="text-right">60%</td></tr>
+       <tr><td><a href="Traits/ContactBiographiesTrait.php.html#10">App\Entity\Traits\ContactBiographiesTrait</a></td><td class="text-right">60%</td></tr>
+       <tr><td><a href="Traits/ContactOrganizationsTrait.php.html#10">App\Entity\Traits\ContactOrganizationsTrait</a></td><td class="text-right">60%</td></tr>
+       <tr><td><a href="Group.php.html#26">App\Entity\Group</a></td><td class="text-right">61%</td></tr>
+       <tr><td><a href="TokenStorage.php.html#10">App\Entity\TokenStorage</a></td><td class="text-right">70%</td></tr>
+       <tr><td><a href="NotificationRule.php.html#13">App\Entity\NotificationRule</a></td><td class="text-right">74%</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#13">App\Entity\Traits\ContactRelationsTrait</a></td><td class="text-right">80%</td></tr>
+       <tr><td><a href="UserPref.php.html#20">App\Entity\UserPref</a></td><td class="text-right">88%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="User.php.html#21">App\Entity\User</a></td><td class="text-right">46.1%</td><td class="text-right">62</td><td class="text-right">664</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#22">App\Entity\NotificationChannel</a></td><td class="text-right">50.0%</td><td class="text-right">32</td><td class="text-right">160</td></tr>
+       <tr><td><a href="Group.php.html#26">App\Entity\Group</a></td><td class="text-right">61.5%</td><td class="text-right">17</td><td class="text-right">33</td></tr>
+       <tr><td><a href="NotificationRule.php.html#13">App\Entity\NotificationRule</a></td><td class="text-right">74.3%</td><td class="text-right">24</td><td class="text-right">33</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#13">App\Entity\Traits\ContactRelationsTrait</a></td><td class="text-right">81.0%</td><td class="text-right">28</td><td class="text-right">33</td></tr>
+       <tr><td><a href="UserPref.php.html#20">App\Entity\UserPref</a></td><td class="text-right">88.9%</td><td class="text-right">21</td><td class="text-right">21</td></tr>
+       <tr><td><a href="TokenStorage.php.html#10">App\Entity\TokenStorage</a></td><td class="text-right">70.6%</td><td class="text-right">13</td><td class="text-right">17</td></tr>
+       <tr><td><a href="Traits/ContactBiographiesTrait.php.html#10">App\Entity\Traits\ContactBiographiesTrait</a></td><td class="text-right">60.0%</td><td class="text-right">6</td><td class="text-right">8</td></tr>
+       <tr><td><a href="Traits/ContactOrganizationsTrait.php.html#10">App\Entity\Traits\ContactOrganizationsTrait</a></td><td class="text-right">60.0%</td><td class="text-right">6</td><td class="text-right">8</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AuditLog.php.html#205"><abbr title="App\Entity\AuditLog::setCreatedAt">setCreatedAt</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Group.php.html#139"><abbr title="App\Entity\Group::setColor">setColor</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Group.php.html#154"><abbr title="App\Entity\Group::addContactGroup">addContactGroup</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Group.php.html#164"><abbr title="App\Entity\Group::removeContactGroup">removeContactGroup</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#177"><abbr title="App\Entity\NotificationChannel::addNotificationSubscription">addNotificationSubscription</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#187"><abbr title="App\Entity\NotificationChannel::removeNotificationSubscription">removeNotificationSubscription</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#202"><abbr title="App\Entity\NotificationChannel::getNotificationIntents">getNotificationIntents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#207"><abbr title="App\Entity\NotificationChannel::addNotificationIntent">addNotificationIntent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#217"><abbr title="App\Entity\NotificationChannel::removeNotificationIntent">removeNotificationIntent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#232"><abbr title="App\Entity\NotificationChannel::getNotificationRules">getNotificationRules</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#237"><abbr title="App\Entity\NotificationChannel::addNotificationRule">addNotificationRule</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#247"><abbr title="App\Entity\NotificationChannel::removeNotificationRule">removeNotificationRule</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationPolicy.php.html#124"><abbr title="App\Entity\NotificationPolicy::isActive">isActive</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationQueue.php.html#103"><abbr title="App\Entity\NotificationQueue::getScheduledAt">getScheduledAt</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationRule.php.html#175"><abbr title="App\Entity\NotificationRule::getNotificationQueues">getNotificationQueues</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationRule.php.html#180"><abbr title="App\Entity\NotificationRule::addNotificationQueue">addNotificationQueue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationRule.php.html#190"><abbr title="App\Entity\NotificationRule::removeNotificationQueue">removeNotificationQueue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationSubscription.php.html#70"><abbr title="App\Entity\NotificationSubscription::getUser">getUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RefreshToken.php.html#48"><abbr title="App\Entity\RefreshToken::getIpAddress">getIpAddress</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RefreshToken.php.html#60"><abbr title="App\Entity\RefreshToken::getUserAgent">getUserAgent</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RefreshToken.php.html#72"><abbr title="App\Entity\RefreshToken::getCreatedAt">getCreatedAt</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="RefreshToken.php.html#84"><abbr title="App\Entity\RefreshToken::getValid">getValid</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TokenStorage.php.html#40"><abbr title="App\Entity\TokenStorage::getType">getType</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TokenStorage.php.html#52"><abbr title="App\Entity\TokenStorage::getUser">getUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TokenStorage.php.html#77"><abbr title="App\Entity\TokenStorage::getRefreshToken">getRefreshToken</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TokenStorage.php.html#82"><abbr title="App\Entity\TokenStorage::setRefreshToken">setRefreshToken</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#270"><abbr title="App\Entity\User::getAuditLogs">getAuditLogs</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#275"><abbr title="App\Entity\User::addAuditLog">addAuditLog</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#285"><abbr title="App\Entity\User::removeAuditLog">removeAuditLog</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#300"><abbr title="App\Entity\User::getNotificationChannels">getNotificationChannels</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#315"><abbr title="App\Entity\User::removeNotificationChannel">removeNotificationChannel</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#330"><abbr title="App\Entity\User::getNotificationSubscriptions">getNotificationSubscriptions</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#335"><abbr title="App\Entity\User::addNotificationSubscription">addNotificationSubscription</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#345"><abbr title="App\Entity\User::removeNotificationSubscription">removeNotificationSubscription</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#365"><abbr title="App\Entity\User::addTokenStorage">addTokenStorage</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#375"><abbr title="App\Entity\User::removeTokenStorage">removeTokenStorage</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#390"><abbr title="App\Entity\User::getGroups">getGroups</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#395"><abbr title="App\Entity\User::addGroup">addGroup</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#405"><abbr title="App\Entity\User::removeGroup">removeGroup</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#420"><abbr title="App\Entity\User::getUserPrefs">getUserPrefs</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#425"><abbr title="App\Entity\User::addUserPref">addUserPref</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#435"><abbr title="App\Entity\User::removeUserPref">removeUserPref</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#450"><abbr title="App\Entity\User::getNotificationPolicies">getNotificationPolicies</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="User.php.html#465"><abbr title="App\Entity\User::removeNotificationPolicy">removeNotificationPolicy</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Traits/ContactBiographiesTrait.php.html#43"><abbr title="App\Entity\Traits\ContactBiographiesTrait::removeContactBiography">removeContactBiography</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Traits/ContactOrganizationsTrait.php.html#43"><abbr title="App\Entity\Traits\ContactOrganizationsTrait::removeContactOrganization">removeContactOrganization</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#124"><abbr title="App\Entity\Traits\ContactRelationsTrait::removeContactRelation">removeContactRelation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Contact.php.html#186"><abbr title="App\Entity\Contact::getUser">getUser</abbr></a></td><td class="text-right">66%</td></tr>
+       <tr><td><a href="ContactDate.php.html#119"><abbr title="App\Entity\ContactDate::getYearsPassed">getYearsPassed</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="ContactDate.php.html#155"><abbr title="App\Entity\ContactDate::getYearsAtNextAnniversary">getYearsAtNextAnniversary</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="User.php.html#169"><abbr title="App\Entity\User::getUserIdentifier">getUserIdentifier</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#181"><abbr title="App\Entity\Traits\ContactRelationsTrait::getGenderedTerm">getGenderedTerm</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#136"><abbr title="App\Entity\Traits\ContactRelationsTrait::invertRelationType">invertRelationType</abbr></a></td><td class="text-right">77%</td></tr>
+       <tr><td><a href="UserPref.php.html#107"><abbr title="App\Entity\UserPref::validateValue">validateValue</abbr></a></td><td class="text-right">84%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="UserPref.php.html#107"><abbr title="App\Entity\UserPref::validateValue">validateValue</abbr></a></td><td class="text-right">84.6%</td><td class="text-right">14</td><td class="text-right">14</td></tr>
+       <tr><td><a href="Group.php.html#164"><abbr title="App\Entity\Group::removeContactGroup">removeContactGroup</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#187"><abbr title="App\Entity\NotificationChannel::removeNotificationSubscription">removeNotificationSubscription</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#217"><abbr title="App\Entity\NotificationChannel::removeNotificationIntent">removeNotificationIntent</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#247"><abbr title="App\Entity\NotificationChannel::removeNotificationRule">removeNotificationRule</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="NotificationRule.php.html#190"><abbr title="App\Entity\NotificationRule::removeNotificationQueue">removeNotificationQueue</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#285"><abbr title="App\Entity\User::removeAuditLog">removeAuditLog</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#315"><abbr title="App\Entity\User::removeNotificationChannel">removeNotificationChannel</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#345"><abbr title="App\Entity\User::removeNotificationSubscription">removeNotificationSubscription</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#375"><abbr title="App\Entity\User::removeTokenStorage">removeTokenStorage</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#405"><abbr title="App\Entity\User::removeGroup">removeGroup</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#435"><abbr title="App\Entity\User::removeUserPref">removeUserPref</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="User.php.html#465"><abbr title="App\Entity\User::removeNotificationPolicy">removeNotificationPolicy</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Traits/ContactBiographiesTrait.php.html#43"><abbr title="App\Entity\Traits\ContactBiographiesTrait::removeContactBiography">removeContactBiography</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Traits/ContactOrganizationsTrait.php.html#43"><abbr title="App\Entity\Traits\ContactOrganizationsTrait::removeContactOrganization">removeContactOrganization</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#124"><abbr title="App\Entity\Traits\ContactRelationsTrait::removeContactRelation">removeContactRelation</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#136"><abbr title="App\Entity\Traits\ContactRelationsTrait::invertRelationType">invertRelationType</abbr></a></td><td class="text-right">77.3%</td><td class="text-right">7</td><td class="text-right">7</td></tr>
+       <tr><td><a href="Traits/ContactRelationsTrait.php.html#181"><abbr title="App\Entity\Traits\ContactRelationsTrait::getGenderedTerm">getGenderedTerm</abbr></a></td><td class="text-right">75.0%</td><td class="text-right">7</td><td class="text-right">7</td></tr>
+       <tr><td><a href="Group.php.html#154"><abbr title="App\Entity\Group::addContactGroup">addContactGroup</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#177"><abbr title="App\Entity\NotificationChannel::addNotificationSubscription">addNotificationSubscription</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#207"><abbr title="App\Entity\NotificationChannel::addNotificationIntent">addNotificationIntent</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationChannel.php.html#237"><abbr title="App\Entity\NotificationChannel::addNotificationRule">addNotificationRule</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationRule.php.html#180"><abbr title="App\Entity\NotificationRule::addNotificationQueue">addNotificationQueue</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="TokenStorage.php.html#82"><abbr title="App\Entity\TokenStorage::setRefreshToken">setRefreshToken</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="User.php.html#275"><abbr title="App\Entity\User::addAuditLog">addAuditLog</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="User.php.html#335"><abbr title="App\Entity\User::addNotificationSubscription">addNotificationSubscription</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="User.php.html#365"><abbr title="App\Entity\User::addTokenStorage">addTokenStorage</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="User.php.html#395"><abbr title="App\Entity\User::addGroup">addGroup</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="User.php.html#425"><abbr title="App\Entity\User::addUserPref">addUserPref</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="ContactDate.php.html#155"><abbr title="App\Entity\ContactDate::getYearsAtNextAnniversary">getYearsAtNextAnniversary</abbr></a></td><td class="text-right">75.0%</td><td class="text-right">3</td><td class="text-right">3</td></tr>
+       <tr><td><a href="Contact.php.html#186"><abbr title="App\Entity\Contact::getUser">getUser</abbr></a></td><td class="text-right">66.7%</td><td class="text-right">2</td><td class="text-right">2</td></tr>
+       <tr><td><a href="ContactDate.php.html#119"><abbr title="App\Entity\ContactDate::getYearsPassed">getYearsPassed</abbr></a></td><td class="text-right">75.0%</td><td class="text-right">2</td><td class="text-right">2</td></tr>
+       <tr><td><a href="User.php.html#169"><abbr title="App\Entity\User::getUserIdentifier">getUserIdentifier</abbr></a></td><td class="text-right">75.0%</td><td class="text-right">2</td><td class="text-right">2</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.2</a> using <a href="https://www.php.net/" target="_top">PHP 8.5.2</a> and <a href="https://phpunit.de/">PHPUnit 12.5.4</a> at Sat Jan 17 6:50:33 UTC 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../_js/billboard.pkgd.min.js?v=12.5.2" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[46.07843137254902,62,"User.php.html#21","App\\Entity\\User","664.66"],[50,32,"NotificationChannel.php.html#22","App\\Entity\\NotificationChannel","160.00"],[60,8,"RefreshToken.php.html#15","App\\Entity\\RefreshToken","12.10"],[60,6,"Traits\/ContactBiographiesTrait.php.html#10","App\\Entity\\Traits\\ContactBiographiesTrait","8.30"],[60,6,"Traits\/ContactOrganizationsTrait.php.html#10","App\\Entity\\Traits\\ContactOrganizationsTrait","8.30"],[61.53846153846154,17,"Group.php.html#26","App\\Entity\\Group","33.44"],[70.58823529411765,13,"TokenStorage.php.html#10","App\\Entity\\TokenStorage","17.30"],[74.28571428571429,24,"NotificationRule.php.html#13","App\\Entity\\NotificationRule","33.79"],[80.95238095238095,28,"Traits\/ContactRelationsTrait.php.html#13","App\\Entity\\Traits\\ContactRelationsTrait","33.42"],[88.88888888888889,21,"UserPref.php.html#20","App\\Entity\\UserPref","21.60"],[91.8918918918919,19,"ContactDate.php.html#23","App\\Entity\\ContactDate","19.19"],[93.75,23,"AuditLog.php.html#17","App\\Entity\\AuditLog","23.13"],[93.87755102040816,23,"Contact.php.html#36","App\\Entity\\Contact","23.12"],[94.11764705882352,11,"NotificationSubscription.php.html#20","App\\Entity\\NotificationSubscription","11.02"],[95.83333333333334,16,"NotificationPolicy.php.html#14","App\\Entity\\NotificationPolicy","16"],[96,17,"NotificationQueue.php.html#10","App\\Entity\\NotificationQueue","17"],[100,19,"ActivityFeed.php.html#16","App\\Entity\\ActivityFeed","19"],[100,29,"ContactAddress.php.html#18","App\\Entity\\ContactAddress","29"],[100,11,"ContactBiography.php.html#18","App\\Entity\\ContactBiography","11"],[100,11,"ContactEmailAdress.php.html#18","App\\Entity\\ContactEmailAdress","11"],[100,8,"ContactGroup.php.html#19","App\\Entity\\ContactGroup","8"],[100,11,"ContactName.php.html#18","App\\Entity\\ContactName","11"],[100,26,"ContactOrganization.php.html#19","App\\Entity\\ContactOrganization","26"],[100,11,"ContactPhoneNumber.php.html#18","App\\Entity\\ContactPhoneNumber","11"],[100,13,"ContactRelation.php.html#20","App\\Entity\\ContactRelation","13"],[100,11,"ImportMapping.php.html#10","App\\Entity\\ImportMapping","11"],[100,6,"NotificationIntent.php.html#14","App\\Entity\\NotificationIntent","6"],[100,6,"Traits\/ContactAddressesTrait.php.html#10","App\\Entity\\Traits\\ContactAddressesTrait","6"],[100,6,"Traits\/ContactDatesTrait.php.html#10","App\\Entity\\Traits\\ContactDatesTrait","6"],[100,6,"Traits\/ContactEmailsTrait.php.html#10","App\\Entity\\Traits\\ContactEmailsTrait","6"],[100,6,"Traits\/ContactGroupsTrait.php.html#10","App\\Entity\\Traits\\ContactGroupsTrait","6"],[100,6,"Traits\/ContactNamesTrait.php.html#10","App\\Entity\\Traits\\ContactNamesTrait","6"],[100,6,"Traits\/ContactPhoneNumbersTrait.php.html#10","App\\Entity\\Traits\\ContactPhoneNumbersTrait","6"]]</script>
+  <script type="application/json" id="complexity_method">[[0,1,"AuditLog.php.html#205","App\\Entity\\AuditLog::setCreatedAt","2"],[0,1,"Group.php.html#139","App\\Entity\\Group::setColor","2"],[0,2,"Group.php.html#154","App\\Entity\\Group::addContactGroup","6"],[0,3,"Group.php.html#164","App\\Entity\\Group::removeContactGroup","12"],[0,2,"NotificationChannel.php.html#177","App\\Entity\\NotificationChannel::addNotificationSubscription","6"],[0,3,"NotificationChannel.php.html#187","App\\Entity\\NotificationChannel::removeNotificationSubscription","12"],[0,1,"NotificationChannel.php.html#202","App\\Entity\\NotificationChannel::getNotificationIntents","2"],[0,2,"NotificationChannel.php.html#207","App\\Entity\\NotificationChannel::addNotificationIntent","6"],[0,3,"NotificationChannel.php.html#217","App\\Entity\\NotificationChannel::removeNotificationIntent","12"],[0,1,"NotificationChannel.php.html#232","App\\Entity\\NotificationChannel::getNotificationRules","2"],[0,2,"NotificationChannel.php.html#237","App\\Entity\\NotificationChannel::addNotificationRule","6"],[0,3,"NotificationChannel.php.html#247","App\\Entity\\NotificationChannel::removeNotificationRule","12"],[0,1,"NotificationPolicy.php.html#124","App\\Entity\\NotificationPolicy::isActive","2"],[0,1,"NotificationQueue.php.html#103","App\\Entity\\NotificationQueue::getScheduledAt","2"],[0,1,"NotificationRule.php.html#175","App\\Entity\\NotificationRule::getNotificationQueues","2"],[0,2,"NotificationRule.php.html#180","App\\Entity\\NotificationRule::addNotificationQueue","6"],[0,3,"NotificationRule.php.html#190","App\\Entity\\NotificationRule::removeNotificationQueue","12"],[0,1,"NotificationSubscription.php.html#70","App\\Entity\\NotificationSubscription::getUser","2"],[0,1,"RefreshToken.php.html#48","App\\Entity\\RefreshToken::getIpAddress","2"],[0,1,"RefreshToken.php.html#60","App\\Entity\\RefreshToken::getUserAgent","2"],[0,1,"RefreshToken.php.html#72","App\\Entity\\RefreshToken::getCreatedAt","2"],[0,1,"RefreshToken.php.html#84","App\\Entity\\RefreshToken::getValid","2"],[0,1,"TokenStorage.php.html#40","App\\Entity\\TokenStorage::getType","2"],[0,1,"TokenStorage.php.html#52","App\\Entity\\TokenStorage::getUser","2"],[0,1,"TokenStorage.php.html#77","App\\Entity\\TokenStorage::getRefreshToken","2"],[0,2,"TokenStorage.php.html#82","App\\Entity\\TokenStorage::setRefreshToken","6"],[0,1,"User.php.html#270","App\\Entity\\User::getAuditLogs","2"],[0,2,"User.php.html#275","App\\Entity\\User::addAuditLog","6"],[0,3,"User.php.html#285","App\\Entity\\User::removeAuditLog","12"],[0,1,"User.php.html#300","App\\Entity\\User::getNotificationChannels","2"],[0,3,"User.php.html#315","App\\Entity\\User::removeNotificationChannel","12"],[0,1,"User.php.html#330","App\\Entity\\User::getNotificationSubscriptions","2"],[0,2,"User.php.html#335","App\\Entity\\User::addNotificationSubscription","6"],[0,3,"User.php.html#345","App\\Entity\\User::removeNotificationSubscription","12"],[0,2,"User.php.html#365","App\\Entity\\User::addTokenStorage","6"],[0,3,"User.php.html#375","App\\Entity\\User::removeTokenStorage","12"],[0,1,"User.php.html#390","App\\Entity\\User::getGroups","2"],[0,2,"User.php.html#395","App\\Entity\\User::addGroup","6"],[0,3,"User.php.html#405","App\\Entity\\User::removeGroup","12"],[0,1,"User.php.html#420","App\\Entity\\User::getUserPrefs","2"],[0,2,"User.php.html#425","App\\Entity\\User::addUserPref","6"],[0,3,"User.php.html#435","App\\Entity\\User::removeUserPref","12"],[0,1,"User.php.html#450","App\\Entity\\User::getNotificationPolicies","2"],[0,3,"User.php.html#465","App\\Entity\\User::removeNotificationPolicy","12"],[0,3,"Traits\/ContactBiographiesTrait.php.html#43","App\\Entity\\Traits\\ContactBiographiesTrait::removeContactBiography","12"],[0,3,"Traits\/ContactOrganizationsTrait.php.html#43","App\\Entity\\Traits\\ContactOrganizationsTrait::removeContactOrganization","12"],[0,3,"Traits\/ContactRelationsTrait.php.html#124","App\\Entity\\Traits\\ContactRelationsTrait::removeContactRelation","12"],[66.66666666666666,2,"Contact.php.html#186","App\\Entity\\Contact::getUser","2.15"],[75,2,"ContactDate.php.html#119","App\\Entity\\ContactDate::getYearsPassed","2.06"],[75,3,"ContactDate.php.html#155","App\\Entity\\ContactDate::getYearsAtNextAnniversary","3.14"],[75,2,"User.php.html#169","App\\Entity\\User::getUserIdentifier","2.06"],[75,7,"Traits\/ContactRelationsTrait.php.html#181","App\\Entity\\Traits\\ContactRelationsTrait::getGenderedTerm","7.77"],[77.27272727272727,7,"Traits\/ContactRelationsTrait.php.html#136","App\\Entity\\Traits\\ContactRelationsTrait::invertRelationType","7.58"],[84.61538461538461,14,"UserPref.php.html#107","App\\Entity\\UserPref::validateValue","14.71"],[91.66666666666666,3,"ContactDate.php.html#131","App\\Entity\\ContactDate::getNextAnniversaryDate","3.01"],[92.5925925925926,16,"Contact.php.html#195","App\\Entity\\Contact::getDisplayName","16.10"],[93.75,3,"Traits\/ContactRelationsTrait.php.html#45","App\\Entity\\Traits\\ContactRelationsTrait::getContactRelations","3.00"],[100,1,"ActivityFeed.php.html#88","App\\Entity\\ActivityFeed::__construct","1"],[100,1,"ActivityFeed.php.html#93","App\\Entity\\ActivityFeed::getId","1"],[100,1,"ActivityFeed.php.html#98","App\\Entity\\ActivityFeed::getUserId","1"],[100,1,"ActivityFeed.php.html#103","App\\Entity\\ActivityFeed::setUserId","1"],[100,1,"ActivityFeed.php.html#110","App\\Entity\\ActivityFeed::getEventType","1"],[100,1,"ActivityFeed.php.html#115","App\\Entity\\ActivityFeed::setEventType","1"],[100,1,"ActivityFeed.php.html#122","App\\Entity\\ActivityFeed::getTitle","1"],[100,1,"ActivityFeed.php.html#127","App\\Entity\\ActivityFeed::setTitle","1"],[100,1,"ActivityFeed.php.html#134","App\\Entity\\ActivityFeed::getMessage","1"],[100,1,"ActivityFeed.php.html#139","App\\Entity\\ActivityFeed::setMessage","1"],[100,1,"ActivityFeed.php.html#146","App\\Entity\\ActivityFeed::isRead","1"],[100,1,"ActivityFeed.php.html#151","App\\Entity\\ActivityFeed::getIsRead","1"],[100,1,"ActivityFeed.php.html#156","App\\Entity\\ActivityFeed::setRead","1"],[100,1,"ActivityFeed.php.html#166","App\\Entity\\ActivityFeed::getActionData","1"],[100,1,"ActivityFeed.php.html#174","App\\Entity\\ActivityFeed::setActionData","1"],[100,1,"ActivityFeed.php.html#181","App\\Entity\\ActivityFeed::getCreatedAt","1"],[100,1,"ActivityFeed.php.html#186","App\\Entity\\ActivityFeed::setCreatedAt","1"],[100,1,"ActivityFeed.php.html#193","App\\Entity\\ActivityFeed::getExpiresAt","1"],[100,1,"ActivityFeed.php.html#198","App\\Entity\\ActivityFeed::setExpiresAt","1"],[100,1,"AuditLog.php.html#88","App\\Entity\\AuditLog::__construct","1"],[100,1,"AuditLog.php.html#93","App\\Entity\\AuditLog::getId","1"],[100,1,"AuditLog.php.html#98","App\\Entity\\AuditLog::getUser","1"],[100,1,"AuditLog.php.html#103","App\\Entity\\AuditLog::setUser","1"],[100,1,"AuditLog.php.html#110","App\\Entity\\AuditLog::getEntityType","1"],[100,1,"AuditLog.php.html#115","App\\Entity\\AuditLog::setEntityType","1"],[100,1,"AuditLog.php.html#122","App\\Entity\\AuditLog::getEntityId","1"],[100,1,"AuditLog.php.html#127","App\\Entity\\AuditLog::setEntityId","1"],[100,1,"AuditLog.php.html#134","App\\Entity\\AuditLog::getAction","1"],[100,1,"AuditLog.php.html#139","App\\Entity\\AuditLog::setAction","1"],[100,1,"AuditLog.php.html#149","App\\Entity\\AuditLog::getChanges","1"],[100,1,"AuditLog.php.html#157","App\\Entity\\AuditLog::setChanges","1"],[100,1,"AuditLog.php.html#167","App\\Entity\\AuditLog::getSnapshotBefore","1"],[100,1,"AuditLog.php.html#175","App\\Entity\\AuditLog::setSnapshotBefore","1"],[100,1,"AuditLog.php.html#185","App\\Entity\\AuditLog::getSnapshotAfter","1"],[100,1,"AuditLog.php.html#193","App\\Entity\\AuditLog::setSnapshotAfter","1"],[100,1,"AuditLog.php.html#200","App\\Entity\\AuditLog::getCreatedAt","1"],[100,1,"AuditLog.php.html#212","App\\Entity\\AuditLog::getOwnerEntityType","1"],[100,2,"AuditLog.php.html#217","App\\Entity\\AuditLog::setOwnerEntityType","2"],[100,1,"AuditLog.php.html#224","App\\Entity\\AuditLog::getOwnerEntityId","1"],[100,1,"AuditLog.php.html#229","App\\Entity\\AuditLog::setOwnerEntityId","1"],[100,1,"Contact.php.html#145","App\\Entity\\Contact::__construct","1"],[100,1,"Contact.php.html#161","App\\Entity\\Contact::setUser","1"],[100,1,"Contact.php.html#169","App\\Entity\\Contact::getId","1"],[100,1,"Contact.php.html#174","App\\Entity\\Contact::getUuid","1"],[100,1,"Contact.php.html#179","App\\Entity\\Contact::setUuid","1"],[100,2,"ContactAddress.php.html#133","App\\Entity\\ContactAddress::__construct","2"],[100,1,"ContactAddress.php.html#141","App\\Entity\\ContactAddress::getId","1"],[100,1,"ContactAddress.php.html#146","App\\Entity\\ContactAddress::getContact","1"],[100,1,"ContactAddress.php.html#151","App\\Entity\\ContactAddress::setContact","1"],[100,1,"ContactAddress.php.html#158","App\\Entity\\ContactAddress::getType","1"],[100,2,"ContactAddress.php.html#163","App\\Entity\\ContactAddress::setType","2"],[100,1,"ContactAddress.php.html#170","App\\Entity\\ContactAddress::getStreet","1"],[100,2,"ContactAddress.php.html#175","App\\Entity\\ContactAddress::setStreet","2"],[100,1,"ContactAddress.php.html#182","App\\Entity\\ContactAddress::getStreetExtended","1"],[100,2,"ContactAddress.php.html#187","App\\Entity\\ContactAddress::setStreetExtended","2"],[100,1,"ContactAddress.php.html#194","App\\Entity\\ContactAddress::getCity","1"],[100,2,"ContactAddress.php.html#199","App\\Entity\\ContactAddress::setCity","2"],[100,1,"ContactAddress.php.html#206","App\\Entity\\ContactAddress::getRegion","1"],[100,2,"ContactAddress.php.html#211","App\\Entity\\ContactAddress::setRegion","2"],[100,1,"ContactAddress.php.html#218","App\\Entity\\ContactAddress::getPostalCode","1"],[100,2,"ContactAddress.php.html#223","App\\Entity\\ContactAddress::setPostalCode","2"],[100,1,"ContactAddress.php.html#230","App\\Entity\\ContactAddress::getCountry","1"],[100,2,"ContactAddress.php.html#235","App\\Entity\\ContactAddress::setCountry","2"],[100,1,"ContactAddress.php.html#242","App\\Entity\\ContactAddress::getCountryCode","1"],[100,2,"ContactAddress.php.html#247","App\\Entity\\ContactAddress::setCountryCode","2"],[100,2,"ContactBiography.php.html#67","App\\Entity\\ContactBiography::__construct","2"],[100,1,"ContactBiography.php.html#75","App\\Entity\\ContactBiography::getId","1"],[100,1,"ContactBiography.php.html#80","App\\Entity\\ContactBiography::getContact","1"],[100,1,"ContactBiography.php.html#85","App\\Entity\\ContactBiography::setContact","1"],[100,1,"ContactBiography.php.html#92","App\\Entity\\ContactBiography::getType","1"],[100,2,"ContactBiography.php.html#97","App\\Entity\\ContactBiography::setType","2"],[100,1,"ContactBiography.php.html#104","App\\Entity\\ContactBiography::getValue","1"],[100,2,"ContactBiography.php.html#109","App\\Entity\\ContactBiography::setValue","2"],[100,2,"ContactDate.php.html#64","App\\Entity\\ContactDate::__construct","2"],[100,1,"ContactDate.php.html#72","App\\Entity\\ContactDate::getId","1"],[100,1,"ContactDate.php.html#77","App\\Entity\\ContactDate::getContact","1"],[100,1,"ContactDate.php.html#82","App\\Entity\\ContactDate::setContact","1"],[100,1,"ContactDate.php.html#89","App\\Entity\\ContactDate::getDate","1"],[100,2,"ContactDate.php.html#94","App\\Entity\\ContactDate::setDate","2"],[100,1,"ContactDate.php.html#107","App\\Entity\\ContactDate::getText","1"],[100,2,"ContactDate.php.html#112","App\\Entity\\ContactDate::setText","2"],[100,2,"ContactEmailAdress.php.html#67","App\\Entity\\ContactEmailAdress::__construct","2"],[100,1,"ContactEmailAdress.php.html#75","App\\Entity\\ContactEmailAdress::getId","1"],[100,1,"ContactEmailAdress.php.html#80","App\\Entity\\ContactEmailAdress::getContact","1"],[100,1,"ContactEmailAdress.php.html#85","App\\Entity\\ContactEmailAdress::setContact","1"],[100,1,"ContactEmailAdress.php.html#92","App\\Entity\\ContactEmailAdress::getValue","1"],[100,2,"ContactEmailAdress.php.html#97","App\\Entity\\ContactEmailAdress::setValue","2"],[100,1,"ContactEmailAdress.php.html#104","App\\Entity\\ContactEmailAdress::getType","1"],[100,2,"ContactEmailAdress.php.html#109","App\\Entity\\ContactEmailAdress::setType","2"],[100,2,"ContactGroup.php.html#51","App\\Entity\\ContactGroup::__construct","2"],[100,1,"ContactGroup.php.html#59","App\\Entity\\ContactGroup::getId","1"],[100,1,"ContactGroup.php.html#64","App\\Entity\\ContactGroup::getContact","1"],[100,1,"ContactGroup.php.html#69","App\\Entity\\ContactGroup::setContact","1"],[100,1,"ContactGroup.php.html#76","App\\Entity\\ContactGroup::getGroupResource","1"],[100,1,"ContactGroup.php.html#81","App\\Entity\\ContactGroup::setGroupResource","1"],[100,1,"ContactGroup.php.html#88","App\\Entity\\ContactGroup::getGroupUuid","1"],[100,2,"ContactName.php.html#57","App\\Entity\\ContactName::__construct","2"],[100,1,"ContactName.php.html#65","App\\Entity\\ContactName::getId","1"],[100,1,"ContactName.php.html#70","App\\Entity\\ContactName::getFamily","1"],[100,2,"ContactName.php.html#75","App\\Entity\\ContactName::setFamily","2"],[100,1,"ContactName.php.html#82","App\\Entity\\ContactName::getGiven","1"],[100,2,"ContactName.php.html#87","App\\Entity\\ContactName::setGiven","2"],[100,1,"ContactName.php.html#94","App\\Entity\\ContactName::getContact","1"],[100,1,"ContactName.php.html#99","App\\Entity\\ContactName::setContact","1"],[100,2,"ContactOrganization.php.html#123","App\\Entity\\ContactOrganization::__construct","2"],[100,1,"ContactOrganization.php.html#131","App\\Entity\\ContactOrganization::getId","1"],[100,1,"ContactOrganization.php.html#136","App\\Entity\\ContactOrganization::getContact","1"],[100,1,"ContactOrganization.php.html#141","App\\Entity\\ContactOrganization::setContact","1"],[100,1,"ContactOrganization.php.html#148","App\\Entity\\ContactOrganization::getName","1"],[100,2,"ContactOrganization.php.html#153","App\\Entity\\ContactOrganization::setName","2"],[100,1,"ContactOrganization.php.html#160","App\\Entity\\ContactOrganization::getDepartment","1"],[100,2,"ContactOrganization.php.html#165","App\\Entity\\ContactOrganization::setDepartment","2"],[100,1,"ContactOrganization.php.html#172","App\\Entity\\ContactOrganization::getTitle","1"],[100,2,"ContactOrganization.php.html#177","App\\Entity\\ContactOrganization::setTitle","2"],[100,1,"ContactOrganization.php.html#184","App\\Entity\\ContactOrganization::getStartDate","1"],[100,2,"ContactOrganization.php.html#189","App\\Entity\\ContactOrganization::setStartDate","2"],[100,1,"ContactOrganization.php.html#202","App\\Entity\\ContactOrganization::getEndDate","1"],[100,2,"ContactOrganization.php.html#207","App\\Entity\\ContactOrganization::setEndDate","2"],[100,1,"ContactOrganization.php.html#220","App\\Entity\\ContactOrganization::getJobDescription","1"],[100,2,"ContactOrganization.php.html#225","App\\Entity\\ContactOrganization::setJobDescription","2"],[100,1,"ContactOrganization.php.html#232","App\\Entity\\ContactOrganization::getType","1"],[100,2,"ContactOrganization.php.html#237","App\\Entity\\ContactOrganization::setType","2"],[100,2,"ContactPhoneNumber.php.html#65","App\\Entity\\ContactPhoneNumber::__construct","2"],[100,1,"ContactPhoneNumber.php.html#73","App\\Entity\\ContactPhoneNumber::getId","1"],[100,1,"ContactPhoneNumber.php.html#78","App\\Entity\\ContactPhoneNumber::getValue","1"],[100,2,"ContactPhoneNumber.php.html#83","App\\Entity\\ContactPhoneNumber::setValue","2"],[100,1,"ContactPhoneNumber.php.html#90","App\\Entity\\ContactPhoneNumber::getContact","1"],[100,1,"ContactPhoneNumber.php.html#95","App\\Entity\\ContactPhoneNumber::setContact","1"],[100,1,"ContactPhoneNumber.php.html#102","App\\Entity\\ContactPhoneNumber::getType","1"],[100,2,"ContactPhoneNumber.php.html#107","App\\Entity\\ContactPhoneNumber::setType","2"],[100,2,"ContactRelation.php.html#72","App\\Entity\\ContactRelation::__construct","2"],[100,1,"ContactRelation.php.html#80","App\\Entity\\ContactRelation::getId","1"],[100,1,"ContactRelation.php.html#85","App\\Entity\\ContactRelation::setId","1"],[100,1,"ContactRelation.php.html#92","App\\Entity\\ContactRelation::getContact","1"],[100,1,"ContactRelation.php.html#97","App\\Entity\\ContactRelation::setContact","1"],[100,1,"ContactRelation.php.html#104","App\\Entity\\ContactRelation::getType","1"],[100,2,"ContactRelation.php.html#109","App\\Entity\\ContactRelation::setType","2"],[100,1,"ContactRelation.php.html#116","App\\Entity\\ContactRelation::getPerson","1"],[100,1,"ContactRelation.php.html#121","App\\Entity\\ContactRelation::setPerson","1"],[100,1,"ContactRelation.php.html#128","App\\Entity\\ContactRelation::getRelatedDisplayName","1"],[100,1,"ContactRelation.php.html#135","App\\Entity\\ContactRelation::getPersonUuid","1"],[100,1,"Group.php.html#86","App\\Entity\\Group::__construct","1"],[100,1,"Group.php.html#92","App\\Entity\\Group::getId","1"],[100,1,"Group.php.html#97","App\\Entity\\Group::getUuid","1"],[100,1,"Group.php.html#102","App\\Entity\\Group::setUuid","1"],[100,1,"Group.php.html#109","App\\Entity\\Group::getUser","1"],[100,1,"Group.php.html#114","App\\Entity\\Group::setUser","1"],[100,1,"Group.php.html#122","App\\Entity\\Group::getName","1"],[100,1,"Group.php.html#127","App\\Entity\\Group::setName","1"],[100,1,"Group.php.html#134","App\\Entity\\Group::getColor","1"],[100,1,"Group.php.html#149","App\\Entity\\Group::getContactGroups","1"],[100,1,"Group.php.html#176","App\\Entity\\Group::getContactsCount","1"],[100,1,"ImportMapping.php.html#38","App\\Entity\\ImportMapping::getId","1"],[100,1,"ImportMapping.php.html#43","App\\Entity\\ImportMapping::getUser","1"],[100,1,"ImportMapping.php.html#48","App\\Entity\\ImportMapping::setUser","1"],[100,1,"ImportMapping.php.html#56","App\\Entity\\ImportMapping::getType","1"],[100,1,"ImportMapping.php.html#61","App\\Entity\\ImportMapping::setType","1"],[100,1,"ImportMapping.php.html#68","App\\Entity\\ImportMapping::getExternalId","1"],[100,1,"ImportMapping.php.html#73","App\\Entity\\ImportMapping::setExternalId","1"],[100,1,"ImportMapping.php.html#80","App\\Entity\\ImportMapping::getContact","1"],[100,1,"ImportMapping.php.html#85","App\\Entity\\ImportMapping::setContact","1"],[100,1,"ImportMapping.php.html#92","App\\Entity\\ImportMapping::getGroup","1"],[100,1,"ImportMapping.php.html#97","App\\Entity\\ImportMapping::setGroup","1"],[100,1,"NotificationChannel.php.html#89","App\\Entity\\NotificationChannel::__construct","1"],[100,1,"NotificationChannel.php.html#97","App\\Entity\\NotificationChannel::getId","1"],[100,1,"NotificationChannel.php.html#102","App\\Entity\\NotificationChannel::getUser","1"],[100,1,"NotificationChannel.php.html#107","App\\Entity\\NotificationChannel::setUser","1"],[100,1,"NotificationChannel.php.html#115","App\\Entity\\NotificationChannel::getType","1"],[100,1,"NotificationChannel.php.html#120","App\\Entity\\NotificationChannel::setType","1"],[100,1,"NotificationChannel.php.html#130","App\\Entity\\NotificationChannel::getConfig","1"],[100,1,"NotificationChannel.php.html#138","App\\Entity\\NotificationChannel::setConfig","1"],[100,1,"NotificationChannel.php.html#145","App\\Entity\\NotificationChannel::getVerifiedAt","1"],[100,1,"NotificationChannel.php.html#150","App\\Entity\\NotificationChannel::setVerifiedAt","1"],[100,1,"NotificationChannel.php.html#157","App\\Entity\\NotificationChannel::getCreatedAt","1"],[100,1,"NotificationChannel.php.html#162","App\\Entity\\NotificationChannel::setCreatedAt","1"],[100,1,"NotificationChannel.php.html#172","App\\Entity\\NotificationChannel::getNotificationSubscriptions","1"],[100,2,"NotificationChannel.php.html#259","App\\Entity\\NotificationChannel::updateConfigMapping","2"],[100,1,"NotificationIntent.php.html#45","App\\Entity\\NotificationIntent::getId","1"],[100,1,"NotificationIntent.php.html#50","App\\Entity\\NotificationIntent::getChannel","1"],[100,2,"NotificationIntent.php.html#55","App\\Entity\\NotificationIntent::setChannel","2"],[100,1,"NotificationIntent.php.html#68","App\\Entity\\NotificationIntent::getPayload","1"],[100,1,"NotificationIntent.php.html#76","App\\Entity\\NotificationIntent::setPayload","1"],[100,1,"NotificationPolicy.php.html#89","App\\Entity\\NotificationPolicy::__construct","1"],[100,1,"NotificationPolicy.php.html#94","App\\Entity\\NotificationPolicy::getId","1"],[100,1,"NotificationPolicy.php.html#99","App\\Entity\\NotificationPolicy::getUser","1"],[100,1,"NotificationPolicy.php.html#104","App\\Entity\\NotificationPolicy::setUser","1"],[100,1,"NotificationPolicy.php.html#112","App\\Entity\\NotificationPolicy::getName","1"],[100,1,"NotificationPolicy.php.html#117","App\\Entity\\NotificationPolicy::setName","1"],[100,1,"NotificationPolicy.php.html#129","App\\Entity\\NotificationPolicy::setIsActive","1"],[100,1,"NotificationPolicy.php.html#139","App\\Entity\\NotificationPolicy::getUiSnapshot","1"],[100,1,"NotificationPolicy.php.html#147","App\\Entity\\NotificationPolicy::setUiSnapshot","1"],[100,1,"NotificationPolicy.php.html#157","App\\Entity\\NotificationPolicy::getNotificationRules","1"],[100,2,"NotificationPolicy.php.html#162","App\\Entity\\NotificationPolicy::addNotificationRule","2"],[100,3,"NotificationPolicy.php.html#172","App\\Entity\\NotificationPolicy::removeNotificationRule","3"],[100,1,"NotificationQueue.php.html#50","App\\Entity\\NotificationQueue::getId","1"],[100,1,"NotificationQueue.php.html#55","App\\Entity\\NotificationQueue::getRule","1"],[100,1,"NotificationQueue.php.html#60","App\\Entity\\NotificationQueue::setRule","1"],[100,1,"NotificationQueue.php.html#67","App\\Entity\\NotificationQueue::getContact","1"],[100,1,"NotificationQueue.php.html#72","App\\Entity\\NotificationQueue::setContact","1"],[100,1,"NotificationQueue.php.html#79","App\\Entity\\NotificationQueue::getChannel","1"],[100,1,"NotificationQueue.php.html#84","App\\Entity\\NotificationQueue::setChannel","1"],[100,1,"NotificationQueue.php.html#91","App\\Entity\\NotificationQueue::getStatus","1"],[100,1,"NotificationQueue.php.html#96","App\\Entity\\NotificationQueue::setStatus","1"],[100,1,"NotificationQueue.php.html#108","App\\Entity\\NotificationQueue::setScheduledAt","1"],[100,1,"NotificationQueue.php.html#118","App\\Entity\\NotificationQueue::getPayload","1"],[100,1,"NotificationQueue.php.html#126","App\\Entity\\NotificationQueue::setPayload","1"],[100,1,"NotificationQueue.php.html#133","App\\Entity\\NotificationQueue::getResult","1"],[100,1,"NotificationQueue.php.html#138","App\\Entity\\NotificationQueue::setResult","1"],[100,1,"NotificationQueue.php.html#145","App\\Entity\\NotificationQueue::getAttempts","1"],[100,1,"NotificationQueue.php.html#150","App\\Entity\\NotificationQueue::setAttempts","1"],[100,1,"NotificationRule.php.html#66","App\\Entity\\NotificationRule::__construct","1"],[100,1,"NotificationRule.php.html#71","App\\Entity\\NotificationRule::getId","1"],[100,1,"NotificationRule.php.html#76","App\\Entity\\NotificationRule::getPolicy","1"],[100,1,"NotificationRule.php.html#81","App\\Entity\\NotificationRule::setPolicy","1"],[100,1,"NotificationRule.php.html#88","App\\Entity\\NotificationRule::getChannel","1"],[100,1,"NotificationRule.php.html#93","App\\Entity\\NotificationRule::setChannel","1"],[100,1,"NotificationRule.php.html#100","App\\Entity\\NotificationRule::getTargetType","1"],[100,1,"NotificationRule.php.html#105","App\\Entity\\NotificationRule::setTargetType","1"],[100,1,"NotificationRule.php.html#112","App\\Entity\\NotificationRule::getContactGroup","1"],[100,1,"NotificationRule.php.html#117","App\\Entity\\NotificationRule::setContactGroup","1"],[100,1,"NotificationRule.php.html#124","App\\Entity\\NotificationRule::getContact","1"],[100,1,"NotificationRule.php.html#129","App\\Entity\\NotificationRule::setContact","1"],[100,1,"NotificationRule.php.html#136","App\\Entity\\NotificationRule::getEventType","1"],[100,1,"NotificationRule.php.html#141","App\\Entity\\NotificationRule::setEventType","1"],[100,1,"NotificationRule.php.html#148","App\\Entity\\NotificationRule::getOffsetDays","1"],[100,1,"NotificationRule.php.html#153","App\\Entity\\NotificationRule::setOffsetDays","1"],[100,1,"NotificationRule.php.html#160","App\\Entity\\NotificationRule::getOffsetTime","1"],[100,1,"NotificationRule.php.html#165","App\\Entity\\NotificationRule::setOffsetTime","1"],[100,1,"NotificationSubscription.php.html#65","App\\Entity\\NotificationSubscription::getId","1"],[100,1,"NotificationSubscription.php.html#75","App\\Entity\\NotificationSubscription::setUser","1"],[100,1,"NotificationSubscription.php.html#83","App\\Entity\\NotificationSubscription::getChannel","1"],[100,1,"NotificationSubscription.php.html#88","App\\Entity\\NotificationSubscription::setChannel","1"],[100,1,"NotificationSubscription.php.html#95","App\\Entity\\NotificationSubscription::getEntityType","1"],[100,1,"NotificationSubscription.php.html#100","App\\Entity\\NotificationSubscription::setEntityType","1"],[100,1,"NotificationSubscription.php.html#107","App\\Entity\\NotificationSubscription::getEntityId","1"],[100,1,"NotificationSubscription.php.html#112","App\\Entity\\NotificationSubscription::setEntityId","1"],[100,1,"NotificationSubscription.php.html#119","App\\Entity\\NotificationSubscription::getEnabled","1"],[100,1,"NotificationSubscription.php.html#124","App\\Entity\\NotificationSubscription::setEnabled","1"],[100,1,"RefreshToken.php.html#42","App\\Entity\\RefreshToken::__construct","1"],[100,1,"RefreshToken.php.html#53","App\\Entity\\RefreshToken::setIpAddress","1"],[100,1,"RefreshToken.php.html#65","App\\Entity\\RefreshToken::setUserAgent","1"],[100,1,"RefreshToken.php.html#77","App\\Entity\\RefreshToken::getId","1"],[100,1,"TokenStorage.php.html#35","App\\Entity\\TokenStorage::getId","1"],[100,1,"TokenStorage.php.html#45","App\\Entity\\TokenStorage::setType","1"],[100,1,"TokenStorage.php.html#57","App\\Entity\\TokenStorage::setUser","1"],[100,1,"TokenStorage.php.html#65","App\\Entity\\TokenStorage::getAccessToken","1"],[100,2,"TokenStorage.php.html#70","App\\Entity\\TokenStorage::setAccessToken","2"],[100,1,"TokenStorage.php.html#89","App\\Entity\\TokenStorage::getTokenExpiresAt","1"],[100,1,"TokenStorage.php.html#94","App\\Entity\\TokenStorage::setTokenExpiresAt","1"],[100,1,"User.php.html#77","App\\Entity\\User::getPlainPassword","1"],[100,1,"User.php.html#82","App\\Entity\\User::setPlainPassword","1"],[100,1,"User.php.html#135","App\\Entity\\User::__construct","1"],[100,1,"User.php.html#147","App\\Entity\\User::getId","1"],[100,1,"User.php.html#152","App\\Entity\\User::getUuid","1"],[100,1,"User.php.html#157","App\\Entity\\User::setUuid","1"],[100,1,"User.php.html#183","App\\Entity\\User::getRoles","1"],[100,1,"User.php.html#196","App\\Entity\\User::setRoles","1"],[100,1,"User.php.html#206","App\\Entity\\User::getPassword","1"],[100,1,"User.php.html#212","App\\Entity\\User::setPassword","1"],[100,1,"User.php.html#222","App\\Entity\\User::__serialize","1"],[100,1,"User.php.html#230","App\\Entity\\User::eraseCredentials","1"],[100,1,"User.php.html#240","App\\Entity\\User::getContacts","1"],[100,2,"User.php.html#245","App\\Entity\\User::addContact","2"],[100,3,"User.php.html#255","App\\Entity\\User::removeContact","3"],[100,2,"User.php.html#305","App\\Entity\\User::addNotificationChannel","2"],[100,1,"User.php.html#360","App\\Entity\\User::getTokenStorages","1"],[100,2,"User.php.html#455","App\\Entity\\User::addNotificationPolicy","2"],[100,1,"UserPref.php.html#146","App\\Entity\\UserPref::getId","1"],[100,1,"UserPref.php.html#151","App\\Entity\\UserPref::getUser","1"],[100,1,"UserPref.php.html#156","App\\Entity\\UserPref::setUser","1"],[100,1,"UserPref.php.html#163","App\\Entity\\UserPref::getType","1"],[100,1,"UserPref.php.html#168","App\\Entity\\UserPref::setType","1"],[100,1,"UserPref.php.html#175","App\\Entity\\UserPref::getValue","1"],[100,1,"UserPref.php.html#180","App\\Entity\\UserPref::setValue","1"],[100,1,"Traits\/ContactAddressesTrait.php.html#27","App\\Entity\\Traits\\ContactAddressesTrait::getContactAddresses","1"],[100,2,"Traits\/ContactAddressesTrait.php.html#32","App\\Entity\\Traits\\ContactAddressesTrait::addContactAddress","2"],[100,3,"Traits\/ContactAddressesTrait.php.html#43","App\\Entity\\Traits\\ContactAddressesTrait::removeContactAddress","3"],[100,1,"Traits\/ContactBiographiesTrait.php.html#27","App\\Entity\\Traits\\ContactBiographiesTrait::getContactBiographies","1"],[100,2,"Traits\/ContactBiographiesTrait.php.html#32","App\\Entity\\Traits\\ContactBiographiesTrait::addContactBiography","2"],[100,1,"Traits\/ContactDatesTrait.php.html#27","App\\Entity\\Traits\\ContactDatesTrait::getContactDates","1"],[100,2,"Traits\/ContactDatesTrait.php.html#32","App\\Entity\\Traits\\ContactDatesTrait::addContactDate","2"],[100,3,"Traits\/ContactDatesTrait.php.html#43","App\\Entity\\Traits\\ContactDatesTrait::removeContactDate","3"],[100,1,"Traits\/ContactEmailsTrait.php.html#27","App\\Entity\\Traits\\ContactEmailsTrait::getContactEmailAdresses","1"],[100,2,"Traits\/ContactEmailsTrait.php.html#32","App\\Entity\\Traits\\ContactEmailsTrait::addContactEmailAdress","2"],[100,3,"Traits\/ContactEmailsTrait.php.html#43","App\\Entity\\Traits\\ContactEmailsTrait::removeContactEmailAdress","3"],[100,1,"Traits\/ContactGroupsTrait.php.html#27","App\\Entity\\Traits\\ContactGroupsTrait::getContactGroups","1"],[100,2,"Traits\/ContactGroupsTrait.php.html#32","App\\Entity\\Traits\\ContactGroupsTrait::addContactGroup","2"],[100,3,"Traits\/ContactGroupsTrait.php.html#42","App\\Entity\\Traits\\ContactGroupsTrait::removeContactGroup","3"],[100,1,"Traits\/ContactNamesTrait.php.html#27","App\\Entity\\Traits\\ContactNamesTrait::getContactNames","1"],[100,2,"Traits\/ContactNamesTrait.php.html#32","App\\Entity\\Traits\\ContactNamesTrait::addContactName","2"],[100,3,"Traits\/ContactNamesTrait.php.html#43","App\\Entity\\Traits\\ContactNamesTrait::removeContactName","3"],[100,1,"Traits\/ContactOrganizationsTrait.php.html#27","App\\Entity\\Traits\\ContactOrganizationsTrait::getContactOrganizations","1"],[100,2,"Traits\/ContactOrganizationsTrait.php.html#32","App\\Entity\\Traits\\ContactOrganizationsTrait::addContactOrganization","2"],[100,1,"Traits\/ContactPhoneNumbersTrait.php.html#27","App\\Entity\\Traits\\ContactPhoneNumbersTrait::getPhoneNumbers","1"],[100,2,"Traits\/ContactPhoneNumbersTrait.php.html#32","App\\Entity\\Traits\\ContactPhoneNumbersTrait::addPhoneNumber","2"],[100,3,"Traits\/ContactPhoneNumbersTrait.php.html#43","App\\Entity\\Traits\\ContactPhoneNumbersTrait::removePhoneNumber","3"],[100,1,"Traits\/ContactRelationsTrait.php.html#85","App\\Entity\\Traits\\ContactRelationsTrait::getContactRelationsCollection","1"],[100,1,"Traits\/ContactRelationsTrait.php.html#93","App\\Entity\\Traits\\ContactRelationsTrait::getReverseContactRelationsCollection","1"],[100,6,"Traits\/ContactRelationsTrait.php.html#98","App\\Entity\\Traits\\ContactRelationsTrait::addContactRelation","6"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [0,0,0,0,0,1,1,4,2,2,6,17])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [47,0,0,0,0,0,0,1,5,1,3,299])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

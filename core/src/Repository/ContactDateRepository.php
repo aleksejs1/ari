@@ -21,18 +21,13 @@ class ContactDateRepository extends ServiceEntityRepository
      */
     public function findMatchingDates(\DateTimeInterface $date): array
     {
-        $entityManager = $this->getEntityManager();
-        $rsm = new \Doctrine\ORM\Query\ResultSetMappingBuilder($entityManager);
-        $rsm->addRootEntityFromClassMetadata(ContactDate::class, 'cd');
-
-        $sql = 'SELECT ' . $rsm->generateSelectClause() . ' FROM contact_date cd ' .
-               'WHERE MONTH(cd.date) = :month AND DAY(cd.date) = :day';
-
-        $query = $entityManager->createNativeQuery($sql, $rsm);
-        $query->setParameter('month', $date->format('m'));
-        $query->setParameter('day', $date->format('d'));
-
-        return $query->getResult();
+        return $this->createQueryBuilder('cd')
+            ->where('MONTH(cd.date) = :month')
+            ->andWhere('DAY(cd.date) = :day')
+            ->setParameter('month', (int) $date->format('m'))
+            ->setParameter('day', (int) $date->format('d'))
+            ->getQuery()
+            ->getResult();
     }
 
     /**

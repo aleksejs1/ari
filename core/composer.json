@@ -124,6 +124,7 @@
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.4",
         "deptrac/deptrac": "^4.4",
         "friendsofphp/php-cs-fixer": "^3.92.5",
         "infection/infection": "^0.31.9",

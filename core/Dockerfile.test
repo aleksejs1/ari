@@ -1,0 +1,31 @@
+FROM php:8.5-cli-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    git \
+    bash \
+    icu-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    linux-headers
+
+# Install PHP extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions \
+    intl \
+    pdo_sqlite \
+    pdo_mysql \
+    zip \
+    opcache \
+    pcov
+
+# Configure PCov
+RUN echo "pcov.enabled=0" > /usr/local/etc/php/conf.d/pcov.ini
+
+# Configure user
+RUN addgroup -g 1000 developer \
+    && adduser -u 1000 -G developer -D -s /bin/bash developer
+
+WORKDIR /app
+USER developer

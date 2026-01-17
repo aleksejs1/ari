@@ -41,6 +41,11 @@ when@test:
             # "TEST_TOKEN" is typically set by ParaTest
             # dbname_suffix: '_test%env(default::TEST_TOKEN)%'
             dbname_suffix: ''
+        orm:
+            dql:
+                datetime_functions:
+                    MONTH: App\Doctrine\DQL\Month
+                    DAY: App\Doctrine\DQL\Day
 
 when@prod:
     doctrine:

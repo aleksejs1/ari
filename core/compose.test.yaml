@@ -1,0 +1,13 @@
+services:
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./:/app
+    environment:
+      APP_ENV: test
+      DATABASE_URL: "sqlite:////app/var/test.db"
+      CORS_ALLOW_ORIGIN: "^https?://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?$"
+    # Default command runs tests
+    entrypoint: [ "php", "vendor/bin/phpunit" ]

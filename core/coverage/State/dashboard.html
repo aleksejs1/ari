@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /app/src/State</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../_css/bootstrap.min.css?v=12.5.2" rel="stylesheet" type="text/css">
+  <link href="../_css/billboard.min.css?v=12.5.2" rel="stylesheet" type="text/css">
+  <link href="../_css/style.css?v=12.5.2" rel="stylesheet" type="text/css">
+  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../index.html">/app/src</a></li>
+         <li class="breadcrumb-item"><a href="index.html">State</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="CurrentUserProvider.php.html#15">App\State\CurrentUserProvider</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserPasswordChangeProcessor.php.html#19">App\State\UserPasswordChangeProcessor</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationPolicyProvider.php.html#15">App\State\NotificationPolicyProvider</a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="UserPrefStateProvider.php.html#16">App\State\UserPrefStateProvider</a></td><td class="text-right">82%</td></tr>
+       <tr><td><a href="NotificationPolicyProcessor.php.html#18">App\State\NotificationPolicyProcessor</a></td><td class="text-right">84%</td></tr>
+       <tr><td><a href="UserDeleteProcessor.php.html#17">App\State\UserDeleteProcessor</a></td><td class="text-right">85%</td></tr>
+       <tr><td><a href="ContactTimelineProvider.php.html#14">App\State\ContactTimelineProvider</a></td><td class="text-right">88%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="NotificationPolicyProcessor.php.html#18">App\State\NotificationPolicyProcessor</a></td><td class="text-right">84.7%</td><td class="text-right">66</td><td class="text-right">81</td></tr>
+       <tr><td><a href="UserPasswordChangeProcessor.php.html#19">App\State\UserPasswordChangeProcessor</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="CurrentUserProvider.php.html#15">App\State\CurrentUserProvider</a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserPrefStateProvider.php.html#16">App\State\UserPrefStateProvider</a></td><td class="text-right">82.4%</td><td class="text-right">7</td><td class="text-right">7</td></tr>
+       <tr><td><a href="NotificationPolicyProvider.php.html#15">App\State\NotificationPolicyProvider</a></td><td class="text-right">75.0%</td><td class="text-right">6</td><td class="text-right">6</td></tr>
+       <tr><td><a href="UserDeleteProcessor.php.html#17">App\State\UserDeleteProcessor</a></td><td class="text-right">85.7%</td><td class="text-right">4</td><td class="text-right">4</td></tr>
+       <tr><td><a href="ContactTimelineProvider.php.html#14">App\State\ContactTimelineProvider</a></td><td class="text-right">88.9%</td><td class="text-right">3</td><td class="text-right">3</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="CurrentUserProvider.php.html#17"><abbr title="App\State\CurrentUserProvider::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="CurrentUserProvider.php.html#22"><abbr title="App\State\CurrentUserProvider::provide">provide</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserPasswordChangeProcessor.php.html#24"><abbr title="App\State\UserPasswordChangeProcessor::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserPasswordChangeProcessor.php.html#35"><abbr title="App\State\UserPasswordChangeProcessor::process">process</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationPolicyProvider.php.html#22"><abbr title="App\State\NotificationPolicyProvider::provide">provide</abbr></a></td><td class="text-right">54%</td></tr>
+       <tr><td><a href="ContactProcessor.php.html#178"><abbr title="App\State\ContactProcessor::handleSmartUpdate">handleSmartUpdate</abbr></a></td><td class="text-right">69%</td></tr>
+       <tr><td><a href="UserPrefStateProvider.php.html#24"><abbr title="App\State\UserPrefStateProvider::provide">provide</abbr></a></td><td class="text-right">81%</td></tr>
+       <tr><td><a href="ContactProcessor.php.html#372"><abbr title="App\State\ContactProcessor::prepareItem">prepareItem</abbr></a></td><td class="text-right">83%</td></tr>
+       <tr><td><a href="UserDeleteProcessor.php.html#33"><abbr title="App\State\UserDeleteProcessor::process">process</abbr></a></td><td class="text-right">83%</td></tr>
+       <tr><td><a href="NotificationPolicyProcessor.php.html#97"><abbr title="App\State\NotificationPolicyProcessor::processRules">processRules</abbr></a></td><td class="text-right">84%</td></tr>
+       <tr><td><a href="NotificationPolicyProcessor.php.html#27"><abbr title="App\State\NotificationPolicyProcessor::process">process</abbr></a></td><td class="text-right">85%</td></tr>
+       <tr><td><a href="ContactTimelineProvider.php.html#21"><abbr title="App\State\ContactTimelineProvider::provide">provide</abbr></a></td><td class="text-right">87%</td></tr>
+       <tr><td><a href="ContactProcessor.php.html#392"><abbr title="App\State\ContactProcessor::handleSimpleAdd">handleSimpleAdd</abbr></a></td><td class="text-right">88%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="NotificationPolicyProcessor.php.html#97"><abbr title="App\State\NotificationPolicyProcessor::processRules">processRules</abbr></a></td><td class="text-right">84.3%</td><td class="text-right">50</td><td class="text-right">59</td></tr>
+       <tr><td><a href="UserPasswordChangeProcessor.php.html#35"><abbr title="App\State\UserPasswordChangeProcessor::process">process</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="ContactProcessor.php.html#178"><abbr title="App\State\ContactProcessor::handleSmartUpdate">handleSmartUpdate</abbr></a></td><td class="text-right">69.7%</td><td class="text-right">19</td><td class="text-right">29</td></tr>
+       <tr><td><a href="NotificationPolicyProcessor.php.html#27"><abbr title="App\State\NotificationPolicyProcessor::process">process</abbr></a></td><td class="text-right">85.3%</td><td class="text-right">15</td><td class="text-right">15</td></tr>
+       <tr><td><a href="ContactProcessor.php.html#392"><abbr title="App\State\ContactProcessor::handleSimpleAdd">handleSimpleAdd</abbr></a></td><td class="text-right">88.9%</td><td class="text-right">8</td><td class="text-right">8</td></tr>
+       <tr><td><a href="CurrentUserProvider.php.html#22"><abbr title="App\State\CurrentUserProvider::provide">provide</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="UserPrefStateProvider.php.html#24"><abbr title="App\State\UserPrefStateProvider::provide">provide</abbr></a></td><td class="text-right">81.2%</td><td class="text-right">6</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationPolicyProvider.php.html#22"><abbr title="App\State\NotificationPolicyProvider::provide">provide</abbr></a></td><td class="text-right">54.5%</td><td class="text-right">4</td><td class="text-right">5</td></tr>
+       <tr><td><a href="ContactProcessor.php.html#372"><abbr title="App\State\ContactProcessor::prepareItem">prepareItem</abbr></a></td><td class="text-right">83.3%</td><td class="text-right">4</td><td class="text-right">4</td></tr>
+       <tr><td><a href="UserDeleteProcessor.php.html#33"><abbr title="App\State\UserDeleteProcessor::process">process</abbr></a></td><td class="text-right">83.3%</td><td class="text-right">3</td><td class="text-right">3</td></tr>
+       <tr><td><a href="ContactTimelineProvider.php.html#21"><abbr title="App\State\ContactTimelineProvider::provide">provide</abbr></a></td><td class="text-right">87.5%</td><td class="text-right">2</td><td class="text-right">2</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.2</a> using <a href="https://www.php.net/" target="_top">PHP 8.5.2</a> and <a href="https://phpunit.de/">PHPUnit 12.5.4</a> at Sat Jan 17 6:50:33 UTC 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../_js/billboard.pkgd.min.js?v=12.5.2" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[0,3,"CurrentUserProvider.php.html#15","App\\State\\CurrentUserProvider","12"],[0,6,"UserPasswordChangeProcessor.php.html#19","App\\State\\UserPasswordChangeProcessor","42"],[75,6,"NotificationPolicyProvider.php.html#15","App\\State\\NotificationPolicyProvider","6.56"],[82.35294117647058,7,"UserPrefStateProvider.php.html#16","App\\State\\UserPrefStateProvider","7.27"],[84.67153284671532,66,"NotificationPolicyProcessor.php.html#18","App\\State\\NotificationPolicyProcessor","81.69"],[85.71428571428571,4,"UserDeleteProcessor.php.html#17","App\\State\\UserDeleteProcessor","4.05"],[88.88888888888889,3,"ContactTimelineProvider.php.html#14","App\\State\\ContactTimelineProvider","3.01"],[90.9090909090909,4,"UserPasswordHasherProcessor.php.html#14","App\\State\\UserPasswordHasherProcessor","4.01"],[91.41414141414141,71,"ContactProcessor.php.html#17","App\\State\\ContactProcessor","74.19"],[97.43589743589743,15,"ContactSimilarProvider.php.html#16","App\\State\\ContactSimilarProvider","15"],[97.5609756097561,10,"EventTypeProvider.php.html#17","App\\State\\EventTypeProvider","10"],[100,2,"AutocompleteProvider.php.html#13","App\\State\\AutocompleteProvider","2"],[100,4,"ContactGraphProvider.php.html#17","App\\State\\ContactGraphProvider","4"],[100,3,"UserInitialSetupProcessor.php.html#17","App\\State\\UserInitialSetupProcessor","3"],[100,7,"UserOwnerProcessor.php.html#14","App\\State\\UserOwnerProcessor","7"],[100,6,"UserPrefProcessor.php.html#15","App\\State\\UserPrefProcessor","6"]]</script>
+  <script type="application/json" id="complexity_method">[[0,1,"CurrentUserProvider.php.html#17","App\\State\\CurrentUserProvider::__construct","2"],[0,2,"CurrentUserProvider.php.html#22","App\\State\\CurrentUserProvider::provide","6"],[0,1,"UserPasswordChangeProcessor.php.html#24","App\\State\\UserPasswordChangeProcessor::__construct","2"],[0,5,"UserPasswordChangeProcessor.php.html#35","App\\State\\UserPasswordChangeProcessor::process","30"],[54.54545454545454,4,"NotificationPolicyProvider.php.html#22","App\\State\\NotificationPolicyProvider::provide","5.50"],[69.6969696969697,19,"ContactProcessor.php.html#178","App\\State\\ContactProcessor::handleSmartUpdate","29.05"],[81.25,6,"UserPrefStateProvider.php.html#24","App\\State\\UserPrefStateProvider::provide","6.24"],[83.33333333333334,4,"ContactProcessor.php.html#372","App\\State\\ContactProcessor::prepareItem","4.07"],[83.33333333333334,3,"UserDeleteProcessor.php.html#33","App\\State\\UserDeleteProcessor::process","3.04"],[84.31372549019608,50,"NotificationPolicyProcessor.php.html#97","App\\State\\NotificationPolicyProcessor::processRules","59.65"],[85.29411764705883,15,"NotificationPolicyProcessor.php.html#27","App\\State\\NotificationPolicyProcessor::process","15.72"],[87.5,2,"ContactTimelineProvider.php.html#21","App\\State\\ContactTimelineProvider::provide","2.01"],[88.88888888888889,8,"ContactProcessor.php.html#392","App\\State\\ContactProcessor::handleSimpleAdd","8.09"],[90,3,"UserPasswordHasherProcessor.php.html#29","App\\State\\UserPasswordHasherProcessor::process","3.01"],[90.9090909090909,5,"ContactProcessor.php.html#342","App\\State\\ContactProcessor::updateEntityData","5.02"],[91.17647058823529,22,"ContactProcessor.php.html#264","App\\State\\ContactProcessor::handleClearAndReplace","22.33"],[97.36842105263158,14,"ContactSimilarProvider.php.html#31","App\\State\\ContactSimilarProvider::provide","14"],[97.5,9,"EventTypeProvider.php.html#25","App\\State\\EventTypeProvider::provide","9"],[99.03846153846155,12,"ContactProcessor.php.html#35","App\\State\\ContactProcessor::process","12"],[100,1,"AutocompleteProvider.php.html#15","App\\State\\AutocompleteProvider::__construct","1"],[100,1,"AutocompleteProvider.php.html#20","App\\State\\AutocompleteProvider::provide","1"],[100,1,"ContactGraphProvider.php.html#19","App\\State\\ContactGraphProvider::__construct","1"],[100,3,"ContactGraphProvider.php.html#28","App\\State\\ContactGraphProvider::provide","3"],[100,1,"ContactProcessor.php.html#22","App\\State\\ContactProcessor::__construct","1"],[100,1,"ContactSimilarProvider.php.html#21","App\\State\\ContactSimilarProvider::__construct","1"],[100,1,"ContactTimelineProvider.php.html#16","App\\State\\ContactTimelineProvider::__construct","1"],[100,1,"EventTypeProvider.php.html#19","App\\State\\EventTypeProvider::__construct","1"],[100,1,"NotificationPolicyProcessor.php.html#20","App\\State\\NotificationPolicyProcessor::__construct","1"],[100,1,"NotificationPolicyProvider.php.html#17","App\\State\\NotificationPolicyProvider::__construct","1"],[100,1,"NotificationPolicyProvider.php.html#49","App\\State\\NotificationPolicyProvider::mapToDto","1"],[100,1,"UserDeleteProcessor.php.html#22","App\\State\\UserDeleteProcessor::__construct","1"],[100,1,"UserInitialSetupProcessor.php.html#22","App\\State\\UserInitialSetupProcessor::__construct","1"],[100,1,"UserInitialSetupProcessor.php.html#32","App\\State\\UserInitialSetupProcessor::process","1"],[100,1,"UserInitialSetupProcessor.php.html#44","App\\State\\UserInitialSetupProcessor::createDefaultNotificationSettings","1"],[100,1,"UserOwnerProcessor.php.html#20","App\\State\\UserOwnerProcessor::__construct","1"],[100,6,"UserOwnerProcessor.php.html#29","App\\State\\UserOwnerProcessor::process","6"],[100,1,"UserPasswordHasherProcessor.php.html#19","App\\State\\UserPasswordHasherProcessor::__construct","1"],[100,1,"UserPrefProcessor.php.html#20","App\\State\\UserPrefProcessor::__construct","1"],[100,5,"UserPrefProcessor.php.html#30","App\\State\\UserPrefProcessor::process","5"],[100,1,"UserPrefStateProvider.php.html#18","App\\State\\UserPrefStateProvider::__construct","1"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [2,0,0,0,0,0,0,0,1,4,4,5])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [4,0,0,0,0,0,1,1,0,7,6,21])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

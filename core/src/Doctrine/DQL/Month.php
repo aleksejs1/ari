@@ -3,6 +3,7 @@
 namespace App\Doctrine\DQL;
 
 use Doctrine\DBAL\Platforms\SqlitePlatform;
+use Doctrine\Common\Lexer\Token;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
@@ -29,6 +30,12 @@ class Month extends FunctionNode
     #[\Override]
     public function parse(Parser $parser): void
     {
+        $lexer = $parser->getLexer();
+        $token = $lexer->lookahead;
+        if ($token instanceof Token && is_string($token->value) && 0 === strcasecmp($token->value, 'MONTH')) {
+             $parser->match(TokenType::T_IDENTIFIER);
+        }
+
         $parser->match(TokenType::T_OPEN_PARENTHESIS);
         $this->date = $parser->ArithmeticPrimary();
         $parser->match(TokenType::T_CLOSE_PARENTHESIS);

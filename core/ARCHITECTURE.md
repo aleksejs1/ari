@@ -109,35 +109,37 @@ The project enforces strict code quality:
 - **PHPStan/Psalm**: High strictness levels to prevent type errors.
 - **CS-Fixer**: Enforces PSR-12 and Symfony coding standards.
 
-## Development Workflow
+- **composer.json**: Describes dependencies and QA scripts.
+- **[QA and Testing](docs/qa_and_testing.md)**: Details on the test environment and Makefile commands.
 
-All commands should be executed within the Docker container:
+## Development & QA Workflow
 
+The project uses an isolated, SQLite-backed test environment. For the best experience, use the provided `Makefile` in the `core/` directory.
+
+### Essential Commands
+
+```bash
+# Run the complete Quality Assurance suite (Tests + Static Analysis)
+make qa
+
+# Run only tests
+make test
+
+# Generate coverage report
+make coverage
+
+# Fix coding standards
+make cs-fix
+```
+
+For a full list of commands and technical details about the test environment, see [QA and Testing Infrastructure](docs/qa_and_testing.md).
+
+### Legacy / Direct Container Access
+If you need to execute commands directly in the development container:
 ```bash
 # Access container
 docker exec -it ari-app-1 bash -c "cd /app/core && bash"
-
-# Run Quality Assurance Suite
-docker exec -w /app/core ari-app-1 composer qa
-
-# Run Tests
-docker exec -w /app/core ari-app-1 vendor/bin/phpunit
-
-# Fix Coding Standards
-docker exec -w /app/core ari-app-1 composer cs-fix
 ```
-
-## Critical Components for AI Context
-
-When modifying the system, pay attention to:
-- **`src/Doctrine/Filter/TenantFilter.php`**: Critical for data isolation. Ensure it's active for user requests.
-- **`src/Security/Voter/*`**: Update voters when adding new entities or permissions.
-- **`src/EventSubscriber/AuditLogSubscriber.php`**: Ensure new entities are audited if needed.
-- **`src/ApiResource/Autocomplete.php`**: Custom API for form suggestions.
-- **`src/ApiResource/ContactGraph.php`**: Custom API for contact graph visualization.
-- **`src/State/AutocompleteProvider.php`**: Provides data for the autocomplete API.
-- **`src/State/ContactGraphProvider.php`**: Provides data for the contact graph API.
-- **`composer.json`**: Describes dependencies and QA scripts.
 
 ### Contact Dates Filtering
 
