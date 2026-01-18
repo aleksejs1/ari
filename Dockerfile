@@ -43,6 +43,10 @@ RUN groupadd -g 1000 developer \
 WORKDIR /app
 RUN chown -R developer:developer /app
 
+# Setup entrypoint
+COPY docker/dev-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+
 # Switch to user
 USER developer
 
@@ -50,4 +54,6 @@ USER developer
 EXPOSE 8000
 
 # Default command
+
+ENTRYPOINT ["docker-entrypoint"]
 CMD ["bash"]

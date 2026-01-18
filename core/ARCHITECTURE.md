@@ -89,7 +89,10 @@ Entity: `UserPref`.
 
 ### 7. Google Contacts Integration
 Location: `src/Service/Google/`.
-- **Import**: `GoogleContactsService` imports contacts from Google People API. Contacts are linked via `ImportMapping` entity. The number of contacts is limited (default 70) to prevent memory issues, configurable via `GOOGLE_CONTACTS_IMPORT_LIMIT`.
+- **Import**: `GoogleContactsService` imports contacts from Google People API using an asynchronous architecture (Symfony Messenger).
+  - **Group Sync**: Synchronous pre-warm of contact groups.
+  - **Contact Sync**: Dispatches `ImportGoogleContactMessage` to the `async` queue for every contact to prevent OOM errors.
+  - **Limit**: The number of contacts is limited (default 70, configurable via `GOOGLE_CONTACTS_IMPORT_LIMIT`).
 - **Update Sync**: `GoogleContactUpdateService` pushes contact data (phones, emails, names, addresses, bios, orgs, dates) to Google when `UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE` is enabled.
 - **Event Subscriber**: `ContactSyncSubscriber` listens to changes in `Contact` and its related entities (phones, names, emails, addresses, bios, orgs, dates) and triggers the sync after flush.
 - **OAuth Scope**: Uses `https://www.googleapis.com/auth/contacts` for read/write access.

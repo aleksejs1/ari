@@ -8,7 +8,6 @@ use App\Entity\TokenStorage;
 use App\Entity\User;
 use App\Repository\ImportMappingRepository;
 use App\Repository\TokenStorageRepository;
-use App\Service\ContactImport\ContactImportService;
 use App\Service\Google\GoogleContactsService;
 use App\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +15,7 @@ use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[ \PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
@@ -25,8 +25,8 @@ class GoogleContactsGroupImportTest extends TestCase
     private ImportMappingRepository $importMappingRepository;
     private GoogleOAuthService $oauthService;
     private HttpClientInterface $httpClient;
-    private ContactImportService $contactImportService;
     private EntityManagerInterface $entityManager;
+    private MessageBusInterface $bus;
     private GoogleContactsService $service;
 
     #[\Override]
@@ -36,16 +36,16 @@ class GoogleContactsGroupImportTest extends TestCase
         $this->importMappingRepository = self::createStub(ImportMappingRepository::class);
         $this->oauthService = self::createStub(GoogleOAuthService::class);
         $this->httpClient = new MockHttpClient(); // No requests expected by default
-        $this->contactImportService = self::createStub(ContactImportService::class);
         $this->entityManager = self::createStub(EntityManagerInterface::class);
+        $this->bus = self::createStub(MessageBusInterface::class);
 
         $this->service = new GoogleContactsService(
             $this->tokenStorageRepository,
             $this->importMappingRepository,
             $this->oauthService,
             $this->httpClient,
-            $this->contactImportService,
             $this->entityManager,
+            $this->bus,
             70,
         );
     }
@@ -117,8 +117,8 @@ class GoogleContactsGroupImportTest extends TestCase
             $this->importMappingRepository,
             $this->oauthService,
             $this->httpClient,
-            $this->contactImportService,
             $this->entityManager,
+            $this->bus,
             70,
         );
     }

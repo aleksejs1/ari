@@ -46,12 +46,12 @@ class AvatarUploadTest extends AbstractApiTestCase
                 ],
             ],
         ]);
- 
+
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
             'mimeType' => 'image/jpeg',
         ]);
-        
+
         $responseContent = $response->toArray();
         self::assertArrayHasKey('thumbnailDataEncoded', $responseContent);
         self::assertNotEmpty($responseContent['thumbnailDataEncoded']);

@@ -61,6 +61,11 @@ fi
 # Clear cache for production
 php bin/console cache:clear --no-interaction
 
+# Start messenger consumer in background
+echo "Starting messenger worker..."
+# Using a loop to ensure it restarts if it crashes (simple supervision)
+(while true; do php bin/console messenger:consume async --memory-limit=128M --time-limit=3600; sleep 5; done) &
+
 # Start cron daemon in background
 echo "Starting crond..."
 crond -b

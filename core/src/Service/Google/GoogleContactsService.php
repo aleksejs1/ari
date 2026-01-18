@@ -2,21 +2,14 @@
 
 namespace App\Service\Google;
 
-use App\Dto\ContactAddressDto;
-use App\Dto\ContactBiographyDto;
-use App\Dto\ContactDateDto;
-use App\Dto\ContactEmailDto;
-use App\Dto\ContactImportDto;
-use App\Dto\ContactNameDto;
-use App\Dto\ContactOrganizationDto;
-use App\Dto\ContactPhoneDto;
 use App\Entity\ImportMapping;
 use App\Entity\TokenStorage;
 use App\Entity\User;
+use App\Message\ImportGoogleContactMessage;
 use App\Repository\ImportMappingRepository;
 use App\Repository\TokenStorageRepository;
-use App\Service\ContactImport\ContactImportService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GoogleContactsService
@@ -29,8 +22,8 @@ class GoogleContactsService
         private readonly ImportMappingRepository $importMappingRepository,
         private readonly GoogleOAuthService $oauthService,
         private readonly HttpClientInterface $httpClient,
-        private readonly ContactImportService $contactImportService,
         private readonly EntityManagerInterface $entityManager,
+        private readonly MessageBusInterface $bus,
         private readonly int $importLimit,
     ) {
     }
@@ -44,9 +37,9 @@ class GoogleContactsService
         }
 
         $accessToken = $this->getValidAccessToken($tokenStorage);
-        $groupsMap = $this->importGroups($user, $accessToken);
+        // Pre-warm groups synchronously
+        $this->importGroups($user, $accessToken);
 
-        $googleGroup = null;
         if ($addGoogleGroup) {
             $googleGroup = $this->entityManager->getRepository(\App\Entity\Group::class)->findOneBy([
                 'user' => $user,
@@ -62,13 +55,13 @@ class GoogleContactsService
             }
         }
 
-        $importedCount = 0;
+        $dispatchedCount = 0;
         $pageToken = null;
 
         do {
+            // Optimized query: Only request metadata to get resourceName
             $query = [
-                'personFields' => 'names,birthdays,emailAddresses,phoneNumbers,' .
-                    'addresses,organizations,biographies,memberships',
+                'personFields' => 'metadata',
                 'pageSize' => 1000,
             ];
 
@@ -95,205 +88,23 @@ class GoogleContactsService
                     continue;
                 }
 
-                $names = [];
-                if (isset($connection['names'])) {
-                    foreach ($connection['names'] as $nameParam) {
-                        if (isset($nameParam['givenName']) || isset($nameParam['familyName'])) {
-                            $names[] = new ContactNameDto(
-                                family: $nameParam['familyName'] ?? '',
-                                given: $nameParam['givenName'] ?? '',
-                            );
-                        }
-                    }
-                }
+                $this->bus->dispatch(new ImportGoogleContactMessage(
+                    (int) $user->getId(),
+                    $resourceName,
+                    $addGoogleGroup,
+                ));
 
-                $dates = [];
-                if (isset($connection['birthdays'])) {
-                    foreach ($connection['birthdays'] as $birthday) {
-                        if (isset($birthday['date'])) {
-                            $dateParts = $birthday['date'];
-                            if (isset($dateParts['year'], $dateParts['month'], $dateParts['day'])) {
-                                try {
-                                    $date = new \DateTime(sprintf(
-                                        '%04d-%02d-%02d',
-                                        $dateParts['year'],
-                                        $dateParts['month'],
-                                        $dateParts['day'],
-                                    ));
-                                    $dates[] = new ContactDateDto($date, 'Birthday');
-                                } catch (\Exception $e) {
-                                    // Ignore invalid dates
-                                }
-                            }
-                        }
-                    }
-                }
+                ++$dispatchedCount;
 
-                if (0 === count($names)) {
-                    continue;
-                }
-
-                $emails = [];
-                if (isset($connection['emailAddresses'])) {
-                    foreach ($connection['emailAddresses'] as $emailParam) {
-                        $emails[] = new ContactEmailDto(
-                            value: $emailParam['value'] ?? '',
-                            type: $emailParam['type'] ?? '',
-                        );
-                    }
-                }
-
-                $phones = [];
-                if (isset($connection['phoneNumbers'])) {
-                    foreach ($connection['phoneNumbers'] as $phoneParam) {
-                        $phones[] = new ContactPhoneDto(
-                            value: $phoneParam['value'] ?? '',
-                            type: $phoneParam['type'] ?? '',
-                        );
-                    }
-                }
-
-                $addresses = [];
-                if (isset($connection['addresses'])) {
-                    foreach ($connection['addresses'] as $addressParam) {
-                        $addresses[] = new ContactAddressDto(
-                            street: $addressParam['streetAddress'] ?? '',
-                            streetExtended: $addressParam['extendedAddress'] ?? '',
-                            city: $addressParam['city'] ?? '',
-                            region: $addressParam['region'] ?? '',
-                            postalCode: $addressParam['postalCode'] ?? '',
-                            country: $addressParam['country'] ?? '',
-                            countryCode: $addressParam['countryCode'] ?? '',
-                            type: $addressParam['type'] ?? '',
-                        );
-                    }
-                }
-
-                $organizations = [];
-                if (isset($connection['organizations'])) {
-                    foreach ($connection['organizations'] as $orgParam) {
-                        $startDate = null;
-                        if (isset($orgParam['startDate'])) {
-                            $sd = $orgParam['startDate'];
-                            if (isset($sd['year'], $sd['month'], $sd['day'])) {
-                                $startDate = new \DateTime(
-                                    sprintf('%04d-%02d-%02d', $sd['year'], $sd['month'], $sd['day']),
-                                );
-                            }
-                        }
-                        $endDate = null;
-                        if (isset($orgParam['endDate'])) {
-                            $ed = $orgParam['endDate'];
-                            if (isset($ed['year'], $ed['month'], $ed['day'])) {
-                                $endDate = new \DateTime(
-                                    sprintf('%04d-%02d-%02d', $ed['year'], $ed['month'], $ed['day']),
-                                );
-                            }
-                        }
-
-                        $organizations[] = new ContactOrganizationDto(
-                            name: $orgParam['name'] ?? '',
-                            department: $orgParam['department'] ?? '',
-                            title: $orgParam['title'] ?? '',
-                            jobDescription: $orgParam['jobDescription'] ?? '',
-                            type: $orgParam['type'] ?? '',
-                            startDate: $startDate,
-                            endDate: $endDate,
-                        );
-                    }
-                }
-
-                $biographies = [];
-                if (isset($connection['biographies'])) {
-                    foreach ($connection['biographies'] as $bioParam) {
-                        $biographies[] = new ContactBiographyDto(
-                            value: $bioParam['value'] ?? '',
-                            type: $bioParam['type'] ?? '',
-                        );
-                    }
-                }
-
-                $contactGroups = [];
-                if (isset($connection['memberships'])) {
-                    foreach ($connection['memberships'] as $membership) {
-                        $groupResourceName = $membership['contactGroupMembership']['contactGroupResourceName'] ?? null;
-                        if ($groupResourceName && isset($groupsMap[$groupResourceName])) {
-                            $contactGroups[] = $groupsMap[$groupResourceName];
-                        }
-                    }
-                }
-
-                if (null !== $googleGroup) {
-                    $exists = false;
-                    foreach ($contactGroups as $g) {
-                        if ($g === $googleGroup || (null !== $g->getId() && $g->getId() === $googleGroup->getId())) {
-                            $exists = true;
-                            break;
-                        }
-                    }
-                    if (!$exists) {
-                        $contactGroups[] = $googleGroup;
-                    }
-                }
-
-                $dto = new ContactImportDto(
-                    names: $names,
-                    dates: $dates,
-                    emails: $emails,
-                    phones: $phones,
-                    addresses: $addresses,
-                    organizations: $organizations,
-                    biographies: $biographies,
-                    groups: $contactGroups,
-                );
-
-                $mapping = $this->importMappingRepository->findOneBy([
-                    'type' => 'google',
-                    'externalId' => $resourceName,
-                    'user' => $user,
-                ]);
-
-                $contact = null;
-                if (null !== $mapping) {
-                    $contact = $mapping->getContact();
-                    if (null !== $contact) {
-                        try {
-                            // Force initialization to verify existence
-                            /** @psalm-suppress UnusedMethodCall */
-                            $contact->getUuid();
-                            $this->contactImportService->update($contact, $dto);
-                            ++$importedCount;
-                        } catch (\Doctrine\ORM\EntityNotFoundException) {
-                            $contact = null;
-                        }
-                    }
-                }
-
-                if (null === $contact) {
-                    $contact = $this->contactImportService->import($dto, $user);
-                    if (null !== $contact) {
-                        if (null === $mapping) {
-                            $mapping = new ImportMapping();
-                            $mapping->setType('google');
-                            $mapping->setExternalId($resourceName);
-                            $mapping->setUser($user);
-                        }
-                        $mapping->setContact($contact);
-                        $this->entityManager->persist($mapping);
-                        $this->entityManager->flush();
-                        ++$importedCount;
-                    }
-                }
-                if ($importedCount >= $this->importLimit) {
+                if ($dispatchedCount >= $this->importLimit) {
                     break;
                 }
             }
 
-
             $pageToken = $data['nextPageToken'] ?? null;
-        } while ($pageToken && $importedCount < $this->importLimit);
+        } while ($pageToken && $dispatchedCount < $this->importLimit);
 
-        return $importedCount;
+        return $dispatchedCount;
     }
 
     public function getValidAccessToken(TokenStorage $tokenStorage): string
@@ -318,12 +129,8 @@ class GoogleContactsService
         return (string) $tokenStorage->getAccessToken();
     }
 
-    /**
-     * @return array<string, \App\Entity\Group>
-     */
-    private function importGroups(User $user, string $accessToken): array
+    private function importGroups(User $user, string $accessToken): void
     {
-        $groupsMap = [];
         $pageToken = null;
 
         do {
@@ -394,15 +201,11 @@ class GoogleContactsService
                     $mapping->setGroup($group);
                     $this->entityManager->persist($mapping);
                 }
-
-                $groupsMap[$resourceName] = $group;
             }
 
             $pageToken = $data['nextPageToken'] ?? null;
         } while ($pageToken);
 
         $this->entityManager->flush();
-
-        return $groupsMap;
     }
 }

@@ -2,19 +2,19 @@
 
 namespace App\Tests\Unit\Service\Google;
 
-use App\Entity\Contact;
-use App\Entity\ImportMapping;
 use App\Entity\TokenStorage;
 use App\Entity\User;
+use App\Message\ImportGoogleContactMessage;
 use App\Repository\ImportMappingRepository;
 use App\Repository\TokenStorageRepository;
-use App\Service\ContactImport\ContactImportService;
 use App\Service\Google\GoogleContactsService;
 use App\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[ \PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
@@ -27,10 +27,10 @@ class GoogleContactsServiceTest extends TestCase
     /** @var GoogleOAuthService&\PHPUnit\Framework\MockObject\Stub */
     private GoogleOAuthService $oauthService;
     private HttpClientInterface $httpClient;
-    /** @var ContactImportService&\PHPUnit\Framework\MockObject\Stub */
-    private ContactImportService $contactImportService;
     /** @var EntityManagerInterface&\PHPUnit\Framework\MockObject\Stub */
     private EntityManagerInterface $entityManager;
+    /** @var MessageBusInterface&\PHPUnit\Framework\MockObject\MockObject */
+    private MessageBusInterface $bus;
     private GoogleContactsService $service;
 
     #[\Override]
@@ -40,23 +40,25 @@ class GoogleContactsServiceTest extends TestCase
         $this->importMappingRepository = self::createStub(ImportMappingRepository::class);
         $this->oauthService = self::createStub(GoogleOAuthService::class);
         $this->httpClient = new MockHttpClient();
-        $this->contactImportService = self::createStub(ContactImportService::class);
         $this->entityManager = self::createStub(EntityManagerInterface::class);
+        $this->bus = $this->createMock(MessageBusInterface::class);
 
         $this->service = new GoogleContactsService(
             $this->tokenStorageRepository,
             $this->importMappingRepository,
             $this->oauthService,
             $this->httpClient,
-            $this->contactImportService,
             $this->entityManager,
+            $this->bus,
             70,
         );
     }
 
-    public function testImportContactsHandlesZombieContact(): void
+    public function testImportContactsDispatchesMessages(): void
     {
         $user = new User();
+        $this->setUserId($user, 1);
+
         $tokenStorage = new TokenStorage();
         $tokenStorage->setAccessToken('token');
         $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
@@ -69,49 +71,35 @@ class GoogleContactsServiceTest extends TestCase
         $responseContacts = new MockResponse((string) json_encode([
             'connections' => [
                 [
-                    'resourceName' => 'people/zombie',
-                    'names' => [['givenName' => 'John']],
+                    'resourceName' => 'people/123',
+                ],
+                [
+                    'resourceName' => 'people/456',
                 ],
             ],
         ]));
 
         $this->httpClient = new MockHttpClient([$responseGroups, $responseContacts]);
 
-        // Setup Zombie Mapping
-        $mapping = self::createStub(ImportMapping::class);
-        $contact = self::createStub(Contact::class);
-        $mapping->method('getContact')->willReturn($contact);
-
-        // This is what triggers the Zombie error
-        $contact->method('getUuid')->willThrowException(new \Doctrine\ORM\EntityNotFoundException());
-
-        $this->importMappingRepository = self::createStub(ImportMappingRepository::class);
-        $this->importMappingRepository->method('findOneBy')->willReturn($mapping);
-
-        // Expectation: use Mock (spy) object for service if we want to check `import` called
-        // createStub allows method calls but doesn't track them for `expects`.
-        // We can use a spy for ContactImportService?
-        // Let's use createMock here for ContactImportService ONLY?
-        // If createMock generates a notice, we fail.
-        // Let's just create a Stub and assert it returns logic?
-        // Or fail the test if logic flow isn't exercised?
-
-        // This test verifies that EntityNotFoundException is CAUGHT and processed as "Import (New)".
-        // If it wasn't caught, the test would crash.
-        // So just running it without exception is passing?
-        // But we want to ensure `import` IS called.
-
-        $this->contactImportService = $this->createMock(ContactImportService::class);
-        $this->contactImportService->expects($this->once())->method('import')->willReturn(new Contact());
+        $this->bus->expects(self::exactly(2))
+            ->method('dispatch')
+            ->with(self::callback(function ($message) {
+                return $message instanceof ImportGoogleContactMessage;
+            }))
+            ->willReturn(new Envelope(new \stdClass()));
 
         $this->recreateService();
 
-        $this->service->importContacts($user);
+        $count = $this->service->importContacts($user);
+
+        self::assertEquals(2, $count);
     }
 
     public function testImportContactsCreatesGoogleGroup(): void
     {
         $user = new User();
+        $this->setUserId($user, 1);
+
         $tokenStorage = new TokenStorage();
         $tokenStorage->setAccessToken('token');
         $tokenStorage->setTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
@@ -125,7 +113,6 @@ class GoogleContactsServiceTest extends TestCase
             'connections' => [
                 [
                     'resourceName' => 'people/123',
-                    'names' => [['givenName' => 'John']],
                 ],
             ],
         ]));
@@ -134,23 +121,21 @@ class GoogleContactsServiceTest extends TestCase
 
         $groupRepository = self::createStub(\Doctrine\ORM\EntityRepository::class);
 
-        $this->entityManager = self::createStub(EntityManagerInterface::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->entityManager->method('getRepository')->willReturn($groupRepository);
         $groupRepository->method('findOneBy')->willReturn(null); // google group doesn't exist
 
-        // Expectation: EntityManager->persist(googleGroup)
-        // If we use createMock for EM, we risk notices.
-        // But verifying persist is done.
-        // Let's try createMock for EM only here.
-
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->entityManager->method('getRepository')->willReturn($groupRepository);
-
-        $this->entityManager->expects($this->atLeastOnce())
+        $this->entityManager->expects(self::atLeastOnce())
             ->method('persist')
             ->with(self::callback(function ($obj) {
+                // We expect Group persist AND potentially ImportMapping from group import if that was mocked to return date
+                // But here we specifically care about the 'google' group creation
                 return $obj instanceof \App\Entity\Group && 'google' === $obj->getName();
             }));
+
+        $this->bus->expects(self::once())
+             ->method('dispatch')
+             ->willReturn(new Envelope(new \stdClass()));
 
         $this->recreateService();
 
@@ -164,9 +149,16 @@ class GoogleContactsServiceTest extends TestCase
             $this->importMappingRepository,
             $this->oauthService,
             $this->httpClient,
-            $this->contactImportService,
             $this->entityManager,
+            $this->bus,
             70,
         );
+    }
+
+    private function setUserId(User $user, int $id): void
+    {
+        $reflection = new \ReflectionClass($user);
+        $property = $reflection->getProperty('id');
+        $property->setValue($user, $id);
     }
 }
