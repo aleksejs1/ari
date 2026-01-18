@@ -9,6 +9,12 @@
 		php_server
 	}
 
+	# Handle Uploads (Direct from Backend Public)
+	handle /uploads/* {
+		root * /app/core/public
+		file_server
+	}
+
 	# Handle everything else (Frontend)
 	handle {
 		# Try to serve file, then directory, then fall back to index.html
