@@ -26,6 +26,8 @@ services:
       MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
       MAILER_DSN: "null://null"
       DEFAULT_URI: "http://localhost:8080"
+    volumes:
+      - uploads_data:/app/core/public/uploads
 
   database:
     container_name: ari-prod-database
@@ -46,3 +48,4 @@ services:
 
 volumes:
   database_data:
+  uploads_data:
