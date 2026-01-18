@@ -24,7 +24,6 @@ services:
       JWT_SECRET_KEY: /app/core/config/jwt/private.pem
       JWT_PUBLIC_KEY: /app/core/config/jwt/public.pem
       MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
-      MAILER_DSN: "null://null"
       DEFAULT_URI: "http://localhost:8080"
     volumes:
       - ./core/public/uploads:/app/core/public/uploads
