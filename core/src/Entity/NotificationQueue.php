@@ -26,7 +26,7 @@ class NotificationQueue implements TenantAwareInterface
     private ?Contact $contact = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?NotificationChannel $channel = null;
 
     #[ORM\Column(length: 20)]
