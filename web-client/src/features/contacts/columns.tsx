@@ -40,7 +40,7 @@ export function registerDefaultColumns() {
     id: 'contactNames',
     label: 'Name',
     definition: () => ({
-      id: 'contactNames',
+      id: 'contactNames.given',
       accessorKey: 'contactNames',
       header: ContactNameHeader,
       cell: ({ row }) => <ContactNameCell contact={row.original} />,
