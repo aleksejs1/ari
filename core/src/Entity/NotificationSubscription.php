@@ -48,6 +48,7 @@ class NotificationSubscription implements TenantAwareInterface
 
     #[Groups(['notification_subscription:read', 'notification_subscription:write'])]
     #[ORM\ManyToOne(inversedBy: 'notificationSubscriptions')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?NotificationChannel $channel = null;
 
     #[Groups(['notification_subscription:read', 'notification_subscription:write'])]

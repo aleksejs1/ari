@@ -30,6 +30,7 @@ class NotificationRule implements TenantAwareInterface
     private ?NotificationPolicy $policy = null;
 
     #[ORM\ManyToOne(inversedBy: 'notificationRules')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['notification_policy:read'])]
     private ?NotificationChannel $channel = null;
 

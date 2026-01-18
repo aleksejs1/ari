@@ -55,9 +55,44 @@ class ContactNotificationDeletionTest extends AbstractApiTestCase
         $queue->setTenant($channel->getUser()); 
 
         $em->persist($queue);
+        
+        // 3.5 Create Notification Rule linked to Channel (to test Rule Cascade)
+        $policy = new \App\Entity\NotificationPolicy();
+        $policy->setName('Test Policy');
+        $policy->setUser($channel->getUser()); // setUser also sets Tenant
+        $policy->setIsActive(true);
+        $em->persist($policy);
+
+        $rule = new \App\Entity\NotificationRule();
+        $rule->setTenant($channel->getUser());
+        $rule->setPolicy($policy);
+        $rule->setChannel($channel);
+        $rule->setOffsetDays(0);
+        $em->persist($rule);
+
+        // 3.6 Create Notification Subscription linked to Channel
+        $subscription = new \App\Entity\NotificationSubscription();
+        $subscription->setUser($channel->getUser());
+        $subscription->setChannel($channel);
+        $subscription->setEntityType('contact');
+        $subscription->setEntityId($contactId);
+        $em->persist($subscription);
+
+        // 3.7 Create Notification Intent linked to Channel
+        $intent = new \App\Entity\NotificationIntent();
+        $intent->setChannel($channel);
+        $intent->setPayload(['test' => 'intent']);
+        $em->persist($intent);
+
         $em->flush();
         $queueId = $queue->getId();
+        $ruleId = $rule->getId();
+        $subscriptionId = $subscription->getId();
+        $intentId = $intent->getId();
         self::assertNotNull($queueId);
+        self::assertNotNull($ruleId);
+        self::assertNotNull($subscriptionId);
+        self::assertNotNull($intentId);
 
         // 4. Delete Channel
         $client->request('DELETE', '/api/notification_channels/' . $channelId, [
@@ -69,5 +104,14 @@ class ContactNotificationDeletionTest extends AbstractApiTestCase
         $em->clear(); // Clear cache to ensure we read from DB
         $deletedQueue = $em->getRepository(NotificationQueue::class)->find($queueId);
         self::assertNull($deletedQueue, 'Queue item should be deleted when channel is deleted');
+        
+        $deletedRule = $em->getRepository(\App\Entity\NotificationRule::class)->find($ruleId);
+        self::assertNull($deletedRule, 'Notification Rule should be deleted when channel is deleted');
+
+        $deletedSubscription = $em->getRepository(\App\Entity\NotificationSubscription::class)->find($subscriptionId);
+        self::assertNull($deletedSubscription, 'Notification Subscription should be deleted when channel is deleted');
+
+        $deletedIntent = $em->getRepository(\App\Entity\NotificationIntent::class)->find($intentId);
+        self::assertNull($deletedIntent, 'Notification Intent should be deleted when channel is deleted');
     }
 }

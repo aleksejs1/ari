@@ -32,7 +32,7 @@ class NotificationIntent implements TenantAwareInterface
 
     #[Groups(['notification_intent:read'])]
     #[ORM\ManyToOne(inversedBy: 'notificationIntents')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?NotificationChannel $channel = null;
 
     /**
