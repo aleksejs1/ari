@@ -12,6 +12,15 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
+import { ContactActionsCell } from '../cells/ContactActionsCell'
+import { ContactAvatarCell } from '../cells/ContactAvatarCell'
+import { ContactDatesCell } from '../cells/ContactDatesCell'
+import { ContactEmailsCell } from '../cells/ContactEmailsCell'
+import { ContactFavoriteCell } from '../cells/ContactFavoriteCell'
+import { ContactGroupsCell } from '../cells/ContactGroupsCell'
+import { ContactNameCell } from '../cells/ContactNameCell'
+import { ContactPhonesCell } from '../cells/ContactPhonesCell'
+
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -73,7 +82,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
 
   // We need to pass onEdit to the table meta so that cells can access it if needed
   // (e.g. ActionCell)
-  // eslint-disable-next-line react-hooks/incompatible-library
+
   const table = useReactTable({
     data,
     columns,
@@ -134,7 +143,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
             <DropdownMenuSeparator />
             {useMemo(() => {
               const allColumns = table.getAllColumns()
-              const currentOrder = table.getState().columnOrder
+              const currentOrder = columnOrder
               const leafColumnIds = table.getAllLeafColumns().map((c) => c.id)
 
               // If order is empty, use definition order
@@ -194,6 +203,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                         className="flex-1 capitalize"
                         checked={column.getIsVisible()}
                         onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                        onSelect={(e) => e.preventDefault()}
                       >
                         {label}
                       </DropdownMenuCheckboxItem>
@@ -248,11 +258,12 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                     </div>
                   )
                 })
-            }, [table, t])}
+              // eslint-disable-next-line react-hooks/exhaustive-deps
+            }, [table, t, columnVisibility, columnOrder])}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="hidden rounded-md border md:block">
         <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -295,6 +306,126 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           </TableBody>
         </Table>
       </div>
+
+      <div className="space-y-4 md:hidden">
+        {table.getRowModel().rows?.length ? (
+          table
+            .getRowModel()
+            .rows.map((row) => (
+              <ContactMobileCard
+                key={row.id}
+                row={row}
+                table={table}
+                navigate={navigate}
+                onEdit={onEdit}
+              />
+            ))
+        ) : (
+          <div className="rounded-lg border border-dashed bg-card py-8 text-center text-muted-foreground">
+            {t('contacts.noContacts')}
+          </div>
+        )}
+      </div>
     </div>
   )
+}
+
+function ContactMobileCard({
+  row,
+  table,
+  navigate,
+  onEdit,
+}: {
+  row: any
+  table: any
+  navigate: ReturnType<typeof useNavigate>
+  onEdit: (contact: Contact) => void
+}) {
+  return (
+    <div
+      className="flex cursor-pointer items-center gap-4 rounded-lg border bg-card p-4 shadow-sm transition-colors active:bg-muted/50"
+      onClick={() => navigate(`/contacts/${row.original.id}`)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={async (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          await navigate(`/contacts/${row.original.id}`)
+        }
+      }}
+    >
+      <div className="flex-shrink-0">
+        {table.getColumn('avatar')?.getIsVisible() ? (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            role="presentation"
+          >
+            <ContactAvatarCell contact={row.original} />
+          </div>
+        ) : null}
+      </div>
+      <div className="grid min-w-0 flex-1 gap-1">
+        <div className="flex items-center gap-2">
+          <div className="truncate text-base font-medium">
+            {table.getColumn('contactNames.given')?.getIsVisible() ? (
+              <ContactNameCell contact={row.original} />
+            ) : null}
+          </div>
+          {table.getColumn('favorite')?.getIsVisible() ? (
+            <ContactFavoriteCell contact={row.original} />
+          ) : null}
+        </div>
+        <ContactMobileCardBody row={row} table={table} />
+      </div>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        role="presentation"
+      >
+        <ContactActionsCell contact={row.original} onEdit={onEdit} />
+      </div>
+    </div>
+  )
+}
+
+function ContactMobileCardBody({ row, table }: { row: any; table: any }) {
+  const contact = row.original
+  return (
+    <div className="flex flex-col gap-1 text-sm text-muted-foreground">
+      <MobileCardSection table={table} columnId="phoneNumbers" data={contact.phoneNumbers}>
+        <ContactPhonesCell contact={contact} />
+      </MobileCardSection>
+      <MobileCardSection
+        table={table}
+        columnId="contactEmailAdresses"
+        data={contact.contactEmailAdresses}
+      >
+        <ContactEmailsCell contact={contact} />
+      </MobileCardSection>
+      <MobileCardSection table={table} columnId="contactGroups" data={contact.contactGroups}>
+        <ContactGroupsCell contact={contact} />
+      </MobileCardSection>
+      <MobileCardSection table={table} columnId="contactDates" data={contact.contactDates}>
+        <ContactDatesCell contact={contact} />
+      </MobileCardSection>
+    </div>
+  )
+}
+
+function MobileCardSection({
+  table,
+  columnId,
+  data,
+  children,
+}: {
+  table: any
+  columnId: string
+  data: any[] | undefined
+  children: React.ReactNode
+}) {
+  if (!table.getColumn(columnId)?.getIsVisible() || !data || data.length === 0) {
+    return null
+  }
+
+  return <div className="flex flex-wrap gap-2 empty:hidden">{children}</div>
 }

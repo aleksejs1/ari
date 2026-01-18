@@ -242,10 +242,9 @@ function ContactViewHeader({
   isFavorite: boolean
 }) {
   const { t } = useTranslation()
-  const { toggleFavorite } = useContactFavorite()
 
   return (
-    <div className="flex items-start justify-between">
+    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div className="flex items-start gap-4">
         <AvatarUpload
           currentAvatar={contact.avatar}
@@ -255,21 +254,35 @@ function ContactViewHeader({
         <div className="space-y-2">
           <h1 className="flex items-center gap-2 text-2xl font-bold">
             {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
-            <Star
-              className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 ${
-                isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
-              }`}
-              onClick={() => toggleFavorite(contact)}
-            />
+            <ContactFavoriteButton contact={contact} isFavorite={isFavorite} />
           </h1>
           <ContactGroupsBadgeList contactGroups={contact.contactGroups} />
         </div>
       </div>
-      <Button onClick={onEdit} className="gap-2">
+      <Button onClick={onEdit} className="w-full gap-2 md:w-auto">
         <Pencil className="h-4 w-4" />
         {t('common.edit')}
       </Button>
     </div>
+  )
+}
+
+function ContactFavoriteButton({ contact, isFavorite }: { contact: Contact; isFavorite: boolean }) {
+  const { t } = useTranslation()
+  const { toggleFavorite } = useContactFavorite()
+
+  return (
+    <button
+      className="ml-2 rounded-full p-2 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary"
+      onClick={() => toggleFavorite(contact)}
+      aria-label={isFavorite ? t('contacts.removeFromFavorites') : t('contacts.addToFavorites')}
+    >
+      <Star
+        className={`h-6 w-6 transition-transform hover:scale-110 ${
+          isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
+        }`}
+      />
+    </button>
   )
 }
 

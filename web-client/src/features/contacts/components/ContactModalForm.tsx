@@ -30,6 +30,7 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -203,6 +204,11 @@ export function ContactModalForm({
               ? t('contacts.editContact')
               : t('contacts.createContact')}
           </DialogTitle>
+          <DialogDescription>
+            {(defaultValues as any)?.['@id']
+              ? t('contacts.editDescription')
+              : t('contacts.createDescription')}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

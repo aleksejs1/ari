@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Outlet, Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet'
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
 import { UserMenu } from '@/features/layout/UserMenu'
 import { GlobalSearch } from '@/features/search/components/GlobalSearch'
@@ -26,6 +32,10 @@ export default function SidebarLessLayout() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64">
+            <SheetTitle className="sr-only">{t('app.navigation.toggleMenu')}</SheetTitle>
+            <SheetDescription className="sr-only">
+              {t('app.navigation.toggleMenu')}
+            </SheetDescription>
             <div className="flex flex-col gap-4 py-4">
               <Link
                 to="/"

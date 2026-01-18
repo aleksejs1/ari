@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet'
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
 import { SidebarContent } from '@/features/layout/SidebarContent'
 import { UserMenu } from '@/features/layout/UserMenu'
@@ -32,6 +38,10 @@ export default function DashboardLayout() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
+              <SheetTitle className="sr-only">{t('app.navigation.toggleMenu')}</SheetTitle>
+              <SheetDescription className="sr-only">
+                {t('app.navigation.toggleMenu')}
+              </SheetDescription>
               <SidebarContent onNavigate={() => setOpen(false)} />
             </SheetContent>
           </Sheet>

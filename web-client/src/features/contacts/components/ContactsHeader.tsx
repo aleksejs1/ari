@@ -41,13 +41,13 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
   }, [inputValue, search, onSearchChange])
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">{t('contacts.title')}</h2>
         <p className="text-muted-foreground">{t('contacts.editDescription')}</p>
       </div>
-      <div className="flex items-center gap-2">
-        <div className="relative w-64">
+      <div className="flex w-full items-center gap-2 md:w-auto">
+        <div className="relative w-full md:w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             ref={inputRef}

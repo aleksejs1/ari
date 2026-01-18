@@ -68,48 +68,52 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
 
   return (
     <div className="container mx-auto max-w-3xl space-y-6 py-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={async () => {
-            if (isEditing) {
-              setIsEditing(false)
-            } else {
-              await navigate(-1)
-            }
-          }}
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="flex-1 text-2xl font-bold">
-          {isEditing ? t('contacts.editContact') : t('contacts.details')}
-        </h1>
-        {!isEditing && (
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="flex w-full items-center gap-2">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => void handleExportVcard()}
-            disabled={exportVcardMutation.isPending}
-            className="gap-2"
+            variant="ghost"
+            size="icon"
+            onClick={async () => {
+              if (isEditing) {
+                setIsEditing(false)
+              } else {
+                await navigate(-1)
+              }
+            }}
           >
-            {exportVcardMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            {t('contacts.exportVcard')}
+            <ArrowLeft className="h-4 w-4" />
           </Button>
-        )}
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => setIsDeleteDialogOpen(true)}
-          className="gap-2"
-        >
-          <Trash2 className="h-4 w-4" />
-          {t('common.delete')}
-        </Button>
+          <h1 className="flex-1 truncate text-2xl font-bold">
+            {isEditing ? t('contacts.editContact') : t('contacts.details')}
+          </h1>
+        </div>
+        <div className="flex w-full items-center gap-2 md:w-auto">
+          {!isEditing && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void handleExportVcard()}
+              disabled={exportVcardMutation.isPending}
+              className="flex-1 gap-2 md:flex-none"
+            >
+              {exportVcardMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {t('contacts.exportVcard')}
+            </Button>
+          )}
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => setIsDeleteDialogOpen(true)}
+            className="flex-1 gap-2 md:flex-none"
+          >
+            <Trash2 className="h-4 w-4" />
+            {t('common.delete')}
+          </Button>
+        </div>
       </div>
 
       {isEditing ? (
