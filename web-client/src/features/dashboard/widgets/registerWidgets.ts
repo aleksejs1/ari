@@ -1,10 +1,18 @@
 import GroupsWidget from '../GroupsWidget'
 import RecentAuditLogsWidget from '../RecentAuditLogsWidget'
+import StatsWidget from '../StatsWidget'
 import UpcomingAnniversariesWidget from '../UpcomingAnniversariesWidget'
 
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 export function registerDashboardWidgets() {
+  widgetRegistry.register({
+    id: 'stats',
+    title: 'Stats',
+    component: StatsWidget,
+    defaultDimensions: { w: 12, h: 2 },
+  })
+
   widgetRegistry.register({
     id: 'groups',
     title: 'Groups',

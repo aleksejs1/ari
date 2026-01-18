@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/api/active_sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ActiveSession resources.
+         * @description Retrieves the collection of ActiveSession resources.
+         */
+        get: operations["api_active_sessions_get_collection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/active_sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Removes the ActiveSession resource.
+         * @description Removes the ActiveSession resource.
+         */
+        delete: operations["api_active_sessions_id_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/activity-feed": {
         parameters: {
             query?: never;
@@ -77,43 +117,31 @@ export interface paths {
          */
         get: operations["api_audit_logs_get_collection"];
         put?: never;
-        /**
-         * Creates a AuditLog resource.
-         * @description Creates a AuditLog resource.
-         */
-        post: operations["api_audit_logs_post"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/audit_logs/{id}": {
+    "/api/logout": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Retrieves a AuditLog resource.
-         * @description Retrieves a AuditLog resource.
-         */
-        get: operations["api_audit_logs_id_get"];
+        get?: never;
         put?: never;
-        post?: never;
         /**
-         * Removes the AuditLog resource.
-         * @description Removes the AuditLog resource.
+         * Log out (revoke refresh token)
+         * @description Revokes the refresh token provided in the body or cookies.
          */
-        delete: operations["api_audit_logs_id_delete"];
+        post: operations["api_logout_post"];
+        delete?: never;
         options?: never;
         head?: never;
-        /**
-         * Updates the AuditLog resource.
-         * @description Updates the AuditLog resource.
-         */
-        patch: operations["api_audit_logs_id_patch"];
+        patch?: never;
         trace?: never;
     };
     "/api/autocomplete": {
@@ -496,6 +524,26 @@ export interface paths {
         patch: operations["api_contact_email_adresses_id_patch"];
         trace?: never;
     };
+    "/api/contact-graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactGraph resource.
+         * @description Retrieves a ContactGraph resource.
+         */
+        get: operations["get_contact_graph"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contact_groups": {
         parameters: {
             query?: never;
@@ -836,6 +884,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/connect/google/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Handle Google OAuth Callback.
+         * @description Exchanges the authorization code for an access token and stores it.
+         */
+        get: operations["connectGoogleCheck"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/google/import": {
         parameters: {
             query?: never;
@@ -868,26 +936,6 @@ export interface paths {
          * @description Returns the URL to redirect the user to for Google authentication.
          */
         get: operations["connectGoogleStart"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connect/google/check": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Handle Google OAuth Callback.
-         * @description Exchanges the authorization code for an access token and stores it.
-         */
-        get: operations["connectGoogleCheck"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1180,6 +1228,26 @@ export interface paths {
         patch: operations["api_notification_subscriptions_id_patch"];
         trace?: never;
     };
+    "/api/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a Stats resource.
+         * @description Retrieves a Stats resource.
+         */
+        get: operations["get_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/profile": {
         parameters: {
             query?: never;
@@ -1316,6 +1384,24 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        "ActiveSession-active_session.read": {
+            ipAddress?: string | null;
+            userAgent?: string | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            readonly id?: number | string | null;
+            /** Format: date-time */
+            valid?: string | null;
+        };
+        "ActiveSession.jsonld-active_session.read": components["schemas"]["HydraItemBaseSchema"] & {
+            ipAddress?: string | null;
+            userAgent?: string | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            readonly id?: number | string | null;
+            /** Format: date-time */
+            valid?: string | null;
+        };
         "ActivityFeed-activity_feed.read": {
             readonly id?: number;
             userId?: number;
@@ -1374,7 +1460,7 @@ export interface components {
              */
             tenant?: string;
         };
-        "AuditLog-audit.read": {
+        "AuditLog-audit_log.read_audit.read": {
             readonly id?: number;
             /**
              * Format: iri-reference
@@ -1397,35 +1483,6 @@ export interface components {
             } | null;
             /** Format: date-time */
             createdAt?: string;
-        };
-        "AuditLog.jsonMergePatch": {
-            readonly id?: number;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            user?: string;
-            entityType?: string;
-            entityId?: number | null;
-            ownerEntityType?: string | null;
-            ownerEntityId?: number | null;
-            action?: string;
-            changes?: {
-                [key: string]: string | null;
-            } | null;
-            snapshotBefore?: {
-                [key: string]: string | null;
-            } | null;
-            snapshotAfter?: {
-                [key: string]: string | null;
-            } | null;
-            /** Format: date-time */
-            createdAt?: string;
-            /**
-             * Format: iri-reference
-             * @example https://example.com/
-             */
-            tenant?: string;
         };
         "AuditLog.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -1456,7 +1513,7 @@ export interface components {
              */
             tenant?: string;
         };
-        "AuditLog.jsonld-audit.read": components["schemas"]["HydraItemBaseSchema"] & {
+        "AuditLog.jsonld-audit_log.read_audit.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             /**
              * Format: iri-reference
@@ -1479,6 +1536,10 @@ export interface components {
             } | null;
             /** Format: date-time */
             createdAt?: string;
+        };
+        Auth: {
+            /** @description The refresh token to revoke. If not provided, will look in cookies. */
+            refresh_token?: string | null;
         };
         Autocomplete: {
             id?: string;
@@ -1946,6 +2007,14 @@ export interface components {
             value?: string | null;
             type?: string | null;
         };
+        "ContactGraph-contact_graph.read": {
+            nodes?: components["schemas"]["GraphNode-contact_graph.read"][];
+            links?: components["schemas"]["GraphLink-contact_graph.read"][];
+        };
+        "ContactGraph.jsonld-contact_graph.read": components["schemas"]["HydraItemBaseSchema"] & {
+            nodes?: components["schemas"]["GraphNode.jsonld-contact_graph.read"][];
+            links?: components["schemas"]["GraphLink.jsonld-contact_graph.read"][];
+        };
         "ContactGroup-contact.create": {
             groupResource?: components["schemas"]["Group-contact.create"];
         };
@@ -2360,6 +2429,22 @@ export interface components {
         "EventType.jsonld-event_type.read": components["schemas"]["HydraItemBaseSchema"] & {
             text?: string;
         };
+        "GraphLink-contact_graph.read": {
+            source?: number;
+            target?: number;
+        };
+        "GraphLink.jsonld-contact_graph.read": {
+            source?: number;
+            target?: number;
+        };
+        "GraphNode-contact_graph.read": {
+            id?: number;
+            user?: string;
+        };
+        "GraphNode.jsonld-contact_graph.read": {
+            id?: number;
+            user?: string;
+        };
         "Group-contact.create": {
             name?: string;
         };
@@ -2698,6 +2783,16 @@ export interface components {
             /** @default 1 */
             enabled: number;
         };
+        "Stats-stats.read": {
+            totalContacts?: number;
+            totalAuditLogs?: number;
+            totalSentNotifications?: number;
+        };
+        "Stats.jsonld-stats.read": components["schemas"]["HydraItemBaseSchema"] & {
+            totalContacts?: number;
+            totalAuditLogs?: number;
+            totalSentNotifications?: number;
+        };
         "User-user.create": {
             uuid?: string;
             plainPassword?: string | null;
@@ -2716,22 +2811,22 @@ export interface components {
         };
         "UserPref-user_pref.create_user_pref.update": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
             value?: string | null;
         };
         "UserPref-user_pref.create_user_pref.update.jsonMergePatch": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
             value?: string | null;
         };
         "UserPref-user_pref.read": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
             value?: string | null;
         };
         "UserPref.jsonld-user_pref.read": components["schemas"]["HydraItemBaseSchema"] & {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
             value?: string | null;
         };
         Token: {
@@ -2752,6 +2847,86 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    api_active_sessions_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ActiveSession collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ActiveSession.jsonld-active_session.read"][];
+                    };
+                    "application/json": components["schemas"]["ActiveSession-active_session.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_active_sessions_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ActiveSession identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ActiveSession resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     "api_activity-feed_get_collection": {
         parameters: {
             query?: {
@@ -2920,9 +3095,9 @@ export interface operations {
                 };
                 content: {
                     "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
-                        member: components["schemas"]["AuditLog.jsonld-audit.read"][];
+                        member: components["schemas"]["AuditLog.jsonld-audit_log.read_audit.read"][];
                     };
-                    "application/json": components["schemas"]["AuditLog-audit.read"][];
+                    "application/json": components["schemas"]["AuditLog-audit_log.read_audit.read"][];
                 };
             };
             /** @description Forbidden */
@@ -2938,225 +3113,41 @@ export interface operations {
             };
         };
     };
-    api_audit_logs_post: {
+    api_logout_post: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** @description The new AuditLog resource */
+        /** @description The new Auth resource */
         requestBody: {
             content: {
-                "application/ld+json": components["schemas"]["AuditLog"];
-                "application/json": components["schemas"]["AuditLog"];
+                "application/ld+json": components["schemas"]["Auth"];
+                "application/json": components["schemas"]["Auth"];
             };
         };
         responses: {
-            /** @description AuditLog resource created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["AuditLog.jsonld-audit.read"];
-                    "application/json": components["schemas"]["AuditLog-audit.read"];
-                };
-            };
-            /** @description Invalid input */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description An error occurred */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
-                };
-            };
-        };
-    };
-    api_audit_logs_id_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description AuditLog identifier */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description AuditLog resource */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["AuditLog.jsonld-audit.read"];
-                    "application/json": components["schemas"]["AuditLog-audit.read"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    api_audit_logs_id_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description AuditLog identifier */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description AuditLog resource deleted */
+            /** @description Logout successful */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    api_audit_logs_id_patch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description AuditLog identifier */
-                id: string;
-            };
-            cookie?: never;
-        };
-        /** @description The updated AuditLog resource */
-        requestBody: {
-            content: {
-                "application/merge-patch+json": components["schemas"]["AuditLog.jsonMergePatch"];
-            };
-        };
-        responses: {
-            /** @description AuditLog resource updated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["AuditLog.jsonld-audit.read"];
-                    "application/json": components["schemas"]["AuditLog-audit.read"];
-                };
-            };
             /** @description Invalid input */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
+                content?: never;
             };
             /** @description An error occurred */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
-                };
+                content?: never;
             };
         };
     };
@@ -5071,6 +5062,49 @@ export interface operations {
             };
         };
     };
+    get_contact_graph: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactGraph resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactGraph.jsonld-contact_graph.read"];
+                    "application/json": components["schemas"]["ContactGraph-contact_graph.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     api_contact_groups_get_collection: {
         parameters: {
             query?: {
@@ -6860,6 +6894,43 @@ export interface operations {
             };
         };
     };
+    connectGoogleCheck: {
+        parameters: {
+            query: {
+                /** @description The authorization code returned by Google */
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Google Auth Successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example true */
+                        success?: boolean;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
     importGoogleContacts: {
         parameters: {
             query?: never;
@@ -6923,43 +6994,6 @@ export interface operations {
                     "application/json": {
                         /** @example https://accounts.google.com/o/oauth2/v2/auth?... */
                         url?: string;
-                    };
-                };
-            };
-        };
-    };
-    connectGoogleCheck: {
-        parameters: {
-            query: {
-                /** @description The authorization code returned by Google */
-                code: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Google Auth Successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example true */
-                        success?: boolean;
-                    };
-                };
-            };
-            /** @description Bad Request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        error?: string;
                     };
                 };
             };
@@ -8389,6 +8423,49 @@ export interface operations {
                     "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
                     "application/problem+json": components["schemas"]["ConstraintViolation"];
                     "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    get_stats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stats resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Stats.jsonld-stats.read"];
+                    "application/json": components["schemas"]["Stats-stats.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };

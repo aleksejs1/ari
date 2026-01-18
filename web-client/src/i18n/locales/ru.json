@@ -476,7 +476,11 @@
     "yearsCount_few": "{{count}} года",
     "yearsCount_many": "{{count}} лет",
     "yearsCount_other": "{{count}} лет",
-    "recentAuditLogs": "Последняя активность"
+    "recentAuditLogs": "Последняя активность",
+    "stats": "Статистика системы",
+    "totalContacts": "Всего контактов",
+    "totalAuditLogs": "Всего логов аудита",
+    "totalSentNotifications": "Отправлено уведомлений"
   },
   "notifications": {
     "errorLoading": "Не удалось загрузить уведомления",

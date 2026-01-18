@@ -29,6 +29,7 @@ export type ContactOrganization = components['schemas']['ContactOrganization.jso
 export type ContactBiography = components['schemas']['ContactBiography.jsonld-contact.read']
 
 export type ActivityFeed = components['schemas']['ActivityFeed.jsonld-activity_feed.read']
+export type Stats = components['schemas']['Stats.jsonld-stats.read']
 
 export interface ContactRelation {
   id?: string

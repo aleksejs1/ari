@@ -475,7 +475,11 @@
     "noUpcoming": "No upcoming anniversaries found.",
     "yearsCount": "{{count}} years",
     "yearsCount_one": "{{count}} year",
-    "recentAuditLogs": "Recent Activity"
+    "recentAuditLogs": "Recent Activity",
+    "stats": "System Stats",
+    "totalContacts": "Total Contacts",
+    "totalAuditLogs": "Total Audit Logs",
+    "totalSentNotifications": "Sent Notifications"
   },
   "notifications": {
     "errorLoading": "Failed to load notifications",

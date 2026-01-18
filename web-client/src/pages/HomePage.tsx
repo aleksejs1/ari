@@ -6,7 +6,7 @@ export default function HomePage() {
   const { t } = useTranslation()
 
   // This would eventually come from user settings/API
-  const defaultLayout = ['groups', 'upcoming-anniversaries', 'recent-audit-logs']
+  const defaultLayout = ['stats', 'groups', 'upcoming-anniversaries', 'recent-audit-logs']
 
   return (
     <div className="space-y-6">
