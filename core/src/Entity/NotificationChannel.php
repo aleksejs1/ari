@@ -15,6 +15,7 @@ use App\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: NotificationChannelRepository::class)]
@@ -27,6 +28,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Patch(security: "is_granted('NOTIFICATION_CHANNEL_EDIT', object)"),
         new Delete(security: "is_granted('NOTIFICATION_CHANNEL_EDIT', object)"),
         new Post(securityPostDenormalize: "is_granted('NOTIFICATION_CHANNEL_ADD', object)"),
+        new Post(
+            uriTemplate: '/notification_channels/{id}/verify',
+            controller: 'App\Controller\NotificationChannelController::verify',
+            openapi: new OpenApiOperation(summary: 'Send verification email for this channel'),
+            denormalizationContext: ['groups' => ['notification_channel:verify']], // Use empty or specific group to avoid body requirements if body is empty
+            security: "is_granted('ROLE_USER') and object.getUser() == user",
+            name: 'verify_channel'
+        ),
     ],
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['notification_channel:read']],

@@ -267,7 +267,7 @@ final class ImportGoogleContactHandler
                             // Avatar download failure shouldn't stop contact import
                         }
                     }
-                    break; 
+                    break;
                 }
             }
         }

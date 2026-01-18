@@ -5,7 +5,6 @@ namespace App\Service\ContactImport;
 use App\Dto\ContactImportDto;
 use App\Entity\Contact;
 use App\Entity\ContactAddress;
-use App\Entity\ContactAvatar;
 use App\Entity\ContactBiography;
 use App\Entity\ContactDate;
 use App\Entity\ContactEmailAdress;
@@ -15,10 +14,9 @@ use App\Entity\ContactOrganization;
 use App\Entity\ContactPhoneNumber;
 use App\Entity\Group;
 use App\Entity\User;
+use App\Service\AvatarManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-
-use App\Service\AvatarManager;
 
 class ContactImportService
 {
@@ -279,9 +277,9 @@ class ContactImportService
         // Handle Avatar
         if (null !== $dto->avatarContent) {
             $avatar = $this->avatarManager->uploadContent(
-                $contact, 
-                $dto->avatarContent, 
-                $dto->avatarMimeType ?? 'image/jpeg'
+                $contact,
+                $dto->avatarContent,
+                $dto->avatarMimeType ?? 'image/jpeg',
             );
             $this->entityManager->persist($avatar);
         }

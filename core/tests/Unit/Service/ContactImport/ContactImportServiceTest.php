@@ -297,7 +297,7 @@ final class ContactImportServiceTest extends TestCase
         $service = new ContactImportService([], $entityManager, $avatarManager);
 
         $contact = new Contact();
-        
+
         $name1 = new ContactName();
         $name1->setGiven('One');
         $contact->addContactName($name1);
@@ -314,11 +314,11 @@ final class ContactImportServiceTest extends TestCase
         $service->update($contact, $dto, true);
 
         self::assertCount(2, $contact->getContactNames(), 'Should have 2 names (1 recycled, 1 kept)');
-        
+
         $names = $contact->getContactNames();
         // One of them should be 'Three' (recycled)
         // One of them should be 'Two' (kept)
-        $givens = array_map(fn(ContactName $n) => $n->getGiven(), $names->toArray());
+        $givens = array_map(fn (ContactName $n) => $n->getGiven(), $names->toArray());
         self::assertContains('Three', $givens);
         self::assertContains('Two', $givens);
     }
@@ -331,7 +331,7 @@ final class ContactImportServiceTest extends TestCase
         $service = new ContactImportService([], $entityManager, $avatarManager);
 
         $contact = new Contact();
-        
+
         $name1 = new ContactName();
         $name1->setGiven('One');
         $contact->addContactName($name1);
@@ -348,7 +348,7 @@ final class ContactImportServiceTest extends TestCase
         $service->update($contact, $dto, false);
 
         self::assertCount(1, $contact->getContactNames(), 'Should have 1 name (1 recycled, 1 deleted)');
-        
+
         $name = $contact->getContactNames()->first();
         self::assertInstanceOf(ContactName::class, $name);
         self::assertEquals('Three', $name->getGiven());

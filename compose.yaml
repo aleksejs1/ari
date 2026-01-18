@@ -16,6 +16,7 @@ services:
       DB_PASSWORD: "${MARIADB_PASSWORD:-!ChangeMe!}"
       DB_NAME: "${MARIADB_DB:-app}"
       DB_VERSION: "11.4.9-MariaDB"
+      MAILER_DSN: "smtp://mailpit:1025"
 
   database:
     profiles: [ "mysql" ]
@@ -32,6 +33,13 @@ services:
       start_period: 60s
     volumes:
       - database_data:/var/lib/mysql
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: unless-stopped
 
 volumes:
   database_data:
