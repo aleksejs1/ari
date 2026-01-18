@@ -60,7 +60,9 @@ const EmailConfig = ({ channel }: { channel: NotificationChannel }) => {
     <div className="flex items-center gap-2">
       <span>{config.email}</span>
       {channel.verifiedAt ? (
-        <Check className="h-5 w-5 text-green-500" title={t('notificationChannels.verified')} />
+        <span title={t('notificationChannels.verified')}>
+          <Check className="h-5 w-5 text-green-500" />
+        </span>
       ) : (
         <VerifyButton id={channel.id} />
       )}
