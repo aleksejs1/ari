@@ -300,8 +300,12 @@
     "error": "Error loading notification channels.",
     "types": {
       "telegram": "Telegram",
-      "web": "Browser"
-    }
+      "web": "Browser",
+      "email": "Email"
+    },
+    "email": "Email",
+    "verify": "Verify",
+    "verificationSent": "Verification link sent"
   },
   "common": {
     "save": "Save",

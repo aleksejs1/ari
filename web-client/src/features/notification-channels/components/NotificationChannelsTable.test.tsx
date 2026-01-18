@@ -5,6 +5,14 @@ import { NotificationChannelsTable } from './NotificationChannelsTable'
 
 import type { NotificationChannel } from '@/types/models'
 
+vi.mock('../useNotificationChannels', () => ({
+  useVerifyNotificationChannel: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+    isSuccess: false,
+  }),
+}))
+
 describe('NotificationChannelsTable', () => {
   const mockData: NotificationChannel[] = [
     {
@@ -100,5 +108,39 @@ describe('NotificationChannelsTable', () => {
     // The simplified check is to look for the class or element.
     const checkmarks = document.querySelectorAll('.text-green-500')
     expect(checkmarks).toHaveLength(3)
+  })
+  it('renders email channel with verify button', () => {
+    const data: NotificationChannel[] = [
+      {
+        id: 1,
+        type: 'email',
+        config: { email: 'test@example.com' },
+        verifiedAt: null,
+      },
+    ]
+
+    render(<NotificationChannelsTable data={data} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+
+    expect(screen.getByText(/email/i)).toBeInTheDocument()
+    expect(screen.getByText('test@example.com')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'notificationChannels.verify' })).toBeInTheDocument()
+  })
+
+  it('renders verified email channel', () => {
+    const data: NotificationChannel[] = [
+      {
+        id: 1,
+        type: 'email',
+        config: { email: 'test@example.com' },
+        verifiedAt: '2023-01-01',
+      },
+    ]
+
+    render(<NotificationChannelsTable data={data} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+
+    expect(screen.getByText('test@example.com')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'notificationChannels.verify' }),
+    ).not.toBeInTheDocument()
   })
 })

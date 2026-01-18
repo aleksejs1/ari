@@ -110,7 +110,7 @@ export default function NotificationChannelsPage() {
               defaultValues={
                 editingChannel
                   ? {
-                      type: editingChannel.type as 'telegram' | 'web',
+                      type: editingChannel.type as 'telegram' | 'web' | 'email',
                       config: editingChannel.config,
                     }
                   : undefined

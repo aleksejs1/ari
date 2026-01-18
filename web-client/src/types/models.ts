@@ -210,12 +210,13 @@ export interface TimelineEvent {
 export const notificationChannelSchema = z.object({
   id: z.number().optional(),
   '@id': z.string().optional(),
-  type: z.enum(['telegram', 'web']),
+  type: z.enum(['telegram', 'web', 'email']),
   config: z
     .object({
       botToken: z.string().optional(),
       chatId: z.string().optional(),
       mapping: z.string().optional(),
+      email: z.string().optional(),
     })
     .optional()
     .nullable(),

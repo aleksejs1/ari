@@ -2,6 +2,8 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tan
 import { Edit, Trash2, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { useVerifyNotificationChannel } from '../useNotificationChannels'
+
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -17,6 +19,99 @@ interface NotificationChannelsTableProps {
   data: NotificationChannel[]
   onEdit: (channel: NotificationChannel) => void
   onDelete: (channel: NotificationChannel) => void
+}
+
+function VerifyButton({ id }: { id: number | string }) {
+  const { t } = useTranslation()
+  const { mutate, isPending, isSuccess } = useVerifyNotificationChannel()
+
+  if (isSuccess) {
+    return (
+      <span className="text-xs text-green-600">{t('notificationChannels.verificationSent')}</span>
+    )
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="h-7 text-xs"
+      disabled={isPending}
+      onClick={() => mutate(id)}
+    >
+      {isPending ? t('common.loading') : t('notificationChannels.verify')}
+    </Button>
+  )
+}
+
+const EmailConfig = ({ channel }: { channel: NotificationChannel }) => {
+  const { t } = useTranslation()
+  const config = channel.config as Record<string, string>
+
+  if (!config?.email) {
+    return null
+  }
+
+  if (!channel.id) {
+    return null
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span>{config.email}</span>
+      {channel.verifiedAt ? (
+        <Check className="h-5 w-5 text-green-500" title={t('notificationChannels.verified')} />
+      ) : (
+        <VerifyButton id={channel.id} />
+      )}
+    </div>
+  )
+}
+
+const TelegramConfig = ({ channel }: { channel: NotificationChannel }) => {
+  const { t } = useTranslation()
+  const config = channel.config as Record<string, string>
+
+  if (!config) {
+    return null
+  }
+
+  if (config.chatId) {
+    return <Check className="h-5 w-5 text-green-500" />
+  }
+
+  if (config.mapping && !config.chatId) {
+    return (
+      <div className="mt-1">
+        <Button variant="outline" size="sm" asChild className="h-7 text-xs">
+          <a
+            href={`https://t.me/ari_crm_test_notifications_bot?start=${config.mapping}_${channel.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('notificationChannels.activate')}
+          </a>
+        </Button>
+      </div>
+    )
+  }
+  return null
+}
+
+const ChannelConfigCell = ({ channel }: { channel: NotificationChannel }) => {
+  if (channel.type === 'web') {
+    return <Check className="h-5 w-5 text-green-500" />
+  }
+
+  if (channel.type === 'email') {
+    return <EmailConfig channel={channel} />
+  }
+
+  if (channel.type === 'telegram') {
+    return <TelegramConfig channel={channel} />
+  }
+
+  return null
 }
 
 export function NotificationChannelsTable({
@@ -35,39 +130,7 @@ export function NotificationChannelsTable({
     {
       accessorKey: 'config',
       header: t('notificationChannels.activated'),
-      cell: ({ row }) => {
-        if (row.original.type === 'web') {
-          return <Check className="h-5 w-5 text-green-500" />
-        }
-        if (row.original.type !== 'telegram') {
-          return null
-        }
-        const config = row.original.config as Record<string, string>
-        if (!config) {
-          return null
-        }
-
-        if (config.chatId) {
-          return <Check className="h-5 w-5 text-green-500" />
-        }
-
-        if (config.mapping && !config.chatId) {
-          return (
-            <div className="mt-1">
-              <Button variant="outline" size="sm" asChild className="h-7 text-xs">
-                <a
-                  href={`https://t.me/ari_crm_test_notifications_bot?start=${config.mapping}_${row.original.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('notificationChannels.activate')}
-                </a>
-              </Button>
-            </div>
-          )
-        }
-        return null
-      },
+      cell: ({ row }) => <ChannelConfigCell channel={row.original} />,
     },
 
     {

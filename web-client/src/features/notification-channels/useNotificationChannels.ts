@@ -56,3 +56,20 @@ export function useDeleteNotificationChannel() {
     },
   })
 }
+
+export function useVerifyNotificationChannel() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string | number) => {
+      const url =
+        typeof id === 'string' && id.startsWith('/api')
+          ? id.substring(4)
+          : `/notification_channels/${id}`
+      const response = await api.post(`${url}/verify`)
+      return response.data
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+    },
+  })
+}

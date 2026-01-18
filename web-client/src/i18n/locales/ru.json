@@ -299,8 +299,12 @@
     "error": "Ошибка загрузки каналов уведомлений.",
     "types": {
       "telegram": "Telegram",
-      "web": "Браузер"
-    }
+      "web": "Браузер",
+      "email": "Email"
+    },
+    "email": "Email",
+    "verify": "Подтвердить",
+    "verificationSent": "Ссылка отправлена"
   },
   "common": {
     "save": "Сохранить",

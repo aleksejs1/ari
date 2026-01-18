@@ -29,11 +29,13 @@ export function NotificationChannelForm({
 
   const notificationChannelSchema = z.object({
     id: z.number().optional(),
-    type: z.enum(['telegram', 'web']),
+    type: z.enum(['telegram', 'web', 'email']),
     config: z
       .object({
         botToken: z.string().optional(),
         chatId: z.string().optional(),
+        email: z.string().optional(),
+        mapping: z.string().optional(),
       })
       .optional()
       .nullable(),
@@ -55,10 +57,26 @@ export function NotificationChannelForm({
     name: 'type',
   })
 
+  const handleSubmit = (data: NotificationChannelFormValues) => {
+    const cleanedData = { ...data }
+    if (cleanedData.config) {
+      if (cleanedData.type === 'email') {
+        const { email } = cleanedData.config
+        cleanedData.config = { email }
+      } else if (cleanedData.type === 'telegram') {
+        const { botToken, chatId, mapping } = cleanedData.config
+        cleanedData.config = { botToken, chatId, mapping }
+      } else if (cleanedData.type === 'web') {
+        cleanedData.config = {}
+      }
+    }
+    onSubmit(cleanedData)
+  }
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6"
         aria-label="notification-channel-form"
       >
@@ -76,6 +94,7 @@ export function NotificationChannelForm({
                 >
                   <option value="telegram">Telegram</option>
                   <option value="web">Web</option>
+                  <option value="email">Email</option>
                 </select>
               </FormControl>
               <FormMessage />
@@ -83,7 +102,63 @@ export function NotificationChannelForm({
           )}
         />
 
-        {selectedType === 'telegram' && <></>}
+        {selectedType === 'telegram' && (
+          <>
+            <FormField
+              control={form.control}
+              name="config.botToken"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('notificationChannels.botToken')}</FormLabel>
+                  <FormControl>
+                    <input
+                      {...field}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="config.chatId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('notificationChannels.chatId')}</FormLabel>
+                  <FormControl>
+                    <input
+                      {...field}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
+
+        {selectedType === 'email' && (
+          <FormField
+            control={form.control}
+            name="config.email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('notificationChannels.email')}</FormLabel>
+                <FormControl>
+                  <input
+                    {...field}
+                    value={field.value ?? ''}
+                    type="email"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? t('common.saving') : t('common.save')}
