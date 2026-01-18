@@ -10,33 +10,56 @@ abstract class AbstractApiTestCase extends ApiTestCase
 {
     protected static ?bool $alwaysBootKernel = false;
 
-    protected string $token;
-    protected string $userUuid;
+    protected string $token = '';
+    protected string $userUuid = '';
+    protected bool $autoLogin = true;
 
     #[\Override]
     protected function setUp(): void
     {
-        $container = self::getContainer();
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $container->get('doctrine');
-        /** @var EntityManagerInterface $em */
-        $em = $doctrine->getManager();
+        parent::setUp();
 
-        /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
+        if ($this->autoLogin) {
+            // Default login for tests that explicitly request it
+            try {
+                $this->token = $this->getToken('test@example.com', 'password');
+                $this->userUuid = 'test@example.com';
+            } catch (\Exception) {
+                // User might not exist yet, create it
+                $this->createUser('test@example.com', 'password');
+                $this->token = $this->getToken('test@example.com', 'password');
+                $this->userUuid = 'test@example.com';
+            }
+        }
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        $em = self::getContainer()->get('doctrine')->getManager();
+        if (!$em instanceof EntityManagerInterface) {
+            throw new \RuntimeException('Entity manager not found');
+        }
+
+        return $em;
+    }
+
+    protected function createUser(string $email, string $password): User
+    {
+        $container = self::getContainer();
+        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $testContainer */
         $testContainer = $container->get('test.service_container');
         /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
         $hasher = $testContainer->get('security.user_password_hasher');
 
-        // Create User
-        $this->userUuid = 'user-' . bin2hex(random_bytes(4));
         $user = new User();
-        $user->setUuid($this->userUuid);
-        $user->setPassword($hasher->hashPassword($user, 'pass'));
+        $user->setUuid($email);
+        $user->setPassword($hasher->hashPassword($user, $password));
+
+        $em = $this->getEntityManager();
         $em->persist($user);
         $em->flush();
 
-        // Get token
-        $this->token = $this->getToken($this->userUuid, 'pass');
+        return $user;
     }
 
     protected function getToken(string $username, string $password): string

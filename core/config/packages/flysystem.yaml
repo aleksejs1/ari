@@ -1,0 +1,32 @@
+flysystem:
+    storages:
+        default.storage:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/var/storage/default'
+
+        avatar.storage.local:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/public/uploads/avatars'
+
+        avatar.storage.s3:
+            adapter: 'aws'
+            options:
+                client: 'aws_s3.client'
+                bucket: '%env(AWS_S3_BUCKET)%'
+                prefix: 'avatars'
+
+services:
+    # We will alias avatar.storage based on environment manually in services.yaml or just handle it in the manager
+    aws_s3.client:
+        class: 'Aws\S3\S3Client'
+        arguments:
+            -
+                endpoint: '%env(AWS_S3_ENDPOINT)%'
+                region: '%env(AWS_S3_REGION)%'
+                version: 'latest'
+                use_path_style_endpoint: true
+                credentials:
+                    key: '%env(AWS_S3_KEY)%'
+                    secret: '%env(AWS_S3_SECRET)%'

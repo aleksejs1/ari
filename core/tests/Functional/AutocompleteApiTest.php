@@ -3,7 +3,6 @@
 namespace App\Tests\Functional;
 
 use App\Entity\Contact;
-use App\Entity\ContactAddress;
 use App\Entity\ContactEmailAdress;
 use App\Entity\ContactOrganization;
 use App\Entity\ContactPhoneNumber;

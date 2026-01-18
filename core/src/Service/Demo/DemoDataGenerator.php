@@ -72,13 +72,14 @@ class DemoDataGenerator
 
     public function getRandomFirstName(?string $gender = null): string
     {
-        if ($gender === 'male') {
+        if ('male' === $gender) {
             return self::FIRST_NAMES_MALE[array_rand(self::FIRST_NAMES_MALE)];
         }
-        if ($gender === 'female') {
+        if ('female' === $gender) {
             return self::FIRST_NAMES_FEMALE[array_rand(self::FIRST_NAMES_FEMALE)];
         }
         $all = array_merge(self::FIRST_NAMES_MALE, self::FIRST_NAMES_FEMALE);
+
         return $all[array_rand($all)];
     }
 
@@ -120,6 +121,7 @@ class DemoDataGenerator
     public function getRandomEmail(string $firstName, string $lastName): string
     {
         $domains = ['example.com', 'gmail.com', 'outlook.com', 'yahoo.com'];
+
         return strtolower($firstName . '.' . $lastName . '@' . $domains[array_rand($domains)]);
     }
 
@@ -148,6 +150,7 @@ class DemoDataGenerator
         $timestamp = rand($min->getTimestamp(), $max->getTimestamp());
         $dt = new \DateTime();
         $dt->setTimestamp($timestamp);
+
         return $dt;
     }
 }

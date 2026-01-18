@@ -18,12 +18,13 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 # Install PHP extensions using the cleaner/more robust installer
 RUN install-php-extensions \
     intl \
-    pdo_mysql \
-    pdo_sqlite \
+    apcu \
+    pcov \
+    gd \
     zip \
     opcache \
-    apcu \
-    pcov
+    pdo_sqlite \
+    pdo_mysql
 
 
 

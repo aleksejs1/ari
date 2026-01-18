@@ -2,7 +2,6 @@
 
 namespace App\Tests\Functional\Command;
 
-use App\Command\ProcessNotificationQueueCommand;
 use App\Service\Notification\NotificationProcessor;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

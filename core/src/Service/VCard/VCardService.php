@@ -94,7 +94,7 @@ class VCardService
             if (null !== $dateValue) {
                 $isBirthday = false;
                 $dateText = $date->getText();
-                if (null !== $dateText && '' !== $dateText && stripos($dateText, 'birthday') !== false) {
+                if (null !== $dateText && '' !== $dateText && false !== stripos($dateText, 'birthday')) {
                     $isBirthday = true;
                 }
 
@@ -116,6 +116,7 @@ class VCardService
     private function mapType(string $type): string
     {
         $type = strtolower($type);
+
         return match ($type) {
             'home' => 'home',
             'work' => 'work',

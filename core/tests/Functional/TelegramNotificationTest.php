@@ -73,10 +73,10 @@ class TelegramNotificationTest extends ApiTestCase
         // 2. Mock TelegramService with Stub + Callback (Spy)
         $telegramServiceStub = self::createStub(TelegramService::class);
         $messageSent = false;
-        $telegramServiceStub->method('sendMessage')->willReturnCallback(function($token, $chatId, $message) use (&$messageSent) {
-             if (str_contains($message, 'Birthday')) {
-                 $messageSent = true;
-             }
+        $telegramServiceStub->method('sendMessage')->willReturnCallback(function ($token, $chatId, $message) use (&$messageSent) {
+            if (str_contains($message, 'Birthday')) {
+                $messageSent = true;
+            }
         });
 
         // Replace service in container
@@ -90,7 +90,7 @@ class TelegramNotificationTest extends ApiTestCase
 
         $commandTester->assertCommandIsSuccessful();
         self::assertStringContainsString('Notification sent', $commandTester->getDisplay());
-        
+
         // Verify Spy
         self::assertTrue($messageSent, 'TelegramService::sendMessage was not called with expected message.');
 

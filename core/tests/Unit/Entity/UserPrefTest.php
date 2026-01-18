@@ -69,42 +69,44 @@ class UserPrefTest extends TestCase
         $this->assertValidationSuccess(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE, '1');
         $this->assertValidationFailure(UserPref::TYPE_GOOGLE_SYNC_ON_UPDATE, 'true', 'Invalid value for googleSyncOnUpdate. Must be "0" or "1".');
     }
-    
+
     private function assertValidationSuccess(string $type, string $value): void
     {
         $pref = new UserPref();
         $pref->setType($type);
         $pref->setValue($value);
-        
+
         $violations = [];
         $context = self::createStub(ExecutionContextInterface::class);
-        $context->method('buildViolation')->willReturnCallback(function($msg) use (&$violations) {
+        $context->method('buildViolation')->willReturnCallback(function ($msg) use (&$violations) {
             $violations[] = $msg;
+
             return self::createStub(ConstraintViolationBuilderInterface::class);
         });
-        
+
         $pref->validateValue($context);
-        
+
         self::assertEmpty($violations);
     }
-    
+
     private function assertValidationFailure(string $type, string $value, string $expectedMsg): void
     {
         $pref = new UserPref();
         $pref->setType($type);
         $pref->setValue($value);
-        
+
         $violations = [];
         $builder = self::createStub(ConstraintViolationBuilderInterface::class);
         $builder->method('atPath')->willReturn($builder);
-        $builder->method('addViolation')->willReturnCallback(function() {}); // just to allow call
+        $builder->method('addViolation')->willReturnCallback(function () {}); // just to allow call
 
         $context = self::createStub(ExecutionContextInterface::class);
-        $context->method('buildViolation')->willReturnCallback(function($msg) use (&$violations, $expectedMsg, $builder) {
-             if ($msg === $expectedMsg) {
-                 $violations[] = $msg;
-             }
-             return $builder;
+        $context->method('buildViolation')->willReturnCallback(function ($msg) use (&$violations, $expectedMsg, $builder) {
+            if ($msg === $expectedMsg) {
+                $violations[] = $msg;
+            }
+
+            return $builder;
         });
 
         $pref->validateValue($context);

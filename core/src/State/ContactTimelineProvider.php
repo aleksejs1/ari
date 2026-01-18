@@ -26,7 +26,7 @@ class ContactTimelineProvider implements ProviderInterface
             throw new NotFoundHttpException('Contact not found');
         }
 
-        $logs = $this->timelineService->getTimeline((int) $id);
+        $logs = $this->timelineService->getTimeline($id);
 
         return new ContactTimeline(
             (int) $id,

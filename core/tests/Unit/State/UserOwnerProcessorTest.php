@@ -29,7 +29,7 @@ final class UserOwnerProcessorTest extends TestCase
         $this->persistProcessor = self::createStub(ProcessorInterface::class);
         $this->removeProcessor = self::createStub(ProcessorInterface::class);
         $this->tokenStorage = self::createStub(TokenStorageInterface::class);
-        
+
         $this->processor = new UserOwnerProcessor($this->persistProcessor, $this->removeProcessor, $this->tokenStorage);
     }
 
@@ -40,12 +40,13 @@ final class UserOwnerProcessorTest extends TestCase
 
         // Spy logic
         $calls = [];
-        $this->persistProcessor->method('process')->willReturnCallback(function($d) use (&$calls, $data) {
-             $calls[] = $d;
-             return $data;
+        $this->persistProcessor->method('process')->willReturnCallback(function ($d) use (&$calls, $data) {
+            $calls[] = $d;
+
+            return $data;
         });
 
-        $this->tokenStorage->method('getToken')->willReturnCallback(function() {
+        $this->tokenStorage->method('getToken')->willReturnCallback(function () {
             throw new \Exception('Should not be called');
         });
 
@@ -60,13 +61,14 @@ final class UserOwnerProcessorTest extends TestCase
         $operation = new \ApiPlatform\Metadata\Delete();
 
         $calls = [];
-        $this->removeProcessor->method('process')->willReturnCallback(function($d) use (&$calls, $data) {
-             $calls[] = $d;
-             return $data;
+        $this->removeProcessor->method('process')->willReturnCallback(function ($d) use (&$calls, $data) {
+            $calls[] = $d;
+
+            return $data;
         });
 
-        $this->persistProcessor->method('process')->willReturnCallback(function() {
-             throw new \Exception('Should not be called');
+        $this->persistProcessor->method('process')->willReturnCallback(function () {
+            throw new \Exception('Should not be called');
         });
 
         $result = $this->processor->process($data, $operation);
@@ -83,9 +85,10 @@ final class UserOwnerProcessorTest extends TestCase
         $operation = new \ApiPlatform\Metadata\Get();
 
         $calls = [];
-        $this->persistProcessor->method('process')->willReturnCallback(function($d) use (&$calls, $data) {
-             $calls[] = $d;
-             return $data;
+        $this->persistProcessor->method('process')->willReturnCallback(function ($d) use (&$calls, $data) {
+            $calls[] = $d;
+
+            return $data;
         });
 
         $result = $this->processor->process($data, $operation);
@@ -121,9 +124,10 @@ final class UserOwnerProcessorTest extends TestCase
         $this->tokenStorage->method('getToken')->willReturn($token);
 
         $calls = [];
-        $this->persistProcessor->method('process')->willReturnCallback(function($d) use (&$calls, $data) {
-             $calls[] = $d;
-             return $data;
+        $this->persistProcessor->method('process')->willReturnCallback(function ($d) use (&$calls, $data) {
+            $calls[] = $d;
+
+            return $data;
         });
 
         $result = $this->processor->process($data, $operation);
@@ -156,9 +160,10 @@ final class UserOwnerProcessorTest extends TestCase
         $this->tokenStorage->method('getToken')->willReturn(null);
 
         $calls = [];
-        $this->persistProcessor->method('process')->willReturnCallback(function($d) use (&$calls, $data) {
-             $calls[] = $d;
-             return $data;
+        $this->persistProcessor->method('process')->willReturnCallback(function ($d) use (&$calls, $data) {
+            $calls[] = $d;
+
+            return $data;
         });
 
         $result = $this->processor->process($data, $operation);

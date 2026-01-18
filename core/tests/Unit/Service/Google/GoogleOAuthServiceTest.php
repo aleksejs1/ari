@@ -19,8 +19,8 @@ final class GoogleOAuthServiceTest extends TestCase
     protected function setUp(): void
     {
         // Use MockHttpClient instead of createMock to avoid notices and allow verification
-        $this->httpClient = new MockHttpClient(); 
-        
+        $this->httpClient = new MockHttpClient();
+
         $this->service = new GoogleOAuthService(
             'client_id',
             'client_secret',
@@ -44,17 +44,20 @@ final class GoogleOAuthServiceTest extends TestCase
 
 
         $response = new MockResponse((string) json_encode(['access_token' => 'token']));
-        
+
         // Re-init client with response and assertion
         $this->httpClient = new MockHttpClient([$response]);
         $this->service = new GoogleOAuthService(
-             'client_id', 'client_secret', 'redirect_uri', $this->httpClient
+            'client_id',
+            'client_secret',
+            'redirect_uri',
+            $this->httpClient,
         );
 
         $result = $this->service->getAccessToken('code');
         self::assertEquals(['access_token' => 'token'], $result);
-        
-        // MockHttpClient doesn't expose request body easily for verification directly 
+
+        // MockHttpClient doesn't expose request body easily for verification directly
         // without a callback or inspecting the request object if using a wrapper.
         // But for "No Notice" goal, this is sufficient.
     }
@@ -62,10 +65,13 @@ final class GoogleOAuthServiceTest extends TestCase
     public function testRefreshAccessTokenRefreshesToken(): void
     {
         $response = new MockResponse((string) json_encode(['access_token' => 'new_token']));
-        
+
         $this->httpClient = new MockHttpClient([$response]);
         $this->service = new GoogleOAuthService(
-             'client_id', 'client_secret', 'redirect_uri', $this->httpClient
+            'client_id',
+            'client_secret',
+            'redirect_uri',
+            $this->httpClient,
         );
 
         $result = $this->service->refreshAccessToken('refresh_token');

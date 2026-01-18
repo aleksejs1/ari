@@ -2,55 +2,9 @@
 
 namespace App\Tests\Functional;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-
-class DeletedEntityAuditLogTest extends ApiTestCase
+class DeletedEntityAuditLogTest extends AbstractApiTestCase
 {
-    private string $token;
-    private string $userUuid;
-
-    // Suppress API Platform deprecation about kernel booting
-    protected static ?bool $alwaysBootKernel = true;
-
-    #[\Override]
-    protected function setUp(): void
-    {
-        $container = self::getContainer();
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $container->get('doctrine');
-        /** @var EntityManagerInterface $em */
-        $em = $doctrine->getManager();
-
-        /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
-        $testContainer = $container->get('test.service_container');
-        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */
-        $hasher = $testContainer->get('security.user_password_hasher');
-
-        // Create User
-        $this->userUuid = 'user-' . bin2hex(random_bytes(4));
-        $user = new User();
-        $user->setUuid($this->userUuid);
-        $user->setPassword($hasher->hashPassword($user, 'pass'));
-        $em->persist($user);
-        $em->flush();
-
-        // Get token
-        $this->token = $this->getToken($this->userUuid, 'pass');
-    }
-
-    private function getToken(string $username, string $password): string
-    {
-        $response = static::createClient()->request('POST', '/api/login_check', [
-            'json' => [
-                'username' => $username,
-                'password' => $password,
-            ],
-        ]);
-
-        return $response->toArray()['token'];
-    }
+    protected bool $autoLogin = true;
 
     public function testTimelineIncludesLogsForDeletedEntities(): void
     {
@@ -93,7 +47,7 @@ class DeletedEntityAuditLogTest extends ApiTestCase
         $foundDeleteLog = false;
 
         foreach ($logs as $log) {
-            if ('App\\Entity\\ContactName' === $log['entityType'] && $log['entityId'] === $contactNameId) {
+            if ('App\\Entity\\ContactName' === $log['entityType'] && (string) $log['entityId'] === (string) $contactNameId) {
                 if ('INSERT' === $log['action']) {
                     $foundCreateLog = true;
                 }

@@ -18,13 +18,14 @@ class ContactTimelineProviderTest extends TestCase
     {
         $id = 123;
         $logs = new ArrayCollection([new AuditLog()]);
-        
+
         $service = self::createStub(ContactTimelineService::class);
-        $service->method('getTimeline')->willReturnCallback(function($arg) use ($id, $logs) {
-             if ($arg === $id) {
-                 return $logs;
-             }
-             return new ArrayCollection();
+        $service->method('getTimeline')->willReturnCallback(function ($arg) use ($id, $logs) {
+            if ($arg === $id) {
+                return $logs;
+            }
+
+            return new ArrayCollection();
         });
 
         $provider = new ContactTimelineProvider($service);

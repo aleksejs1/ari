@@ -41,9 +41,9 @@ final class NameDuplicateCheckerTest extends TestCase
         // Simulate behavior: findOneBy returns $contactName when criteria matches
         $this->contactNameRepository->method('findOneBy')
              ->willReturnMap([
-                 [['given' => 'John', 'family' => 'Doe'], null, $contactName]
+                 [['given' => 'John', 'family' => 'Doe'], null, $contactName],
              ]);
-             
+
         // Wait, willReturnMap takes array of [args..., return].
         // If args are ['given'=>'John'...].
         // createStub logic: if map matches args.
@@ -53,15 +53,16 @@ final class NameDuplicateCheckerTest extends TestCase
         // It relies on $checker calling with correct criteria to get the result that makes isDuplicate return true.
         // If it sends wrong criteria, it might get same result if using simple willReturn.
         // Using willReturnMap adds a layer of "mocking" verif.
-        
+
         $this->contactNameRepository = self::createStub(ContactNameRepository::class);
-        $this->contactNameRepository->method('findOneBy')->willReturnCallback(function($criteria) use ($contactName) {
+        $this->contactNameRepository->method('findOneBy')->willReturnCallback(function ($criteria) use ($contactName) {
             if ($criteria === ['given' => 'John', 'family' => 'Doe']) {
                 return $contactName;
             }
+
             return null;
         });
-        
+
         $this->checker = new NameDuplicateChecker($this->contactNameRepository);
 
         self::assertTrue($this->checker->isDuplicate($dto, $user));
@@ -83,13 +84,14 @@ final class NameDuplicateCheckerTest extends TestCase
         );
 
         $this->contactNameRepository = self::createStub(ContactNameRepository::class);
-        $this->contactNameRepository->method('findOneBy')->willReturnCallback(function($criteria) use ($contactName) {
+        $this->contactNameRepository->method('findOneBy')->willReturnCallback(function ($criteria) use ($contactName) {
             if ($criteria === ['given' => 'John', 'family' => 'Doe']) {
                 return $contactName;
             }
+
             return null;
         });
-        
+
         $this->checker = new NameDuplicateChecker($this->contactNameRepository);
 
         self::assertFalse($this->checker->isDuplicate($dto, $user));

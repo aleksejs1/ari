@@ -47,7 +47,7 @@ class ProcessNotificationsCommandTest extends KernelTestCase
         $commandTester->execute([]);
 
         self::assertEquals(1, $commandTester->getStatusCode());
-        
+
         $output = $commandTester->getDisplay();
         self::assertStringContainsString('An error occurred while processing notifications: Processing failed', $output);
     }

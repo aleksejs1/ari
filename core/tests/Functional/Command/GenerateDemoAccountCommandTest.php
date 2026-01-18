@@ -2,7 +2,6 @@
 
 namespace App\Tests\Functional\Command;
 
-use App\Command\GenerateDemoAccountCommand;
 use App\Entity\User;
 use App\Service\Demo\DemoAccountService;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -21,7 +20,7 @@ class GenerateDemoAccountCommandTest extends KernelTestCase
         $demoService = $this->createMock(DemoAccountService::class);
         $user = new User();
         $user->setUuid((string) Uuid::v4());
-        
+
         $demoService->expects($this->once())
             ->method('generateDemoAccount')
             ->willReturn($user);
@@ -61,7 +60,7 @@ class GenerateDemoAccountCommandTest extends KernelTestCase
 
         // Expected failure
         self::assertEquals(1, $commandTester->getStatusCode());
-        
+
         $output = $commandTester->getDisplay();
         self::assertStringContainsString('Error generating demo account: Simulation error', $output);
     }

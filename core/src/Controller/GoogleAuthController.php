@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-
 use App\Entity\User;
 use App\Service\Google\GoogleConnectService;
 use App\Service\Google\GoogleOAuthService;

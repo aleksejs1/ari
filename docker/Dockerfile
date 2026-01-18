@@ -29,11 +29,12 @@ RUN apk add --no-cache \
 # Install PHP extensions
 RUN install-php-extensions \
     intl \
-    pdo_mysql \
-    pdo_sqlite \
     zip \
     opcache \
-    apcu
+    apcu \
+    gd \
+    pdo_sqlite \
+    pdo_mysql
 
 # Configure PHP
 COPY docker/php.ini $PHP_INI_DIR/conf.d/app.ini

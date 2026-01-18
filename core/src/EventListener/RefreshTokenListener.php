@@ -15,7 +15,7 @@ class RefreshTokenListener
 {
     public function __construct(
         private RequestStack $requestStack,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
     ) {
     }
 

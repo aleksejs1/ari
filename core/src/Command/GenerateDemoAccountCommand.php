@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class GenerateDemoAccountCommand extends Command
 {
     public function __construct(
-        private DemoAccountService $demoAccountService
+        private DemoAccountService $demoAccountService,
     ) {
         parent::__construct();
     }
@@ -33,10 +33,11 @@ class GenerateDemoAccountCommand extends Command
             $io->success('Demo account generated successfully!');
             $io->info('User UUID: ' . (string) $user->getUuid());
             $io->info('Password: demo');
-            
+
             return Command::SUCCESS;
         } catch (\Exception $e) {
             $io->error('Error generating demo account: ' . $e->getMessage());
+
             return Command::FAILURE;
         }
     }

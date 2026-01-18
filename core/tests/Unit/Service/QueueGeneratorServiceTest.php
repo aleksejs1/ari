@@ -25,7 +25,7 @@ class QueueGeneratorServiceTest extends TestCase
     private NotificationQueueRepository $notificationQueueRepository;
     /** @var EntityManagerInterface&\PHPUnit\Framework\MockObject\Stub */
     private EntityManagerInterface $entityManager;
-    
+
     private QueueGeneratorService $service;
 
     #[\Override]
@@ -40,7 +40,7 @@ class QueueGeneratorServiceTest extends TestCase
             $this->contactDateRepository,
             $this->notificationRuleRepository,
             $this->notificationQueueRepository,
-            $this->entityManager
+            $this->entityManager,
         );
     }
 
@@ -48,17 +48,17 @@ class QueueGeneratorServiceTest extends TestCase
     {
         // Require expectations on EntityManager
         $this->entityManager = self::createStub(EntityManagerInterface::class);
-        
+
         // Re-create service
         $this->service = new QueueGeneratorService(
             $this->contactDateRepository,
             $this->notificationRuleRepository,
             $this->notificationQueueRepository,
-            $this->entityManager
+            $this->entityManager,
         );
 
         $executionDate = new \DateTime('2023-10-27 10:00:00');
-        
+
         $tenant = self::createStub(User::class);
         $tenant->method('getId')->willReturn(1);
 
@@ -68,24 +68,25 @@ class QueueGeneratorServiceTest extends TestCase
         $rule->method('getEventType')->willReturn('Birthday');
         $rule->method('getTargetType')->willReturn('ALL');
         $rule->method('getTenant')->willReturn($tenant);
-        
+
         $this->notificationRuleRepository->method('findAll')->willReturn([$rule]);
 
         // Mock Filters (Spy)
         $filters = self::createStub(FilterCollection::class);
         $this->entityManager->method('getFilters')->willReturn($filters);
         $filters->method('isEnabled')->with('tenant')->willReturn(true);
-        
+
         $disabledFilters = [];
-        $filters->method('disable')->willReturnCallback(function($f) use (&$disabledFilters) {
-             $disabledFilters[] = $f;
-             return self::createStub(\Doctrine\ORM\Query\Filter\SQLFilter::class);
+        $filters->method('disable')->willReturnCallback(function ($f) use (&$disabledFilters) {
+            $disabledFilters[] = $f;
+
+            return self::createStub(\Doctrine\ORM\Query\Filter\SQLFilter::class);
         });
 
         $contactDate = self::createStub(ContactDate::class);
         $contactDate->method('getText')->willReturn('Birthday');
         $contactDate->method('getDate')->willReturn(new \DateTime('1990-10-25'));
-        
+
         $contact = self::createStub(Contact::class);
         $contact->method('getId')->willReturn(100);
         $contact->method('getTenant')->willReturn($tenant);
@@ -99,24 +100,24 @@ class QueueGeneratorServiceTest extends TestCase
 
         // Spy persistence
         $persistedQueue = null;
-        $this->entityManager->method('persist')->willReturnCallback(function($obj) use (&$persistedQueue) {
-             if ($obj instanceof NotificationQueue) {
-                 $persistedQueue = $obj;
-             }
+        $this->entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persistedQueue) {
+            if ($obj instanceof NotificationQueue) {
+                $persistedQueue = $obj;
+            }
         });
-        
+
         $flushed = false;
-        $this->entityManager->method('flush')->willReturnCallback(function() use (&$flushed) {
+        $this->entityManager->method('flush')->willReturnCallback(function () use (&$flushed) {
             $flushed = true;
         });
 
         $count = $this->service->generate($executionDate);
         self::assertEquals(1, $count);
-        
+
         self::assertContains('tenant', $disabledFilters);
         self::assertTrue($flushed);
         self::assertNotNull($persistedQueue);
-        
+
         $scheduledAt = $persistedQueue->getScheduledAt();
         self::assertSame($rule, $persistedQueue->getRule());
         self::assertSame($contact, $persistedQueue->getContact());
@@ -131,16 +132,16 @@ class QueueGeneratorServiceTest extends TestCase
             $this->contactDateRepository,
             $this->notificationRuleRepository,
             $this->notificationQueueRepository,
-            $this->entityManager
+            $this->entityManager,
         );
 
         $executionDate = new \DateTime('2023-10-27 10:00:00');
-        
+
         $rule = self::createStub(NotificationRule::class);
         $rule->method('getOffsetDays')->willReturn(0);
-        
+
         $this->notificationRuleRepository->method('findAll')->willReturn([$rule]);
-        
+
         // stub filters
         $filters = self::createStub(FilterCollection::class);
         $this->entityManager->method('getFilters')->willReturn($filters);
@@ -154,9 +155,9 @@ class QueueGeneratorServiceTest extends TestCase
 
         // Mock existing item
         $this->notificationQueueRepository->method('findOneBy')->willReturn(self::createStub(NotificationQueue::class));
-        
+
         $persisted = [];
-        $this->entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
+        $this->entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
             $persisted[] = $obj;
         });
 

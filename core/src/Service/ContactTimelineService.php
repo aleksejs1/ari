@@ -18,8 +18,9 @@ class ContactTimelineService
     /**
      * @return Collection<int, AuditLog>
      */
-    public function getTimeline(int $contactId): Collection
+    public function getTimeline(int|string $contactId): Collection
     {
+        $contactId = (string) $contactId;
         $auditRepo = $this->entityManager->getRepository(AuditLog::class);
 
         // Fetch logs for the Contact itself

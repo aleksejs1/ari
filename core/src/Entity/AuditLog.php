@@ -12,7 +12,6 @@ use App\Security\TenantAwareInterface;
 use App\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
 #[ApiResource(
@@ -21,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     ],
     normalizationContext: ['groups' => ['audit_log:read', 'audit:read'], 'enable_max_depth' => true],
     order: ['createdAt' => 'DESC'],
-    security: "is_granted('ROLE_USER')"
+    security: "is_granted('ROLE_USER')",
 )]
 #[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
 #[ApiFilter(SafeOrderFilter::class, properties: ['createdAt' => 'DESC'])]
@@ -45,16 +44,16 @@ class AuditLog implements TenantAwareInterface
     private ?string $entityType = null;
 
     #[Groups(['audit:read'])]
-    #[ORM\Column(nullable: true)]
-    private ?int $entityId = null;
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $entityId = null;
 
     #[Groups(['audit:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $ownerEntityType = null;
 
     #[Groups(['audit:read'])]
-    #[ORM\Column(nullable: true)]
-    private ?int $ownerEntityId = null;
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ownerEntityId = null;
 
     #[Groups(['audit:read'])]
     #[ORM\Column(length: 255)]
@@ -119,12 +118,12 @@ class AuditLog implements TenantAwareInterface
         return $this;
     }
 
-    public function getEntityId(): ?int
+    public function getEntityId(): ?string
     {
         return $this->entityId;
     }
 
-    public function setEntityId(?int $entityId): static
+    public function setEntityId(?string $entityId): static
     {
         $this->entityId = $entityId;
 
@@ -221,12 +220,12 @@ class AuditLog implements TenantAwareInterface
         return $this;
     }
 
-    public function getOwnerEntityId(): ?int
+    public function getOwnerEntityId(): ?string
     {
         return $this->ownerEntityId;
     }
 
-    public function setOwnerEntityId(?int $ownerEntityId): static
+    public function setOwnerEntityId(?string $ownerEntityId): static
     {
         $this->ownerEntityId = $ownerEntityId;
 

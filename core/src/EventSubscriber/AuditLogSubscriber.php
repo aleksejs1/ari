@@ -145,14 +145,14 @@ class AuditLogSubscriber
 
     private function shouldLog(object $entity): bool
     {
-        if ($entity instanceof AuditLog) {
+        if ($entity instanceof AuditLog || $entity instanceof \App\Entity\ContactAvatar) {
             return false;
         }
 
         return $entity instanceof TenantAwareInterface;
     }
 
-    private const SENSITIVE_FIELDS = ['refreshToken', 'password', 'token'];
+    private const SENSITIVE_FIELDS = ['refreshToken', 'password', 'token', 'thumbnailData'];
 
     /**
      * @param array<string, mixed>|null $changes
@@ -172,7 +172,7 @@ class AuditLogSubscriber
             $action,
             $this->maskSensitiveData($changes),
             $this->maskSensitiveData($snapshotBefore),
-            $this->maskSensitiveData($snapshotAfter)
+            $this->maskSensitiveData($snapshotAfter),
         );
 
         $em->persist($auditLog);
@@ -324,9 +324,13 @@ class AuditLogSubscriber
                             } else {
                                 $value[$k] = substr($v, 0, 6) . '********' . substr($v, -4);
                             }
+                        } else {
+                            $value[$k] = '********';
                         }
                     }
                     $data[$key] = $value;
+                } else {
+                    $data[$key] = '********';
                 }
             }
         }

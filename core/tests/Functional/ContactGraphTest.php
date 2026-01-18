@@ -5,17 +5,16 @@ namespace App\Tests\Functional;
 use App\Entity\Contact;
 use App\Entity\ContactRelation;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 
 class ContactGraphTest extends AbstractApiTestCase
 {
     public function testGetContactGraph(): void
     {
         $client = static::createClient();
-        
+
         $container = self::getContainer();
         $em = $container->get('doctrine')->getManager();
-        
+
         $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
 
         // 1. Create contacts
@@ -57,7 +56,7 @@ class ContactGraphTest extends AbstractApiTestCase
         $client = static::createClient();
         $container = self::getContainer();
         $em = $container->get('doctrine')->getManager();
-        
+
         /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
         $testContainer = $container->get('test.service_container');
         /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $hasher */

@@ -24,10 +24,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ContactGraph
 {
     public function __construct(
-        /** @var \App\Dto\ContactGraph\GraphNode[] */
+        /** @var GraphNode[] */
         #[Groups(['contact_graph:read'])]
         public array $nodes = [],
-        /** @var \App\Dto\ContactGraph\GraphLink[] */
+        /** @var GraphLink[] */
         #[Groups(['contact_graph:read'])]
         public array $links = [],
     ) {

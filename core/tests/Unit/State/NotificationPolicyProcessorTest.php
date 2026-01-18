@@ -47,8 +47,8 @@ class NotificationPolicyProcessorTest extends TestCase
         // We need to implement 'contains'. User (id 99) is "in" the system.
         // If not contained, method logic does ->find($id).
         // Let's stub 'contains' to return true for this user
-        $em->method('contains')->willReturnCallback(function($obj) use ($user) {
-             return $obj === $user;
+        $em->method('contains')->willReturnCallback(function ($obj) use ($user) {
+            return $obj === $user;
         });
 
         $token = self::createStub(TokenInterface::class);
@@ -78,12 +78,12 @@ class NotificationPolicyProcessorTest extends TestCase
         // Expectations
         // $em->expects($this->exactly(2))->method('persist'); // Policy + 1 Rule
         // $em->expects($this->once())->method('flush');
-        
+
         $persisted = [];
-        $em->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
+        $em->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
             $persisted[] = $obj;
         });
-        
+
         // flush ignored
 
         $result = $processor->process($dto, new Post());
@@ -102,7 +102,7 @@ class NotificationPolicyProcessorTest extends TestCase
         self::assertEquals(-1, $rule->getOffsetDays());
         self::assertEquals('10:00', $rule->getOffsetTime());
         self::assertEquals($channel, $rule->getChannel());
-        
+
         self::assertCount(2, $persisted); // Policy and Rule
     }
 }

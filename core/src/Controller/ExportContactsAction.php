@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-
 #[AsController]
 class ExportContactsAction
 {

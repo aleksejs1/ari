@@ -24,6 +24,7 @@ class TenantFilterConfigurator
         $user = $this->security->getUser();
         if (!$user instanceof User) {
             $filter->setParameter('currentTenant', 'NONE');
+
             return;
         }
 

@@ -26,7 +26,7 @@ class VCardServiceTest extends TestCase
     public function testGenerateVCardWithBasicInfo(): void
     {
         $contact = new Contact();
-        
+
         $name = new ContactName();
         $name->setGiven('John');
         $name->setFamily('Doe');
@@ -56,7 +56,7 @@ class VCardServiceTest extends TestCase
     public function testGenerateVCardWithFullData(): void
     {
         $contact = new Contact();
-        
+
         // Name
         $name = new ContactName();
         $name->setGiven('Alice');
@@ -109,7 +109,7 @@ class VCardServiceTest extends TestCase
     public function testTypeMapping(): void
     {
         $contact = new Contact();
-        
+
         $phone1 = new ContactPhoneNumber();
         $phone1->setValue('1');
         $phone1->setType('WORK'); // uppercase to test normalization

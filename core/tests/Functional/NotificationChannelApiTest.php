@@ -78,7 +78,7 @@ class NotificationChannelApiTest extends ApiTestCase
 
         self::assertResponseStatusCodeSame(201);
         $channelIri = $response->toArray()['@id'];
-        
+
         // Verify mapping is added
         self::assertJsonContains([
             'config' => [

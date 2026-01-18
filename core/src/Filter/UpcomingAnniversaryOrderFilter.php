@@ -8,8 +8,8 @@ use ApiPlatform\Metadata\Operation;
 use App\Entity\NotificationPolicy;
 use App\Entity\User;
 use App\Entity\UserPref;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PropertyInfo\Type;
@@ -122,7 +122,7 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
 
         $rules = $policy->getNotificationRules();
         if ($rules->isEmpty()) {
-            // If policy has no rules, maybe we should show nothing? 
+            // If policy has no rules, maybe we should show nothing?
             // The requirement says "if pref exists, take from rules".
             // If there are no rules, then nothing matches.
             $queryBuilder->andWhere('1 = 0');
@@ -146,7 +146,7 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
                 }
                 $groupParam = $queryNameGenerator->generateParameterName('group');
                 $queryBuilder->setParameter($groupParam, $group);
-                
+
                 $cgAlias = $queryNameGenerator->generateParameterName('cg');
                 $ruleExpr->add("EXISTS (
                     SELECT 1 FROM App\Entity\ContactGroup {$cgAlias} 

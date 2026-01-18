@@ -13,7 +13,7 @@ final class UserChangePasswordTest extends AbstractApiTestCase
     public function testChangePassword(): void
     {
         $client = static::createClient();
-        
+
         // Find current user ID
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = self::getContainer()->get('doctrine');
@@ -23,7 +23,7 @@ final class UserChangePasswordTest extends AbstractApiTestCase
         $client->request('PUT', '/api/profile/change-password', [
             'auth_bearer' => $this->token,
             'json' => [
-                'currentPassword' => 'pass',
+                'currentPassword' => 'password',
                 'newPassword' => 'new-password-123',
             ],
         ]);
@@ -43,7 +43,7 @@ final class UserChangePasswordTest extends AbstractApiTestCase
         $client->request('POST', '/api/login_check', [
             'json' => [
                 'username' => $this->userUuid,
-                'password' => 'pass',
+                'password' => 'password',
             ],
         ]);
         self::assertResponseStatusCodeSame(401);
@@ -72,7 +72,7 @@ final class UserChangePasswordTest extends AbstractApiTestCase
         $client->request('PUT', '/api/profile/change-password', [
             'auth_bearer' => $this->token,
             'json' => [
-                'currentPassword' => 'pass',
+                'currentPassword' => 'password',
                 'newPassword' => 'short',
             ],
         ]);

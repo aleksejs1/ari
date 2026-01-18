@@ -23,7 +23,7 @@ class DemoAccountService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
-        private DemoDataGenerator $generator
+        private DemoDataGenerator $generator,
     ) {
     }
 
@@ -51,16 +51,16 @@ class DemoAccountService
         // Generate Contacts
         $contacts = [];
         $surnamePool = [];
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             $surnamePool[] = $this->generator->getRandomSurname();
         }
 
         $organizationPool = [];
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             $organizationPool[] = $this->generator->getRandomCompany();
         }
 
-        for ($i = 0; $i < 70; $i++) {
+        for ($i = 0; $i < 70; ++$i) {
             $contact = new Contact();
             $contact->setUser($user);
 
@@ -69,7 +69,7 @@ class DemoAccountService
 
             // Name (Required for good demo)
             $name = new ContactName($contact);
-            $gender = (rand(0, 1) === 0 ? 'male' : 'female');
+            $gender = (0 === rand(0, 1) ? 'male' : 'female');
             $name->setGiven($this->generator->getRandomFirstName($gender));
             // Use surname pool for families
             $surname = (rand(1, 10) <= 4) ? $surnamePool[array_rand($surnamePool)] : $this->generator->getRandomSurname();
@@ -90,7 +90,7 @@ class DemoAccountService
                 $org->setName(rand(1, 10) <= 6 ? $organizationPool[array_rand($organizationPool)] : $this->generator->getRandomCompany());
                 $org->setTitle($this->generator->getRandomTitle());
                 $org->setDepartment($this->generator->getRandomDepartment());
-                
+
                 // Work start date for colleagues
                 if ($org->getName() === $organizationPool[0] || rand(1, 10) <= 3) {
                     $startDate = $this->generator->getRandomDate(new \DateTime('-10 years'), new \DateTime('-1 month'));
@@ -102,7 +102,7 @@ class DemoAccountService
             // Phone & Email Mix Logic
             $hasPhone = (rand(1, 10) <= 8); // 80% have at least one phone
             $hasEmail = (rand(1, 10) <= 8); // 80% have email
-            
+
             // Birthday (User requested birthdays first, then wedding dates)
             if ($fill || rand(1, 10) <= 5) {
                 $birthday = new ContactDate($contact);
@@ -122,7 +122,7 @@ class DemoAccountService
                 $phone->setValue($this->generator->getRandomPhone());
                 $phone->setType($this->generator->getRandomPhoneType());
                 $this->entityManager->persist($phone);
-                
+
                 // 20% chance for a second phone
                 if (rand(1, 10) <= 2) {
                     $phone2 = new ContactPhoneNumber($contact);
@@ -154,7 +154,7 @@ class DemoAccountService
                 'surname' => $surname,
                 'given' => (string) $name->getGiven(),
                 'gender' => $gender,
-                'age' => $age ?? rand(20, 70)
+                'age' => $age ?? rand(20, 70),
             ];
         }
 
@@ -164,10 +164,10 @@ class DemoAccountService
         $this->entityManager->flush();
 
         // Fake Notifications (10 read, 2 unread)
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $notification = new ActivityFeed();
             $notification->setTenant($user);
-            $notification->setUserId((int)$user->getId());
+            $notification->setUserId((int) $user->getId());
             $notification->setTitle('New Message');
             $notification->setMessage($this->generator->getRandomNotificationMessage());
             $notification->setEventType('demo');
@@ -194,18 +194,20 @@ class DemoAccountService
         }
 
         foreach ($bySurname as $members) {
-            if (count($members) < 2) continue;
+            if (count($members) < 2) {
+                continue;
+            }
 
             // Pick a "Head of family" (Parent 1)
             $parent1 = $members[0];
             $parent1['age'] = rand(45, 65);
-            
+
             // Try to find a spouse (Parent 2)
             $parent2 = null;
             if (isset($members[1])) {
                 $parent2 = $members[1];
                 $parent2['age'] = $parent1['age'] + rand(-5, 5);
-                
+
                 // Relation: Spouse
                 $rel = new ContactRelation($parent1['entity']);
                 $rel->setPerson($parent2['entity']);
@@ -217,7 +219,7 @@ class DemoAccountService
                 $wedding->setText('Wedding Anniversary');
                 $wedding->setDate($this->generator->getRandomDate(new \DateTime('-40 years'), new \DateTime('-20 years')));
                 $this->entityManager->persist($wedding);
-                
+
                 // Also add wedding to second parent
                 $wedding2 = new ContactDate($parent2['entity']);
                 $wedding2->setText('Wedding Anniversary');
@@ -226,7 +228,7 @@ class DemoAccountService
             }
 
             // Rest are children (if any)
-            for ($i = 2; $i < count($members); $i++) {
+            for ($i = 2; $i < count($members); ++$i) {
                 $child = $members[$i];
                 $child['age'] = $parent1['age'] - rand(22, 35);
                 // age is always >= 10 here based on parent age (45-65) - (22-35)
@@ -250,7 +252,7 @@ class DemoAccountService
                 $rel3->setType('Parent');
                 $this->entityManager->persist($rel3);
             }
-            
+
             // Ensure they are in Family group
             foreach ($members as $m) {
                 $hasGroup = false;

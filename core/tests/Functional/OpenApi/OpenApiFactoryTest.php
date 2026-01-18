@@ -13,29 +13,29 @@ class OpenApiFactoryTest extends KernelTestCase
         $container = self::getContainer();
 
         $openApiFactory = $container->get('api_platform.openapi.factory');
-        // If the service is decorated, we might need to get it by interface or alias, 
+        // If the service is decorated, we might need to get it by interface or alias,
         // but 'api_platform.openapi.factory' is the standard ID.
-        // However, in test env, private services might be hidden. 
+        // However, in test env, private services might be hidden.
         // ApiPlatform usually makes it public or accessible.
 
         self::assertInstanceOf(OpenApiFactoryInterface::class, $openApiFactory);
 
         $openApi = $openApiFactory(['base_url' => '/']);
-        
+
         $paths = $openApi->getPaths();
 
         // 1. Verify Login Path
         $loginPath = $paths->getPath('/api/login_check');
         self::assertNotNull($loginPath, 'Login path should exist');
-        
+
         $loginOp = $loginPath->getPost();
         self::assertNotNull($loginOp, 'Login POST operation should exist');
         // Summary might be overridden by Lexik or other integrations.
         // We verify that the path exists and has a POST operation.
         $requestBody = $loginOp->getRequestBody();
         self::assertNotNull($requestBody);
-        
-        
+
+
         // Checking tags if possible.
         // self::assertContains('Token', $loginOp->getTags());
 
@@ -47,7 +47,7 @@ class OpenApiFactoryTest extends KernelTestCase
         // 3. Verify Google Auth Paths
         $googleConnectPath = $paths->getPath('/connect/google');
         self::assertNotNull($googleConnectPath, 'Google connect path should exist');
-        
+
         $googleCheckPath = $paths->getPath('/api/connect/google/check');
         self::assertNotNull($googleCheckPath, 'Google check path should exist');
 

@@ -27,7 +27,7 @@ class ContactOrganizationRepository extends ServiceEntityRepository
                 ->where("e.$field IS NOT NULL")
                 ->getQuery()
                 ->getScalarResult(),
-            '1'
+            '1',
         );
     }
 }

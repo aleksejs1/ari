@@ -44,13 +44,13 @@ class TelegramWebhookTest extends ApiTestCase
             'message' => [
                 'text' => sprintf('/start %d_%d', (int) $userId, (int) $channelId),
                 'chat' => [
-                    'id' => '123456789'
-                ]
-            ]
+                    'id' => '123456789',
+                ],
+            ],
         ];
 
         $client->request('POST', '/api/webhook/telegram', [
-            'json' => $payload
+            'json' => $payload,
         ]);
 
         self::assertResponseIsSuccessful();
@@ -105,13 +105,13 @@ class TelegramWebhookTest extends ApiTestCase
             'message' => [
                 'text' => sprintf('/start %d_%d', (int) $wrongUserId, (int) $channelId),
                 'chat' => [
-                    'id' => '999'
-                ]
-            ]
+                    'id' => '999',
+                ],
+            ],
         ];
 
         $client->request('POST', '/api/webhook/telegram', [
-            'json' => $payload
+            'json' => $payload,
         ]);
 
         self::assertResponseIsSuccessful(); // Controller always returns OK
@@ -130,16 +130,16 @@ class TelegramWebhookTest extends ApiTestCase
     public function testHandleWebhookInvalidFormat(): void
     {
         $client = static::createClient();
-        
+
         $payload = [
             'message' => [
                 'text' => '/start invalid_format',
-                'chat' => ['id' => '123']
-            ]
+                'chat' => ['id' => '123'],
+            ],
         ];
 
         $client->request('POST', '/api/webhook/telegram', [
-            'json' => $payload
+            'json' => $payload,
         ]);
 
         self::assertResponseIsSuccessful();

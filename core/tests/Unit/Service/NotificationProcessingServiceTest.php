@@ -6,7 +6,6 @@ use App\Entity\Contact;
 use App\Entity\ContactDate;
 use App\Entity\ContactName;
 use App\Entity\NotificationChannel;
-use App\Entity\NotificationIntent;
 use App\Entity\NotificationSubscription;
 use App\Entity\User;
 use App\Service\NotificationProcessingService;
@@ -34,7 +33,7 @@ class NotificationProcessingServiceTest extends TestCase
 
         $this->service = new NotificationProcessingService(
             $this->entityManager,
-            $this->telegramService
+            $this->telegramService,
         );
     }
 
@@ -42,9 +41,9 @@ class NotificationProcessingServiceTest extends TestCase
     {
         $this->entityManager = self::createStub(EntityManagerInterface::class);
         $this->recreateService();
-        
+
         $today = new \DateTime('today');
-        
+
         $filters = self::createStub(FilterCollection::class);
         $this->entityManager->method('getFilters')->willReturn($filters);
 
@@ -58,33 +57,33 @@ class NotificationProcessingServiceTest extends TestCase
         $channel->method('getType')->willReturn('telegram');
         $channel->method('getConfig')->willReturn(['botToken' => 'token', 'chatId' => '123']);
         $channel->method('getUser')->willReturn(self::createStub(User::class));
-        
+
         $channelRepo->method('findBy')->willReturn([$channel]);
 
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(1);
         $subscription->method('getEntityType')->willReturn('ContactDate');
         $subscription->method('getEntityId')->willReturn(10);
-        
+
         $channel->method('getNotificationSubscriptions')->willReturn(new ArrayCollection([$subscription]));
 
         $contactDate = self::createStub(ContactDate::class);
         $contactDate->method('getDate')->willReturn($today);
         $contactDate->method('getText')->willReturn('Birthday');
-        
+
         $this->entityManager->method('find')->willReturn($contactDate);
 
         $contact = self::createStub(Contact::class);
         $contactDate->method('getContact')->willReturn($contact);
-        
+
         $contactName = self::createStub(ContactName::class);
         $contactName->method('getGiven')->willReturn('John');
         $contactName->method('getFamily')->willReturn('Doe');
-        
+
         $contact->method('getContactNames')->willReturn(new ArrayCollection([$contactName]));
 
         $this->service->processAll();
-        
+
         self::assertCount(1, $this->telegramService->sentMessages);
         self::assertStringContainsString('John Doe', $this->telegramService->sentMessages[0]['message']);
     }
@@ -95,11 +94,11 @@ class NotificationProcessingServiceTest extends TestCase
 
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(0);
-        
+
         $this->setupChannelWithSubscriptions([$subscription]);
 
         $this->service->processAll();
-        
+
         self::assertEmpty($this->telegramService->sentMessages);
     }
 
@@ -110,7 +109,7 @@ class NotificationProcessingServiceTest extends TestCase
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(1);
         $subscription->method('getEntityType')->willReturn('OtherType');
-        
+
         $this->setupChannelWithSubscriptions([$subscription]);
 
         $this->service->processAll();
@@ -124,7 +123,7 @@ class NotificationProcessingServiceTest extends TestCase
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(1);
         $subscription->method('getEntityType')->willReturn('ContactDate');
-        
+
         $this->setupChannelWithSubscriptions([$subscription]);
 
         $this->entityManager->method('find')->willReturn(null);
@@ -140,7 +139,7 @@ class NotificationProcessingServiceTest extends TestCase
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(1);
         $subscription->method('getEntityType')->willReturn('ContactDate');
-        
+
         $this->setupChannelWithSubscriptions([$subscription]);
 
         $contactDate = self::createStub(ContactDate::class);
@@ -154,12 +153,12 @@ class NotificationProcessingServiceTest extends TestCase
     public function testProcessAllMissingConfig(): void
     {
         $this->setupBasicStubs();
-        
+
         $today = new \DateTime('today');
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(1);
         $subscription->method('getEntityType')->willReturn('ContactDate');
-        
+
         $channel = $this->setupChannelWithSubscriptions([$subscription]);
         $channel->method('getConfig')->willReturn([]);
 
@@ -168,7 +167,7 @@ class NotificationProcessingServiceTest extends TestCase
         $this->entityManager->method('find')->willReturn($contactDate);
 
         $io = self::createStub(SymfonyStyle::class);
-        
+
         $this->service->processAll($io);
         self::assertEmpty($this->telegramService->sentMessages);
     }
@@ -176,12 +175,12 @@ class NotificationProcessingServiceTest extends TestCase
     public function testProcessAllTelegramError(): void
     {
         $this->setupBasicStubs();
-        
+
         $today = new \DateTime('today');
         $subscription = self::createStub(NotificationSubscription::class);
         $subscription->method('getEnabled')->willReturn(1);
         $subscription->method('getEntityType')->willReturn('ContactDate');
-        
+
         $channel = $this->setupChannelWithSubscriptions([$subscription]);
         $channel->method('getConfig')->willReturn(['botToken' => 'token', 'chatId' => '123']);
 
@@ -194,27 +193,28 @@ class NotificationProcessingServiceTest extends TestCase
         $io = self::createStub(SymfonyStyle::class);
 
         $this->service->processAll($io);
-        
+
         // Assert attempt was made
         self::assertCount(1, $this->telegramService->sentMessages);
     }
-    
+
     private function setupBasicStubs(): void
     {
         $filters = self::createStub(FilterCollection::class);
         $this->entityManager->method('getFilters')->willReturn($filters);
     }
-    
+
     private function recreateService(): void
     {
         $this->service = new NotificationProcessingService(
             $this->entityManager,
-            $this->telegramService
+            $this->telegramService,
         );
     }
 
     /**
-     * @param array<\App\Entity\NotificationSubscription> $subs
+     * @param array<NotificationSubscription> $subs
+     *
      * @return NotificationChannel&\PHPUnit\Framework\MockObject\Stub
      */
     private function setupChannelWithSubscriptions(array $subs): object
@@ -225,12 +225,13 @@ class NotificationProcessingServiceTest extends TestCase
         $channel = self::createStub(NotificationChannel::class);
         $channelRepo->method('findBy')->willReturn([$channel]);
         $channel->method('getNotificationSubscriptions')->willReturn(new ArrayCollection($subs));
-        
+
         return $channel;
     }
 }
 
-class SpyTelegramService extends TelegramService {
+class SpyTelegramService extends TelegramService
+{
     /** @var array<int, array<string, string>> */
     public array $sentMessages = [];
     public bool $shouldThrow = false;
@@ -241,9 +242,9 @@ class SpyTelegramService extends TelegramService {
         $this->sentMessages[] = [
             'botToken' => $botToken,
             'chatId' => $chatId,
-            'message' => $message
+            'message' => $message,
         ];
-        
+
         if ($this->shouldThrow) {
             throw new \Exception('Error');
         }

@@ -60,7 +60,7 @@ final class UserDeletionTest extends AbstractApiTestCase
 
         // 4. Verify all data is gone
         $em->clear();
-        
+
         self::assertNull($em->find(User::class, $userId), 'User was not deleted');
         self::assertNull($em->find(Contact::class, $contactId), 'Contact was not cascaded deleted');
         self::assertNull($em->find(Group::class, $groupId), 'Group was not cascaded deleted');

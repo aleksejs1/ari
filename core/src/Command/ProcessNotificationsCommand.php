@@ -25,11 +25,12 @@ class ProcessNotificationsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        
+
         try {
             $this->notificationService->processAll($io);
         } catch (\Throwable $e) {
             $io->error('An error occurred while processing notifications: ' . $e->getMessage());
+
             return Command::FAILURE;
         }
 

@@ -50,6 +50,7 @@ class ContactTimelineServiceTest extends TestCase
                 if (isset($criteria['ownerEntityType']) && Contact::class === $criteria['ownerEntityType']) {
                     return [$logName, $logDate];
                 }
+
                 return [];
             });
 

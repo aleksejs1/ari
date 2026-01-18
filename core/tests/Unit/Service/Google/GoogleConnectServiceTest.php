@@ -2,7 +2,6 @@
 
 namespace App\Tests\Unit\Service\Google;
 
-use App\Entity\TokenStorage;
 use App\Entity\User;
 use App\Repository\TokenStorageRepository;
 use App\Service\Google\GoogleConnectService;
@@ -37,7 +36,7 @@ class GoogleConnectServiceTest extends TestCase
             $this->oauthService,
             $this->tokenStorageRepository,
             $this->entityManager,
-            $this->appSecret
+            $this->appSecret,
         );
     }
 
@@ -49,10 +48,10 @@ class GoogleConnectServiceTest extends TestCase
         $state = $this->service->generateState($user);
 
         self::assertStringStartsWith('550e8400-e29b-41d4-a716-446655440000.', $state);
-        
+
         $parts = explode('.', $state);
         self::assertCount(2, $parts);
-        
+
         $expectedSignature = hash_hmac('sha256', '550e8400-e29b-41d4-a716-446655440000', $this->appSecret);
         self::assertEquals($expectedSignature, $parts[1]);
     }
@@ -96,7 +95,7 @@ class GoogleConnectServiceTest extends TestCase
             $this->oauthService,
             $this->tokenStorageRepository,
             $this->entityManager,
-            $this->appSecret
+            $this->appSecret,
         );
 
         $code = 'auth_code';
@@ -106,7 +105,7 @@ class GoogleConnectServiceTest extends TestCase
 
         $userRepo = self::createStub(EntityRepository::class);
         $userRepo->method('findOneBy')->willReturn($user);
-        
+
         $this->entityManager->method('getRepository')->with(User::class)->willReturn($userRepo);
 
         $config = self::createStub(Configuration::class);
@@ -118,30 +117,31 @@ class GoogleConnectServiceTest extends TestCase
 
         // Spy Calls
         $oauthCalls = [];
-        $this->oauthService->method('getAccessToken')->willReturnCallback(function() use (&$oauthCalls) {
+        $this->oauthService->method('getAccessToken')->willReturnCallback(function () use (&$oauthCalls) {
             $oauthCalls[] = true;
+
             return [
                 'access_token' => 'at',
                 'refresh_token' => 'rt',
-                'expires_in' => 3600
+                'expires_in' => 3600,
             ];
         });
 
         $this->tokenStorageRepository->method('findOneBy')->willReturn(null);
 
         $persisted = [];
-        $this->entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
-             $persisted[] = $obj;
+        $this->entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
+            $persisted[] = $obj;
         });
-        
+
         // flush ignored
 
         $this->service->connectUser($code, $uuid);
-        
+
         self::assertTrue($filters->isEnabled('tenant'));
         $filter = $filters->getFilter('tenant');
         self::assertTrue($filter->hasParameter('currentTenant'));
-        
+
         self::assertNotEmpty($oauthCalls);
         self::assertNotEmpty($persisted);
     }
@@ -157,9 +157,11 @@ class GoogleConnectServiceTest extends TestCase
     }
 }
 
-class TestSQLFilter extends SQLFilter {
+class TestSQLFilter extends SQLFilter
+{
     #[\Override]
-    public function addFilterConstraint(\Doctrine\ORM\Mapping\ClassMetadata $targetEntity, string $targetTableAlias): string {
+    public function addFilterConstraint(\Doctrine\ORM\Mapping\ClassMetadata $targetEntity, string $targetTableAlias): string
+    {
         return '';
     }
 }

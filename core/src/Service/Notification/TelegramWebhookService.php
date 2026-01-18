@@ -42,6 +42,7 @@ class TelegramWebhookService
 
         if (2 !== count($parts)) {
             $this->logger->warning('Invalid Telegram /start parameter format: ' . $param);
+
             return;
         }
 
@@ -60,17 +61,20 @@ class TelegramWebhookService
 
             if (!$channel instanceof NotificationChannel) {
                 $this->logger->warning('Notification channel not found: ' . $channelId);
+
                 return;
             }
 
             if ('telegram' !== $channel->getType()) {
                 $this->logger->warning('Notification channel is not of type telegram: ' . $channelId);
+
                 return;
             }
 
             $user = $channel->getUser();
             if (null === $user || $user->getId() !== $userId) {
                 $this->logger->warning('Telegram webhook user mismatch. Expected User: ' . $userId . ', Channel User: ' . (null !== $user ? (string) $user->getId() : 'null'));
+
                 return;
             }
 
@@ -83,9 +87,9 @@ class TelegramWebhookService
         } finally {
             if ($isFilterEnabled) {
                 $filters->enable('tenant');
-                // Re-setting the parameter is handled by the security layer usually, 
-                // but since we are in a webhook without a logged-in user, 
-                // we probably don't need to worry about the parameter value here 
+                // Re-setting the parameter is handled by the security layer usually,
+                // but since we are in a webhook without a logged-in user,
+                // we probably don't need to worry about the parameter value here
                 // as long as we re-enable it for the rest of the request lifecycle if any.
             }
         }

@@ -6,8 +6,6 @@ use App\Entity\User;
 
 class UserNotificationSetupTest extends AbstractApiTestCase
 {
-
-
     public function testApiUserHasNotificationSetup(): void
     {
         $client = static::createClient();
@@ -22,7 +20,7 @@ class UserNotificationSetupTest extends AbstractApiTestCase
             ],
             'headers' => [
                 'Content-Type' => 'application/ld+json',
-            ]
+            ],
         ]);
 
         self::assertResponseStatusCodeSame(201);
@@ -42,21 +40,20 @@ class UserNotificationSetupTest extends AbstractApiTestCase
         $em = $container->get('doctrine')->getManager();
         $user = $em->getRepository(User::class)->findOneBy(['uuid' => $uuid]);
         self::assertNotNull($user);
-        
+
         // Check Channels
         $channels = $em->getRepository(\App\Entity\NotificationChannel::class)->findBy(['user' => $user]);
         self::assertCount(1, $channels, 'Direct DB check: Should have 1 channel');
-        
+
         // Check Policies
         /** @var \App\Entity\NotificationPolicy[] $policies */
         $policies = $em->getRepository(\App\Entity\NotificationPolicy::class)->findBy(['user' => $user]);
         self::assertCount(1, $policies, 'Direct DB check: Should have 1 policy');
-        
+
         $policy = $policies[0];
         $uiSnapshot = $policy->getUiSnapshot();
         self::assertIsArray($uiSnapshot);
         self::assertEquals('Default', $uiSnapshot['name']);
         self::assertStringContainsString('/api/notification_channels/', $uiSnapshot['schedule'][0]['channels'][0]);
     }
-
 }

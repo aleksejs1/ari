@@ -24,7 +24,7 @@ class StatsApiTest extends AbstractApiTestCase
         ]);
         self::assertResponseIsSuccessful();
         $data = $response->toArray();
-        
+
         $initialAuditLogs = $data['totalAuditLogs'];
         self::assertEquals(0, $data['totalContacts']);
         self::assertEquals(0, $data['totalSentNotifications']);
@@ -33,7 +33,7 @@ class StatsApiTest extends AbstractApiTestCase
         $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
 
         // Create 2 contacts
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; ++$i) {
             $contact = new Contact();
             $contact->setUser($user);
             $em->persist($contact);
@@ -44,7 +44,7 @@ class StatsApiTest extends AbstractApiTestCase
         $auditLog->setUser($user);
         $auditLog->setTenant($user);
         $auditLog->setEntityType(Contact::class);
-        $auditLog->setEntityId(1);
+        $auditLog->setEntityId('1');
         $auditLog->setAction('create');
         $em->persist($auditLog);
 
@@ -115,7 +115,7 @@ class StatsApiTest extends AbstractApiTestCase
         $userB = new User();
         $userB->setUuid($userBUuid);
         $userB->setPassword('pass'); // AbstractApiTestCase hashPassword logic... actually I can just use a plain password if I don't use the hasher
-        
+
         // Better use the same logic as AbstractApiTestCase for User B
         /** @var \Symfony\Component\DependencyInjection\Container $testContainer */
         $testContainer = $container->get('test.service_container');

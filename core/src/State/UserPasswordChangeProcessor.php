@@ -8,10 +8,10 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Dto\ChangePasswordDto;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @implements ProcessorInterface<ChangePasswordDto, User>
@@ -48,7 +48,7 @@ final readonly class UserPasswordChangeProcessor implements ProcessorInterface
         if (null === $data->newPassword) {
             throw new BadRequestHttpException('New password cannot be empty.');
         }
-        
+
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
             $data->newPassword,

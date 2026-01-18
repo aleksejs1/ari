@@ -18,10 +18,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     shortName: 'ActiveSession',
     operations: [
         new GetCollection(),
-        new Delete()
+        new Delete(),
     ],
     normalizationContext: ['groups' => ['active_session:read']],
-    security: "is_granted('ROLE_USER')"
+    security: "is_granted('ROLE_USER')",
 )]
 class RefreshToken extends BaseRefreshToken implements TenantAwareInterface
 {

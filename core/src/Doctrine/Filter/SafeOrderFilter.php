@@ -62,9 +62,6 @@ final class SafeOrderFilter extends AbstractFilter implements OrderFilterInterfa
         $this->orderParameterName = $orderParameterName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     #[\Override]
     public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
@@ -96,9 +93,6 @@ final class SafeOrderFilter extends AbstractFilter implements OrderFilterInterfa
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     #[\Override]
     protected function filterProperty(string $property, mixed $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {

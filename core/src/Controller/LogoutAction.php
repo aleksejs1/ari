@@ -10,13 +10,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
 class LogoutAction extends AbstractController
 {
     public function __construct(
-        private RefreshTokenManagerInterface $refreshTokenManager
+        private RefreshTokenManagerInterface $refreshTokenManager,
     ) {
     }
 
@@ -40,7 +39,7 @@ class LogoutAction extends AbstractController
         }
 
         $response = new JsonResponse(null, Response::HTTP_NO_CONTENT);
-        
+
         // Clear the cookie just in case
         $response->headers->setCookie(new Cookie(
             'refresh_token',
@@ -51,7 +50,7 @@ class LogoutAction extends AbstractController
             true,
             true,
             false,
-            'lax'
+            'lax',
         ));
 
         return $response;

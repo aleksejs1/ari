@@ -420,9 +420,9 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
             }
         }
 
-        self::assertEquals(1, $addressInserts, 'Should not have inserted new addresses');
+        self::assertEquals(1, $addressInserts, 'Should have inserted 1 new address');
         self::assertEquals(0, $addressRemoves, 'Should not have removed old addresses');
-        self::assertEquals(1, $addressUpdates, 'Should not have updated old addresses');
+        self::assertEquals(1, $addressUpdates, 'Should have updated 1 address');
     }
 
     /**

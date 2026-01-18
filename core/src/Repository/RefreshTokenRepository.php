@@ -9,6 +9,7 @@ use Gesdinet\JWTRefreshTokenBundle\Doctrine\RefreshTokenRepositoryInterface;
 
 /**
  * @extends ServiceEntityRepository<RefreshToken>
+ *
  * @implements RefreshTokenRepositoryInterface<RefreshToken>
  *
  * @method RefreshToken|null find($id, $lockMode = null, $lockVersion = null)

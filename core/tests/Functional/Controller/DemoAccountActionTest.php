@@ -23,9 +23,9 @@ class DemoAccountActionTest extends ApiTestCase
         self::assertNotEmpty($content['username']);
         // It seems it returns a UUID
         self::assertTrue(
-             \Symfony\Component\Uid\Uuid::isValid($content['username']) 
+            \Symfony\Component\Uid\Uuid::isValid($content['username'])
              || str_starts_with($content['username'], 'demo_'),
-             'Username should be a UUID or start with demo_'
+            'Username should be a UUID or start with demo_',
         );
     }
 }

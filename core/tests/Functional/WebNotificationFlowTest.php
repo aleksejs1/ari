@@ -8,6 +8,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class WebNotificationFlowTest extends AbstractApiTestCase
 {
+    protected bool $autoLogin = true;
     private ?string $channelId = null;
 
     #[\Override]

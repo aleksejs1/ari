@@ -83,7 +83,7 @@ class GoogleContactsGroupImportTest extends TestCase
         $existingGroup->setUser($user);
 
         $groupRepository = self::createStub(EntityRepository::class);
-        
+
         $this->entityManager = self::createStub(EntityManagerInterface::class);
         $this->entityManager->method('getRepository')->willReturnMap([
             [Group::class, $groupRepository],
@@ -94,7 +94,7 @@ class GoogleContactsGroupImportTest extends TestCase
 
         // Expectation: A new ImportMapping is created linking to $existingGroup
         // AND NO new Group is persisted
-        
+
         $persisted = [];
         $this->entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
             $persisted[] = $obj;
@@ -103,13 +103,13 @@ class GoogleContactsGroupImportTest extends TestCase
         $this->recreateService();
 
         $this->service->importContacts($user);
-        
+
         self::assertCount(1, $persisted);
         $obj = $persisted[0];
         self::assertInstanceOf(ImportMapping::class, $obj);
         self::assertSame($existingGroup, $obj->getGroup());
     }
-    
+
     private function recreateService(): void
     {
         $this->service = new GoogleContactsService(

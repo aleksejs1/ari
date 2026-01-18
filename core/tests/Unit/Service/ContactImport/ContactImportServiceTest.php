@@ -32,10 +32,10 @@ final class ContactImportServiceTest extends TestCase
     {
         $persisted = [];
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
-             $persisted[] = $obj;
+        $entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
+            $persisted[] = $obj;
         });
-        
+
         $checker = self::createStub(ContactDuplicateCheckerInterface::class);
         $checker->method('isDuplicate')->willReturn(false);
 
@@ -72,7 +72,7 @@ final class ContactImportServiceTest extends TestCase
         self::assertSame($user, $contact->getUser());
         self::assertCount(1, $contact->getContactNames());
         self::assertCount(1, $contact->getContactDates());
-        
+
         self::assertNotEmpty($persisted); // At least contact persisted
 
         $name = $contact->getContactNames()->first();
@@ -119,8 +119,8 @@ final class ContactImportServiceTest extends TestCase
     {
         $persisted = [];
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
-             $persisted[] = $obj;
+        $entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
+            $persisted[] = $obj;
         });
 
         $checker = self::createStub(ContactDuplicateCheckerInterface::class);
@@ -144,8 +144,8 @@ final class ContactImportServiceTest extends TestCase
     {
         $persisted = [];
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
-             $persisted[] = $obj;
+        $entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
+            $persisted[] = $obj;
         });
 
         $service = new ContactImportService(
@@ -178,8 +178,8 @@ final class ContactImportServiceTest extends TestCase
     {
         $persisted = [];
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
-             $persisted[] = $obj;
+        $entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
+            $persisted[] = $obj;
         });
 
         $service = new ContactImportService(
@@ -210,8 +210,8 @@ final class ContactImportServiceTest extends TestCase
     {
         $persisted = [];
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $entityManager->method('persist')->willReturnCallback(function($obj) use (&$persisted) {
-             $persisted[] = $obj;
+        $entityManager->method('persist')->willReturnCallback(function ($obj) use (&$persisted) {
+            $persisted[] = $obj;
         });
 
         $service = new ContactImportService([], $entityManager);
@@ -272,7 +272,7 @@ final class ContactImportServiceTest extends TestCase
         $contactGroup = $contact->getContactGroups()->first();
         self::assertInstanceOf(ContactGroup::class, $contactGroup);
         self::assertSame($user, $contactGroup->getTenant());
-        
+
         self::assertNotEmpty($persisted);
     }
 }

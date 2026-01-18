@@ -14,7 +14,6 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
-use App\Doctrine\Filter\SafeOrderFilter;
 use App\Entity\Traits\ContactAddressesTrait;
 use App\Entity\Traits\ContactBiographiesTrait;
 use App\Entity\Traits\ContactDatesTrait;
@@ -141,6 +140,32 @@ class Contact implements TenantAwareInterface
     #[ORM\ManyToOne(inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\OneToOne(mappedBy: 'contact', targetEntity: ContactAvatar::class, cascade: ['persist', 'remove'])]
+    #[Groups(['contact:read'])]
+    private ?ContactAvatar $avatar = null;
+
+    public function getAvatar(): ?ContactAvatar
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?ContactAvatar $avatar): static
+    {
+        // unset the owning side of the relation if necessary
+        if (null === $avatar && null !== $this->avatar) {
+            $this->avatar->setContact(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if (null !== $avatar && $avatar->getContact() !== $this) {
+            $avatar->setContact($this);
+        }
+
+        $this->avatar = $avatar;
+
+        return $this;
+    }
 
     public function __construct()
     {

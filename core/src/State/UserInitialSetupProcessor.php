@@ -34,10 +34,10 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
     {
         // First, persist the user via the inner processor (hashes password, persists user)
         $user = $this->innerProcessor->process($data, $operation, $uriVariables, $context);
-        
+
         // Now create default notification settings
         $this->createDefaultNotificationSettings($user);
-        
+
         return $user;
     }
 
@@ -51,7 +51,7 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
         $channel->setVerifiedAt(new \DateTimeImmutable());
         $channel->setCreatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($channel);
-        
+
         // Flush to generate ID for the channel, needed for UI Snapshot
         $this->entityManager->flush();
 
@@ -60,7 +60,7 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
         $user->addNotificationPolicy($policy); // Sets user/tenant
         $policy->setName('Default');
         $policy->setIsActive(true);
-        
+
         $policy->setUiSnapshot([
             'id' => null,
             'name' => 'Default',
@@ -89,7 +89,7 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
         $rule->setEventType(null);   // Matches "All event types"
         $rule->setOffsetDays(0);
         $rule->setOffsetTime('09:00');
-        
+
         $this->entityManager->persist($rule);
 
         $this->entityManager->flush();

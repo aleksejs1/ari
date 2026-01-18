@@ -52,7 +52,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $this->importMappingRepository,
             $this->userPrefRepository,
             $this->googleContactsService,
-            $this->httpClient
+            $this->httpClient,
         );
     }
 
@@ -60,18 +60,18 @@ class GoogleContactUpdateServiceTest extends TestCase
     {
         // 0 Requests expected - MockHttpClient handles this by default unless configured.
         $this->expectNotToPerformAssertions();
-        
+
         $contact = self::createStub(Contact::class);
         $user = self::createStub(User::class);
         $contact->method('getUser')->willReturn($user);
 
         $this->userPrefRepository = self::createStub(UserPrefRepository::class);
         $this->userPrefRepository->method('findOneBy')->willReturn(null);
-        
+
         $this->recreateService();
 
         $this->service->updateContact($contact);
-        // implicit assertion: no exceptions. MockHttpClient throws if we don't return response? 
+        // implicit assertion: no exceptions. MockHttpClient throws if we don't return response?
         // If we want to verify "never called", we can pass a callback that throws.
     }
 
@@ -89,7 +89,7 @@ class GoogleContactUpdateServiceTest extends TestCase
 
         $this->importMappingRepository = self::createStub(ImportMappingRepository::class);
         $this->importMappingRepository->method('findOneBy')->willReturn(null);
-        
+
         $this->recreateService();
 
         $this->service->updateContact($contact);
@@ -117,7 +117,7 @@ class GoogleContactUpdateServiceTest extends TestCase
         // 3. Token
         $this->tokenStorageRepository = self::createStub(TokenStorageRepository::class);
         $this->googleContactsService = self::createStub(GoogleContactsService::class);
-        
+
         $tokenStorage = self::createStub(TokenStorage::class);
         $this->tokenStorageRepository->method('findOneBy')->willReturn($tokenStorage);
         $this->googleContactsService->method('getValidAccessToken')->willReturn('access_token');
@@ -159,18 +159,18 @@ class GoogleContactUpdateServiceTest extends TestCase
             new MockResponse((string) json_encode(['etag' => 'etag123'])), // GET
             new MockResponse((string) json_encode([])), // PATCH
         ];
-        
+
         $this->httpClient = new MockHttpClient($responses);
-        
+
         $this->recreateService();
 
         $this->service->updateContact($contact);
-        
+
         // No exceptions means 2 calls consumed.
         // We can check $this->httpClient->getRequestsCount() ? Not directly.
         // If we want to be strict, we can check.
     }
-    
+
     private function recreateService(): void
     {
         $this->service = new GoogleContactUpdateService(
@@ -178,7 +178,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $this->importMappingRepository,
             $this->userPrefRepository,
             $this->googleContactsService,
-            $this->httpClient
+            $this->httpClient,
         );
     }
 }

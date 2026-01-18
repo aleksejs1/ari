@@ -16,7 +16,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 
 #[ \PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GoogleContactsServiceTest extends TestCase
@@ -90,18 +89,18 @@ class GoogleContactsServiceTest extends TestCase
         $this->importMappingRepository->method('findOneBy')->willReturn($mapping);
 
         // Expectation: use Mock (spy) object for service if we want to check `import` called
-        // createStub allows method calls but doesn't track them for `expects`. 
+        // createStub allows method calls but doesn't track them for `expects`.
         // We can use a spy for ContactImportService?
-        // Let's use createMock here for ContactImportService ONLY? 
+        // Let's use createMock here for ContactImportService ONLY?
         // If createMock generates a notice, we fail.
-        // Let's just create a Stub and assert it returns logic? 
+        // Let's just create a Stub and assert it returns logic?
         // Or fail the test if logic flow isn't exercised?
-        
+
         // This test verifies that EntityNotFoundException is CAUGHT and processed as "Import (New)".
         // If it wasn't caught, the test would crash.
         // So just running it without exception is passing?
         // But we want to ensure `import` IS called.
-        
+
         $this->contactImportService = $this->createMock(ContactImportService::class);
         $this->contactImportService->expects($this->once())->method('import')->willReturn(new Contact());
 
@@ -134,7 +133,7 @@ class GoogleContactsServiceTest extends TestCase
         $this->httpClient = new MockHttpClient([$responseGroups, $responseContacts]);
 
         $groupRepository = self::createStub(\Doctrine\ORM\EntityRepository::class);
-        
+
         $this->entityManager = self::createStub(EntityManagerInterface::class);
         $this->entityManager->method('getRepository')->willReturn($groupRepository);
         $groupRepository->method('findOneBy')->willReturn(null); // google group doesn't exist
@@ -143,10 +142,10 @@ class GoogleContactsServiceTest extends TestCase
         // If we use createMock for EM, we risk notices.
         // But verifying persist is done.
         // Let's try createMock for EM only here.
-        
+
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->entityManager->method('getRepository')->willReturn($groupRepository);
-        
+
         $this->entityManager->expects($this->atLeastOnce())
             ->method('persist')
             ->with(self::callback(function ($obj) {
@@ -157,7 +156,7 @@ class GoogleContactsServiceTest extends TestCase
 
         $this->service->importContacts($user, true);
     }
-    
+
     private function recreateService(): void
     {
         $this->service = new GoogleContactsService(

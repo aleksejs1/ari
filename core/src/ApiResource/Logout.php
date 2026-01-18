@@ -24,9 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ),
             status: 204,
-            output: false
-        )
-    ]
+            output: false,
+        ),
+    ],
 )]
 class Logout
 {
