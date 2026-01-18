@@ -16,6 +16,7 @@ vi.mock('@/hooks/useUserPrefs.hook', () => ({
 vi.mock('../useContacts', () => ({
   useCreateGroup: vi.fn(),
   useGroups: vi.fn(),
+  useUploadContactAvatar: vi.fn(() => ({ mutateAsync: vi.fn() })),
 }))
 
 // Mock NotificationSubscriptions to avoid implementation details and API calls

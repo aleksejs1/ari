@@ -45,23 +45,7 @@ vi.mock('../useContacts', () => ({
   useGroups: vi.fn(() => ({ data: [] })),
 }))
 
-// Mock icons to avoid rendering issues
-vi.mock('lucide-react', () => ({
-  Pencil: () => <span data-testid="icon-pencil">Pencil</span>,
-  Phone: () => <span data-testid="icon-phone">Phone</span>,
-  Mail: () => <span data-testid="icon-mail">Mail</span>,
-  MapPin: () => <span data-testid="icon-mappin">MapPin</span>,
-  Briefcase: () => <span data-testid="icon-briefcase">Briefcase</span>,
-  Users: () => <span data-testid="icon-users">Users</span>,
-  Calendar: () => <span data-testid="icon-calendar">Calendar</span>,
-  FileText: () => <span data-testid="icon-filetext">FileText</span>,
-  User: () => <span data-testid="icon-user">User</span>,
-  Star: () => <span data-testid="icon-star">Star</span>,
-  Trash2: () => <span data-testid="icon-trash2">Trash2</span>,
-  Plus: () => <span data-testid="icon-plus">Plus</span>,
-  X: () => <span data-testid="icon-x">X</span>,
-  Check: () => <span data-testid="icon-check">Check</span>,
-}))
+// Lucide icons are mocked globally in setup.ts
 
 const mockContact: Contact = {
   id: 123,
@@ -165,8 +149,8 @@ describe('ContactView', () => {
     expect(screen.getByText('Acme Corp')).toBeInTheDocument()
 
     // Check for group badge in header
+    expect(screen.getByText('Friends')).toBeInTheDocument()
     const groupLink = screen.getByRole('link', { name: 'Friends' })
-    expect(groupLink).toBeInTheDocument()
     expect(groupLink).toHaveAttribute('href', '/contacts?group=group-1')
 
     expect(screen.getByText('A short bio')).toBeInTheDocument()

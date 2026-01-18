@@ -1,4 +1,5 @@
 import { ContactActionsCell } from './cells/ContactActionsCell'
+import { ContactAvatarCell } from './cells/ContactAvatarCell'
 import { ContactDatesCell } from './cells/ContactDatesCell'
 import { ContactEmailsCell } from './cells/ContactEmailsCell'
 import { ContactFavoriteCell } from './cells/ContactFavoriteCell'
@@ -24,10 +25,22 @@ export function registerDefaultColumns() {
   })
 
   contactColumnRegistry.register({
+    id: 'avatar',
+    label: 'Avatar',
+    definition: () => ({
+      id: 'avatar',
+      header: '',
+      cell: ({ row }) => <ContactAvatarCell contact={row.original} />,
+      size: 50,
+      meta: { titleKey: 'contacts.avatar' },
+    }),
+  })
+
+  contactColumnRegistry.register({
     id: 'contactNames',
     label: 'Name',
     definition: () => ({
-      id: 'contactNames.given',
+      id: 'contactNames',
       accessorKey: 'contactNames',
       header: ContactNameHeader,
       cell: ({ row }) => <ContactNameCell contact={row.original} />,

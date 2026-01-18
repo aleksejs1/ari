@@ -24,6 +24,7 @@ import {
   useGroups,
 } from '../useContacts'
 
+import { AvatarUpload } from './AvatarUpload'
 import { BiographyCard } from './cards/BiographyCard'
 import { ContactInfoCard } from './cards/ContactInfoCard'
 import { DatesCard } from './cards/DatesCard'
@@ -76,11 +77,19 @@ const getGroupName = (groupResource: any): string => {
 }
 
 export function ContactView({ contact, onEdit }: ContactViewProps) {
-  const { t } = useTranslation()
-  const { isContactFavorite, toggleFavorite } = useContactFavorite()
+  const { isContactFavorite } = useContactFavorite()
   const isFavorite = isContactFavorite(contact)
-  const { data: groupsFetched } = useGroups()
+  const actions = useContactViewActions(contact)
 
+  return (
+    <div className="space-y-6">
+      <ContactViewHeader contact={contact} onEdit={onEdit} isFavorite={isFavorite} />
+      <ContactViewCardsGrid contact={contact} {...actions} />
+    </div>
+  )
+}
+
+function useContactViewActions(contact: Contact) {
   const handleCreatePhoneMutation = useCreateContactPhone()
   const handleUpdatePhoneMutation = useUpdateContactPhone()
   const handleDeletePhoneMutation = useDeleteContactPhone()
@@ -90,23 +99,16 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       return
     }
     if (phone['@id']) {
-      await handleUpdatePhoneMutation.mutateAsync({
-        id: phone['@id'],
-        data: phone,
-      })
+      await handleUpdatePhoneMutation.mutateAsync({ id: phone['@id'], data: phone })
     } else {
-      await handleCreatePhoneMutation.mutateAsync({
-        ...phone,
-        contact: contact['@id'],
-      })
+      await handleCreatePhoneMutation.mutateAsync({ ...phone, contact: contact['@id'] })
     }
   }
 
   const handleDeletePhone = async (phone: ContactPhoneNumber) => {
-    if (!phone['@id']) {
-      return
+    if (phone['@id']) {
+      await handleDeletePhoneMutation.mutateAsync(phone['@id'])
     }
-    await handleDeletePhoneMutation.mutateAsync(phone['@id'])
   }
 
   const handleCreateEmailMutation = useCreateContactEmail()
@@ -118,23 +120,16 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       return
     }
     if (email['@id']) {
-      await handleUpdateEmailMutation.mutateAsync({
-        id: email['@id'],
-        data: email,
-      })
+      await handleUpdateEmailMutation.mutateAsync({ id: email['@id'], data: email })
     } else {
-      await handleCreateEmailMutation.mutateAsync({
-        ...email,
-        contact: contact['@id'],
-      })
+      await handleCreateEmailMutation.mutateAsync({ ...email, contact: contact['@id'] })
     }
   }
 
   const handleDeleteEmail = async (email: ContactEmailAdress) => {
-    if (!email['@id']) {
-      return
+    if (email['@id']) {
+      await handleDeleteEmailMutation.mutateAsync(email['@id'])
     }
-    await handleDeleteEmailMutation.mutateAsync(email['@id'])
   }
 
   const handleCreateDateMutation = useCreateContactDate()
@@ -146,23 +141,16 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       return
     }
     if (date['@id']) {
-      await handleUpdateDateMutation.mutateAsync({
-        id: date['@id'],
-        data: date,
-      })
+      await handleUpdateDateMutation.mutateAsync({ id: date['@id'], data: date })
     } else {
-      await handleCreateDateMutation.mutateAsync({
-        ...date,
-        contact: contact['@id'],
-      })
+      await handleCreateDateMutation.mutateAsync({ ...date, contact: contact['@id'] })
     }
   }
 
   const handleDeleteDate = async (date: ContactDate) => {
-    if (!date['@id']) {
-      return
+    if (date['@id']) {
+      await handleDeleteDateMutation.mutateAsync(date['@id'])
     }
-    await handleDeleteDateMutation.mutateAsync(date['@id'])
   }
 
   const handleCreateBioMutation = useCreateContactBiography()
@@ -174,23 +162,16 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       return
     }
     if (bio['@id']) {
-      await handleUpdateBioMutation.mutateAsync({
-        id: bio['@id'],
-        data: bio,
-      })
+      await handleUpdateBioMutation.mutateAsync({ id: bio['@id'], data: bio })
     } else {
-      await handleCreateBioMutation.mutateAsync({
-        ...bio,
-        contact: contact['@id'],
-      })
+      await handleCreateBioMutation.mutateAsync({ ...bio, contact: contact['@id'] })
     }
   }
 
   const handleDeleteBio = async (bio: ContactBiography) => {
-    if (!bio['@id']) {
-      return
+    if (bio['@id']) {
+      await handleDeleteBioMutation.mutateAsync(bio['@id'])
     }
-    await handleDeleteBioMutation.mutateAsync(bio['@id'])
   }
 
   const handleCreateOrganizationMutation = useCreateContactOrganization()
@@ -202,23 +183,16 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       return
     }
     if (org['@id']) {
-      await handleUpdateOrganizationMutation.mutateAsync({
-        id: org['@id'],
-        data: org,
-      })
+      await handleUpdateOrganizationMutation.mutateAsync({ id: org['@id'], data: org })
     } else {
-      await handleCreateOrganizationMutation.mutateAsync({
-        ...org,
-        contact: contact['@id'],
-      })
+      await handleCreateOrganizationMutation.mutateAsync({ ...org, contact: contact['@id'] })
     }
   }
 
   const handleDeleteOrganization = async (org: ContactOrganization) => {
-    if (!org['@id']) {
-      return
+    if (org['@id']) {
+      await handleDeleteOrganizationMutation.mutateAsync(org['@id'])
     }
-    await handleDeleteOrganizationMutation.mutateAsync(org['@id'])
   }
 
   const handleCreateAddressMutation = useCreateContactAddress()
@@ -230,28 +204,54 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
       return
     }
     if (address['@id']) {
-      await handleUpdateAddressMutation.mutateAsync({
-        id: address['@id'],
-        data: address,
-      })
+      await handleUpdateAddressMutation.mutateAsync({ id: address['@id'], data: address })
     } else {
-      await handleCreateAddressMutation.mutateAsync({
-        ...address,
-        contact: contact['@id'],
-      })
+      await handleCreateAddressMutation.mutateAsync({ ...address, contact: contact['@id'] })
     }
   }
 
   const handleDeleteAddress = async (address: ContactAddress) => {
-    if (!address['@id']) {
-      return
+    if (address['@id']) {
+      await handleDeleteAddressMutation.mutateAsync(address['@id'])
     }
-    await handleDeleteAddressMutation.mutateAsync(address['@id'])
   }
 
+  return {
+    handleUpdatePhone,
+    handleDeletePhone,
+    handleUpdateEmail,
+    handleDeleteEmail,
+    handleUpdateAddress,
+    handleDeleteAddress,
+    handleUpdateOrganization,
+    handleDeleteOrganization,
+    handleUpdateDate,
+    handleDeleteDate,
+    handleUpdateBio,
+    handleDeleteBio,
+  }
+}
+
+function ContactViewHeader({
+  contact,
+  onEdit,
+  isFavorite,
+}: {
+  contact: Contact
+  onEdit: () => void
+  isFavorite: boolean
+}) {
+  const { t } = useTranslation()
+  const { toggleFavorite } = useContactFavorite()
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
+    <div className="flex items-start justify-between">
+      <div className="flex items-start gap-4">
+        <AvatarUpload
+          currentAvatar={contact.avatar}
+          displayName={`${contact.contactNames?.[0]?.given} ${contact.contactNames?.[0]?.family}`}
+          className="mt-1"
+        />
         <div className="space-y-2">
           <h1 className="flex items-center gap-2 text-2xl font-bold">
             {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
@@ -262,78 +262,106 @@ export function ContactView({ contact, onEdit }: ContactViewProps) {
               onClick={() => toggleFavorite(contact)}
             />
           </h1>
-          {!!contact.contactGroups && contact.contactGroups.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {contact.contactGroups.map((cg, i) => {
-                const groupIri = getGroupFilterValue(cg.groupResource)
-                const name = getGroupName(cg.groupResource)
-                if (!name) {
-                  return null
-                }
-
-                const fullGroup = groupsFetched?.find((g) => g['@id'] === groupIri)
-
-                return (
-                  <Link
-                    key={i}
-                    to={groupIri ? `/contacts?group=${encodeURIComponent(groupIri)}` : '#'}
-                    className="hover:opacity-80"
-                  >
-                    <Badge
-                      variant="secondary"
-                      className={fullGroup?.color ? 'border-transparent' : ''}
-                      style={
-                        fullGroup?.color
-                          ? {
-                              backgroundColor: fullGroup.color,
-                              borderColor: fullGroup.color,
-                              color: getContrastingTextColor(fullGroup.color),
-                            }
-                          : undefined
-                      }
-                    >
-                      {name}
-                    </Badge>
-                  </Link>
-                )
-              })}
-            </div>
-          )}
+          <ContactGroupsBadgeList contactGroups={contact.contactGroups} />
         </div>
-        <Button onClick={onEdit} className="gap-2">
-          <Pencil className="h-4 w-4" />
-          {t('common.edit')}
-        </Button>
       </div>
+      <Button onClick={onEdit} className="gap-2">
+        <Pencil className="h-4 w-4" />
+        {t('common.edit')}
+      </Button>
+    </div>
+  )
+}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <ContactInfoCard
-          contact={contact}
-          onUpdatePhone={handleUpdatePhone}
-          onDeletePhone={handleDeletePhone}
-          onUpdateEmail={handleUpdateEmail}
-          onDeleteEmail={handleDeleteEmail}
-          onUpdateAddress={handleUpdateAddress}
-          onDeleteAddress={handleDeleteAddress}
-        />
-        <ProfessionalCard
-          contact={contact}
-          onUpdateOrganization={handleUpdateOrganization}
-          onDeleteOrganization={handleDeleteOrganization}
-        />
-        <DatesCard
-          contact={contact}
-          onUpdateDate={handleUpdateDate}
-          onDeleteDate={handleDeleteDate}
-        />
-        <UpcomingDatesCard contact={contact} />
-        <RelationsCard contact={contact} />
-        <BiographyCard
-          contact={contact}
-          onUpdateBio={handleUpdateBio}
-          onDeleteBio={handleDeleteBio}
-        />
-      </div>
+function ContactGroupsBadgeList({ contactGroups }: { contactGroups: Contact['contactGroups'] }) {
+  const { data: groupsFetched } = useGroups()
+
+  if (!contactGroups || contactGroups.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {contactGroups.map((cg, i) => {
+        const groupIri = getGroupFilterValue(cg.groupResource)
+        const name = getGroupName(cg.groupResource)
+        if (!name) {
+          return null
+        }
+
+        const fullGroup = groupsFetched?.find((g) => g['@id'] === groupIri)
+
+        return (
+          <Link
+            key={i}
+            to={groupIri ? `/contacts?group=${encodeURIComponent(groupIri)}` : '#'}
+            className="hover:opacity-80"
+          >
+            <Badge
+              variant="secondary"
+              className={fullGroup?.color ? 'border-transparent' : ''}
+              style={
+                fullGroup?.color
+                  ? {
+                      backgroundColor: fullGroup.color,
+                      borderColor: fullGroup.color,
+                      color: getContrastingTextColor(fullGroup.color),
+                    }
+                  : undefined
+              }
+            >
+              {name}
+            </Badge>
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+function ContactViewCardsGrid({
+  contact,
+  handleUpdatePhone,
+  handleDeletePhone,
+  handleUpdateEmail,
+  handleDeleteEmail,
+  handleUpdateAddress,
+  handleDeleteAddress,
+  handleUpdateOrganization,
+  handleDeleteOrganization,
+  handleUpdateDate,
+  handleDeleteDate,
+  handleUpdateBio,
+  handleDeleteBio,
+}: any) {
+  return (
+    <div className="grid gap-6 md:grid-cols-2">
+      <ContactInfoCard
+        contact={contact}
+        onUpdatePhone={handleUpdatePhone}
+        onDeletePhone={handleDeletePhone}
+        onUpdateEmail={handleUpdateEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onUpdateAddress={handleUpdateAddress}
+        onDeleteAddress={handleDeleteAddress}
+      />
+      <ProfessionalCard
+        contact={contact}
+        onUpdateOrganization={handleUpdateOrganization}
+        onDeleteOrganization={handleDeleteOrganization}
+      />
+      <DatesCard
+        contact={contact}
+        onUpdateDate={handleUpdateDate}
+        onDeleteDate={handleDeleteDate}
+      />
+      <UpcomingDatesCard contact={contact} />
+      <RelationsCard contact={contact} />
+      <BiographyCard
+        contact={contact}
+        onUpdateBio={handleUpdateBio}
+        onDeleteBio={handleDeleteBio}
+      />
     </div>
   )
 }

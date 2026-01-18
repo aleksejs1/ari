@@ -71,6 +71,7 @@ src/
 - **Sidebar**: In `DashboardLayout`, the sidebar provides navigation to secondary features (Audit Logs, Groups, Settings etc). On desktop it is always visible; on mobile it is hidden and accessible via a hamburger menu (using the `Sheet` component). It does not contain Home or Contacts links, nor user/session controls (which are in the header).
 - **Header Navigation**: In `SidebarLessLayout`, primary navigation (like Contacts) is exposed directly in the header row next to the logo.
 - **Type Autocomplete**: Form fields for "type" (phone type, email type, etc.) use a `TypeAutocomplete` component that provides suggestions from the `/api/autocomplete` endpoint via the `useAutocomplete` hook. Users can also enter custom values, which are cached locally for future use within the session.
+- **Avatar Upload**: Avatar management uses a dedicated component `AvatarUpload` which handles image selection and immediate upload via `POST /api/contacts/{id}/avatar`. Support for drag-and-drop or simple file selection with validation.
 - **Demo Mode**: Users can instantly explore the application using a "Demo" account. This is triggered from the Login page, calling `POST /api/demo-account` to generate a temporary user and then automatically logging in with the default password `demo`.
 - **Delete Account**: Users can permanently delete their account and all associated data via the Settings-related "Delete Account" page. This action triggers a `DELETE /api/profile` request and requires explicit confirmation through a modal dialog.
 

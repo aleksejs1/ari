@@ -115,6 +115,15 @@
   },
   "contacts": {
     "title": "Contacts",
+    "avatar": "Avatar",
+    "avatarUpload": {
+      "upload": "Upload avatar",
+      "uploading": "Uploading...",
+      "uploadSuccess": "Avatar uploaded successfully",
+      "uploadError": "Failed to upload avatar",
+      "errorFileFormat": "Please select a valid image file",
+      "change": "Change avatar"
+    },
     "loading": "Loading contacts...",
     "error": "Error loading contacts.",
     "contactInfo": "Contact Information",

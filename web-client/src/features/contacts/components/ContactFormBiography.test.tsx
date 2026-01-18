@@ -34,6 +34,13 @@ const WrapperEmpty = () => {
   )
 }
 
+// Mock useContacts
+vi.mock('../useContacts', () => ({
+  useCreateGroup: vi.fn(),
+  useGroups: vi.fn(),
+  useUploadContactAvatar: vi.fn(),
+}))
+
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -73,7 +80,7 @@ describe('ContactFormBiography', () => {
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
 
     // Find the trash icon button
-    const trashIcon = document.querySelector('svg.lucide-trash-2')
+    const trashIcon = screen.getByTestId('icon-Trash2')
     const removeBtn = trashIcon?.closest('button')
 
     expect(removeBtn).toBeTruthy()

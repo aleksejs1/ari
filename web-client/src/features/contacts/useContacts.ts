@@ -243,3 +243,34 @@ export function useImportContacts() {
     },
   })
 }
+export function useUploadContactAvatar() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, file }: { id: string; file: File }) => {
+      const url = id.startsWith('/api') ? id.substring(4) : id
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await api.post<{
+        '@id': string
+        contentUrl?: string
+        path?: string
+      }>(`${url}/avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      return response.data
+    },
+    onSuccess: (data, variables) => {
+      const id = variables.id.split('/').pop()
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (id) {
+        // Optimistically update or re-fetch would happen via invalidate
+        // We can also try to update the specific contact cache if we want instant feedback without refetch
+        // But invalidation is safer for ensuring full object consistency
+        void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
+      }
+    },
+  })
+}

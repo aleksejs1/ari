@@ -1,13 +1,52 @@
+import { API_ORIGIN } from '@/lib/axios'
 import { formatApiDate } from '@/lib/utils'
 import {
   type Contact,
   type ContactFormValues,
   type ContactAddress,
   type ContactBiography,
+  type ContactAvatar,
 } from '@/types/models'
+
+export function getContactAvatarUrl(
+  avatar?: ContactAvatar | null,
+  fullSize = false,
+): string | null {
+  if (!avatar) {
+    return null
+  }
+
+  if (!fullSize) {
+    // @ts-expect-error - dynamic key access
+    const thumbnail = avatar.thumbnailDataEncoded
+    if (thumbnail) {
+      // @ts-expect-error - dynamic key access
+      const mimeType = avatar.mimeType || 'image/jpeg'
+      return `data:${mimeType};base64,${thumbnail}`
+    }
+  }
+
+  // @ts-expect-error - dynamic key access
+  const url = avatar.contentUrl || avatar.path
+  if (!url) {
+    return null
+  }
+
+  if (url.startsWith('http')) {
+    return url
+  }
+
+  if (url.startsWith('/')) {
+    return `${API_ORIGIN}${url}`
+  }
+
+  return `${API_ORIGIN}/uploads/avatars/${url}`
+}
 
 export function mapContactToFormValues(contact: Contact): ContactFormValues {
   return {
+    '@id': contact['@id'],
+    avatar: contact.avatar,
     contactNames: (contact.contactNames ?? []).map((n) => ({
       id: n.id?.toString(),
       '@id': n['@id'],

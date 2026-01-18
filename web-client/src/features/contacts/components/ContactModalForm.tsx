@@ -211,8 +211,11 @@ export function ContactModalForm({
               <div className="grid grid-cols-[40px_1fr] gap-x-2 gap-y-4">
                 {/* Photo / Name */}
                 <div className="flex justify-center pt-2">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-muted-foreground">
-                    <CircleUser className="h-6 w-6" />
+                  {/* Photo / Name */}
+                  <div className="flex justify-center pt-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+                      <CircleUser className="h-6 w-6" />
+                    </div>
                   </div>
                 </div>
                 <div className="min-w-0 pr-10">

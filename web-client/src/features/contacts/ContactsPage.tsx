@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
@@ -50,6 +50,8 @@ export default function ContactsPage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
 
+  const columns = useMemo(() => contactColumnRegistry.getAll(), [])
+
   const handleCreate = () => {
     setSelectedContact(null)
     setIsSheetOpen(true)
@@ -69,7 +71,6 @@ export default function ContactsPage() {
 
   const contacts = getHydraMember(data)
   const { totalPages, hasNext, hasPrevious } = getHydraPagination(data, page)
-  const columns = contactColumnRegistry.getAll()
 
   return (
     <div className={`space-y-6 ${isPlaceholderData ? 'opacity-50' : ''}`}>

@@ -1,8 +1,10 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
+export const API_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:8000'
+
 export const api = axios.create({
-  baseURL: import.meta.env.PROD ? '/api' : 'http://localhost:8000/api',
+  baseURL: `${API_ORIGIN}/api`,
   headers: {
     'Content-Type': 'application/ld+json',
     Accept: 'application/ld+json',

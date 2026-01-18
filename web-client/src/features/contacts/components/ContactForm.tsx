@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { useCreateGroup } from '../useContacts'
+import { useCreateGroup, useUploadContactAvatar } from '../useContacts'
 
+import { AvatarUpload } from './AvatarUpload'
 import { CollapsibleSection } from './CollapsibleSection'
 import { ContactFormAddress } from './ContactFormAddress'
 import { ContactFormBiography } from './ContactFormBiography'
@@ -114,6 +115,7 @@ const getContactFormDefaultValues = (
     contactEmailAdresses: enforceMin(d.contactEmailAdresses, {
       value: '',
       type: 'Personal',
+      '@type': 'ContactEmailAdress',
     }),
     contactAddresses: enforceMin(d.contactAddresses, {
       type: 'Home',
@@ -137,31 +139,63 @@ const getContactFormDefaultValues = (
   }
 }
 
-export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
-  const { t } = useTranslation()
+function ContactFormAvatarSection({
+  defaultValues,
+  uploadAvatar,
+}: {
+  defaultValues?: ContactFormValues
+  uploadAvatar: (params: { id: string; file: File }) => Promise<any>
+}) {
+  const contactId = defaultValues?.['@id']
+  const firstNames = defaultValues?.contactNames?.[0]
+  const displayName = firstNames?.given || firstNames?.family
 
-  const contactSchema = getContactSchema(t)
-
-  const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactSchema) as any,
-    values: getContactFormDefaultValues(t, defaultValues),
-  }) as any
-
-  const { mutateAsync: createGroup } = useCreateGroup()
-
-  const handleFormSubmit = async (data: ContactFormValues) => {
-    const contactGroups = await processContactGroups(data.contactGroups, createGroup)
-    const cleanedData = cleanContactData(data)
-
-    onSubmit({
-      ...cleanedData,
-      contactGroups,
-    })
+  const handleUpload = async (file: File) => {
+    if (contactId) {
+      await uploadAvatar({ id: contactId, file })
+    }
   }
+
+  return (
+    <div className="flex justify-center">
+      <AvatarUpload
+        currentAvatar={defaultValues?.avatar}
+        displayName={displayName}
+        contactId={contactId}
+        disabled={!contactId}
+        onUpload={handleUpload}
+      />
+    </div>
+  )
+}
+
+function ContactFormGroupsSection({ control }: { control: any }) {
+  const { t } = useTranslation()
+  return (
+    <CollapsibleSection title={t('contacts.groups')}>
+      <FormField
+        control={control}
+        name="contactGroups"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <ContactGroupSelect value={field.value} onChange={field.onChange} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </CollapsibleSection>
+  )
+}
+
+export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFormProps) {
+  const { t, form, uploadAvatar, handleFormSubmit } = useContactForm(defaultValues, onSubmit)
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+        <ContactFormAvatarSection defaultValues={defaultValues} uploadAvatar={uploadAvatar} />
         <ContactFormNames />
         <ContactFormPhone />
         <ContactFormEmail />
@@ -171,25 +205,35 @@ export function ContactForm({ defaultValues, onSubmit, isSubmitting }: ContactFo
         <ContactFormRelations />
         <ContactFormSync />
 
-        {/* Groups Section */}
-        <CollapsibleSection title={t('contacts.groups')}>
-          <FormField
-            control={form.control}
-            name="contactGroups"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <ContactGroupSelect value={field.value} onChange={field.onChange} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CollapsibleSection>
+        <ContactFormGroupsSection control={form.control} />
+
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? t('common.saving') : t('common.save')}
         </Button>
       </form>
     </Form>
   )
+}
+
+function useContactForm(
+  defaultValues: ContactFormValues | undefined,
+  onSubmit: (data: ContactFormValues) => void,
+) {
+  const { t } = useTranslation()
+  const contactSchema = getContactSchema(t)
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema) as any,
+    values: getContactFormDefaultValues(t, defaultValues),
+  }) as any
+
+  const { mutateAsync: createGroup } = useCreateGroup()
+  const { mutateAsync: uploadAvatar } = useUploadContactAvatar()
+
+  const handleFormSubmit = async (data: ContactFormValues) => {
+    const contactGroups = await processContactGroups(data.contactGroups, createGroup)
+    const cleanedData = cleanContactData(data)
+    onSubmit({ ...cleanedData, contactGroups })
+  }
+
+  return { t, form, uploadAvatar, handleFormSubmit }
 }

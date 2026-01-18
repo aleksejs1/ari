@@ -356,6 +356,26 @@ export interface paths {
         patch: operations["api_contact_addresses_id_patch"];
         trace?: never;
     };
+    "/api/contacts/{id}/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Upload a contact avatar
+         * @description Upload an image file (JPEG, PNG, WEBP) to be used as a contact avatar.
+         */
+        post: operations["api_contacts_idavatar_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contact_biographies": {
         parameters: {
             query?: never;
@@ -1439,9 +1459,9 @@ export interface components {
              */
             user?: string;
             entityType?: string;
-            entityId?: number | null;
+            entityId?: string | null;
             ownerEntityType?: string | null;
-            ownerEntityId?: number | null;
+            ownerEntityId?: string | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -1468,9 +1488,9 @@ export interface components {
              */
             user?: string;
             entityType?: string;
-            entityId?: number | null;
+            entityId?: string | null;
             ownerEntityType?: string | null;
-            ownerEntityId?: number | null;
+            ownerEntityId?: string | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -1492,9 +1512,9 @@ export interface components {
              */
             user?: string;
             entityType?: string;
-            entityId?: number | null;
+            entityId?: string | null;
             ownerEntityType?: string | null;
-            ownerEntityId?: number | null;
+            ownerEntityId?: string | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -1521,9 +1541,9 @@ export interface components {
              */
             user?: string;
             entityType?: string;
-            entityId?: number | null;
+            entityId?: string | null;
             ownerEntityType?: string | null;
-            ownerEntityId?: number | null;
+            ownerEntityId?: string | null;
             action?: string;
             changes?: {
                 [key: string]: string | null;
@@ -1622,6 +1642,7 @@ export interface components {
             readonly id?: number;
             /** Format: uuid */
             uuid?: string;
+            avatar?: components["schemas"]["ContactAvatar-contact.read"] | null;
             contactNames?: components["schemas"]["ContactName-contact.read"][];
             contactDates?: components["schemas"]["ContactDate-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber-contact.read"][];
@@ -1659,6 +1680,7 @@ export interface components {
             readonly id?: number;
             /** Format: uuid */
             uuid?: string;
+            avatar?: components["schemas"]["ContactAvatar.jsonld-contact.read"] | null;
             contactNames?: components["schemas"]["ContactName.jsonld-contact.read"][];
             contactDates?: components["schemas"]["ContactDate.jsonld-contact.read"][];
             phoneNumbers?: components["schemas"]["ContactPhoneNumber.jsonld-contact.read"][];
@@ -1805,6 +1827,40 @@ export interface components {
             postalCode?: string | null;
             country?: string | null;
             countryCode?: string | null;
+        };
+        "ContactAvatar-contact.read": {
+            /** Format: ulid */
+            readonly id?: string | null;
+            path?: string;
+            mimeType?: string;
+            size?: number;
+        };
+        "ContactAvatar-contact_avatar.read": {
+            /** Format: ulid */
+            readonly id?: string | null;
+            path?: string;
+            mimeType?: string;
+            size?: number;
+            readonly thumbnailDataEncoded?: string | null;
+        };
+        "ContactAvatar.AvatarUploadInput": {
+            /** Format: binary */
+            file: string | null;
+        };
+        "ContactAvatar.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            /** Format: ulid */
+            readonly id?: string | null;
+            path?: string;
+            mimeType?: string;
+            size?: number;
+        };
+        "ContactAvatar.jsonld-contact_avatar.read": components["schemas"]["HydraItemBaseSchema"] & {
+            /** Format: ulid */
+            readonly id?: string | null;
+            path?: string;
+            mimeType?: string;
+            size?: number;
+            readonly thumbnailDataEncoded?: string | null;
         };
         "ContactBiography-contact.create": {
             type?: string | null;
@@ -3078,8 +3134,8 @@ export interface operations {
                 page?: number;
                 entityType?: string;
                 "entityType[]"?: string[];
-                entityId?: number;
-                "entityId[]"?: number[];
+                entityId?: string;
+                "entityId[]"?: string[];
                 "order[createdAt]"?: "asc" | "desc";
             };
             header?: never;
@@ -4039,6 +4095,68 @@ export interface operations {
             };
             /** @description Not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contacts_idavatar_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactAvatar identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The new ContactAvatar resource */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ContactAvatar.AvatarUploadInput"];
+            };
+        };
+        responses: {
+            /** @description ContactAvatar resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactAvatar.jsonld-contact_avatar.read"];
+                    "application/json": components["schemas"]["ContactAvatar-contact_avatar.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

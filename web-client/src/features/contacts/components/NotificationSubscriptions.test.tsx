@@ -5,6 +5,13 @@ import { NotificationSubscriptions } from './NotificationSubscriptions'
 
 import { api } from '@/lib/axios'
 
+// Mock useContacts
+vi.mock('../useContacts', () => ({
+  useCreateGroup: vi.fn(),
+  useGroups: vi.fn(),
+  useUploadContactAvatar: vi.fn(),
+}))
+
 // Mock api
 vi.mock('@/lib/axios', () => ({
   api: {
@@ -130,9 +137,7 @@ describe('NotificationSubscriptions', () => {
     // Finally find button
     const deleteButton = screen
       .getAllByRole('button')
-      .find(
-        (btn) => btn.className.includes('text-red-500') || btn.innerHTML.includes('lucide-trash'),
-      )
+      .find((btn) => btn.querySelector('[data-testid="icon-Trash2"]'))
 
     // Check it exists but don't assign if unused, or use it
     expect(deleteButton).toBeDefined()

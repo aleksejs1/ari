@@ -9,6 +9,7 @@ import { ContactForm } from './ContactForm'
 vi.mock('../useContacts', () => ({
   useCreateGroup: vi.fn(),
   useGroups: vi.fn(),
+  useUploadContactAvatar: vi.fn(() => ({ mutateAsync: vi.fn() })),
 }))
 
 vi.mock('@/hooks/useUserPrefs.hook', () => ({

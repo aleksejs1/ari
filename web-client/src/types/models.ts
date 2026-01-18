@@ -10,7 +10,10 @@ export type { HydraCollection }
 export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
   displayName?: string
   contactRelations?: ContactRelation[]
+  avatar?: ContactAvatar | null
 }
+
+export type ContactAvatar = components['schemas']['ContactAvatar.jsonld-contact_avatar.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read'] & {
   yearsPassed?: number | null
@@ -161,7 +164,17 @@ export const contactRelationSchema = z.object({
   displayName: z.string().optional(),
 })
 
+export const contactAvatarSchema = z.object({
+  '@id': z.string().optional(),
+  contentUrl: z.string().optional(),
+  path: z.string().optional(),
+  mimeType: z.string().optional(),
+  thumbnailDataEncoded: z.string().optional(),
+})
+
 export const contactSchema = z.object({
+  '@id': z.string().optional(),
+  avatar: contactAvatarSchema.optional().nullable(),
   contactNames: z.array(contactNameSchema).min(1),
   contactDates: z.array(contactDateSchema),
   phoneNumbers: z.array(contactPhoneNumberSchema),

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 
-import { useCreateGroup, useGroups } from '../useContacts'
+import { useCreateGroup, useGroups, useUploadContactAvatar } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
 
@@ -9,6 +9,7 @@ import { ContactForm } from './ContactForm'
 vi.mock('../useContacts', () => ({
   useCreateGroup: vi.fn(),
   useGroups: vi.fn(),
+  useUploadContactAvatar: vi.fn(),
 }))
 
 vi.mock('react-i18next', () => ({
@@ -31,6 +32,9 @@ describe('ContactForm', () => {
       typeof useCreateGroup
     >)
     vi.mocked(useGroups).mockReturnValue({ data: [] } as unknown as ReturnType<typeof useGroups>)
+    vi.mocked(useUploadContactAvatar).mockReturnValue({
+      mutateAsync: vi.fn(),
+    } as unknown as ReturnType<typeof useUploadContactAvatar>)
   })
 
   it('renders correctly with default values', () => {
