@@ -52,6 +52,7 @@ describe('RegisterPage', () => {
       isAuthenticated: false,
       isLoading: false,
       logout: vi.fn(),
+      refreshToken: null,
     })
     vi.clearAllMocks()
   })

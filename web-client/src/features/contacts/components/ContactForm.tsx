@@ -159,7 +159,7 @@ function ContactFormAvatarSection({
   return (
     <div className="flex justify-center">
       <AvatarUpload
-        currentAvatar={defaultValues?.avatar}
+        currentAvatar={defaultValues?.avatar as any}
         displayName={displayName}
         contactId={contactId}
         disabled={!contactId}

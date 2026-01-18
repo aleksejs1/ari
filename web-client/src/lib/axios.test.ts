@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { api } from './axios'
 
 vi.mock('axios', async () => {
-  const actual = await vi.importActual<typeof axios>('axios')
+  const actual = (await vi.importActual('axios')) as any
   return {
     ...actual,
     default: {
@@ -28,9 +28,9 @@ describe('axios api', () => {
       value: { href: '' },
     })
     // Ensure atob is available for jwt-decode in test environment
-    if (typeof atob === 'undefined') {
-      vi.stubGlobal('atob', (str: string) => Buffer.from(str, 'base64').toString('binary'))
-    }
+    // if (typeof atob === 'undefined') {
+    //   vi.stubGlobal('atob', (str: string) => Buffer.from(str, 'base64').toString('binary'))
+    // }
     vi.clearAllMocks()
   })
 

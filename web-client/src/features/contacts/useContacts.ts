@@ -262,7 +262,7 @@ export function useUploadContactAvatar() {
       })
       return response.data
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       const id = variables.id.split('/').pop()
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
       if (id) {

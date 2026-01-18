@@ -17,17 +17,14 @@ export function getContactAvatarUrl(
   }
 
   if (!fullSize) {
-    // @ts-expect-error - dynamic key access
-    const thumbnail = avatar.thumbnailDataEncoded
+    const thumbnail = (avatar as any).thumbnailDataEncoded
     if (thumbnail) {
-      // @ts-expect-error - dynamic key access
-      const mimeType = avatar.mimeType || 'image/jpeg'
+      const mimeType = (avatar as any).mimeType || 'image/jpeg'
       return `data:${mimeType};base64,${thumbnail}`
     }
   }
 
-  // @ts-expect-error - dynamic key access
-  const url = avatar.contentUrl || avatar.path
+  const url = (avatar as any).contentUrl || avatar.path
   if (!url) {
     return null
   }
@@ -46,7 +43,7 @@ export function getContactAvatarUrl(
 export function mapContactToFormValues(contact: Contact): ContactFormValues {
   return {
     '@id': contact['@id'],
-    avatar: contact.avatar,
+    avatar: contact.avatar as any,
     contactNames: (contact.contactNames ?? []).map((n) => ({
       id: n.id?.toString(),
       '@id': n['@id'],

@@ -25,6 +25,7 @@ describe('AvatarUpload', () => {
   it('renders current avatar image when provided', () => {
     const avatar = {
       '@id': '/api/avatars/1',
+      '@type': 'ContactAvatar',
       path: 'https://example.com/avatar.jpg',
     }
     render(<AvatarUpload currentAvatar={avatar} displayName="John Doe" />)
