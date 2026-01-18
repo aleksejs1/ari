@@ -30,7 +30,7 @@ export default function GroupsWidget() {
             .map((group) => (
               <Link key={group['@id']} to={`/contacts?group=${encodeURIComponent(group['@id'])}`}>
                 <Badge variant="secondary" className="cursor-pointer hover:opacity-80">
-                  {group.name}
+                  {group.name} <span className="ml-1 opacity-60">({group.contactsCount})</span>
                 </Badge>
               </Link>
             ))}
