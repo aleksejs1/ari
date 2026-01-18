@@ -66,8 +66,9 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
                 'eventTypes' => ['birthday'],
                 'schedule' => [
                     [
-                        // Execution(Today) = Event(Tomorrow) + (-1). Target = Today - (-1) = Tomorrow. Correct.
-                        'offsetDays' => -1,
+                        // Execution(Today) = Event(Tomorrow) + (-1)? NO.
+                        // New Logic: Target = Execution(Today) + Offset(1) = Today + 1 = Tomorrow. Matches event.
+                        'offsetDays' => 1,
                         'time' => '09:00',
                         'channels' => [$channelId],
                     ],

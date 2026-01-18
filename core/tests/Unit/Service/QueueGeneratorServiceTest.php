@@ -57,7 +57,7 @@ class QueueGeneratorServiceTest extends TestCase
             $this->entityManager,
         );
 
-        $executionDate = new \DateTime('2023-10-27 10:00:00');
+        $executionDate = new \DateTime('2023-10-23 10:00:00');
 
         $tenant = self::createStub(User::class);
         $tenant->method('getId')->willReturn(1);

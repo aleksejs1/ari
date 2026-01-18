@@ -45,7 +45,7 @@ class QueueGeneratorService
             foreach ($rulesByOffset as $offset => $offsetRules) {
                 // Calculate Target Date: ExecutionDate - Offset
                 $targetDate = new \DateTime($executionDate->format('Y-m-d'));
-                $targetDate->modify(sprintf('%+d days', -$offset));
+                $targetDate->modify(sprintf('%+d days', $offset));
 
                 // Find events (birthdays, etc) on this target date (ignoring year)
                 $matchingDates = $this->contactDateRepository->findMatchingDates($targetDate);

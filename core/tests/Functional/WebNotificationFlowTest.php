@@ -151,25 +151,24 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         $client = static::createClient();
         $token = $this->token;
 
-        // Event is YESTERDAY
+        // NEW LOGIC: Positive Offset = Target Future (Before Event)
+        // Set Event to TOMORROW
         $today = new \DateTime();
-        $yesterday = (clone $today)->modify('-1 day');
+        $tomorrow = (clone $today)->modify('+1 day');
 
         $client->request('POST', '/api/contacts', [
             'auth_bearer' => $token,
             'json' => [
-                'contactNames' => [['given' => 'Late', 'family' => 'Notification']],
-                'contactDates' => [['date' => $yesterday->format('Y-m-d'), 'text' => 'yesterday-event']],
+                'contactNames' => [['given' => 'Future', 'family' => 'Notification']],
+                'contactDates' => [['date' => $tomorrow->format('Y-m-d'), 'text' => 'future-event']],
             ],
         ]);
 
-        // Policy: Offset 1 (1 day after event)
-        // Targeted run date: Today.
-        // Logic: Target Date = Today - Offset (1) = Yesterday. Matches event date.
-        $this->createPolicy($client, $token, ['type' => 'all'], ['yesterday-event'], 1);
+        // Policy: Offset 1. Target = Today + 1 = Tomorrow.
+        $this->createPolicy($client, $token, ['type' => 'all'], ['future-event'], 1);
 
         $this->runGenerateAndProcess($today);
-        $this->assertActivityFeedMessage($client, $token, 'Contact Late Notification has yesterday-event after 1 days');
+        $this->assertActivityFeedMessage($client, $token, 'Contact Future Notification has future-event after 1 days');
     }
 
     public function testNegativeOffset(): void
@@ -177,25 +176,24 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         $client = static::createClient();
         $token = $this->token;
 
-        // Event is TOMORROW
+        // NEW LOGIC: Negative Offset = Target Past (After Event)
+        // Set Event to YESTERDAY
         $today = new \DateTime();
-        $tomorrow = (clone $today)->modify('+1 day');
+        $yesterday = (clone $today)->modify('-1 day');
 
         $client->request('POST', '/api/contacts', [
             'auth_bearer' => $token,
             'json' => [
-                'contactNames' => [['given' => 'Early', 'family' => 'Bird']],
-                'contactDates' => [['date' => $tomorrow->format('Y-m-d'), 'text' => 'future-event']],
+                'contactNames' => [['given' => 'Past', 'family' => 'Bird']],
+                'contactDates' => [['date' => $yesterday->format('Y-m-d'), 'text' => 'yesterday-event']],
             ],
         ]);
 
-        // Policy: Offset -1 (1 day before event)
-        // Targeted run date: Today.
-        // Logic: Target Date = Today - Offset (-1) = Today + 1 = Tomorrow. Matches event date.
-        $this->createPolicy($client, $token, ['type' => 'all'], ['future-event'], -1);
+        // Policy: Offset -1. Target = Today + (-1) = Yesterday.
+        $this->createPolicy($client, $token, ['type' => 'all'], ['yesterday-event'], -1);
 
         $this->runGenerateAndProcess($today);
-        $this->assertActivityFeedMessage($client, $token, 'Contact Early Bird has future-event after -1 days');
+        $this->assertActivityFeedMessage($client, $token, 'Contact Past Bird has yesterday-event after -1 days');
     }
 
     public function testMultipleDatesPerContact(): void
