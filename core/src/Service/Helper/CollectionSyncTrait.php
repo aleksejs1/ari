@@ -22,6 +22,7 @@ trait CollectionSyncTrait
         callable $isEqual,
         callable $update,
         callable $create,
+        bool $deleteMissing = true,
     ): void {
         $existingItems = $collection->toArray();
         $unmatchedDtos = [];
@@ -62,8 +63,10 @@ trait CollectionSyncTrait
         }
 
         // 3. Remove remaining
-        foreach ($existingItems as $entityToRemove) {
-            $collection->removeElement($entityToRemove);
+        if ($deleteMissing) {
+            foreach ($existingItems as $entityToRemove) {
+                $collection->removeElement($entityToRemove);
+            }
         }
     }
 }

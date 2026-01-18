@@ -288,4 +288,69 @@ final class ContactImportServiceTest extends TestCase
 
         self::assertNotEmpty($persisted);
     }
+
+    public function testMergeDoesNotDeleteMissingItems(): void
+    {
+        $entityManager = self::createStub(EntityManagerInterface::class);
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+
+        $service = new ContactImportService([], $entityManager, $avatarManager);
+
+        $contact = new Contact();
+        
+        $name1 = new ContactName();
+        $name1->setGiven('One');
+        $contact->addContactName($name1);
+
+        $name2 = new ContactName();
+        $name2->setGiven('Two');
+        $contact->addContactName($name2);
+
+        $dto = new ContactImportDto(
+            names: [new ContactNameDto('Family', 'Three')], // Should recycle 'One' -> 'Three'
+        );
+
+        // Merge = true (default)
+        $service->update($contact, $dto, true);
+
+        self::assertCount(2, $contact->getContactNames(), 'Should have 2 names (1 recycled, 1 kept)');
+        
+        $names = $contact->getContactNames();
+        // One of them should be 'Three' (recycled)
+        // One of them should be 'Two' (kept)
+        $givens = array_map(fn(ContactName $n) => $n->getGiven(), $names->toArray());
+        self::assertContains('Three', $givens);
+        self::assertContains('Two', $givens);
+    }
+
+    public function testSyncDeletesMissingItems(): void
+    {
+        $entityManager = self::createStub(EntityManagerInterface::class);
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+
+        $service = new ContactImportService([], $entityManager, $avatarManager);
+
+        $contact = new Contact();
+        
+        $name1 = new ContactName();
+        $name1->setGiven('One');
+        $contact->addContactName($name1);
+
+        $name2 = new ContactName();
+        $name2->setGiven('Two');
+        $contact->addContactName($name2);
+
+        $dto = new ContactImportDto(
+            names: [new ContactNameDto('Family', 'Three')], // Should recycle 'One' -> 'Three'
+        );
+
+        // Merge = false (Sync mode)
+        $service->update($contact, $dto, false);
+
+        self::assertCount(1, $contact->getContactNames(), 'Should have 1 name (1 recycled, 1 deleted)');
+        
+        $name = $contact->getContactNames()->first();
+        self::assertInstanceOf(ContactName::class, $name);
+        self::assertEquals('Three', $name->getGiven());
+    }
 }

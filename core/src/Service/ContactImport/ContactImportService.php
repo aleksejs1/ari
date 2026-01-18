@@ -35,7 +35,7 @@ class ContactImportService
     ) {
     }
 
-    public function import(ContactImportDto $dto, User $user): ?Contact
+    public function import(ContactImportDto $dto, User $user, bool $merge = true): ?Contact
     {
         foreach ($this->checkers as $checker) {
             if ($checker->isDuplicate($dto, $user)) {
@@ -46,10 +46,10 @@ class ContactImportService
         $contact = new Contact();
         $contact->setUser($user);
 
-        return $this->update($contact, $dto);
+        return $this->update($contact, $dto, $merge);
     }
 
-    public function update(Contact $contact, ContactImportDto $dto): Contact
+    public function update(Contact $contact, ContactImportDto $dto, bool $merge = true): Contact
     {
         $this->syncCollection(
             $contact->getContactNames(),
@@ -68,6 +68,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -96,6 +97,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -115,6 +117,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -134,6 +137,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -172,6 +176,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -230,6 +235,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -249,6 +255,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         $this->syncCollection(
@@ -266,6 +273,7 @@ class ContactImportService
 
                 return $entity;
             },
+            !$merge,
         );
 
         // Handle Avatar
