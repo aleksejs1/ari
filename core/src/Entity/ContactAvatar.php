@@ -51,14 +51,20 @@ class ContactAvatar implements TenantAwareInterface
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private mixed $thumbnailData = null;
 
-    #[Groups(['contact_avatar:read'])]
+    #[Groups(['contact_avatar:read', 'contact:read'])]
     public function getThumbnailDataEncoded(): ?string
     {
         if (null === $this->thumbnailData) {
             return null;
         }
 
-        return base64_encode((string) $this->thumbnailData);
+        $data = $this->thumbnailData;
+        if (is_resource($data)) {
+            rewind($data);
+            $data = stream_get_contents($data);
+        }
+
+        return base64_encode((string) $data);
     }
 
     #[ORM\Column(length: 100)]

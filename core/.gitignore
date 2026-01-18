@@ -38,3 +38,4 @@
 
 .env
 /coverage
+/public/uploads/avatars

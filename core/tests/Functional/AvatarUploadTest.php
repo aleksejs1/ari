@@ -35,7 +35,7 @@ class AvatarUploadTest extends AbstractApiTestCase
         $token = $this->getToken('test_avatar@example.com', 'password');
         $client = static::createClient();
 
-        $client->request('POST', '/api/contacts/' . (string) $contact->getId() . '/avatar', [
+        $response = $client->request('POST', '/api/contacts/' . (string) $contact->getId() . '/avatar', [
             'headers' => [
                 'Content-Type' => 'multipart/form-data',
                 'Authorization' => 'Bearer ' . $token,
@@ -46,11 +46,15 @@ class AvatarUploadTest extends AbstractApiTestCase
                 ],
             ],
         ]);
-
+ 
         self::assertResponseIsSuccessful();
         self::assertJsonContains([
             'mimeType' => 'image/jpeg',
         ]);
+        
+        $responseContent = $response->toArray();
+        self::assertArrayHasKey('thumbnailDataEncoded', $responseContent);
+        self::assertNotEmpty($responseContent['thumbnailDataEncoded']);
 
         $this->getEntityManager()->clear();
         $updatedContact = $this->getEntityManager()->getRepository(Contact::class)->find($contact->getId());
