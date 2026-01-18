@@ -15,6 +15,12 @@
 		file_server
 	}
 
+	# Handle Public Routes (Symfony)
+	handle /public/* {
+		root * /app/core/public
+		php_server
+	}
+
 	# Handle everything else (Frontend)
 	handle {
 		# Try to serve file, then directory, then fall back to index.html
