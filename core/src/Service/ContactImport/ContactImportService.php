@@ -5,6 +5,7 @@ namespace App\Service\ContactImport;
 use App\Dto\ContactImportDto;
 use App\Entity\Contact;
 use App\Entity\ContactAddress;
+use App\Entity\ContactAvatar;
 use App\Entity\ContactBiography;
 use App\Entity\ContactDate;
 use App\Entity\ContactEmailAdress;
@@ -17,6 +18,8 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
+use App\Service\AvatarManager;
+
 class ContactImportService
 {
     use \App\Service\Helper\CollectionSyncTrait;
@@ -28,6 +31,7 @@ class ContactImportService
         #[AutowireIterator('app.contact_duplicate_checker')]
         private readonly iterable $checkers,
         private readonly EntityManagerInterface $entityManager,
+        private readonly AvatarManager $avatarManager,
     ) {
     }
 
@@ -263,6 +267,16 @@ class ContactImportService
                 return $entity;
             },
         );
+
+        // Handle Avatar
+        if (null !== $dto->avatarContent) {
+            $avatar = $this->avatarManager->uploadContent(
+                $contact, 
+                $dto->avatarContent, 
+                $dto->avatarMimeType ?? 'image/jpeg'
+            );
+            $this->entityManager->persist($avatar);
+        }
 
         $this->entityManager->persist($contact);
         $this->entityManager->flush();

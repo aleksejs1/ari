@@ -85,4 +85,58 @@ class AvatarManager
 
         return $oldAvatar;
     }
+
+    public function uploadContent(Contact $contact, string $content, string $mimeType): ContactAvatar
+    {
+        $extension = 'bin';
+        if (str_contains($mimeType, 'jpeg') || str_contains($mimeType, 'jpg')) {
+            $extension = 'jpg';
+        } elseif (str_contains($mimeType, 'png')) {
+            $extension = 'png';
+        } elseif (str_contains($mimeType, 'webp')) {
+            $extension = 'webp';
+        }
+
+        $filename = sprintf('%s.%s', bin2hex(random_bytes(16)), $extension);
+
+        // Save to storage
+        $this->storage->write($filename, $content);
+
+        // Handle old avatar
+        $oldAvatar = $contact->getAvatar();
+        if (null !== $oldAvatar) {
+            $oldPath = $oldAvatar->getPath();
+            if (null !== $oldPath) {
+                try {
+                    $this->storage->delete($oldPath);
+                } catch (\Exception $e) {
+                    // Ignore
+                }
+            }
+        } else {
+            $oldAvatar = new ContactAvatar();
+            $oldAvatar->setContact($contact);
+            $user = $contact->getTenant();
+            if (null !== $user) {
+                $oldAvatar->setTenant($user);
+            }
+        }
+
+        $oldAvatar->setPath($filename);
+        $oldAvatar->setMimeType($mimeType);
+        $oldAvatar->setSize(strlen($content));
+
+        if ($this->storeThumbnailsInDb) {
+            try {
+                $image = $this->imageManager->read($content);
+                $image->scaleDown(width: 150, height: 150);
+                $oldAvatar->setThumbnailData($image->encode()->toString());
+            } catch (\Exception $e) {
+                // If simple resizing fails (e.g. invalid image), use original as fallback or log
+                $oldAvatar->setThumbnailData($content);
+            }
+        }
+
+        return $oldAvatar;
+    }
 }

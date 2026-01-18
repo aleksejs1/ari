@@ -39,9 +39,12 @@ final class ContactImportServiceTest extends TestCase
         $checker = self::createStub(ContactDuplicateCheckerInterface::class);
         $checker->method('isDuplicate')->willReturn(false);
 
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+
         $service = new ContactImportService(
             [$checker],
             $entityManager,
+            $avatarManager,
         );
 
         $user = new User();
@@ -126,9 +129,12 @@ final class ContactImportServiceTest extends TestCase
         $checker = self::createStub(ContactDuplicateCheckerInterface::class);
         $checker->method('isDuplicate')->willReturn(true);
 
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+
         $service = new ContactImportService(
             [$checker],
             $entityManager,
+            $avatarManager,
         );
 
         $user = new User();
@@ -148,9 +154,12 @@ final class ContactImportServiceTest extends TestCase
             $persisted[] = $obj;
         });
 
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+
         $service = new ContactImportService(
             [],
             $entityManager,
+            $avatarManager,
         );
 
         $contact = new Contact();
@@ -182,9 +191,12 @@ final class ContactImportServiceTest extends TestCase
             $persisted[] = $obj;
         });
 
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+
         $service = new ContactImportService(
             [],
             $entityManager,
+            $avatarManager,
         );
 
         $contact = new Contact();
@@ -214,7 +226,8 @@ final class ContactImportServiceTest extends TestCase
             $persisted[] = $obj;
         });
 
-        $service = new ContactImportService([], $entityManager);
+        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $service = new ContactImportService([], $entityManager, $avatarManager);
 
         $user = new User();
         $reflection = new \ReflectionProperty(User::class, 'id');

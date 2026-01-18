@@ -103,7 +103,7 @@ final class ImportGoogleContactHandler
             ],
             'query' => [
                 'personFields' => 'names,birthdays,emailAddresses,phoneNumbers,' .
-                    'addresses,organizations,biographies,memberships',
+                    'addresses,organizations,biographies,memberships,photos',
             ],
         ]);
 
@@ -242,6 +242,36 @@ final class ImportGoogleContactHandler
             }
         }
 
+        $avatarContent = null;
+        $avatarMimeType = null;
+        if (isset($data['photos'])) {
+            foreach ($data['photos'] as $photo) {
+                // We prefer primary photo and ensure it's not the default placeholder
+                if (($photo['metadata']['primary'] ?? false) && !($photo['default'] ?? false)) {
+                    $url = $photo['url'] ?? null;
+                    if (null !== $url) {
+                        try {
+                            $avatarResponse = $this->httpClient->request('GET', $url, [
+                                'headers' => [
+                                    'Authorization' => 'Bearer ' . $accessToken,
+                                ],
+                            ]);
+                            if (200 === $avatarResponse->getStatusCode()) {
+                                $avatarContent = $avatarResponse->getContent();
+                                // Basic mime type detection or fallback
+                                $userHeaders = $avatarResponse->getHeaders();
+                                $contentType = $userHeaders['content-type'][0] ?? 'image/jpeg';
+                                $avatarMimeType = $contentType;
+                            }
+                        } catch (\Exception $e) {
+                            // Avatar download failure shouldn't stop contact import
+                        }
+                    }
+                    break; 
+                }
+            }
+        }
+
         if ($addGoogleGroup) {
             $googleGroup = $this->entityManager->getRepository(Group::class)->findOneBy([
                 'user' => $user,
@@ -278,6 +308,8 @@ final class ImportGoogleContactHandler
             organizations: $organizations,
             biographies: $biographies,
             groups: $contactGroups,
+            avatarContent: $avatarContent,
+            avatarMimeType: $avatarMimeType,
         );
     }
 

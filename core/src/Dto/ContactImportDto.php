@@ -23,6 +23,8 @@ class ContactImportDto
         public readonly array $organizations = [],
         public readonly array $biographies = [],
         public readonly array $groups = [],
+        public readonly ?string $avatarContent = null,
+        public readonly ?string $avatarMimeType = null,
     ) {
     }
 }
