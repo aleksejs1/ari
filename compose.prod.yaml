@@ -27,6 +27,8 @@ services:
       DEFAULT_URI: "http://localhost:8080"
     volumes:
       - ./core/public/uploads:/app/core/public/uploads
+      - app_data:/app/core/var
+      - app_config_jwt:/app/core/config/jwt
 
   database:
     profiles: [ mysql ]
@@ -48,3 +50,5 @@ services:
 
 volumes:
   database_data:
+  app_data:
+  app_config_jwt:
