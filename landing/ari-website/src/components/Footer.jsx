@@ -19,6 +19,8 @@ const Footer = () => {
                         <p className="mt-2 flex items-center justify-center md:justify-end gap-2">
                             <a href="https://github.com/aleksejs1/ari" className="hover:text-white transition-colors">{t('nav.github')}</a>
                             <span className="mx-2">·</span>
+                            <a href="https://docs.personal-ari.com/" className="hover:text-white transition-colors">{t('nav.docs')}</a>
+                            <span className="mx-2">·</span>
                             <a href="http://personal-ari.com" className="hover:text-white transition-colors">{t('footer.website')}</a>
                             <span className="mx-2">·</span>
                             <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>

@@ -83,6 +83,7 @@ function LandingPage() {
                         <div className="hidden md:flex items-center space-x-8">
                             <a href="#features" className="text-gray-600 hover:text-violet-600 font-medium transition-colors">{t('nav.features')}</a>
                             <a href="#screenshots" className="text-gray-600 hover:text-violet-600 font-medium transition-colors">{t('nav.screenshots')}</a>
+                            <a href="https://docs.personal-ari.com/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-violet-600 font-medium transition-colors">{t('nav.docs')}</a>
                             <a href="https://github.com/aleksejs1/ari" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-violet-600 font-medium transition-colors flex items-center gap-1">
                                 {t('nav.github')} <ExternalLink size={16} />
                             </a>
@@ -139,6 +140,7 @@ function LandingPage() {
                         <div className="px-4 pt-2 pb-4 space-y-1">
                             <a href="#features" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.features')}</a>
                             <a href="#screenshots" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.screenshots')}</a>
+                            <a href="https://docs.personal-ari.com/" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.docs')}</a>
                             <a href="https://github.com/aleksejs1/ari" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-violet-600 hover:bg-gray-50 rounded-md">{t('nav.github')}</a>
                             <a href="https://app.personal-ari.com/" className="block w-full text-center mt-4 px-3 py-3 bg-violet-600 text-white font-bold rounded-lg shadow-md">{t('nav.demo')}</a>
                         </div>
