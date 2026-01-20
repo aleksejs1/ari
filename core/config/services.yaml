@@ -4,17 +4,11 @@
 # Files in the packages/ subdirectory configure your dependencies.
 # See also https://symfony.com/doc/current/service_container/import.html
 
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+imports:
+    - { resource: parameters.yaml }
+    - { resource: env_parameters.yaml }
+
 parameters:
-    default_db_server_version: '11.4.9-MariaDB'
-    app.google.contacts_import_limit: '%env(int:default:default_google_contacts_import_limit:GOOGLE_CONTACTS_IMPORT_LIMIT)%'
-    default_google_contacts_import_limit: 70
-    app.xml.import_limit: '%env(int:default:default_xml_import_limit:XML_IMPORT_LIMIT)%'
-    default_xml_import_limit: 70
-    telegram_bot_secret: '%env(default:empty_string:TELEGRAM_BOT_SECRET)%'
-    telegram_bot_name: '%env(default:empty_string:TELEGRAM_BOT_NAME)%'
-    empty_string: ''
 
 services:
 

@@ -20,9 +20,9 @@ class AvatarManager
         private FilesystemOperator $localStorage,
         #[Autowire(service: 'avatar.storage.s3')]
         private FilesystemOperator $s3Storage,
-        #[Autowire(env: 'STORAGE_TYPE')]
+        #[Autowire('%storage_type%')]
         private string $storageType,
-        #[Autowire(env: 'bool:APP_STORE_THUMBNAILS_IN_DB')]
+        #[Autowire('%app_store_thumbnails_in_db%')]
         private bool $storeThumbnailsInDb,
     ) {
         $this->imageManager = new ImageManager(new Driver());

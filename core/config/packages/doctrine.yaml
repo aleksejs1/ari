@@ -4,7 +4,7 @@ doctrine:
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        # server_version: '%env(default:default_db_server_version:DATABASE_SERVER_VERSION)%'
+        # server_version: '%database_server_version%'
 
 
         profiling_collect_backtrace: '%kernel.debug%'
@@ -25,7 +25,7 @@ doctrine:
             App:
                 type: attribute
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Entity'
+                dir: '%doctrine_entity_dir%'
                 prefix: 'App\Entity'
                 alias: App
         controller_resolver:
@@ -39,7 +39,7 @@ when@test:
     doctrine:
         dbal:
             # "TEST_TOKEN" is typically set by ParaTest
-            # dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            # dbname_suffix: '_test%test_token%'
             dbname_suffix: ''
         orm:
             dql:

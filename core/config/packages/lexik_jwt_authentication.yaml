@@ -1,8 +1,8 @@
 lexik_jwt_authentication:
     token_ttl: 300
-    secret_key: '%env(resolve:JWT_SECRET_KEY)%'
-    public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
-    pass_phrase: '%env(JWT_PASSPHRASE)%'
+    secret_key: '%jwt_secret_key%'
+    public_key: '%jwt_public_key%'
+    pass_phrase: '%jwt_passphrase%'
     token_extractors:
         authorization_header:
             enabled: true

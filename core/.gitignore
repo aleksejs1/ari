@@ -36,6 +36,5 @@
 /.infection/
 ###< infection/infection ###
 
-.env
 /coverage
 /public/uploads/avatars

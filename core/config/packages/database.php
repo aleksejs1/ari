@@ -3,28 +3,20 @@
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
+    // We still access $_SERVER/$_ENV to make the decision dynamically at build time
+    // without reading the values themselves into the logic if possible, 
+    // but knowing if DATABASE_URL is set is crucial.
     $envUrl = $_SERVER['DATABASE_URL'] ?? $_ENV['DATABASE_URL'] ?? null;
-    
-    // Respect explicit DATABASE_URL if set (and not empty)
+    $connection = $_SERVER['DB_CONNECTION'] ?? $_ENV['DB_CONNECTION'] ?? 'sqlite';
+
+    // Prioritize explicit DATABASE_URL
     if ($envUrl) {
-        $url = $envUrl;
+        $param = '%env.database_url%';
+    } elseif ($connection === 'mysql') {
+        $param = '%env.mysql_dsn%';
     } else {
-        $connection = $_SERVER['DB_CONNECTION'] ?? $_ENV['DB_CONNECTION'] ?? 'sqlite';
-        
-        if ($connection === 'mysql') {
-            $url = sprintf(
-                'mysql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8mb4',
-                $_SERVER['DB_USER'] ?? $_ENV['DB_USER'] ?? 'app',
-                $_SERVER['DB_PASSWORD'] ?? $_ENV['DB_PASSWORD'] ?? '!ChangeMe!',
-                $_SERVER['DB_HOST'] ?? $_ENV['DB_HOST'] ?? 'database',
-                $_SERVER['DB_PORT'] ?? $_ENV['DB_PORT'] ?? '3306',
-                $_SERVER['DB_NAME'] ?? $_ENV['DB_NAME'] ?? 'app',
-                $_SERVER['DB_VERSION'] ?? $_ENV['DB_VERSION'] ?? '11.4.9-MariaDB'
-            );
-        } else {
-            $url = 'sqlite:///%kernel.project_dir%/var/data.db';
-        }
+        $param = '%env.sqlite_dsn%';
     }
 
-    $containerConfigurator->parameters()->set('app.database_url', $url);
+    $containerConfigurator->parameters()->set('app.database_url', $param);
 };

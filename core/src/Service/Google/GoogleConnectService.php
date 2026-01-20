@@ -14,7 +14,7 @@ class GoogleConnectService
         private readonly GoogleOAuthService $oauthService,
         private readonly TokenStorageRepository $tokenStorageRepository,
         private readonly EntityManagerInterface $entityManager,
-        #[Autowire(env: 'APP_SECRET')]
+        #[Autowire('%app_secret%')]
         private readonly string $appSecret,
     ) {
     }

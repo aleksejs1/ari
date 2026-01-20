@@ -1,27 +1,20 @@
-parameters:
-    default_s3_endpoint: 'http://localhost'
-    default_s3_region: 'us-east-1'
-    default_s3_key: 'dummy'
-    default_s3_secret: 'dummy'
-    default_s3_bucket: 'dummy'
-
 flysystem:
     storages:
         default.storage:
             adapter: 'local'
             options:
-                directory: '%kernel.project_dir%/var/storage/default'
+                directory: '%storage_default_dir%'
 
         avatar.storage.local:
             adapter: 'local'
             options:
-                directory: '%kernel.project_dir%/public/uploads/avatars'
+                directory: '%storage_avatars_dir%'
 
         avatar.storage.s3:
             adapter: 'aws'
             options:
                 client: 'aws_s3.client'
-                bucket: '%env(default:default_s3_bucket:AWS_S3_BUCKET)%'
+                bucket: '%aws_s3_bucket%'
                 prefix: 'avatars'
 
 services:
@@ -30,10 +23,10 @@ services:
         class: 'Aws\S3\S3Client'
         arguments:
             -
-                endpoint: '%env(default:default_s3_endpoint:AWS_S3_ENDPOINT)%'
-                region: '%env(default:default_s3_region:AWS_S3_REGION)%'
+                endpoint: '%aws_s3_endpoint%'
+                region: '%aws_s3_region%'
                 version: 'latest'
                 use_path_style_endpoint: true
                 credentials:
-                    key: '%env(default:default_s3_key:AWS_S3_KEY)%'
-                    secret: '%env(default:default_s3_secret:AWS_S3_SECRET)%'
+                    key: '%aws_s3_key%'
+                    secret: '%aws_s3_secret%'

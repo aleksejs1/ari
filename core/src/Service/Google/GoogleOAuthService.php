@@ -11,11 +11,11 @@ class GoogleOAuthService
     private const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
     public function __construct(
-        #[Autowire(env: 'GOOGLE_CLIENT_ID')]
+        #[Autowire('%google_client_id%')]
         private readonly string $clientId,
-        #[Autowire(env: 'GOOGLE_CLIENT_SECRET')]
+        #[Autowire('%google_client_secret%')]
         private readonly string $clientSecret,
-        #[Autowire(env: 'GOOGLE_REDIRECT_URI')]
+        #[Autowire('%google_redirect_uri%')]
         private readonly string $redirectUri,
         private readonly HttpClientInterface $httpClient,
     ) {

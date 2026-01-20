@@ -1,0 +1,58 @@
+parameters:
+    # App
+    app_secret: '%env(APP_SECRET)%'
+    storage_type: '%env(default:default_storage_type:STORAGE_TYPE)%'
+    app_store_thumbnails_in_db: '%env(bool:default:default_store_thumbnails:APP_STORE_THUMBNAILS_IN_DB)%'
+
+    # Google
+    google_client_id: '%env(GOOGLE_CLIENT_ID)%'
+    google_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+    google_redirect_uri: '%env(GOOGLE_REDIRECT_URI)%'
+    
+    # DB
+    database_server_version: '%env(default:default_db_server_version:DATABASE_SERVER_VERSION)%'
+    test_token: '%env(default::TEST_TOKEN)%'
+    
+    # DB Construction
+    env.db_connection: '%env(default:default_db_connection:DB_CONNECTION)%'
+    env.db_user: '%env(default:default_db_user:DB_USER)%'
+    env.db_password: '%env(default:default_db_password:DB_PASSWORD)%'
+    env.db_host: '%env(default:default_db_host:DB_HOST)%'
+    env.db_port: '%env(default:default_db_port:DB_PORT)%'
+    env.db_name: '%env(default:default_db_name:DB_NAME)%'
+    env.db_version: '%env(default:default_db_server_version:DB_VERSION)%'
+    
+    # Constructed DSNs
+    env.mysql_dsn: 'mysql://%env.db_user%:%env.db_password%@%env.db_host%:%env.db_port%/%env.db_name%?serverVersion=%env.db_version%&charset=utf8mb4'
+    env.sqlite_dsn: 'sqlite:///%sqlite_db_path%'
+    env.database_url: '%env(default::DATABASE_URL)%'
+    
+    # Mailer & Messenger
+    mailer_dsn: '%env(MAILER_DSN)%'
+    messenger_transport_dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+    
+    # AWS / Flysystem
+    aws_s3_bucket: '%env(default:default_s3_bucket:AWS_S3_BUCKET)%'
+    aws_s3_endpoint: '%env(default:default_s3_endpoint:AWS_S3_ENDPOINT)%'
+    aws_s3_region: '%env(default:default_s3_region:AWS_S3_REGION)%'
+    aws_s3_key: '%env(default:default_s3_key:AWS_S3_KEY)%'
+    aws_s3_secret: '%env(default:default_s3_secret:AWS_S3_SECRET)%'
+    
+    # JWT
+    jwt_secret_key: '%env(resolve:JWT_SECRET_KEY)%'
+    jwt_public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
+    jwt_passphrase: '%env(JWT_PASSPHRASE)%'
+    
+    # CORS & Routing
+    cors_allow_origin: '%env(CORS_ALLOW_ORIGIN)%'
+    default_uri: '%env(DEFAULT_URI)%'
+    
+    # Debug & Lock
+    var_dumper_server: '%env(VAR_DUMPER_SERVER)%'
+    lock_dsn: '%env(LOCK_DSN)%'
+    
+    # App Specific (from services.yaml)
+    app.google.contacts_import_limit: '%env(int:default:default_google_contacts_import_limit:GOOGLE_CONTACTS_IMPORT_LIMIT)%'
+    app.xml.import_limit: '%env(int:default:default_xml_import_limit:XML_IMPORT_LIMIT)%'
+    telegram_bot_secret: '%env(default:empty_string:TELEGRAM_BOT_SECRET)%'
+    telegram_bot_name: '%env(default:empty_string:TELEGRAM_BOT_NAME)%'

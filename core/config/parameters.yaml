@@ -1,0 +1,41 @@
+parameters:
+    # Defaults
+    default_db_server_version: '11.4.9-MariaDB'
+    empty_string: ''
+    
+    # App Defaults
+    default_db_user: 'app'
+    default_db_password: '!ChangeMe!'
+    default_db_host: 'database'
+    default_db_port: '3306'
+    default_db_name: 'app'
+    default_db_connection: 'sqlite' # Default connection type
+    default_storage_type: 'local'
+    default_store_thumbnails: true
+
+    default_google_contacts_import_limit: 70
+    default_xml_import_limit: 70
+    
+    # Storage
+    default_s3_bucket: 'ari'
+    default_s3_endpoint: 'http://minio:9000'
+    default_s3_region: 'us-east-1'
+    default_s3_key: 'minioadmin'
+    default_s3_secret: 'minioadmin'
+    
+    # Paths (extracted from packages)
+    # Flysystem
+    storage_default_dir: '%kernel.project_dir%/var/storage/default'
+    storage_avatars_dir: '%kernel.project_dir%/public/uploads/avatars'
+    
+    # Database
+    sqlite_db_path: '%kernel.project_dir%/var/data.db'
+    
+    # Doctrine Migrations
+    doctrine_migrations_dir: '%kernel.project_dir%/migrations'
+    
+    # Doctrine
+    doctrine_entity_dir: '%kernel.project_dir%/src/Entity'
+    
+    # Translations
+    translations_default_path: '%kernel.project_dir%/translations'
