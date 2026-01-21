@@ -62,7 +62,8 @@ if [ -z "$DATABASE_URL" ]; then
         touch var/data.db
         chmod 666 var/data.db
         # Construct DATABASE_URL for SQLite
-        export DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+        # We must use absolute path because %kernel.project_dir% is not resolved in ENV vars
+        export DATABASE_URL="sqlite:////app/core/var/data.db"
     fi
     
     # Write to .env.local so CLI commands (docker exec) can pick it up

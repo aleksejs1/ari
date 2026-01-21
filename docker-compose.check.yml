@@ -1,0 +1,10 @@
+services:
+  app_check:
+    environment:
+      - APP_ENV=prod
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: my_app_test:latest
+    ports:
+      - "8001:8080"
