@@ -36,7 +36,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import type { ContactFormValues, Group } from '@/types/models'
 
 interface ContactModalFormProps {
@@ -213,7 +212,7 @@ export function ContactModalForm({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleFormSubmit)}>
-            <ScrollArea className="h-[70vh] px-6 py-4">
+            <div className="h-[70vh] overflow-y-auto px-6 py-4">
               <div className="grid grid-cols-[40px_1fr] gap-x-2 gap-y-4">
                 {/* Photo / Name */}
                 <div className="flex justify-center pt-2">
@@ -355,7 +354,7 @@ export function ContactModalForm({
                   )}
                 </div>
               </div>
-            </ScrollArea>
+            </div>
             <DialogFooter className="border-t px-6 py-4">
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
                 {t('common.cancel')}
