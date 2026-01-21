@@ -7,11 +7,54 @@ It is designed for people who want full control over their personal data, comple
 Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency, auditability, and longevity.
 
 ---
-## Demo video
 
-A short walkthrough of the system:
+## Live Demo
 
-▶️ https://youtu.be/w_B5qU3cid0
+Try Ari immediately without installing anything:
+
+👉 **[https://app.personal-ari.com/](https://app.personal-ari.com/)**
+
+*Use the **"Demo"** button on the login screen to create a temporary account populated with data.*
+
+---
+
+## Resources
+
+- **Website**: [personal-ari.com](https://personal-ari.com/)
+- **Documentation**: [docs.personal-ari.com](https://docs.personal-ari.com/docs/getting-started/installation)
+
+---
+## Quick Start (Docker)
+
+You can run Ari immediately without cloning the code, using the official Docker image.
+
+**Option 1: Docker Run**
+```bash
+docker run -d \
+  --name ari \
+  --restart unless-stopped \
+  -p 8080:8080 \
+  -e APP_ENV=prod \
+  -v $(pwd)/data:/app/core/var \
+  aleksejs0/ari-app:latest
+```
+
+**Option 2: Docker Compose**
+```yaml
+services:
+  ari:
+    image: aleksejs0/ari-app:latest
+    container_name: ari
+    restart: unless-stopped
+    environment:
+      - APP_ENV=prod
+    volumes:
+      - ./data:/app/core/var
+    ports:
+      - "8080:8080"
+```
+
+👉 [Full Installation Guide](docs/docs/01-getting-started/installation.md)
 
 ---
 ## Screenshots
