@@ -132,6 +132,13 @@ class ContactProcessor implements ProcessorInterface
                     'addContactRelation',
                     null,
                 );
+                $this->handleClearAndReplace(
+                    $existing,
+                    $data->getContactInteractions(),
+                    $existing->getContactInteractions(),
+                    'addContactInteraction',
+                    null,
+                );
 
                 // Flush changes and return the existing entity
                 $this->entityManager->flush();
@@ -161,6 +168,7 @@ class ContactProcessor implements ProcessorInterface
             $this->handleSimpleAdd($data, $data->getContactOrganizations(), null);
             $this->handleSimpleAdd($data, $data->getContactBiographies(), null);
             $this->handleSimpleAdd($data, $data->getContactRelations(), null);
+            $this->handleSimpleAdd($data, $data->getContactInteractions(), null);
         }
 
         // Let the UserOwnerProcessor handle user assignment and main persistence

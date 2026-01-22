@@ -19,6 +19,7 @@ use App\Entity\Traits\ContactBiographiesTrait;
 use App\Entity\Traits\ContactDatesTrait;
 use App\Entity\Traits\ContactEmailsTrait;
 use App\Entity\Traits\ContactGroupsTrait;
+use App\Entity\Traits\ContactInteractionsTrait;
 use App\Entity\Traits\ContactNamesTrait;
 use App\Entity\Traits\ContactOrganizationsTrait;
 use App\Entity\Traits\ContactPhoneNumbersTrait;
@@ -123,6 +124,7 @@ class Contact implements TenantAwareInterface
     use ContactAddressesTrait;
     use ContactGroupsTrait;
     use ContactOrganizationsTrait;
+    use ContactInteractionsTrait;
     use ContactBiographiesTrait;
     use ContactRelationsTrait;
 
@@ -178,6 +180,7 @@ class Contact implements TenantAwareInterface
         $this->contactOrganizations = new ArrayCollection();
         $this->contactBiographies = new ArrayCollection();
         $this->contactBiographies = new ArrayCollection();
+        $this->contactInteractions = new ArrayCollection();
         $this->contactRelations = new ArrayCollection();
         $this->reverseContactRelations = new ArrayCollection();
         $this->uuid = Uuid::v7();

@@ -98,6 +98,18 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
                         'type' => 'Friend',
                     ],
                 ],
+                'contactInteractions' => [
+                    [
+                        'type' => 'call',
+                        'description' => 'First call',
+                        'timestamp' => '2023-10-01T10:00:00+00:00',
+                    ],
+                    [
+                        'type' => 'meeting',
+                        'description' => 'Lunch',
+                        'timestamp' => '2023-10-02T12:00:00+00:00',
+                    ],
+                ],
             ],
         ]);
 
@@ -130,6 +142,9 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
 
         self::assertArrayHasKey('contactRelations', $data);
         self::assertCount(1, $data['contactRelations']);
+
+        self::assertArrayHasKey('contactInteractions', $data);
+        self::assertCount(2, $data['contactInteractions']);
 
         // Verify the names
         self::assertJsonContains([
@@ -192,6 +207,18 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
                     'type' => 'Friend',
                 ],
             ],
+            'contactInteractions' => [
+                [
+                    'type' => 'call',
+                    'description' => 'First call',
+                    'timestamp' => '2023-10-01T10:00:00+00:00',
+                ],
+                [
+                    'type' => 'meeting',
+                    'description' => 'Lunch',
+                    'timestamp' => '2023-10-02T12:00:00+00:00',
+                ],
+            ],
         ]);
 
         // Additional verification: fetch the contact and verify persistence
@@ -209,6 +236,7 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
         self::assertCount(2, $getData['contactAddresses']);
         self::assertCount(2, $getData['contactOrganizations']);
         self::assertCount(2, $getData['contactBiographies']);
+        self::assertCount(2, $getData['contactInteractions']);
     }
 
     /**
@@ -327,6 +355,13 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
                         'type' => 'New Relation',
                     ],
                 ],
+                'contactInteractions' => [
+                    [
+                        'type' => 'email',
+                        'description' => 'Follow up',
+                        'timestamp' => '2025-01-01T09:00:00+00:00',
+                    ],
+                ],
             ],
         ]);
 
@@ -343,6 +378,7 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
         self::assertCount(1, $data['contactOrganizations']);
         self::assertCount(1, $data['contactBiographies']);
         self::assertCount(1, $data['contactRelations']);
+        self::assertCount(1, $data['contactInteractions']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -393,6 +429,13 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
             'contactRelations' => [
                 [
                     'type' => 'New Relation',
+                ],
+            ],
+            'contactInteractions' => [
+                [
+                    'type' => 'email',
+                    'description' => 'Follow up',
+                    'timestamp' => '2025-01-01T09:00:00+00:00',
                 ],
             ],
         ]);
@@ -500,6 +543,13 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
                         'type' => 'Patch Relation',
                     ],
                 ],
+                'contactInteractions' => [
+                    [
+                        'type' => 'note',
+                        'description' => 'Patch Note',
+                        'timestamp' => '2025-02-01T08:00:00+00:00',
+                    ],
+                ],
             ],
         ]);
 
@@ -515,6 +565,7 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
         self::assertCount(1, $data['contactOrganizations']);
         self::assertCount(1, $data['contactBiographies']);
         self::assertCount(1, $data['contactRelations']);
+        self::assertCount(1, $data['contactInteractions']);
 
         self::assertJsonContains([
             'contactNames' => [
@@ -561,6 +612,13 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
             'contactRelations' => [
                 [
                     'type' => 'Patch Relation',
+                ],
+            ],
+            'contactInteractions' => [
+                [
+                    'type' => 'note',
+                    'description' => 'Patch Note',
+                    'timestamp' => '2025-02-01T08:00:00+00:00',
                 ],
             ],
         ]);
