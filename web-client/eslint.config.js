@@ -13,7 +13,14 @@ import sonarjs from 'eslint-plugin-sonarjs'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules', 'public', 'src/types/schema.d.ts', 'coverage']),
+  globalIgnores([
+    'dist',
+    'node_modules',
+    'node_modules_trash',
+    'public',
+    'src/types/schema.d.ts',
+    'coverage',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

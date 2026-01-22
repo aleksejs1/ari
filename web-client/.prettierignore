@@ -1,5 +1,6 @@
 dist
 node_modules
+node_modules_trash
 public
 src/types/schema.d.ts
 package-lock.json
