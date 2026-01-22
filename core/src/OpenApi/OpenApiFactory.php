@@ -8,6 +8,9 @@ use ApiPlatform\OpenApi\OpenApi;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 
 #[AsDecorator('api_platform.openapi.factory')]
+/**
+ * @psalm-suppress InvalidArgument
+ */
 class OpenApiFactory implements OpenApiFactoryInterface
 {
     public function __construct(private OpenApiFactoryInterface $decorated)
@@ -62,6 +65,19 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ],
         ]);
 
+        // --- Helper for Login ---
+        $tokenResponseContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject(['$ref' => '#/components/schemas/Token'])
+            ),
+        ]);
+
+        $credentialsRequestContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject(['$ref' => '#/components/schemas/Credentials'])
+            ),
+        ]);
+
         // Add /api/login_check path
         $pathItem = new Model\PathItem(
             ref: 'JWT Token',
@@ -69,31 +85,77 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 operationId: 'postCredentialsItem',
                 tags: ['Token'],
                 responses: [
-                    '200' => [
-                        'description' => 'Get JWT token',
-                        'content' => new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    '$ref' => '#/components/schemas/Token',
-                                ],
-                            ],
-                        ]),
-                    ],
+                    '200' => new Model\Response(
+                        description: 'Get JWT token',
+                        content: $tokenResponseContent,
+                    ),
                 ],
                 summary: 'Get JWT token to login.',
                 requestBody: new Model\RequestBody(
                     description: 'Generate new JWT Token',
-                    content: new \ArrayObject([
-                        'application/json' => [
-                            'schema' => [
-                                '$ref' => '#/components/schemas/Credentials',
-                            ],
-                        ],
-                    ]),
+                    content: $credentialsRequestContent,
                 ),
             ),
         );
         $openApi->getPaths()->addPath('/api/login_check', $pathItem);
+
+        // --- Helper for Google Import ---
+        $googleImportResponseContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'imported' => [
+                            'type' => 'integer',
+                            'example' => 10,
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
+
+        $googleImportErrorContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'error' => [
+                            'type' => 'string',
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
+
+        $googleImportRequestContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'add_google_group' => [
+                            'type' => 'boolean',
+                            'description' => 'If true, adds a "google" group to all imported contacts.',
+                            'example' => true,
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
+
+        // --- Helper for Contact XML Import ---
+        $contactImportXmlRequestContent = $this->createApiContent([
+            'multipart/form-data' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'file' => [
+                            'type' => 'string',
+                            'format' => 'binary',
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
 
         // Add /api/google/import path
         $googleImportPath = new Model\PathItem(
@@ -102,60 +164,62 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 operationId: 'importGoogleContacts',
                 tags: ['Google'],
                 responses: [
-                    '200' => [
-                        'description' => 'Contacts imported successfully',
-                        'content' => new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'imported' => [
-                                            'type' => 'integer',
-                                            'example' => 10,
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ]),
-                    ],
-                    '400' => [
-                        'description' => 'Bad Request',
-                        'content' => new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'error' => [
-                                            'type' => 'string',
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ]),
-                    ],
+                    '200' => new Model\Response(
+                        description: 'Contacts imported successfully',
+                        content: $googleImportResponseContent,
+                    ),
+                    '400' => new Model\Response(
+                        description: 'Bad Request',
+                        content: $googleImportErrorContent,
+                    ),
                 ],
                 summary: 'Import contacts from Google People API.',
                 description: 'Triggers an import of contacts using the stored Google OAuth token for the current user.',
                 requestBody: new Model\RequestBody(
                     description: 'Import options',
-                    content: new \ArrayObject([
-                        'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'add_google_group' => [
-                                        'type' => 'boolean',
-                                        'description' => 'If true, adds a "google" group to all imported contacts.',
-                                        'example' => true,
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ]),
+                    content: $googleImportRequestContent,
                 ),
             ),
         );
         $openApi->getPaths()->addPath('/api/google/import', $googleImportPath);
+
+        // Add /contacts/import-xml path
+        $importXmlPath = new Model\PathItem(
+            ref: 'Import XML',
+            post: new Model\Operation(
+                operationId: 'importContactXml',
+                tags: ['Contact'],
+                summary: 'Import contacts from XML',
+                description: 'Upload an XML file to import contacts and groups.',
+                requestBody: new Model\RequestBody(
+                    content: $contactImportXmlRequestContent,
+                ),
+                responses: [
+                    '204' => new Model\Response(
+                        description: 'Contacts imported successfully',
+                    ),
+                    '400' => new Model\Response(
+                        description: 'Bad Request',
+                    ),
+                ],
+            ),
+        );
+        $openApi->getPaths()->addPath('/api/contacts/import-xml', $importXmlPath);
+
+        // --- Helper for Google Auth Start ---
+        $googleAuthStartContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'url' => [
+                            'type' => 'string',
+                            'example' => 'https://accounts.google.com/o/oauth2/v2/auth?...',
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
 
         // Add /connect/google path
         $connectGooglePath = new Model\PathItem(
@@ -164,28 +228,44 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 operationId: 'connectGoogleStart',
                 tags: ['Google'],
                 responses: [
-                    '200' => [
-                        'description' => 'Get Google Authorization URL',
-                        'content' => new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'url' => [
-                                            'type' => 'string',
-                                            'example' => 'https://accounts.google.com/o/oauth2/v2/auth?...',
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ]),
-                    ],
+                    '200' => new Model\Response(
+                        description: 'Get Google Authorization URL',
+                        content: $googleAuthStartContent,
+                    ),
                 ],
                 summary: 'Get Google OAuth Authorization URL.',
                 description: 'Returns the URL to redirect the user to for Google authentication.',
             ),
         );
         $openApi->getPaths()->addPath('/connect/google', $connectGooglePath);
+
+        // --- Helper for Google Auth Check ---
+        $googleAuthCheckSuccessContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'success' => [
+                            'type' => 'boolean',
+                            'example' => true,
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
+
+        $googleAuthCheckErrorContent = $this->createApiContent([
+            'application/json' => new Model\MediaType(
+                schema: new \ArrayObject([
+                    'type' => 'object',
+                    'properties' => [
+                        'error' => [
+                            'type' => 'string',
+                        ],
+                    ],
+                ]),
+            ),
+        ]);
 
         // Add /connect/google/check path
         $connectGoogleCheckPath = new Model\PathItem(
@@ -203,37 +283,14 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     ),
                 ],
                 responses: [
-                    '200' => [
-                        'description' => 'Google Auth Successful',
-                        'content' => new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'success' => [
-                                            'type' => 'boolean',
-                                            'example' => true,
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ]),
-                    ],
-                    '400' => [
-                        'description' => 'Bad Request',
-                        'content' => new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'error' => [
-                                            'type' => 'string',
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ]),
-                    ],
+                    '200' => new Model\Response(
+                        description: 'Google Auth Successful',
+                        content: $googleAuthCheckSuccessContent,
+                    ),
+                    '400' => new Model\Response(
+                        description: 'Bad Request',
+                        content: $googleAuthCheckErrorContent,
+                    ),
                 ],
                 summary: 'Handle Google OAuth Callback.',
                 description: 'Exchanges the authorization code for an access token and stores it.',
@@ -242,5 +299,14 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/connect/google/check', $connectGoogleCheckPath);
 
         return $openApi;
+    }
+    /**
+     * @param array<string, mixed> $content
+     * @return \ArrayObject<array-key, mixed>
+     * @psalm-suppress InvalidReturnStatement,InvalidReturnType
+     */
+    private function createApiContent(array $content): \ArrayObject
+    {
+        return new \ArrayObject($content);
     }
 }

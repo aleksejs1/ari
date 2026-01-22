@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\MediaType;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
 use App\Entity\Traits\ContactAddressesTrait;
@@ -84,25 +85,6 @@ use Symfony\Component\Uid\Uuid;
     uriTemplate: '/contacts/import-xml',
     name: 'import_contact_xml',
     controller: 'App\Controller\ImportXmlAction',
-    openapi: new Operation(
-        summary: 'Import contacts from XML',
-        description: 'Upload an XML file to import contacts and groups.',
-        requestBody: new RequestBody(
-            content: new \ArrayObject([
-                'multipart/form-data' => [
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'file' => [
-                                'type' => 'string',
-                                'format' => 'binary',
-                            ],
-                        ],
-                    ],
-                ],
-            ]),
-        ),
-    ),
     deserialize: false,
     validate: false,
     security: "is_granted('ROLE_USER')",
