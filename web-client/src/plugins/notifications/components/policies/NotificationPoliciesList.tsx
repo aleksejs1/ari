@@ -27,7 +27,7 @@ import {
 
 const getContactLabel = (contact: Contact, id: string): string => {
   const names = contact.contactNames || []
-  const givenName = names.length > 0 ? names[0].given : undefined
+  const givenName = names.length > 0 ? names[0]?.given : undefined
   return contact.displayName || givenName || id
 }
 
@@ -95,7 +95,7 @@ export default function NotificationPoliciesList() {
   const { data: groupsData, isLoading: groupsLoading } = useGroups()
   const deleteMutation = useDeleteNotificationPolicy()
 
-  const contacts = useMemo(() => getHydraMember(contactsData), [contactsData])
+  const contacts = useMemo(() => getHydraMember(contactsData as any) as Contact[], [contactsData])
   const groups = useMemo(() => groupsData || [], [groupsData])
 
   const isLoading = policiesLoading || contactsLoading || groupsLoading

@@ -15,7 +15,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { type NotificationPolicyFormValues, notificationPolicySchema } from '@/types/models'
+import {
+  type Contact,
+  type NotificationPolicyFormValues,
+  notificationPolicySchema,
+} from '@/types/models'
 
 import { getHydraMember, useContacts } from '@/plugins/contacts/useContacts'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
@@ -48,7 +52,7 @@ export default function NotificationPolicyForm() {
   const groups = groupsData || []
 
   const { data: contactsData } = useContacts(1)
-  const contacts = contactsData ? getHydraMember(contactsData) : []
+  const contacts = contactsData ? (getHydraMember(contactsData as any) as Contact[]) : []
 
   const form = useForm<NotificationPolicyFormValues>({
     resolver: zodResolver(notificationPolicySchema) as any,

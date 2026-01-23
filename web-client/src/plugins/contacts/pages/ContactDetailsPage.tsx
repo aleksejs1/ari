@@ -103,7 +103,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
       {!!contact['@id'] && (
         <SimilarContactsWidget
           contactId={contact['@id']}
-          existingRelations={contact.contactRelations}
+          existingRelations={contact.contactRelations || []}
         />
       )}
 

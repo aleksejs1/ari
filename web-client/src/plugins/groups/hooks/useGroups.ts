@@ -15,7 +15,7 @@ export function useGroups(
       const response = await api.get<HydraCollection<Group>>('/groups', { params })
       return getHydraMember(response.data)
     },
-    enabled: options?.enabled,
+    ...(options?.enabled !== undefined ? { enabled: options.enabled } : {}),
   })
 }
 

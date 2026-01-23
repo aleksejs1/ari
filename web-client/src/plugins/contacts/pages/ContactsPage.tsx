@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
 
 import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
 import { type Contact } from '@/types/models'
@@ -10,42 +9,21 @@ import { ContactModal } from '../components/ContactModal'
 import { ContactsHeader } from '../components/ContactsHeader'
 import { ContactsPagination } from '../components/ContactsPagination'
 import { ContactsTable } from '../components/ContactsTable'
+import { useContactsParams } from '../hooks/useContactsParams'
 import { getHydraMember, getHydraPagination, useContacts } from '../useContacts'
 
 // Ensure default columns are registered
 registerDefaultColumns()
 
 export default function ContactsPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const page = Number(searchParams.get('page')) || 1
-  const group = searchParams.get('group') ?? undefined
-  const search = searchParams.get('search') ?? undefined
-
-  const handleSearch = (value: string) => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev)
-      if (value) {
-        newParams.set('search', value)
-      } else {
-        newParams.delete('search')
-      }
-      newParams.set('page', '1')
-      return newParams
-    })
-  }
-
-  const [sorting, setSorting] = useState<{ id: string; desc: boolean } | undefined>(undefined)
-
-  const handleSort = (id: string, desc: boolean) => {
-    setSorting({ id, desc })
-  }
+  const { page, group, search, sorting, handleSearch, handleSort, setPage } = useContactsParams()
+  const { t } = useTranslation()
 
   const { data, isLoading, isPlaceholderData, isError } = useContacts(
     page,
-    { group, search },
+    { ...(group ? { group } : {}), ...(search ? { search } : {}) },
     sorting,
   )
-  const { t } = useTranslation()
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
@@ -83,22 +61,16 @@ export default function ContactsPage() {
             columns={columns}
             onEdit={handleEdit}
             onSort={handleSort}
-            sorting={sorting}
+            {...(sorting ? { sorting } : {})}
           />
         </div>
 
         {totalPages > 1 && (
           <ContactsPagination
-            onPrevious={() => {
-              const newParams = new URLSearchParams(searchParams)
-              newParams.set('page', Math.max(1, page - 1).toString())
-              setSearchParams(newParams)
-            }}
+            onPrevious={() => setPage(Math.max(1, page - 1))}
             onNext={() => {
               if (hasNext) {
-                const newParams = new URLSearchParams(searchParams)
-                newParams.set('page', (page + 1).toString())
-                setSearchParams(newParams)
+                setPage(page + 1)
               }
             }}
             hasPrevious={hasPrevious}

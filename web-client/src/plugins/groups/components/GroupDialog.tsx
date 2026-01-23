@@ -154,7 +154,7 @@ export function GroupDialog({ open, onOpenChange, group }: GroupDialogProps) {
             {t('groups.formDescription', 'Enter the details for the group below.')}
           </DialogDescription>
         </DialogHeader>
-        <GroupFormContent group={group} onOpenChange={onOpenChange} />
+        <GroupFormContent group={group ?? null} onOpenChange={onOpenChange} />
       </DialogContent>
     </Dialog>
   )

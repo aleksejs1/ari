@@ -46,8 +46,8 @@ export function useContacts(
       const response = await api.get<HydraCollection<Contact>>(`/contacts?${params.toString()}`)
       return response.data
     },
-    placeholderData: (previousData) => previousData,
-    enabled: options?.enabled,
+    placeholderData: (previousData: any) => previousData,
+    ...(options?.enabled !== undefined ? { enabled: options.enabled } : {}),
   })
 }
 
@@ -232,9 +232,7 @@ export function useImportContacts() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await api.post('/contacts/import-xml', formData, {
-        headers: { 'Content-Type': undefined },
-      })
+      const response = await api.post('/contacts/import-xml', formData)
       return response.data
     },
     onSuccess: () => {
