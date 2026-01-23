@@ -1,9 +1,9 @@
-import { ContactDateInlineEdit } from '@/features/contacts/components/ContactDateInlineEdit'
+import { ContactDateInlineEdit } from '@/plugins/contacts/components/ContactDateInlineEdit'
 import {
   useCreateContactDate,
   useDeleteContactDate,
   useUpdateContactDate,
-} from '@/features/contacts/useContacts'
+} from '@/plugins/contacts/useContacts'
 import { type Contact, type ContactDate } from '@/types/models'
 
 interface ContactDatesCellProps {

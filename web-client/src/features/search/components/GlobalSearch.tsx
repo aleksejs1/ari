@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom'
 
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useContacts } from '@/features/contacts/useContacts'
-import { getHydraMember } from '@/features/contacts/utils'
 import { useDebounce } from '@/hooks/useDebounce'
 import { cn } from '@/lib/utils'
+import { useContacts } from '@/plugins/contacts/useContacts'
+import { getHydraMember } from '@/plugins/contacts/utils'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type Contact } from '@/types/models'
 

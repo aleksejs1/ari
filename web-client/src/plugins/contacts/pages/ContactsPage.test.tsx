@@ -2,7 +2,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import ContactsPage from './ContactsPage'
 import {
   useContacts,
   useDeleteContact,
@@ -19,11 +18,13 @@ import {
   useUpdateContactName,
   useDeleteContactName,
   type HydraCollection,
-} from './useContacts'
+} from '../useContacts'
+
+import ContactsPage from './ContactsPage'
 
 // ... existing code ...
 
-vi.mock('./useContacts', async (importOriginal) => {
+vi.mock('../useContacts', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
@@ -48,7 +49,7 @@ vi.mock('./useContacts', async (importOriginal) => {
 import type { Contact } from '@/types/models'
 
 // Mock Sub Components
-vi.mock('./components/ContactsHeader', () => ({
+vi.mock('../components/ContactsHeader', () => ({
   ContactsHeader: ({
     onCreate,
     onSearchChange,
@@ -68,7 +69,7 @@ interface MockTableProps {
   onEdit: (contact: Contact) => void
 }
 
-vi.mock('./components/ContactsTable', () => ({
+vi.mock('../components/ContactsTable', () => ({
   ContactsTable: ({
     data,
     onEdit,
@@ -93,7 +94,7 @@ interface MockPaginationProps {
   onPrevious: () => void
 }
 
-vi.mock('./components/ContactsPagination', () => ({
+vi.mock('../components/ContactsPagination', () => ({
   ContactsPagination: ({ onNext, onPrevious }: MockPaginationProps) => (
     <div data-testid="pagination">
       <button onClick={onPrevious}>Previous</button>
@@ -102,7 +103,7 @@ vi.mock('./components/ContactsPagination', () => ({
   ),
 }))
 
-vi.mock('./components/ContactModal', () => ({
+vi.mock('../components/ContactModal', () => ({
   ContactModal: ({ isOpen }: { isOpen: boolean; contact?: Contact; onClose: () => void }) => (
     <div data-testid="modal">{isOpen ? 'Open' : 'Closed'}</div>
   ),

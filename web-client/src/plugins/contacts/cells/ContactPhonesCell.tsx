@@ -1,9 +1,9 @@
-import { ContactPhoneInlineEdit } from '@/features/contacts/components/ContactPhoneInlineEdit'
+import { ContactPhoneInlineEdit } from '@/plugins/contacts/components/ContactPhoneInlineEdit'
 import {
   useCreateContactPhone,
   useDeleteContactPhone,
   useUpdateContactPhone,
-} from '@/features/contacts/useContacts'
+} from '@/plugins/contacts/useContacts'
 import { type Contact, type ContactPhoneNumber } from '@/types/models'
 
 interface ContactPhonesCellProps {

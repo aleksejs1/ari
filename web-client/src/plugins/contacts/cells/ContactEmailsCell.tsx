@@ -1,9 +1,9 @@
-import { ContactEmailInlineEdit } from '@/features/contacts/components/ContactEmailInlineEdit'
+import { ContactEmailInlineEdit } from '@/plugins/contacts/components/ContactEmailInlineEdit'
 import {
   useCreateContactEmail,
   useDeleteContactEmail,
   useUpdateContactEmail,
-} from '@/features/contacts/useContacts'
+} from '@/plugins/contacts/useContacts'
 import { type Contact, type ContactEmailAdress } from '@/types/models'
 
 interface ContactEmailsCellProps {

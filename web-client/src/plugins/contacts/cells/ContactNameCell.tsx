@@ -1,9 +1,9 @@
-import { ContactNameInlineEdit } from '@/features/contacts/components/ContactNameInlineEdit'
+import { ContactNameInlineEdit } from '@/plugins/contacts/components/ContactNameInlineEdit'
 import {
   useCreateContactName,
   useDeleteContactName,
   useUpdateContactName,
-} from '@/features/contacts/useContacts'
+} from '@/plugins/contacts/useContacts'
 import { type Contact, type ContactName } from '@/types/models'
 
 interface ContactNameCellProps {

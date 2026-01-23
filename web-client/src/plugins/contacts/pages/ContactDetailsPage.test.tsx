@@ -8,42 +8,43 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 
+import * as useContactsHook from '../useContacts'
+
 import ContactDetailsPage from './ContactDetailsPage'
-import * as useContactsHook from './useContacts'
 
 import { ContactsPlugin } from '@/plugins/contacts'
 import { type Contact } from '@/types/models'
 
 // Mock components
-vi.mock('./components/ContactTimeline', () => ({
+vi.mock('../components/ContactTimeline', () => ({
   ContactTimeline: () => <div data-testid="contact-timeline">Contact Timeline</div>,
 }))
-vi.mock('./components/SimilarContactsWidget', () => ({
+vi.mock('../components/SimilarContactsWidget', () => ({
   SimilarContactsWidget: () => <div data-testid="similar-contacts">Similar Contacts</div>,
 }))
 
 // Mock Sections
-vi.mock('./details/sections/GeneralInfoSection', () => ({
+vi.mock('../details/sections/GeneralInfoSection', () => ({
   GeneralInfoSection: () => <div data-testid="section-general-info">General Info Section</div>,
 }))
-vi.mock('./details/sections/ContactInfoSection', () => ({
+vi.mock('../details/sections/ContactInfoSection', () => ({
   ContactInfoSection: () => <div data-testid="section-contact-info">Contact Info Section</div>,
 }))
-vi.mock('./details/sections/ProfessionalSection', () => ({
+vi.mock('../details/sections/ProfessionalSection', () => ({
   ProfessionalSection: () => <div data-testid="section-professional">Professional Section</div>,
 }))
-vi.mock('./details/sections/DatesSection', () => ({
+vi.mock('../details/sections/DatesSection', () => ({
   DatesSection: () => <div data-testid="section-dates">Dates Section</div>,
 }))
-vi.mock('./details/sections/UpcomingDatesSection', () => ({
+vi.mock('../details/sections/UpcomingDatesSection', () => ({
   UpcomingDatesSection: () => (
     <div data-testid="section-upcoming-dates">Upcoming Dates Section</div>
   ),
 }))
-vi.mock('./details/sections/RelationsSection', () => ({
+vi.mock('../details/sections/RelationsSection', () => ({
   RelationsSection: () => <div data-testid="section-relations">Relations Section</div>,
 }))
-vi.mock('./details/sections/BiographySection', () => ({
+vi.mock('../details/sections/BiographySection', () => ({
   BiographySection: () => <div data-testid="section-biography">Biography Section</div>,
 }))
 

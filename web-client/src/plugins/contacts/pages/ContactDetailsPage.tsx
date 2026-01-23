@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { DeleteContactDialog } from './components/DeleteContactDialog'
-import { SimilarContactsWidget } from './components/SimilarContactsWidget'
-import { useContact, useDeleteContact, useExportContactVcard } from './useContacts'
+import { DeleteContactDialog } from '../components/DeleteContactDialog'
+import { SimilarContactsWidget } from '../components/SimilarContactsWidget'
+import { useContact, useDeleteContact, useExportContactVcard } from '../useContacts'
 
 import { Button } from '@/components/ui/button'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'

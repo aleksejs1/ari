@@ -11,7 +11,7 @@ vi.mock('../../hooks/useNotificationPolicies', () => ({
   useDeleteNotificationPolicy: vi.fn(),
 }))
 
-vi.mock('@/features/contacts/useContacts', () => ({
+vi.mock('@/plugins/contacts/useContacts', () => ({
   useContacts: vi.fn(() => ({ data: undefined, isLoading: false })),
   getHydraMember: (data: any) => data?.member || [],
 }))

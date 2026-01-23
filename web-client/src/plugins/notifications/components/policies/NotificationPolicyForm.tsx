@@ -26,7 +26,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useContacts, getHydraMember } from '@/features/contacts/useContacts'
+import { useContacts, getHydraMember } from '@/plugins/contacts/useContacts'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type NotificationPolicyFormValues, notificationPolicySchema } from '@/types/models'
 

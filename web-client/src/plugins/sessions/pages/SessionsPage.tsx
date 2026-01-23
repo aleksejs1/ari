@@ -15,8 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { getHydraMember, type HydraCollection } from '@/features/contacts/utils'
 import { api } from '@/lib/axios'
+import { getHydraMember, type HydraCollection } from '@/plugins/contacts/utils'
 import type { ActiveSession } from '@/types/auth'
 
 export default function SessionsPage() {

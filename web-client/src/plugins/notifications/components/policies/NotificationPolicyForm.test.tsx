@@ -56,8 +56,8 @@ vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   })),
 }))
 
-vi.mock('@/features/contacts/useContacts', async () => {
-  const actual = await vi.importActual('@/features/contacts/useContacts')
+vi.mock('@/plugins/contacts/useContacts', async () => {
+  const actual = await vi.importActual('@/plugins/contacts/useContacts')
   return {
     ...actual,
     useContacts: vi.fn(() => ({

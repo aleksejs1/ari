@@ -1,66 +1,43 @@
-import { BiographySection } from '@/features/contacts/details/sections/BiographySection'
-import { ContactInfoSection } from '@/features/contacts/details/sections/ContactInfoSection'
-import { DatesSection } from '@/features/contacts/details/sections/DatesSection'
-import { GeneralInfoSection } from '@/features/contacts/details/sections/GeneralInfoSection'
-import { ProfessionalSection } from '@/features/contacts/details/sections/ProfessionalSection'
-import { RelationsSection } from '@/features/contacts/details/sections/RelationsSection'
-import { UpcomingDatesSection } from '@/features/contacts/details/sections/UpcomingDatesSection'
-import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
+import { lazy, Suspense } from 'react'
+
+import { PageLoader } from '../settings/components/PageLoader'
+
+import { registerDefaultContactFormSections } from './defaults_form'
+import { registerDefaultContactDetailsSections } from './details/defaults_details'
+
 import type { Plugin } from '@/lib/core/Plugin'
+import { RouteRegistry } from '@/lib/routing/RouteRegistry'
+
+const ContactsPage = lazy(() => import('./pages/ContactsPage'))
+const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'))
 
 export class ContactsPlugin implements Plugin {
   name = 'contacts'
 
   register(): void {
-    const registry = ContactDetailsRegistry.getInstance()
+    const routeRegistry = RouteRegistry.getInstance()
 
-    registry.register({
-      id: 'general_info',
-      component: GeneralInfoSection,
-      order: 10,
-      layout: 'full',
+    // 1. Register Routes
+    routeRegistry.register('sidebar-less', {
+      path: '/contacts',
+      element: (
+        <Suspense fallback={<PageLoader />}>
+          <ContactsPage />
+        </Suspense>
+      ),
     })
 
-    registry.register({
-      id: 'contact_info',
-      component: ContactInfoSection,
-      order: 20,
-      layout: 'half',
+    routeRegistry.register('sidebar-less', {
+      path: '/contacts/:id',
+      element: (
+        <Suspense fallback={<PageLoader />}>
+          <ContactDetailsPage />
+        </Suspense>
+      ),
     })
 
-    registry.register({
-      id: 'professional',
-      component: ProfessionalSection,
-      order: 30,
-      layout: 'half',
-    })
-
-    registry.register({
-      id: 'dates',
-      component: DatesSection,
-      order: 40,
-      layout: 'half',
-    })
-
-    registry.register({
-      id: 'upcoming_dates',
-      component: UpcomingDatesSection,
-      order: 50,
-      layout: 'half',
-    })
-
-    registry.register({
-      id: 'relations',
-      component: RelationsSection,
-      order: 60,
-      layout: 'half',
-    })
-
-    registry.register({
-      id: 'biography',
-      component: BiographySection,
-      order: 70,
-      layout: 'full',
-    })
+    // 2. Register Registry Sections
+    registerDefaultContactFormSections()
+    registerDefaultContactDetailsSections()
   }
 }

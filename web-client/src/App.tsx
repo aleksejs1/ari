@@ -11,8 +11,8 @@ import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 
 const routeRegistry = RouteRegistry.getInstance()
 
-const ContactDetailsPage = lazy(() => import('./features/contacts/ContactDetailsPage'))
-const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
+// Removed ContactDetailsPage import
+// Removed ContactsPage import
 // Removed ContactGraphPage import
 
 // ... inside Layout
@@ -70,20 +70,7 @@ export default function App() {
               ),
             },
             {
-              path: '/contacts',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <ContactsPage />
-                </Suspense>
-              ),
-            },
-            {
-              path: '/contacts/:id',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <ContactDetailsPage />
-                </Suspense>
-              ),
+              /* Removed Contacts routes */
             },
             ...routeRegistry.getRoutes('sidebar-less'),
           ],

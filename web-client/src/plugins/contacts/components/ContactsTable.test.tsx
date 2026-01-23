@@ -23,7 +23,7 @@ vi.mock('react-i18next', () => ({
 }))
 
 // Mock cell components to ensure simple rendering for tests
-vi.mock('@/features/contacts/cells/ContactNameCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactNameCell', () => ({
   ContactNameCell: ({ contact }: { contact: Contact }) => {
     const names = contact.contactNames
     return (
@@ -34,40 +34,40 @@ vi.mock('@/features/contacts/cells/ContactNameCell', () => ({
   },
 }))
 
-vi.mock('@/features/contacts/cells/ContactEmailsCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactEmailsCell', () => ({
   ContactEmailsCell: ({ contact }: { contact: Contact }) => (
     <div>{contact.contactEmailAdresses?.map((e: any) => e.value).join(', ')}</div>
   ),
 }))
 
-vi.mock('@/features/contacts/cells/ContactPhonesCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactPhonesCell', () => ({
   ContactPhonesCell: ({ contact }: { contact: Contact }) => (
     <div>{contact.phoneNumbers?.map((p: any) => p.value).join(', ')}</div>
   ),
 }))
 
-vi.mock('@/features/contacts/cells/ContactGroupsCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactGroupsCell', () => ({
   ContactGroupsCell: ({ contact }: { contact: Contact }) => (
     // Check if we have group objects or mock data structure
     <div>{contact.contactGroups?.map((g: any) => g.groupResource?.name || 'Work').join(', ')}</div>
   ),
 }))
 
-vi.mock('@/features/contacts/cells/ContactDatesCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactDatesCell', () => ({
   ContactDatesCell: ({ contact }: { contact: Contact }) => (
     <div>{contact.contactDates?.map((d: any) => d.text).join(', ')}</div>
   ),
 }))
 
-vi.mock('@/features/contacts/cells/ContactFavoriteCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactFavoriteCell', () => ({
   ContactFavoriteCell: () => <div data-testid="favorite-star" />,
 }))
 
-vi.mock('@/features/contacts/cells/ContactAvatarCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactAvatarCell', () => ({
   ContactAvatarCell: () => <div data-testid="avatar" />,
 }))
 
-vi.mock('@/features/contacts/cells/ContactActionsCell', () => ({
+vi.mock('@/plugins/contacts/cells/ContactActionsCell', () => ({
   ContactActionsCell: ({ onEdit, contact }: { onEdit: (c: Contact) => void; contact: Contact }) => (
     <div className="flex justify-end">
       <button aria-label="common.edit" onClick={() => onEdit(contact)}>

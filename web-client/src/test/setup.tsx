@@ -70,7 +70,7 @@ vi.mock('@/hooks/useUserPrefs', () => ({
 }))
 
 // Global mock for useAutocomplete
-vi.mock('@/features/contacts/hooks/useAutocomplete', () => ({
+vi.mock('@/plugins/contacts/hooks/useAutocomplete', () => ({
   useAutocomplete: () => ({
     data: {
       phoneTypes: ['Mobile', 'Work', 'Home'],
