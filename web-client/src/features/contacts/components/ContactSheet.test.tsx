@@ -28,6 +28,10 @@ vi.mock('./ContactForm', () => ({
   ),
 }))
 
+vi.mock('@/plugins/audit-logs/components/ContactTimeline', () => ({
+  ContactTimeline: () => <div data-testid="contact-timeline">Timeline</div>,
+}))
+
 describe('ContactSheet', () => {
   const mockCreateMutate = vi.fn()
   const mockUpdateMutate = vi.fn()

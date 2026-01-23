@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 
 import { getHydraMember, type HydraCollection } from './utils'
 
@@ -232,9 +233,7 @@ export function useImportContacts() {
       formData.append('file', file)
 
       const response = await api.post('/contacts/import-xml', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': undefined },
       })
       return response.data
     },
@@ -251,16 +250,18 @@ export function useUploadContactAvatar() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await api.post<{
-        '@id': string
-        contentUrl?: string
-        path?: string
-      }>(`${url}/avatar`, formData, {
+      // Use a clean axios instance to bypass default headers from the global 'api' instance
+      const token = localStorage.getItem('token')
+      const normalizedUrl = url.startsWith('/') ? url : `/${url}`
+
+      const res = await axios.post(`${api.defaults.baseURL}${normalizedUrl}/avatar`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/ld+json',
         },
       })
-      return response.data
+
+      return res.data
     },
     onSuccess: (_data, variables) => {
       const id = variables.id.split('/').pop()

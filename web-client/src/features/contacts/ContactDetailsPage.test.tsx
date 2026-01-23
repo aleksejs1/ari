@@ -6,11 +6,12 @@ import {
 } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 
 import ContactDetailsPage from './ContactDetailsPage'
 import * as useContactsHook from './useContacts'
 
+import { ContactsPlugin } from '@/plugins/contacts'
 import { type Contact } from '@/types/models'
 
 // Mock components
@@ -55,6 +56,10 @@ const queryClient = new QueryClient({
 })
 
 describe('ContactDetailsPage', () => {
+  beforeEach(() => {
+    new ContactsPlugin().register()
+  })
+
   it('renders loading state', () => {
     vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
       isLoading: true,

@@ -7,7 +7,7 @@ import { AvatarUpload } from '../../components/AvatarUpload'
 import { ContactForm } from '../../components/ContactForm'
 import { mapContactToFormValues } from '../../contactUtils'
 import { useContactFavorite } from '../../hooks/useContactFavorite'
-import { useGroups, useUpdateContact } from '../../useContacts'
+import { useGroups, useUpdateContact, useUploadContactAvatar } from '../../useContacts'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -111,7 +111,14 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
   const isFavorite = isContactFavorite(contact)
   const [isEditing, setIsEditing] = useState(false)
   const updateMutation = useUpdateContact()
+  const uploadAvatarMutation = useUploadContactAvatar()
   const defaultValues = mapContactToFormValues(contact)
+
+  const handleAvatarUpload = async (file: File) => {
+    if (contact['@id']) {
+      await uploadAvatarMutation.mutateAsync({ id: contact['@id'], file })
+    }
+  }
 
   const handleSubmit = async (data: any) => {
     if (contact['@id']) {
@@ -181,6 +188,7 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
           currentAvatar={contact.avatar}
           displayName={`${contact.contactNames?.[0]?.given} ${contact.contactNames?.[0]?.family}`}
           className="mt-1"
+          onUpload={handleAvatarUpload}
         />
         <div className="space-y-2">
           <h1 className="flex items-center gap-2 text-2xl font-bold">

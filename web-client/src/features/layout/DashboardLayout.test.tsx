@@ -8,6 +8,7 @@ import DashboardLayout from './DashboardLayout'
 import { useGroups } from '@/features/groups/useGroups'
 import { useAuth } from '@/hooks/useAuth'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { AuditLogsPlugin } from '@/plugins/audit-logs'
 import { type Group } from '@/types/models'
 
 vi.mock('@/features/groups/useGroups', () => ({
@@ -43,6 +44,7 @@ describe('DashboardLayout', () => {
       setDateFormat: vi.fn(),
       setShowLogo: vi.fn(),
     })
+    new AuditLogsPlugin().register()
   })
 
   it('renders layout elements correctly', () => {

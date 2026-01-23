@@ -3,7 +3,7 @@ import { Loader2, History } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { LogList } from './components/LogList'
+import { LogList } from '../components/LogList'
 
 import { api } from '@/lib/axios'
 import { type TimelineEvent } from '@/types/models'

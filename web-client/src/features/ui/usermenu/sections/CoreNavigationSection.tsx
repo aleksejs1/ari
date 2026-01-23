@@ -1,4 +1,4 @@
-import { Settings, FileText } from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -9,15 +9,6 @@ export function CoreNavigationSection() {
 
   return (
     <DropdownMenuGroup>
-      <DropdownMenuItem asChild>
-        <Link to="/audit-logs" className="cursor-pointer p-4 md:px-2 md:py-1.5">
-          <FileText className="mr-3 h-5 w-5 md:mr-2 md:h-4 md:w-4" />
-          <span className="text-base md:text-sm">
-            {t('app.navigation.auditLogs', 'Audit Logs')}
-          </span>
-        </Link>
-      </DropdownMenuItem>
-
       <DropdownMenuItem asChild>
         <Link to="/settings" className="cursor-pointer p-4 md:px-2 md:py-1.5">
           <Settings className="mr-3 h-5 w-5 md:mr-2 md:h-4 md:w-4" />

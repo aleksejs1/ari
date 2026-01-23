@@ -12,11 +12,17 @@ import { UserPrefsProvider } from './hooks/useUserPrefs'
 import './index.css'
 import './lib/i18n'
 import { settingsRegistry } from './lib/settings/SettingsRegistry'
+import { AuditLogsPlugin } from './plugins/audit-logs'
+import { ContactsPlugin } from './plugins/contacts'
 
 // Register Settings Tabs
 settingsRegistry.registerTab(new GeneralSettingsTab())
 settingsRegistry.registerTab(new RegionalSettingsTab())
 settingsRegistry.registerTab(new DataSettingsTab())
+
+// Register Plugins
+new ContactsPlugin().register()
+new AuditLogsPlugin().register()
 
 registerDashboardWidgets()
 

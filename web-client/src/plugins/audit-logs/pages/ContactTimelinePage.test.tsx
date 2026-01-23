@@ -5,7 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import ContactTimelinePage from './ContactTimelinePage'
 
 // Mock components
-vi.mock('./components/ContactTimeline', () => ({
+vi.mock('../components/ContactTimeline', () => ({
   ContactTimeline: ({ contactId }: { contactId: string }) => (
     <div data-testid="timeline">Timeline for {contactId}</div>
   ),

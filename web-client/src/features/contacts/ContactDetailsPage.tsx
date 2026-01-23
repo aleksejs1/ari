@@ -3,14 +3,11 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import './defaults_details' // Bootstrap registry
-import { ContactTimeline } from './components/ContactTimeline'
 import { DeleteContactDialog } from './components/DeleteContactDialog'
 import { SimilarContactsWidget } from './components/SimilarContactsWidget'
 import { useContact, useDeleteContact, useExportContactVcard } from './useContacts'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { type Contact } from '@/types/models'
 
@@ -102,15 +99,6 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
           )
         })}
       </div>
-
-      <Card className="md:col-span-2">
-        <CardHeader>
-          <CardTitle>{t('contacts.history.title')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {contact.id ? <ContactTimeline contactId={contact.id.toString()} /> : null}
-        </CardContent>
-      </Card>
 
       {!!contact['@id'] && (
         <SimilarContactsWidget

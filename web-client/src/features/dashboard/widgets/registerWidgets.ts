@@ -1,5 +1,4 @@
 import GroupsWidget from '../GroupsWidget'
-import RecentAuditLogsWidget from '../RecentAuditLogsWidget'
 import StatsWidget from '../StatsWidget'
 import UpcomingAnniversariesWidget from '../UpcomingAnniversariesWidget'
 
@@ -25,12 +24,5 @@ export function registerDashboardWidgets() {
     title: 'Upcoming Anniversaries',
     component: UpcomingAnniversariesWidget,
     defaultDimensions: { w: 5, h: 4 }, // ~40% width
-  })
-
-  widgetRegistry.register({
-    id: 'recent-audit-logs',
-    title: 'Recent Audit Logs',
-    component: RecentAuditLogsWidget,
-    defaultDimensions: { w: 7, h: 4 }, // ~60% width
   })
 }

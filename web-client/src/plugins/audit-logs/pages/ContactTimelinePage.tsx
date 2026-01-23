@@ -2,7 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ContactTimeline } from './components/ContactTimeline'
+import { ContactTimeline } from '../components/ContactTimeline'
 
 import { Button } from '@/components/ui/button'
 

@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { UserMenu } from './UserMenu'
 
 import { useAuth } from '@/hooks/useAuth'
+import { AuditLogsPlugin } from '@/plugins/audit-logs'
 
 // Mock useAuth
 vi.mock('@/hooks/useAuth', () => ({
@@ -52,6 +53,7 @@ describe('UserMenu', () => {
       user: mockUser,
       logout: mockLogout,
     } as unknown as ReturnType<typeof useAuth>)
+    new AuditLogsPlugin().register()
   })
 
   it('renders user menu trigger', () => {

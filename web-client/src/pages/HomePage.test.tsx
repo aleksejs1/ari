@@ -9,7 +9,7 @@ vi.mock('@/features/dashboard/GroupsWidget', () => ({
   default: () => <div data-testid="groups-widget">GroupsWidget</div>,
 }))
 
-vi.mock('@/features/dashboard/RecentAuditLogsWidget', () => ({
+vi.mock('@/plugins/audit-logs/widgets/RecentAuditLogsWidget', () => ({
   default: () => <div data-testid="audit-logs-widget">RecentAuditLogsWidget</div>,
 }))
 
@@ -25,6 +25,7 @@ vi.mock('react-i18next', () => ({
 }))
 
 import { registerDashboardWidgets } from '@/features/dashboard/widgets/registerWidgets'
+import { AuditLogsPlugin } from '@/plugins/audit-logs'
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -44,6 +45,7 @@ describe('HomePage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     registerDashboardWidgets()
+    new AuditLogsPlugin().register()
   })
 
   it('renders dashboard title', () => {
@@ -79,7 +81,7 @@ describe('HomePage', () => {
     expect(screen.getByTestId('anniversaries-widget')).toBeInTheDocument()
   })
 
-  it('renders RecentAuditLogsWidget', () => {
+  it('renders RecentAuditLogsWidget', async () => {
     const Wrapper = createWrapper()
     render(
       <Wrapper>
@@ -87,6 +89,6 @@ describe('HomePage', () => {
       </Wrapper>,
     )
 
-    expect(screen.getByTestId('audit-logs-widget')).toBeInTheDocument()
+    expect(await screen.findByTestId('audit-logs-widget')).toBeInTheDocument()
   })
 })

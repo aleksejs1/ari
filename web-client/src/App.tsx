@@ -7,11 +7,12 @@ import DashboardLayout from './features/layout/DashboardLayout'
 import SidebarLessLayout from './features/layout/SidebarLessLayout'
 
 import { useAuth } from '@/hooks/useAuth'
+import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 
-const AuditLogsPage = lazy(() => import('./features/audit-logs/AuditLogsPage'))
+const routeRegistry = RouteRegistry.getInstance()
+
 const ContactDetailsPage = lazy(() => import('./features/contacts/ContactDetailsPage'))
 const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
-const ContactTimelinePage = lazy(() => import('./features/contacts/ContactTimelinePage'))
 const ContactGraphPage = lazy(() => import('./features/contact-graph/ContactGraphPage'))
 const GoogleImportPage = lazy(() => import('./features/google-import/GoogleImportPage'))
 const GroupsPage = lazy(() => import('./features/groups/GroupsPage'))
@@ -86,14 +87,7 @@ export default function App() {
                 </Suspense>
               ),
             },
-            {
-              path: '/contacts/:id/timeline',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <ContactTimelinePage />
-                </Suspense>
-              ),
-            },
+            ...routeRegistry.getRoutes('sidebar-less'),
             {
               path: '/contact-graph',
               element: (
@@ -107,14 +101,7 @@ export default function App() {
         {
           element: <DashboardLayout />,
           children: [
-            {
-              path: '/audit-logs',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <AuditLogsPage />
-                </Suspense>
-              ),
-            },
+            ...routeRegistry.getRoutes('dashboard'),
             {
               path: '/notification-channels',
               element: (

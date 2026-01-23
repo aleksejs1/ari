@@ -1,4 +1,4 @@
-import { History, Users } from 'lucide-react'
+import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { SidebarNavItem } from '../SidebarNavItem'
@@ -8,12 +8,6 @@ export function CoreRoutesSection({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      <SidebarNavItem
-        to="/audit-logs"
-        icon={History}
-        label={t('app.navigation.sidebar.auditLogs', 'Audit Logs')}
-        onClick={onNavigate}
-      />
       <SidebarNavItem
         to="/groups"
         icon={Users}

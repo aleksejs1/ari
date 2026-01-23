@@ -4,7 +4,6 @@ import { mapContactToFormValues } from '../contactUtils'
 import { useCreateContact, useUpdateContact } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
-import { ContactTimeline } from './ContactTimeline'
 
 import {
   Sheet,
@@ -13,6 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { ContactTimeline } from '@/plugins/audit-logs/components/ContactTimeline'
 import { type Contact, type ContactFormValues } from '@/types/models'
 
 // import { useState } from "react"

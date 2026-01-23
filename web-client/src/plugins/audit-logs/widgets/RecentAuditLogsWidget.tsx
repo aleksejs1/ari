@@ -3,7 +3,7 @@ import { History, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { getBadgeStyles, getContactId, getLogDescription } from '../audit-logs/utils'
+import { getBadgeStyles, getContactId, getLogDescription } from '../utils'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'

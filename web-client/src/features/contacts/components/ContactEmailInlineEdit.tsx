@@ -74,6 +74,10 @@ export function ContactEmailInlineEdit({
           placeholder={t('contacts.emailPlaceholder')}
           className="h-8 flex-1"
           aria-label={t('contacts.email')}
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+          data-bwignore="true"
         />
         <TypeAutocomplete
           value={type}

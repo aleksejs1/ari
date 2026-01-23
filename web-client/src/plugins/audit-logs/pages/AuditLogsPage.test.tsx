@@ -14,7 +14,7 @@ vi.mock('@/lib/axios', () => ({
 }))
 
 // Mock components to avoid deep rendering
-vi.mock('./components/LogList', () => ({
+vi.mock('../components/LogList', () => ({
   LogList: ({ logs, isPlaceholderData }: { logs: TimelineEvent[]; isPlaceholderData: boolean }) => (
     <div data-testid="log-list">{isPlaceholderData ? 'Loading...' : `Logs: ${logs.length}`}</div>
   ),
