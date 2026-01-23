@@ -18,4 +18,5 @@ This directory contains architectural documentation and cookbooks for the applic
 
 ## UI Components
 - [User Menu Architecture](./usermenu-architecture.md) - Registry-based User Menu.
+- [Sidebar Architecture](./sidebar-architecture.md) - Registry-based Sidebar.
 
