@@ -13,6 +13,7 @@ import './index.css'
 import './lib/i18n'
 import { settingsRegistry } from './lib/settings/SettingsRegistry'
 import { AuditLogsPlugin } from './plugins/audit-logs'
+import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
 
 // Register Settings Tabs
@@ -23,6 +24,7 @@ settingsRegistry.registerTab(new DataSettingsTab())
 // Register Plugins
 new ContactsPlugin().register()
 new AuditLogsPlugin().register()
+new ContactGraphPlugin().register()
 
 registerDashboardWidgets()
 

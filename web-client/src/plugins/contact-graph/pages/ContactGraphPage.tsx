@@ -1,8 +1,8 @@
 import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { useContactGraph } from './api/useContactGraph'
-import { ContactGraph } from './components/ContactGraph'
+import { useContactGraph } from '../api/useContactGraph'
+import { ContactGraph } from '../components/ContactGraph'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 

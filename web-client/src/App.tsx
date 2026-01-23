@@ -13,7 +13,10 @@ const routeRegistry = RouteRegistry.getInstance()
 
 const ContactDetailsPage = lazy(() => import('./features/contacts/ContactDetailsPage'))
 const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
-const ContactGraphPage = lazy(() => import('./features/contact-graph/ContactGraphPage'))
+// Removed ContactGraphPage import
+
+// ... inside Layout
+// Removed /contact-graph route
 const GoogleImportPage = lazy(() => import('./features/google-import/GoogleImportPage'))
 const GroupsPage = lazy(() => import('./features/groups/GroupsPage'))
 const NotificationChannelsPage = lazy(
@@ -88,14 +91,6 @@ export default function App() {
               ),
             },
             ...routeRegistry.getRoutes('sidebar-less'),
-            {
-              path: '/contact-graph',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <ContactGraphPage />
-                </Suspense>
-              ),
-            },
           ],
         },
         {
