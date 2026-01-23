@@ -10,6 +10,8 @@ use League\Flysystem\FilesystemOperator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
 class AvatarManager
 {
     private FilesystemOperator $storage;
@@ -31,6 +33,10 @@ class AvatarManager
 
     public function upload(Contact $contact, UploadedFile $file): ContactAvatar
     {
+        if (!$file->isValid()) {
+            throw new BadRequestHttpException($file->getErrorMessage());
+        }
+
         $extension = $file->guessExtension() ?? 'bin';
         $filename = sprintf('%s.%s', bin2hex(random_bytes(16)), $extension);
 

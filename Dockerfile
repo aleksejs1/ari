@@ -26,6 +26,9 @@ RUN install-php-extensions \
     pdo_sqlite \
     pdo_mysql
 
+# Configure PHP
+COPY docker/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+
 
 
 # Install Composer

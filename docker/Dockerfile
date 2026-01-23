@@ -37,7 +37,7 @@ RUN install-php-extensions \
     pdo_mysql
 
 # Configure PHP
-COPY docker/php.ini $PHP_INI_DIR/conf.d/app.ini
+COPY docker/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 # Set working directory
 WORKDIR /app
