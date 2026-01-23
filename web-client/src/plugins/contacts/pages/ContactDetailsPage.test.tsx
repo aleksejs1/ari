@@ -1,239 +1,155 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import {
-  QueryClient,
-  QueryClientProvider,
-  type UseMutationResult,
-  type UseQueryResult,
-} from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Contact } from '@/types/models'
-
-import { ContactsPlugin } from '@/plugins/contacts'
+import type { Contact } from '@/types/models'
 
 import * as useContactsHook from '../useContacts'
 
 import ContactDetailsPage from './ContactDetailsPage'
 
+// Mock hooks
+vi.mock('../useContacts', () => ({
+  useContact: vi.fn(),
+  useDeleteContact: vi.fn(),
+  useExportContactVcard: vi.fn(),
+  useSimilarContacts: vi.fn(),
+}))
+
 // Mock components
-vi.mock('../components/ContactTimeline', () => ({
-  ContactTimeline: () => <div data-testid="contact-timeline">Contact Timeline</div>,
+vi.mock('../components/DeleteContactDialog', () => ({
+  DeleteContactDialog: ({ open, onConfirm }: any) =>
+    open ? (
+      <div data-testid="delete-dialog">
+        <button onClick={onConfirm}>Confirm Delete</button>
+      </div>
+    ) : null,
 }))
+
 vi.mock('../components/SimilarContactsWidget', () => ({
-  SimilarContactsWidget: () => <div data-testid="similar-contacts">Similar Contacts</div>,
+  SimilarContactsWidget: () => <div data-testid="similar-contacts" />,
 }))
 
-// Mock Sections
-vi.mock('../details/sections/GeneralInfoSection', () => ({
-  GeneralInfoSection: () => <div data-testid="section-general-info">General Info Section</div>,
-}))
-vi.mock('../details/sections/ContactInfoSection', () => ({
-  ContactInfoSection: () => <div data-testid="section-contact-info">Contact Info Section</div>,
-}))
-vi.mock('../details/sections/ProfessionalSection', () => ({
-  ProfessionalSection: () => <div data-testid="section-professional">Professional Section</div>,
-}))
-vi.mock('../details/sections/DatesSection', () => ({
-  DatesSection: () => <div data-testid="section-dates">Dates Section</div>,
-}))
-vi.mock('../details/sections/UpcomingDatesSection', () => ({
-  UpcomingDatesSection: () => (
-    <div data-testid="section-upcoming-dates">Upcoming Dates Section</div>
-  ),
-}))
-vi.mock('../details/sections/RelationsSection', () => ({
-  RelationsSection: () => <div data-testid="section-relations">Relations Section</div>,
-}))
-vi.mock('../details/sections/BiographySection', () => ({
-  BiographySection: () => <div data-testid="section-biography">Biography Section</div>,
-}))
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
+// Mock ContactDetailsRegistry
+vi.mock('@/lib/contacts/details/ContactDetailsRegistry', () => ({
+  ContactDetailsRegistry: {
+    getInstance: () => ({
+      getAll: () => [
+        { id: 'section1', component: () => <div>Section 1</div>, layout: 'half' },
+        { id: 'section2', component: () => <div>Section 2</div>, layout: 'full' },
+      ],
+    }),
   },
-})
+}))
 
 describe('ContactDetailsPage', () => {
+  const mockContact: Contact = {
+    '@id': '/api/contacts/1',
+    id: 1,
+    contactNames: [{ given: 'John', family: 'Doe' }] as any,
+  } as Contact
+
   beforeEach(() => {
-    new ContactsPlugin().register()
+    vi.clearAllMocks()
+    vi.mocked(useContactsHook.useDeleteContact).mockReturnValue({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    } as any)
+    vi.mocked(useContactsHook.useExportContactVcard).mockReturnValue({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    } as any)
   })
+
+  // Helper to render with router
+  const renderWithRouter = (initialEntries = ['/contacts/1']) => {
+    return render(
+      <MemoryRouter initialEntries={initialEntries}>
+        <Routes>
+          <Route path="/contacts/:id" element={<ContactDetailsPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+  }
 
   it('renders loading state', () => {
-    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
-      isLoading: true,
+    vi.mocked(useContactsHook.useContact).mockReturnValue({
       data: undefined,
+      isLoading: true,
       error: null,
-    } as unknown as UseQueryResult<Contact>)
+    } as any)
 
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
-      {} as UseMutationResult<void, Error, string, unknown>,
-    )
-    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue(
-      {} as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>,
-    )
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={['/contacts/1']}>
-          <Routes>
-            <Route path="/contacts/:id" element={<ContactDetailsPage />} />
-          </Routes>
-        </MemoryRouter>
-      </QueryClientProvider>,
-    )
-
-    expect(screen.queryByTestId('section-general-info')).not.toBeInTheDocument()
-  })
-
-  it('renders all sections by default', async () => {
-    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
-      isLoading: false,
-      data: {
-        id: 1,
-        '@id': '/api/contacts/1',
-        contactNames: [],
-        contactDates: [],
-      },
-      error: null,
-    } as unknown as UseQueryResult<Contact>)
-
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
-      {} as UseMutationResult<void, Error, string, unknown>,
-    )
-    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
-      isPending: false,
-    } as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={['/contacts/1']}>
-          <Routes>
-            <Route path="/contacts/:id" element={<ContactDetailsPage />} />
-          </Routes>
-        </MemoryRouter>
-      </QueryClientProvider>,
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('contacts.details')).toBeInTheDocument()
-      expect(screen.getByTestId('section-general-info')).toBeInTheDocument()
-      expect(screen.getByTestId('section-contact-info')).toBeInTheDocument()
-      expect(screen.getByTestId('section-professional')).toBeInTheDocument()
-    })
+    renderWithRouter()
+    expect(screen.getByTestId('icon-Loader2')).toBeInTheDocument()
   })
 
   it('renders error state', () => {
-    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
-      isLoading: false,
+    vi.mocked(useContactsHook.useContact).mockReturnValue({
       data: undefined,
+      isLoading: false,
       error: new Error('Failed'),
-    } as unknown as UseQueryResult<Contact>)
+    } as any)
 
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
-      {} as UseMutationResult<void, Error, string, unknown>,
-    )
-    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue(
-      {} as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>,
-    )
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={['/contacts/1']}>
-          <Routes>
-            <Route path="/contacts/:id" element={<ContactDetailsPage />} />
-          </Routes>
-        </MemoryRouter>
-      </QueryClientProvider>,
-    )
-
+    renderWithRouter()
     expect(screen.getByText('errors.failedToLoadContact')).toBeInTheDocument()
   })
 
-  it('handles delete contact', async () => {
-    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
+  it('renders contact details', () => {
+    vi.mocked(useContactsHook.useContact).mockReturnValue({
+      data: mockContact,
       isLoading: false,
-      data: {
-        id: 1,
-        '@id': '/api/contacts/1',
-      },
       error: null,
-    } as unknown as UseQueryResult<Contact>)
+    } as any)
 
-    const mockDelete = vi.fn()
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue({
+    renderWithRouter()
+    expect(screen.getByText('contacts.details')).toBeInTheDocument()
+    expect(screen.getByText('Section 1')).toBeInTheDocument()
+    expect(screen.getByText('Section 2')).toBeInTheDocument()
+    expect(screen.getByTestId('similar-contacts')).toBeInTheDocument()
+  })
+
+  it('opens delete dialog and calls mutation on confirm', async () => {
+    const mockDeleteMutation = vi.fn().mockResolvedValue({})
+    vi.mocked(useContactsHook.useDeleteContact).mockReturnValue({
+      mutateAsync: mockDeleteMutation,
       isPending: false,
-      mutateAsync: mockDelete,
-    } as unknown as UseMutationResult<void, Error, string, unknown>)
+    } as any)
 
-    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
-      isPending: false,
-    } as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
+    vi.mocked(useContactsHook.useContact).mockReturnValue({
+      data: mockContact,
+      isLoading: false,
+      error: null,
+    } as any)
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={['/contacts/1']}>
-          <Routes>
-            <Route path="/contacts/:id" element={<ContactDetailsPage />} />
-          </Routes>
-        </MemoryRouter>
-      </QueryClientProvider>,
-    )
+    renderWithRouter()
 
-    // Open dialog
     fireEvent.click(screen.getByText('common.delete'))
-    expect(screen.getByText('contacts.deleteConfirmTitle')).toBeInTheDocument()
+    expect(screen.getByTestId('delete-dialog')).toBeInTheDocument()
 
-    // Confirm delete
-    const deleteButtons = screen.getAllByText('common.delete')
-    if (deleteButtons[1]) {
-      fireEvent.click(deleteButtons[1])
-    }
-
+    fireEvent.click(screen.getByText('Confirm Delete'))
     await waitFor(() => {
-      expect(mockDelete).toHaveBeenCalledWith('/api/contacts/1')
+      expect(mockDeleteMutation).toHaveBeenCalledWith('/api/contacts/1')
     })
   })
 
-  it('triggers vCard export', async () => {
-    vi.spyOn(useContactsHook, 'useContact').mockReturnValue({
-      isLoading: false,
-      data: {
-        id: 1,
-        '@id': '/api/contacts/1',
-        contactNames: [{ given: 'John', family: 'Doe' }],
-      },
-      error: null,
-    } as unknown as UseQueryResult<Contact>)
-
-    vi.spyOn(useContactsHook, 'useDeleteContact').mockReturnValue(
-      {} as UseMutationResult<void, Error, string, unknown>,
-    )
-
-    const mockExport = vi.fn()
-    vi.spyOn(useContactsHook, 'useExportContactVcard').mockReturnValue({
+  it('calls export vcard mutation', async () => {
+    const mockExportMutation = vi.fn().mockResolvedValue({})
+    vi.mocked(useContactsHook.useExportContactVcard).mockReturnValue({
+      mutateAsync: mockExportMutation,
       isPending: false,
-      mutateAsync: mockExport,
-    } as unknown as UseMutationResult<unknown, Error, { id: string; filename: string }, unknown>)
+    } as any)
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={['/contacts/1']}>
-          <Routes>
-            <Route path="/contacts/:id" element={<ContactDetailsPage />} />
-          </Routes>
-        </MemoryRouter>
-      </QueryClientProvider>,
-    )
+    vi.mocked(useContactsHook.useContact).mockReturnValue({
+      data: mockContact,
+      isLoading: false,
+      error: null,
+    } as any)
 
-    const exportButton = screen.getByText('contacts.exportVcard')
-    fireEvent.click(exportButton)
+    renderWithRouter()
 
+    fireEvent.click(screen.getByText('contacts.exportVcard'))
     await waitFor(() => {
-      expect(mockExport).toHaveBeenCalledWith({
+      expect(mockExportMutation).toHaveBeenCalledWith({
         id: '/api/contacts/1',
         filename: 'contact_John_Doe',
       })

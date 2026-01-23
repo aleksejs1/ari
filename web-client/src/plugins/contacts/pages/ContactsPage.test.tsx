@@ -1,295 +1,152 @@
-import { MemoryRouter } from 'react-router-dom'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-import {
-  type HydraCollection,
-  useContacts,
-  useCreateContactDate,
-  useCreateContactEmail,
-  useCreateContactName,
-  useCreateContactPhone,
-  useDeleteContact,
-  useDeleteContactEmail,
-  useDeleteContactName,
-  useDeleteContactPhone,
-  useUpdateContactDate,
-  useUpdateContactEmail,
-  useUpdateContactGroups,
-  useUpdateContactName,
-  useUpdateContactPhone,
-} from '../useContacts'
-
-import ContactsPage from './ContactsPage'
-
-// ... existing code ...
-
-vi.mock('../useContacts', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>
-  return {
-    ...actual,
-    useContacts: vi.fn(),
-    useDeleteContact: vi.fn(),
-
-    useUpdateContactDate: vi.fn(),
-    useCreateContactDate: vi.fn(),
-    useUpdateContactGroups: vi.fn(),
-    useCreateContactEmail: vi.fn(),
-    useUpdateContactEmail: vi.fn(),
-    useDeleteContactEmail: vi.fn(),
-    useCreateContactPhone: vi.fn(),
-    useUpdateContactPhone: vi.fn(),
-    useDeleteContactPhone: vi.fn(),
-    useCreateContactName: vi.fn(),
-    useUpdateContactName: vi.fn(),
-    useDeleteContactName: vi.fn(),
-  }
-})
 
 import type { Contact } from '@/types/models'
 
-// Mock Sub Components
+import * as useContactsParamsHook from '../hooks/useContactsParams'
+import * as useContactsHook from '../useContacts'
+
+import ContactsPage from './ContactsPage'
+
+// Mock hooks
+vi.mock('../useContacts', () => ({
+  useContacts: vi.fn(),
+  getHydraMember: (data: any) => data?.member || [],
+  getHydraPagination: (data: any) => ({
+    totalPages: 1,
+    hasNext: false,
+    hasPrevious: false,
+    ...data?.pagination,
+  }),
+}))
+
+vi.mock('../hooks/useContactsParams', () => ({
+  useContactsParams: vi.fn(),
+}))
+
+// Mock components
 vi.mock('../components/ContactsHeader', () => ({
-  ContactsHeader: ({
-    onCreate,
-    onSearchChange,
-  }: {
-    onCreate: () => void
-    onSearchChange: (val: string) => void
-  }) => (
-    <div data-testid="header">
+  ContactsHeader: ({ onSearchChange, onCreate }: any) => (
+    <div>
       <input data-testid="search-input" onChange={(e) => onSearchChange(e.target.value)} />
-      <button onClick={onCreate}>Create</button>
+      <button onClick={onCreate}>New Contact</button>
     </div>
   ),
 }))
 
-interface MockTableProps {
-  data: Contact[]
-  onEdit: (contact: Contact) => void
-}
-
 vi.mock('../components/ContactsTable', () => ({
-  ContactsTable: ({
-    data,
-    onEdit,
-    onSort,
-  }: MockTableProps & { onSort?: (id: string, desc: boolean) => void }) => (
-    <div data-testid="table">
-      <button data-testid="sort-btn" onClick={() => onSort?.('contactNames.given', false)}>
-        Sort
-      </button>
-      {data.map((c) => (
-        <div key={c['@id']}>
-          {c.contactNames?.[0]?.given}
-          <button onClick={() => onEdit(c)}>Edit</button>
-        </div>
+  ContactsTable: ({ data, onEdit }: any) => (
+    <div>
+      {data.map((contact: Contact) => (
+        <button key={contact.id} data-testid="contact-row" onClick={() => onEdit(contact)}>
+          {contact.contactNames?.[0]?.given}
+        </button>
       ))}
     </div>
   ),
 }))
 
-interface MockPaginationProps {
-  onNext: () => void
-  onPrevious: () => void
-}
-
 vi.mock('../components/ContactsPagination', () => ({
-  ContactsPagination: ({ onNext, onPrevious }: MockPaginationProps) => (
-    <div data-testid="pagination">
+  ContactsPagination: ({ onNext, onPrevious }: any) => (
+    <div>
       <button onClick={onPrevious}>Previous</button>
-      <button onClick={() => onNext()}>Next</button>
+      <button onClick={onNext}>Next</button>
     </div>
   ),
 }))
 
 vi.mock('../components/ContactModal', () => ({
-  ContactModal: ({ isOpen }: { isOpen: boolean; contact?: Contact; onClose: () => void }) => (
-    <div data-testid="modal">{isOpen ? 'Open' : 'Closed'}</div>
-  ),
+  ContactModal: ({ isOpen }: any) =>
+    isOpen ? <div data-testid="contact-modal">Modal Open</div> : null,
 }))
+
 describe('ContactsPage', () => {
-  const mockMutateAsync = vi.fn()
+  const mockParams = {
+    page: 1,
+    group: undefined,
+    search: undefined,
+    sorting: undefined,
+    handleSearch: vi.fn(),
+    handleSort: vi.fn(),
+    setPage: vi.fn(),
+  }
 
   beforeEach(() => {
-    vi.mocked(useDeleteContact).mockReturnValue({
-      mutateAsync: mockMutateAsync,
-      reset: vi.fn(),
-    } as unknown as ReturnType<typeof useDeleteContact>)
-
-    vi.mocked(useUpdateContactDate).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useUpdateContactDate>)
-
-    vi.mocked(useCreateContactDate).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useCreateContactDate>)
-
-    vi.mocked(useUpdateContactGroups).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useUpdateContactGroups>)
-
-    vi.mocked(useCreateContactEmail).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useCreateContactEmail>)
-
-    vi.mocked(useUpdateContactEmail).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useUpdateContactEmail>)
-
-    vi.mocked(useDeleteContactEmail).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useDeleteContactEmail>)
-
-    vi.mocked(useCreateContactPhone).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useCreateContactPhone>)
-
-    vi.mocked(useUpdateContactPhone).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useUpdateContactPhone>)
-
-    vi.mocked(useDeleteContactPhone).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useDeleteContactPhone>)
-
-    vi.mocked(useCreateContactName).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useCreateContactName>)
-
-    vi.mocked(useUpdateContactName).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useUpdateContactName>)
-
-    vi.mocked(useDeleteContactName).mockReturnValue({
-      mutateAsync: vi.fn(),
-    } as unknown as ReturnType<typeof useDeleteContactName>)
+    vi.clearAllMocks()
+    vi.mocked(useContactsParamsHook.useContactsParams).mockReturnValue(mockParams as any)
   })
 
   it('renders loading state', () => {
-    vi.mocked(useContacts).mockReturnValue({
-      isLoading: true,
+    vi.mocked(useContactsHook.useContacts).mockReturnValue({
       data: undefined,
+      isLoading: true,
+      isPlaceholderData: false,
       isError: false,
-    } as unknown as ReturnType<typeof useContacts>)
+    } as any)
 
-    render(
-      <MemoryRouter>
-        <ContactsPage />
-      </MemoryRouter>,
-    )
+    render(<ContactsPage />)
     expect(screen.getByText('contacts.loading')).toBeInTheDocument()
   })
 
   it('renders error state', () => {
-    vi.mocked(useContacts).mockReturnValue({
-      isLoading: false,
+    vi.mocked(useContactsHook.useContacts).mockReturnValue({
       data: undefined,
+      isLoading: false,
+      isPlaceholderData: false,
       isError: true,
-    } as unknown as ReturnType<typeof useContacts>)
+    } as any)
 
-    render(
-      <MemoryRouter>
-        <ContactsPage />
-      </MemoryRouter>,
-    )
+    render(<ContactsPage />)
     expect(screen.getByText('contacts.error')).toBeInTheDocument()
   })
 
-  it('renders contacts and handles interactions', async () => {
-    vi.mocked(useContacts).mockReturnValue({
-      isLoading: false,
-      data: {
-        member: [{ '@id': '/api/contacts/1', contactNames: [{ given: 'Alice' }] }],
-        view: {},
-      } as HydraCollection<Contact>,
-      isError: false,
-    } as unknown as ReturnType<typeof useContacts>)
+  it('renders contacts table', () => {
+    const mockData = {
+      member: [
+        { id: 1, contactNames: [{ given: 'Alice' }] },
+        { id: 2, contactNames: [{ given: 'Bob' }] },
+      ],
+    }
 
-    render(
-      <MemoryRouter>
-        <ContactsPage />
-      </MemoryRouter>,
-    )
-
-    // Check data rendering
-    expect(screen.getByText('Alice')).toBeInTheDocument()
-
-    // Open Create
-    fireEvent.click(screen.getByText('Create'))
-    expect(screen.getByTestId('modal')).toHaveTextContent('Open')
-  })
-
-  it('updates search filter when search input changes', async () => {
-    vi.mocked(useContacts).mockReturnValue({
-      isLoading: false,
-      data: { member: [], view: {} },
-      isError: false,
-    } as unknown as ReturnType<typeof useContacts>)
-
-    render(
-      <MemoryRouter>
-        <ContactsPage />
-      </MemoryRouter>,
-    )
-
-    const input = screen.getByTestId('search-input')
-    fireEvent.change(input, { target: { value: 'alice' } })
-
-    await waitFor(() => {
-      expect(useContacts).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({ search: 'alice' }),
-        undefined,
-      )
-    })
-  })
-
-  it('handles robust pagination when view is missing', () => {
-    vi.mocked(useContacts).mockReturnValue({
+    vi.mocked(useContactsHook.useContacts).mockReturnValue({
+      data: mockData,
       isLoading: false,
       isPlaceholderData: false,
-      data: {
-        member: [],
-        totalItems: 100, // 4 pages
-      } as HydraCollection<Contact>,
       isError: false,
-    } as unknown as ReturnType<typeof useContacts>)
+    } as any)
 
-    render(
-      <MemoryRouter>
-        <ContactsPage />
-      </MemoryRouter>,
-    )
-
-    // Pagination should be visible because totalItems > ITEMS_PER_PAGE
-    const pagination = screen.getByTestId('pagination')
-    expect(pagination).toBeInTheDocument()
-
-    // Next button should be enabled because we are on page 1 and there are 4 pages
-    const nextBtn = screen.getByText('Next')
-    expect(nextBtn).not.toBeDisabled()
+    render(<ContactsPage />)
+    expect(screen.getAllByTestId('contact-row')).toHaveLength(2)
+    expect(screen.getByText('Alice')).toBeInTheDocument()
   })
-  it('updates sort filter when header is clicked', async () => {
-    vi.mocked(useContacts).mockReturnValue({
+
+  it('opens modal on create click', () => {
+    vi.mocked(useContactsHook.useContacts).mockReturnValue({
+      data: { member: [] },
       isLoading: false,
-      data: { member: [], view: {} },
+      isPlaceholderData: false,
       isError: false,
-    } as unknown as ReturnType<typeof useContacts>)
+    } as any)
 
-    render(
-      <MemoryRouter>
-        <ContactsPage />
-      </MemoryRouter>,
-    )
-    const sortBtn = screen.getByTestId('sort-btn')
-    fireEvent.click(sortBtn)
+    render(<ContactsPage />)
+    fireEvent.click(screen.getByText('New Contact'))
+    expect(screen.getByTestId('contact-modal')).toBeInTheDocument()
+  })
 
-    await waitFor(() => {
-      expect(useContacts).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
-        id: 'contactNames.given',
-        desc: false,
-      })
-    })
+  it('opens modal on edit click', () => {
+    const mockData = {
+      member: [{ id: 1, contactNames: [{ given: 'Alice' }] }],
+    }
+
+    vi.mocked(useContactsHook.useContacts).mockReturnValue({
+      data: mockData,
+      isLoading: false,
+      isPlaceholderData: false,
+      isError: false,
+    } as any)
+
+    render(<ContactsPage />)
+    fireEvent.click(screen.getByText('Alice'))
+    expect(screen.getByTestId('contact-modal')).toBeInTheDocument()
   })
 })

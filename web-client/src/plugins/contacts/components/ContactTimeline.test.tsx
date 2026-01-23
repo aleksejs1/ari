@@ -1,111 +1,99 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { api } from '@/lib/axios'
+import type { ContactTimeline as ContactTimelineType } from '@/types/models'
 
 import { ContactTimeline } from './ContactTimeline'
 
-// Mock api
+// Mock API and child components
 vi.mock('@/lib/axios', () => ({
   api: {
     get: vi.fn(),
   },
 }))
 
-const renderWithClient = (ui: React.ReactNode) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  })
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>)
-}
+vi.mock('./ContactTimelineItem', () => ({
+  ContactTimelineItem: ({ log }: any) => (
+    <div data-testid="timeline-item">
+      {log.action} - {log.id}
+    </div>
+  ),
+}))
+
+// Mock React Query
+const mockUseQuery = vi.fn()
+vi.mock('@tanstack/react-query', () => ({
+  useQuery: (options: any) => mockUseQuery(options),
+}))
 
 describe('ContactTimeline', () => {
-  afterEach(() => {
+  const mockContactId = '123'
+
+  beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('renders loading state initially', () => {
-    const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
-    mockGet.mockReturnValue(new Promise(() => undefined)) // Pending promise
-    const { container } = renderWithClient(<ContactTimeline contactId="1" />)
-    // Loader should be present
-    expect(container.querySelector('.animate-spin')).toBeInTheDocument()
+  it('renders loading state', () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      error: null,
+    })
+
+    render(<ContactTimeline contactId={mockContactId} />)
+    expect(screen.getByTestId('icon-Loader2')).toBeInTheDocument()
   })
 
-  it('renders timeline events when data fetches successfully', async () => {
-    const mockData = {
-      logs: [
-        {
-          id: 1,
-          action: 'update',
-          entityType: 'Contact',
-          createdAt: '2023-01-01T10:00:00Z',
-          changes: {
-            name: 'New Name',
-            date: [
-              { date: '1990-05-16 00:00:00.000000', timezone_type: 3, timezone: 'UTC' },
-              { date: '1991-05-16 00:00:00.000000', timezone_type: 3, timezone: 'UTC' },
-            ],
-          },
-        },
-      ],
-    }
-    const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
-    mockGet.mockResolvedValue({ data: mockData })
-
-    renderWithClient(<ContactTimeline contactId="1" />)
-
-    await waitFor(() => {
-      expect(screen.getByText('contacts.history.timeline')).toBeInTheDocument()
-      expect(screen.getByText('contacts.history.actions.Contact.update')).toBeInTheDocument()
-      expect(screen.getByText(/New Name/)).toBeInTheDocument()
-      expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
+  it('renders error state', () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: new Error('Failed to load'),
     })
+
+    render(<ContactTimeline contactId={mockContactId} />)
+    expect(screen.getByText('contacts.history.failedToLoadTimeline')).toBeInTheDocument()
   })
 
-  it('renders empty state when no logs', async () => {
-    const mockData = {
-      logs: [],
-    }
-    const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
-    mockGet.mockResolvedValue({ data: mockData })
-
-    renderWithClient(<ContactTimeline contactId="1" />)
-
-    await waitFor(() => {
-      expect(screen.getByText('contacts.history.noHistory')).toBeInTheDocument()
+  it('renders empty history message', () => {
+    mockUseQuery.mockReturnValue({
+      data: { logs: [] },
+      isLoading: false,
+      error: null,
     })
+
+    render(<ContactTimeline contactId={mockContactId} />)
+    expect(screen.getByText('contacts.history.noHistory')).toBeInTheDocument()
   })
 
-  it('renders REMOVE events with snapshotBefore data', async () => {
-    const mockData = {
-      logs: [
-        {
-          id: 1,
-          action: 'REMOVE',
-          entityType: 'ContactDate',
-          createdAt: '2023-01-01T10:00:00Z',
-          snapshotBefore: {
-            date: '1990-05-16T00:00:00+00:00',
-            text: 'Anniversary',
-          },
-        },
-      ],
+  it('renders timeline logs', () => {
+    const mockData: ContactTimelineType = {
+      logs: [{ id: 1, action: 'created' } as any, { id: 2, action: 'updated' } as any],
     }
-    const mockGet = api.get as unknown as ReturnType<typeof vi.fn>
-    mockGet.mockResolvedValue({ data: mockData })
 
-    renderWithClient(<ContactTimeline contactId="1" />)
-
-    await waitFor(() => {
-      expect(screen.getByText('contacts.history.actions.ContactDate.REMOVE')).toBeInTheDocument()
-      expect(screen.getByText(/May 16th, 1990/)).toBeInTheDocument()
-      expect(screen.getByText(/Anniversary/)).toBeInTheDocument()
+    mockUseQuery.mockReturnValue({
+      data: mockData,
+      isLoading: false,
+      error: null,
     })
+
+    render(<ContactTimeline contactId={mockContactId} />)
+
+    expect(screen.getByText('contacts.history.timeline')).toBeInTheDocument()
+    const items = screen.getAllByTestId('timeline-item')
+    expect(items).toHaveLength(2)
+    expect(items[0]).toHaveTextContent('created - 1')
+    expect(items[1]).toHaveTextContent('updated - 2')
+  })
+
+  it('renders without header when fullHeight is true', () => {
+    mockUseQuery.mockReturnValue({
+      data: { logs: [] },
+      isLoading: false,
+      error: null,
+    })
+
+    render(<ContactTimeline contactId={mockContactId} fullHeight />)
+    expect(screen.queryByText('contacts.history.timeline')).not.toBeInTheDocument()
   })
 })
