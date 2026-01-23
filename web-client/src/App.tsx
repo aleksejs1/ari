@@ -24,7 +24,7 @@ const routeRegistry = RouteRegistry.getInstance()
 // Removed SettingsPage import
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
-const HomePage = lazy(() => import('./pages/HomePage'))
+// Removed HomePage import
 // Removed User Security imports
 
 const ProtectedRoute = () => {
@@ -62,12 +62,7 @@ export default function App() {
           element: <SidebarLessLayout />,
           children: [
             {
-              path: '/',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <HomePage />
-                </Suspense>
-              ),
+              /* Removed Home route */
             },
             {
               /* Removed Contacts routes */

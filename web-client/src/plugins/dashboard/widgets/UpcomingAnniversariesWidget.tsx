@@ -2,7 +2,7 @@ import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { useUpcomingAnniversaries } from './useUpcomingAnniversaries'
+import { useUpcomingAnniversaries } from '../hooks/useUpcomingAnniversaries'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatLocalizedDate } from '@/lib/utils'

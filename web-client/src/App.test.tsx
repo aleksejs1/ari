@@ -6,6 +6,12 @@ import App from './App'
 import { AuthProvider } from './contexts/AuthContext'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
 import { useUserPrefs } from './hooks/useUserPrefs.hook'
+import { ContactsPlugin } from './plugins/contacts'
+import { DashboardPlugin } from './plugins/dashboard'
+
+// Register plugins for the test
+new DashboardPlugin().register()
+new ContactsPlugin().register()
 
 // Mock useUserPrefs hook but keep UserPrefsProvider
 vi.mock('./hooks/useUserPrefs.hook', () => ({

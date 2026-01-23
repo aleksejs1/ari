@@ -1,6 +1,6 @@
-import GroupsWidget from '../GroupsWidget'
-import StatsWidget from '../StatsWidget'
-import UpcomingAnniversariesWidget from '../UpcomingAnniversariesWidget'
+import GroupsWidget from '../widgets/GroupsWidget'
+import StatsWidget from '../widgets/StatsWidget'
+import UpcomingAnniversariesWidget from '../widgets/UpcomingAnniversariesWidget'
 
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 

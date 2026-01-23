@@ -4,13 +4,14 @@ import { createRoot } from 'react-dom/client'
 
 import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthContext'
-import { registerDashboardWidgets } from './features/dashboard/widgets/registerWidgets'
+// import { registerDashboardWidgets } from './features/dashboard/widgets/registerWidgets'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
 import './index.css'
 import './lib/i18n'
 import { AuditLogsPlugin } from './plugins/audit-logs'
 import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
+import { DashboardPlugin } from './plugins/dashboard'
 import { GoogleImportPlugin } from './plugins/google-import'
 import { GroupsPlugin } from './plugins/groups'
 import { NotificationsPlugin } from './plugins/notifications'
@@ -22,6 +23,7 @@ import { UserSecurityPlugin } from './plugins/user-security'
 // Tabs are now registered by SettingsPlugin
 
 // Register Plugins
+new DashboardPlugin().register()
 new ContactsPlugin().register()
 new AuditLogsPlugin().register()
 new ContactGraphPlugin().register()
@@ -32,7 +34,7 @@ new SessionsPlugin().register()
 new UserSecurityPlugin().register()
 new SettingsPlugin().register()
 
-registerDashboardWidgets()
+// registerDashboardWidgets() is now called inside DashboardPlugin.register()
 
 const queryClient = new QueryClient()
 

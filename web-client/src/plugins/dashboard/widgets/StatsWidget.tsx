@@ -1,7 +1,7 @@
 import { BarChart3, Users, ScrollText, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { useStats } from './useStats'
+import { useStats } from '../hooks/useStats'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'

@@ -3,9 +3,13 @@ import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { registerDashboardWidgets } from '../hooks/registerWidgets'
+
 import HomePage from './HomePage'
 
-vi.mock('@/features/dashboard/GroupsWidget', () => ({
+import { AuditLogsPlugin } from '@/plugins/audit-logs'
+
+vi.mock('../widgets/GroupsWidget', () => ({
   default: () => <div data-testid="groups-widget">GroupsWidget</div>,
 }))
 
@@ -13,7 +17,7 @@ vi.mock('@/plugins/audit-logs/widgets/RecentAuditLogsWidget', () => ({
   default: () => <div data-testid="audit-logs-widget">RecentAuditLogsWidget</div>,
 }))
 
-vi.mock('@/features/dashboard/UpcomingAnniversariesWidget', () => ({
+vi.mock('../widgets/UpcomingAnniversariesWidget', () => ({
   default: () => <div data-testid="anniversaries-widget">UpcomingAnniversariesWidget</div>,
 }))
 
@@ -23,9 +27,6 @@ vi.mock('react-i18next', () => ({
     i18n: { language: 'en' },
   }),
 }))
-
-import { registerDashboardWidgets } from '@/features/dashboard/widgets/registerWidgets'
-import { AuditLogsPlugin } from '@/plugins/audit-logs'
 
 const createWrapper = () => {
   const queryClient = new QueryClient({

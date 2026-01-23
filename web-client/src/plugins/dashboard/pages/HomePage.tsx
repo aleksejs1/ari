@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import DynamicDashboard from '@/features/dashboard/DynamicDashboard'
+import DynamicDashboard from '../components/DynamicDashboard'
 
 export default function HomePage() {
   const { t } = useTranslation()
