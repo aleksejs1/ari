@@ -1,16 +1,18 @@
 import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { DisplayItem } from '../DisplayItem'
+import { DisplayItem } from '../../components/DisplayItem'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact } from '@/types/models'
 
-export const UpcomingDatesCard = ({ contact }: { contact: Contact }) => {
+export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()
   const { formatDate } = useUserPrefs()
-  const upcomingDates = contact.contactDates?.filter((d) => d.nextAnniversaryDate)
+  const upcomingDates = (Array.isArray(contact.contactDates) ? contact.contactDates : [])?.filter(
+    (d) => d.nextAnniversaryDate,
+  )
 
   if (!upcomingDates || upcomingDates.length === 0) {
     return null

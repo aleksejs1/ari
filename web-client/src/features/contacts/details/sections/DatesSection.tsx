@@ -1,22 +1,40 @@
 import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { ContactDateInlineEdit } from '../ContactDateInlineEdit'
-import { DisplayItem } from '../DisplayItem'
+import { ContactDateInlineEdit } from '../../components/ContactDateInlineEdit'
+import { DisplayItem } from '../../components/DisplayItem'
+import { useCreateContactDate, useDeleteContactDate, useUpdateContactDate } from '../../useContacts'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact, ContactDate } from '@/types/models'
 
-interface DatesCardProps {
-  contact: Contact
-  onUpdateDate: (date: ContactDate) => void
-  onDeleteDate: (date: ContactDate) => void
-}
-
-export const DatesCard = ({ contact, onUpdateDate, onDeleteDate }: DatesCardProps) => {
+export const DatesSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()
   const { formatDate } = useUserPrefs()
+
+  // Date Mutations
+  const handleCreateDateMutation = useCreateContactDate()
+  const handleUpdateDateMutation = useUpdateContactDate()
+  const handleDeleteDateMutation = useDeleteContactDate()
+
+  const handleUpdateDate = async (date: ContactDate) => {
+    if (!contact['@id']) {
+      return
+    }
+    if (date['@id']) {
+      await handleUpdateDateMutation.mutateAsync({ id: date['@id'], data: date })
+    } else {
+      await handleCreateDateMutation.mutateAsync({ ...date, contact: contact['@id'] })
+    }
+  }
+
+  const handleDeleteDate = async (date: ContactDate) => {
+    if (date['@id']) {
+      await handleDeleteDateMutation.mutateAsync(date['@id'])
+    }
+  }
+
   if (!contact.contactDates || contact.contactDates.length === 0) {
     return null
   }
@@ -26,12 +44,12 @@ export const DatesCard = ({ contact, onUpdateDate, onDeleteDate }: DatesCardProp
         <CardTitle className="text-base">{t('contacts.dates')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {contact.contactDates.map((date, i) => (
+        {(Array.isArray(contact.contactDates) ? contact.contactDates : []).map((date, i) => (
           <ContactDateInlineEdit
             key={i}
             date={date}
-            onUpdate={onUpdateDate}
-            onDelete={() => onDeleteDate(date)}
+            onUpdate={handleUpdateDate}
+            onDelete={() => handleDeleteDate(date)}
             hideAddButton
             className="h-auto w-full"
           >

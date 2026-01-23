@@ -158,4 +158,34 @@ describe('mapContactToFormValues', () => {
     const result = mapContactToFormValues(contact)
     expect(result.contactGroups?.[0].groupResource).toBe('/api/groups/100')
   })
+
+  it('safely handles non-array collections (e.g. malformed API response or cache)', () => {
+    const contact = {
+      '@id': '/api/contacts/1',
+      id: 1,
+      // Simulate malformed data where collection is an object instead of array
+      contactEmailAdresses: { some: 'object' },
+      phoneNumbers: { some: 'object' },
+      contactAddresses: 'some string',
+      contactNames: null,
+      contactDates: undefined,
+      contactOrganizations: { error: true },
+      contactGroups: 123,
+      contactBiographies: { bio: 'test' },
+      contactRelations: 'invalid',
+    } as unknown as Contact
+
+    // Should not throw error
+    const result = mapContactToFormValues(contact)
+
+    expect(result.contactEmailAdresses).toEqual([])
+    expect(result.phoneNumbers).toEqual([])
+    expect(result.contactAddresses).toEqual([])
+    expect(result.contactNames).toEqual([])
+    expect(result.contactDates).toEqual([])
+    expect(result.contactOrganizations).toEqual([])
+    expect(result.contactGroups).toEqual([])
+    expect(result.contactBiographies).toEqual([])
+    expect(result.contactRelations).toEqual([])
+  })
 })

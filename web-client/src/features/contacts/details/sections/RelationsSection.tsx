@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { Contact } from '@/types/models'
 
-// Helper functions (could be moved to shared utility if needed elsewhere, but file is okay for now)
+// Helper functions (duplicated from RelationsCard, can be shared later in utils)
 const getRelatedContactId = (relatedContact: unknown): string | undefined => {
   if (typeof relatedContact === 'string') {
     return relatedContact.split('/').pop()
@@ -38,9 +38,13 @@ const getRelatedContactName = (
   return t('common.unknown')
 }
 
-export const RelationsCard = ({ contact }: { contact: Contact }) => {
+export const RelationsSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()
-  if (!contact.contactRelations || contact.contactRelations.length === 0) {
+  if (
+    !contact.contactRelations ||
+    !Array.isArray(contact.contactRelations) ||
+    contact.contactRelations.length === 0
+  ) {
     return null
   }
   return (

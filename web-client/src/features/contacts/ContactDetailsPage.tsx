@@ -3,44 +3,25 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ContactForm } from './components/ContactForm'
+import './defaults_details' // Bootstrap registry
 import { ContactTimeline } from './components/ContactTimeline'
-import { ContactView } from './components/ContactView'
 import { DeleteContactDialog } from './components/DeleteContactDialog'
 import { SimilarContactsWidget } from './components/SimilarContactsWidget'
-import { mapContactToFormValues } from './contactUtils'
-import {
-  useContact,
-  useUpdateContact,
-  useDeleteContact,
-  useExportContactVcard,
-} from './useContacts'
+import { useContact, useDeleteContact, useExportContactVcard } from './useContacts'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { type Contact, type ContactFormValues } from '@/types/models'
+import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
+import { type Contact } from '@/types/models'
 
 function ContactDetailsContent({ contact }: { contact: Contact }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const updateMutation = useUpdateContact()
   const deleteMutation = useDeleteContact()
   const exportVcardMutation = useExportContactVcard()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
 
-  const defaultValues = mapContactToFormValues(contact)
-
-  const handleSubmit = async (data: ContactFormValues) => {
-    try {
-      if (contact['@id']) {
-        await updateMutation.mutateAsync({ id: contact['@id'], data })
-        setIsEditing(false)
-      }
-    } catch (error) {
-      console.error('Failed to update contact', error)
-    }
-  }
+  const sections = ContactDetailsRegistry.getInstance().getAll()
 
   const handleExportVcard = async () => {
     try {
@@ -74,36 +55,28 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
             variant="ghost"
             size="icon"
             onClick={async () => {
-              if (isEditing) {
-                setIsEditing(false)
-              } else {
-                await navigate(-1)
-              }
+              await navigate(-1)
             }}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="flex-1 truncate text-2xl font-bold">
-            {isEditing ? t('contacts.editContact') : t('contacts.details')}
-          </h1>
+          <h1 className="flex-1 truncate text-2xl font-bold">{t('contacts.details')}</h1>
         </div>
         <div className="flex w-full items-center gap-2 md:w-auto">
-          {!isEditing && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => void handleExportVcard()}
-              disabled={exportVcardMutation.isPending}
-              className="flex-1 gap-2 md:flex-none"
-            >
-              {exportVcardMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="h-4 w-4" />
-              )}
-              {t('contacts.exportVcard')}
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void handleExportVcard()}
+            disabled={exportVcardMutation.isPending}
+            className="flex-1 gap-2 md:flex-none"
+          >
+            {exportVcardMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            {t('contacts.exportVcard')}
+          </Button>
           <Button
             variant="destructive"
             size="sm"
@@ -116,24 +89,21 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
         </div>
       </div>
 
-      {isEditing ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('contacts.editContact')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ContactForm
-              defaultValues={defaultValues}
-              onSubmit={handleSubmit}
-              isSubmitting={updateMutation.isPending}
-            />
-          </CardContent>
-        </Card>
-      ) : (
-        <ContactView contact={contact} onEdit={() => setIsEditing(true)} />
-      )}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {sections.map((section) => {
+          const Component = section.component
+          return (
+            <div
+              key={section.id}
+              className={section.layout === 'full' ? 'md:col-span-2' : 'md:col-span-1'}
+            >
+              <Component contact={contact} />
+            </div>
+          )
+        })}
+      </div>
 
-      <Card>
+      <Card className="md:col-span-2">
         <CardHeader>
           <CardTitle>{t('contacts.history.title')}</CardTitle>
         </CardHeader>
