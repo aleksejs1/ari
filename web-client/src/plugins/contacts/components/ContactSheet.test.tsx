@@ -28,7 +28,7 @@ vi.mock('./ContactForm', () => ({
   ),
 }))
 
-vi.mock('@/plugins/audit-logs/components/ContactTimeline', () => ({
+vi.mock('./ContactTimeline', () => ({
   ContactTimeline: () => <div data-testid="contact-timeline">Timeline</div>,
 }))
 

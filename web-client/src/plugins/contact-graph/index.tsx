@@ -3,11 +3,13 @@ import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PageLoader } from './components/PageLoader'
+import { GraphTopNavSection } from './extensions/GraphTopNavSection'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 
 const ContactGraphPage = lazy(() => import('./pages/ContactGraphPage'))
 
@@ -17,6 +19,7 @@ export class ContactGraphPlugin implements Plugin {
   register(): void {
     const routeRegistry = RouteRegistry.getInstance()
     const sidebarRegistry = SidebarRegistry.getInstance()
+    const topMenuRegistry = TopMenuRegistry.getInstance()
 
     // 1. Register Route
     routeRegistry.register('sidebar-less', {
@@ -28,7 +31,7 @@ export class ContactGraphPlugin implements Plugin {
       ),
     })
 
-    // 2. Register Sidebar Link (adding it to the "Integrations" section or similar)
+    // 2. Register Sidebar Link
     sidebarRegistry.register({
       id: 'contact-graph-link',
       component: ({ onNavigate }) => {
@@ -38,13 +41,19 @@ export class ContactGraphPlugin implements Plugin {
           <SidebarNavItem
             to="/contact-graph"
             icon={Network}
-            label={t('contactGraph.title', 'Contact Graph')} // Fallback title
+            label={t('contactGraph.title', 'Contact Graph')}
             onClick={onNavigate}
           />
         )
       },
-      order: 45, // Place it somewhere after sessions/integrations? Checking defaults_sidebar.ts...
-      // defaults_sidebar: integrations=30, sessions=40, settings=50. So 45 fits in between or near sessions.
+      order: 45,
+    })
+
+    // 3. Register Top Menu Extension
+    topMenuRegistry.register({
+      id: 'contact-graph-top',
+      component: GraphTopNavSection,
+      order: 20,
     })
   }
 }

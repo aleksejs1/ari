@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from 'vitest'
 import SidebarLessLayout from './SidebarLessLayout'
 
 import { useAuth } from '@/hooks/useAuth'
+import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+import { ContactsTopNavSection } from '@/plugins/contacts/extensions/ContactsTopNavSection'
 
 // Mocks
 vi.mock('@/hooks/useAuth', () => ({
@@ -22,6 +24,10 @@ vi.mock('@/features/search/components/GlobalSearch', () => ({
 }))
 
 describe('SidebarLessLayout', () => {
+  beforeEach(() => {
+    TopMenuRegistry.getInstance().clear()
+  })
+
   it('renders layout elements correctly', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: { id: 1, uuid: 'test-uuid' },
@@ -99,6 +105,12 @@ describe('SidebarLessLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+    })
+
+    TopMenuRegistry.getInstance().register({
+      id: 'contacts',
+      component: ContactsTopNavSection,
+      order: 1,
     })
 
     render(

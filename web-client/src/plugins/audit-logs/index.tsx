@@ -3,13 +3,10 @@ import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { ContactTimeline } from './components/ContactTimeline'
 import { PageLoader } from './components/PageLoader'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
-import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
@@ -17,7 +14,6 @@ import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 const AuditLogsPage = lazy(() => import('./pages/AuditLogsPage'))
-const ContactTimelinePage = lazy(() => import('./pages/ContactTimelinePage'))
 const RecentAuditLogsWidget = lazy(() => import('./widgets/RecentAuditLogsWidget'))
 
 export class AuditLogsPlugin implements Plugin {
@@ -27,7 +23,6 @@ export class AuditLogsPlugin implements Plugin {
     const routeRegistry = RouteRegistry.getInstance()
     const sidebarRegistry = SidebarRegistry.getInstance()
     const userMenuRegistry = UserMenuRegistry.getInstance()
-    const contactDetailsRegistry = ContactDetailsRegistry.getInstance()
 
     // 1. Routing
     routeRegistry.register('dashboard', {
@@ -35,15 +30,6 @@ export class AuditLogsPlugin implements Plugin {
       element: (
         <Suspense fallback={<PageLoader />}>
           <AuditLogsPage />
-        </Suspense>
-      ),
-    })
-
-    routeRegistry.register('sidebar-less', {
-      path: '/contacts/:id/timeline',
-      element: (
-        <Suspense fallback={<PageLoader />}>
-          <ContactTimelinePage />
         </Suspense>
       ),
     })
@@ -96,31 +82,6 @@ export class AuditLogsPlugin implements Plugin {
         </Suspense>
       ),
       defaultDimensions: { w: 7, h: 4 },
-    })
-
-    // 5. Contact Details Sections
-    contactDetailsRegistry.register({
-      id: 'history',
-      component: ({ contact }) => {
-        if (!contact.id) {
-          return null
-        }
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation()
-
-        return (
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle>{t('contacts.history.title')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ContactTimeline contactId={contact.id.toString()} />
-            </CardContent>
-          </Card>
-        )
-      },
-      order: 100,
-      layout: 'full',
     })
   }
 }
