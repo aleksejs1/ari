@@ -2,6 +2,8 @@ import { Trash2, AlertTriangle } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useDeleteProfile } from '../hooks/useDeleteProfile'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -12,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useDeleteProfile } from '@/features/users/hooks/useDeleteProfile'
 
 export default function DeleteAccountPage() {
   const { t } = useTranslation()

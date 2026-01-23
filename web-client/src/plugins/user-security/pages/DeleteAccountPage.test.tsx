@@ -3,10 +3,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest'
 
-import DeleteAccountPage from './DeleteAccountPage'
-import { useDeleteProfile } from './hooks/useDeleteProfile'
+import { useDeleteProfile } from '../hooks/useDeleteProfile'
 
-vi.mock('./hooks/useDeleteProfile', () => ({
+import DeleteAccountPage from './DeleteAccountPage'
+
+vi.mock('../hooks/useDeleteProfile', () => ({
   useDeleteProfile: vi.fn(),
 }))
 

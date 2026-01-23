@@ -19,6 +19,7 @@ import { GoogleImportPlugin } from './plugins/google-import'
 import { GroupsPlugin } from './plugins/groups'
 import { NotificationsPlugin } from './plugins/notifications'
 import { SessionsPlugin } from './plugins/sessions'
+import { UserSecurityPlugin } from './plugins/user-security'
 
 // Register Settings Tabs
 settingsRegistry.registerTab(new GeneralSettingsTab())
@@ -33,6 +34,7 @@ new GoogleImportPlugin().register()
 new GroupsPlugin().register()
 new NotificationsPlugin().register()
 new SessionsPlugin().register()
+new UserSecurityPlugin().register()
 
 registerDashboardWidgets()
 

@@ -25,8 +25,7 @@ const SettingsPage = lazy(() => import('./pages/Settings'))
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
-const ChangePasswordPage = lazy(() => import('@/features/users/ChangePasswordPage'))
-const DeleteAccountPage = lazy(() => import('@/features/users/DeleteAccountPage'))
+// Removed User Security imports
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -111,20 +110,7 @@ export default function App() {
               ),
             },
             {
-              path: '/change-password',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <ChangePasswordPage />
-                </Suspense>
-              ),
-            },
-            {
-              path: '/delete-account',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <DeleteAccountPage />
-                </Suspense>
-              ),
+              /* Removed User Security routes */
             },
           ],
         },
