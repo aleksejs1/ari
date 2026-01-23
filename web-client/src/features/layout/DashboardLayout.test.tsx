@@ -9,6 +9,7 @@ import { useGroups } from '@/features/groups/useGroups'
 import { useAuth } from '@/hooks/useAuth'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { AuditLogsPlugin } from '@/plugins/audit-logs'
+import { GoogleImportPlugin } from '@/plugins/google-import'
 import { type Group } from '@/types/models'
 
 vi.mock('@/features/groups/useGroups', () => ({
@@ -45,6 +46,7 @@ describe('DashboardLayout', () => {
       setShowLogo: vi.fn(),
     })
     new AuditLogsPlugin().register()
+    new GoogleImportPlugin().register()
   })
 
   it('renders layout elements correctly', () => {

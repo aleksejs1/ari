@@ -1,8 +1,8 @@
 import { CoreRoutesSection } from './sidebar/sections/CoreRoutesSection'
 import { DangerZoneSection } from './sidebar/sections/DangerZoneSection'
-import { IntegrationsRoutesSection } from './sidebar/sections/IntegrationsRoutesSection'
+// Removed IntegrationsRoutesSection import
 import { NotificationRoutesSection } from './sidebar/sections/NotificationRoutesSection'
-import { SessionRoutesSection } from './sidebar/sections/SessionRoutesSection'
+// Removed SessionRoutesSection import
 import { SettingsRoutesSection } from './sidebar/sections/SettingsRoutesSection'
 
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
@@ -20,18 +20,6 @@ export function registerDefaultSidebarSections() {
     id: 'notifications',
     component: NotificationRoutesSection,
     order: 20,
-  })
-
-  registry.register({
-    id: 'integrations',
-    component: IntegrationsRoutesSection,
-    order: 30,
-  })
-
-  registry.register({
-    id: 'sessions',
-    component: SessionRoutesSection,
-    order: 40,
   })
 
   registry.register({

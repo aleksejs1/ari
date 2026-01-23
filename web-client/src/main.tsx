@@ -15,6 +15,8 @@ import { settingsRegistry } from './lib/settings/SettingsRegistry'
 import { AuditLogsPlugin } from './plugins/audit-logs'
 import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
+import { GoogleImportPlugin } from './plugins/google-import'
+import { SessionsPlugin } from './plugins/sessions'
 
 // Register Settings Tabs
 settingsRegistry.registerTab(new GeneralSettingsTab())
@@ -25,6 +27,8 @@ settingsRegistry.registerTab(new DataSettingsTab())
 new ContactsPlugin().register()
 new AuditLogsPlugin().register()
 new ContactGraphPlugin().register()
+new GoogleImportPlugin().register()
+new SessionsPlugin().register()
 
 registerDashboardWidgets()
 

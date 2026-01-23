@@ -1,9 +1,9 @@
 import { Download } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { SidebarNavItem } from '../SidebarNavItem'
+import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
-export function IntegrationsRoutesSection({ onNavigate }: { onNavigate?: () => void }) {
+export function GoogleImportSidebarSection({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation()
 
   return (

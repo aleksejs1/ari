@@ -17,14 +17,14 @@ const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
 
 // ... inside Layout
 // Removed /contact-graph route
-const GoogleImportPage = lazy(() => import('./features/google-import/GoogleImportPage'))
+// Removed GoogleImportPage import
 const GroupsPage = lazy(() => import('./features/groups/GroupsPage'))
 const NotificationChannelsPage = lazy(
   () => import('./features/notification-channels/NotificationChannelsPage'),
 )
 const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))
 const NotificationPolicyFormPage = lazy(() => import('./pages/NotificationPolicyFormPage'))
-const SessionsPage = lazy(() => import('./pages/SessionsPage'))
+// Removed SessionsPage import
 const SettingsPage = lazy(() => import('./pages/Settings'))
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
@@ -114,20 +114,10 @@ export default function App() {
               ),
             },
             {
-              path: '/google-import',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <GoogleImportPage />
-                </Suspense>
-              ),
+              /* Removed GoogleImport route */
             },
             {
-              path: '/sessions',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <SessionsPage />
-                </Suspense>
-              ),
+              /* Removed Sessions route */
             },
             {
               path: '/settings',
