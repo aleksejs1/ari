@@ -22,17 +22,25 @@ describe('GeneralSettings', () => {
 
   const defaultPrefs = {
     language: 'en',
+    dateFormat: 'mm/dd/yyyy',
+    timeFormat: '24h',
     favouriteGroupName: 'My Contacts',
     googleSyncOnUpdate: '1',
     dashboardNotificationPolicy: '',
+    contactTableSettings: '{}',
     showLogo: '1',
-    theme: 'system',
+    theme: 'system' as const,
     setLanguage: mockSetLanguage,
+    setDateFormat: vi.fn(),
+    setTimeFormat: vi.fn(),
     setFavouriteGroupName: vi.fn(),
     setGoogleSyncOnUpdate: vi.fn(),
     setDashboardNotificationPolicy: vi.fn(),
+    setContactTableSettings: vi.fn(),
     setShowLogo: vi.fn(),
     setTheme: mockSetTheme,
+    formatDate: vi.fn(),
+    formatTime: vi.fn(),
     isLoading: false,
   }
 

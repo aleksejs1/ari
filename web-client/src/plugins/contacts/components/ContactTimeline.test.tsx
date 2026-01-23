@@ -68,6 +68,7 @@ describe('ContactTimeline', () => {
 
   it('renders timeline logs', () => {
     const mockData: ContactTimelineType = {
+      id: 123,
       logs: [{ id: 1, action: 'created' } as any, { id: 2, action: 'updated' } as any],
     }
 
