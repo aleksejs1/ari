@@ -2,7 +2,7 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tan
 import { Edit, Trash2, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { useVerifyNotificationChannel } from '../useNotificationChannels'
+import { useVerifyNotificationChannel } from '../../hooks/useNotificationChannels'
 
 import { Button } from '@/components/ui/button'
 import {

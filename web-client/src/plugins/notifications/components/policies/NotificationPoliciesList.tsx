@@ -3,9 +3,10 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { useContacts, getHydraMember } from '../../contacts/useContacts'
-import { useGroups } from '../../groups/useGroups'
-import { useNotificationPolicies, useDeleteNotificationPolicy } from '../useNotificationPolicies'
+import {
+  useNotificationPolicies,
+  useDeleteNotificationPolicy,
+} from '../../hooks/useNotificationPolicies'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useContacts, getHydraMember } from '@/features/contacts/useContacts'
+import { useGroups } from '@/features/groups/useGroups'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
 

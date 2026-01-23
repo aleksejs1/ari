@@ -19,11 +19,7 @@ const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
 // Removed /contact-graph route
 // Removed GoogleImportPage import
 const GroupsPage = lazy(() => import('./features/groups/GroupsPage'))
-const NotificationChannelsPage = lazy(
-  () => import('./features/notification-channels/NotificationChannelsPage'),
-)
-const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))
-const NotificationPolicyFormPage = lazy(() => import('./pages/NotificationPolicyFormPage'))
+// Removed Notification imports
 // Removed SessionsPage import
 const SettingsPage = lazy(() => import('./pages/Settings'))
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
@@ -98,14 +94,6 @@ export default function App() {
           children: [
             ...routeRegistry.getRoutes('dashboard'),
             {
-              path: '/notification-channels',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <NotificationChannelsPage />
-                </Suspense>
-              ),
-            },
-            {
               path: '/groups',
               element: (
                 <Suspense fallback={<PageLoader />}>
@@ -140,30 +128,6 @@ export default function App() {
               element: (
                 <Suspense fallback={<PageLoader />}>
                   <DeleteAccountPage />
-                </Suspense>
-              ),
-            },
-            {
-              path: '/settings/notification-policies',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <NotificationPoliciesPage />
-                </Suspense>
-              ),
-            },
-            {
-              path: '/settings/notification-policies/new',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <NotificationPolicyFormPage />
-                </Suspense>
-              ),
-            },
-            {
-              path: '/settings/notification-policies/:id',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <NotificationPolicyFormPage />
                 </Suspense>
               ),
             },

@@ -2,14 +2,14 @@ import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { NotificationChannelForm } from './components/NotificationChannelForm'
-import { NotificationChannelsTable } from './components/NotificationChannelsTable'
+import { NotificationChannelForm } from '../components/channels/NotificationChannelForm'
+import { NotificationChannelsTable } from '../components/channels/NotificationChannelsTable'
 import {
   useNotificationChannels,
   useCreateNotificationChannel,
   useUpdateNotificationChannel,
   useDeleteNotificationChannel,
-} from './useNotificationChannels'
+} from '../hooks/useNotificationChannels'
 
 import { Button } from '@/components/ui/button'
 import {

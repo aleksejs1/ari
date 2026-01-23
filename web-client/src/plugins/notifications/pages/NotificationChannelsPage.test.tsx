@@ -2,30 +2,31 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import NotificationChannelsPage from './NotificationChannelsPage'
 import {
   useNotificationChannels,
   useCreateNotificationChannel,
   useUpdateNotificationChannel,
   useDeleteNotificationChannel,
-} from './useNotificationChannels'
+} from '../hooks/useNotificationChannels'
+
+import NotificationChannelsPage from './NotificationChannelsPage'
 
 import type { NotificationChannel } from '@/types/models'
 
 // Mock the hook
-vi.mock('./useNotificationChannels', () => ({
+vi.mock('../hooks/useNotificationChannels', () => ({
   useNotificationChannels: vi.fn(),
   useDeleteNotificationChannel: vi.fn(),
   useCreateNotificationChannel: vi.fn(),
   useUpdateNotificationChannel: vi.fn(),
 }))
 
-vi.mock('../contacts/components/ContactsTable', () => ({
+vi.mock('../../../features/contacts/components/ContactsTable', () => ({
   ContactsTable: () => <div />,
 }))
 
 // Mock Sub Components to avoid deep rendering issues
-vi.mock('./components/NotificationChannelsTable', () => ({
+vi.mock('../components/channels/NotificationChannelsTable', () => ({
   NotificationChannelsTable: ({ data }: { data: NotificationChannel[] }) => (
     <div data-testid="channels-table">
       {data?.map((c) => (
@@ -35,7 +36,7 @@ vi.mock('./components/NotificationChannelsTable', () => ({
   ),
 }))
 
-vi.mock('./components/NotificationChannelForm', () => ({
+vi.mock('../components/channels/NotificationChannelForm', () => ({
   NotificationChannelForm: ({ onSubmit }: { onSubmit: () => void }) => (
     <button onClick={() => onSubmit()}>Mock Form Submit</button>
   ),

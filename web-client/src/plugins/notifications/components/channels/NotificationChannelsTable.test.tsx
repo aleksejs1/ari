@@ -5,7 +5,7 @@ import { NotificationChannelsTable } from './NotificationChannelsTable'
 
 import type { NotificationChannel } from '@/types/models'
 
-vi.mock('../useNotificationChannels', () => ({
+vi.mock('../../hooks/useNotificationChannels', () => ({
   useVerifyNotificationChannel: () => ({
     mutate: vi.fn(),
     isPending: false,

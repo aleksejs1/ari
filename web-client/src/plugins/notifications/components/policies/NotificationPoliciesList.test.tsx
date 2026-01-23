@@ -2,21 +2,21 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import * as hooks from '../useNotificationPolicies'
+import * as hooks from '../../hooks/useNotificationPolicies'
 
 import NotificationPoliciesList from './NotificationPoliciesList'
 
-vi.mock('../useNotificationPolicies', () => ({
+vi.mock('../../hooks/useNotificationPolicies', () => ({
   useNotificationPolicies: vi.fn(),
   useDeleteNotificationPolicy: vi.fn(),
 }))
 
-vi.mock('../../contacts/useContacts', () => ({
+vi.mock('@/features/contacts/useContacts', () => ({
   useContacts: vi.fn(() => ({ data: undefined, isLoading: false })),
   getHydraMember: (data: any) => data?.member || [],
 }))
 
-vi.mock('../../groups/useGroups', () => ({
+vi.mock('@/features/groups/useGroups', () => ({
   useGroups: vi.fn(() => ({ data: undefined, isLoading: false })),
 }))
 

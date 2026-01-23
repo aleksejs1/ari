@@ -51,4 +51,5 @@ A **Plugin** is a class that implements the `Plugin` interface and uses these re
 | **Contacts** | `src/plugins/contacts` | Manages the Contact Details page layout and sections (General Info, Dates, Relations, etc.) via `ContactDetailsRegistry`. |
 | **Contact Graph** | `src/plugins/contact-graph` | Visualization of contact relationships. |
 | **Google Import** | `src/plugins/google-import` | Imports contacts from Google. |
+| **Notifications** | `src/plugins/notifications` | Manages notification channels and policies. |
 | **Sessions** | `src/plugins/sessions` | Manages active user sessions. |

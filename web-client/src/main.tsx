@@ -16,6 +16,7 @@ import { AuditLogsPlugin } from './plugins/audit-logs'
 import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
 import { GoogleImportPlugin } from './plugins/google-import'
+import { NotificationsPlugin } from './plugins/notifications'
 import { SessionsPlugin } from './plugins/sessions'
 
 // Register Settings Tabs
@@ -28,6 +29,7 @@ new ContactsPlugin().register()
 new AuditLogsPlugin().register()
 new ContactGraphPlugin().register()
 new GoogleImportPlugin().register()
+new NotificationsPlugin().register()
 new SessionsPlugin().register()
 
 registerDashboardWidgets()

@@ -1,4 +1,4 @@
-import NotificationPolicyForm from '@/features/notification-policies/components/NotificationPolicyForm'
+import NotificationPolicyForm from '../components/policies/NotificationPolicyForm'
 
 export default function NotificationPolicyFormPage() {
   return (

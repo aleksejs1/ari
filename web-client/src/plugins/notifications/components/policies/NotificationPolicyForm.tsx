@@ -4,6 +4,13 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { useNotificationChannels } from '../../hooks/useNotificationChannels'
+import {
+  useNotificationPolicy,
+  useCreateNotificationPolicy,
+  useUpdateNotificationPolicy,
+} from '../../hooks/useNotificationPolicies'
+
 import { EventTypesSection } from './form/EventTypesSection'
 import { ScheduleSection } from './form/ScheduleSection'
 import { TargetsSection } from './form/TargetsSection'
@@ -21,12 +28,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { useContacts, getHydraMember } from '@/features/contacts/useContacts'
 import { useGroups } from '@/features/groups/useGroups'
-import { useNotificationChannels } from '@/features/notification-channels/useNotificationChannels'
-import {
-  useNotificationPolicy,
-  useCreateNotificationPolicy,
-  useUpdateNotificationPolicy,
-} from '@/features/notification-policies/useNotificationPolicies'
 import { type NotificationPolicyFormValues, notificationPolicySchema } from '@/types/models'
 
 export default function NotificationPolicyForm() {

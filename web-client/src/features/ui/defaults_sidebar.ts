@@ -1,7 +1,7 @@
 import { CoreRoutesSection } from './sidebar/sections/CoreRoutesSection'
 import { DangerZoneSection } from './sidebar/sections/DangerZoneSection'
 // Removed IntegrationsRoutesSection import
-import { NotificationRoutesSection } from './sidebar/sections/NotificationRoutesSection'
+// Removed NotificationRoutesSection import
 // Removed SessionRoutesSection import
 import { SettingsRoutesSection } from './sidebar/sections/SettingsRoutesSection'
 
@@ -14,12 +14,6 @@ export function registerDefaultSidebarSections() {
     id: 'core',
     component: CoreRoutesSection,
     order: 10,
-  })
-
-  registry.register({
-    id: 'notifications',
-    component: NotificationRoutesSection,
-    order: 20,
   })
 
   registry.register({

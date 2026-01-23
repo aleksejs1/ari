@@ -2,7 +2,7 @@ import { Check, ChevronsUpDown, X } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { useNotificationPolicyEventTypes } from '../../useNotificationPolicies'
+import { useNotificationPolicyEventTypes } from '../../../hooks/useNotificationPolicies'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

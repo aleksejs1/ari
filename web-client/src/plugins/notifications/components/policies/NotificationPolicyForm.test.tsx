@@ -26,7 +26,7 @@ window.ResizeObserver = class ResizeObserver {
   }
 } as any
 
-vi.mock('../useNotificationPolicies', () => ({
+vi.mock('../../hooks/useNotificationPolicies', () => ({
   useNotificationPolicy: vi.fn(() => ({ data: undefined, isLoading: false })),
   useCreateNotificationPolicy: vi.fn(() => ({
     mutate: vi.fn(),
@@ -42,22 +42,22 @@ vi.mock('../useNotificationPolicies', () => ({
   })),
 }))
 
-vi.mock('../../notification-channels/useNotificationChannels', () => ({
+vi.mock('../../hooks/useNotificationChannels', () => ({
   useNotificationChannels: vi.fn(() => ({
     data: { member: [] },
     isLoading: false,
   })),
 }))
 
-vi.mock('../../groups/useGroups', () => ({
+vi.mock('@/features/groups/useGroups', () => ({
   useGroups: vi.fn(() => ({
     data: [],
     isLoading: false,
   })),
 }))
 
-vi.mock('../../contacts/useContacts', async () => {
-  const actual = await vi.importActual('../../contacts/useContacts')
+vi.mock('@/features/contacts/useContacts', async () => {
+  const actual = await vi.importActual('@/features/contacts/useContacts')
   return {
     ...actual,
     useContacts: vi.fn(() => ({

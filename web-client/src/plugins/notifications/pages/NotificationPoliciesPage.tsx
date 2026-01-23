@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import NotificationPoliciesList from '@/features/notification-policies/components/NotificationPoliciesList'
+import NotificationPoliciesList from '../components/policies/NotificationPoliciesList'
 
 export default function NotificationPoliciesPage() {
   // Hooks must be called even if unused to follow rules, or just remove if I don't need translations here.

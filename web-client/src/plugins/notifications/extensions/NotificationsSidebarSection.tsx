@@ -1,9 +1,9 @@
 import { Bell } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { SidebarNavItem } from '../SidebarNavItem'
+import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
-export function NotificationRoutesSection({ onNavigate }: { onNavigate?: () => void }) {
+export function NotificationsSidebarSection({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation()
 
   return (

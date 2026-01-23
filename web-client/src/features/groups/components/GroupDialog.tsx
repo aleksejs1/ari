@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
 import {
@@ -110,7 +111,12 @@ function GroupFormContent({ group, onOpenChange }: GroupFormContentProps) {
               <FormLabel>{t('groups.fields.color', 'Color')}</FormLabel>
               <div className="flex gap-2">
                 <FormControl>
-                  <Input type="color" className="h-10 w-20 p-1" {...field} />
+                  <Input
+                    type="color"
+                    className="h-10 w-20 p-1"
+                    {...field}
+                    value={field.value || '#000000'}
+                  />
                 </FormControl>
                 <FormControl>
                   <Input placeholder="#000000" {...field} />
@@ -144,6 +150,9 @@ export function GroupDialog({ open, onOpenChange, group }: GroupDialogProps) {
           <DialogTitle>
             {group ? t('groups.editGroup', 'Edit Group') : t('groups.createGroup', 'Create Group')}
           </DialogTitle>
+          <DialogDescription>
+            {t('groups.formDescription', 'Enter the details for the group below.')}
+          </DialogDescription>
         </DialogHeader>
         <GroupFormContent group={group} onOpenChange={onOpenChange} />
       </DialogContent>
