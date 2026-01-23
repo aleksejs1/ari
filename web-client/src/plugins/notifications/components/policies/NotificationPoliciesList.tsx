@@ -20,8 +20,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useContacts, getHydraMember } from '@/features/contacts/useContacts'
-import { useGroups } from '@/features/groups/useGroups'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
 
 const getContactLabel = (contact: Contact, id: string): string => {

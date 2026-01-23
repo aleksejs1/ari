@@ -2,13 +2,14 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+import { useGroups, useCreateGroup, useUpdateGroup, useDeleteGroup } from '../hooks/useGroups'
+
 import GroupsPage from './GroupsPage'
-import { useGroups, useCreateGroup, useUpdateGroup, useDeleteGroup } from './useGroups'
 
 import type { Group } from '@/types/models'
 
 // Mock the hooks
-vi.mock('./useGroups', () => ({
+vi.mock('../hooks/useGroups', () => ({
   useGroups: vi.fn(),
   useCreateGroup: vi.fn(),
   useUpdateGroup: vi.fn(),
@@ -16,7 +17,7 @@ vi.mock('./useGroups', () => ({
 }))
 
 // Mock components to simplify testing
-vi.mock('./components/GroupsTable', () => ({
+vi.mock('../components/GroupsTable', () => ({
   GroupsTable: ({ groups, onEdit }: { groups: Group[]; onEdit: (g: Group) => void }) => (
     <div data-testid="groups-table">
       {groups.map((g) => (
@@ -29,7 +30,7 @@ vi.mock('./components/GroupsTable', () => ({
   ),
 }))
 
-vi.mock('./components/GroupDialog', () => ({
+vi.mock('../components/GroupDialog', () => ({
   GroupDialog: ({ open, group }: { open: boolean; group?: Group }) => (
     <div data-testid="group-dialog">
       Dialog: {open ? 'Open' : 'Closed'}

@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { getHydraMember, type HydraCollection } from '../contacts/useContacts'
-
+import { getHydraMember, type HydraCollection } from '@/features/contacts/useContacts'
 import { api } from '@/lib/axios'
 import { type Group } from '@/types/models'
 

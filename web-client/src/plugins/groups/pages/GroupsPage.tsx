@@ -2,9 +2,9 @@ import { Loader2, Plus, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { GroupDialog } from './components/GroupDialog'
-import { GroupsTable } from './components/GroupsTable'
-import { useGroups } from './useGroups'
+import { GroupDialog } from '../components/GroupDialog'
+import { GroupsTable } from '../components/GroupsTable'
+import { useGroups } from '../hooks/useGroups'
 
 import { Button } from '@/components/ui/button'
 import { type Group } from '@/types/models'

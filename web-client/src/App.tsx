@@ -18,7 +18,7 @@ const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
 // ... inside Layout
 // Removed /contact-graph route
 // Removed GoogleImportPage import
-const GroupsPage = lazy(() => import('./features/groups/GroupsPage'))
+// Removed GroupsPage import
 // Removed Notification imports
 // Removed SessionsPage import
 const SettingsPage = lazy(() => import('./pages/Settings'))
@@ -94,12 +94,7 @@ export default function App() {
           children: [
             ...routeRegistry.getRoutes('dashboard'),
             {
-              path: '/groups',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <GroupsPage />
-                </Suspense>
-              ),
+              /* Removed Groups route */
             },
             {
               /* Removed GoogleImport route */

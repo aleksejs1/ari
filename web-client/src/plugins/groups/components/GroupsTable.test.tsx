@@ -1,13 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 
-import { useDeleteGroup } from '../useGroups'
+import { useDeleteGroup } from '../hooks/useGroups'
 
 import { GroupsTable } from './GroupsTable'
 
 import type { Group } from '@/types/models'
 
-vi.mock('../useGroups', () => ({
+vi.mock('../hooks/useGroups', () => ({
   useDeleteGroup: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false }) as any),
 }))
 

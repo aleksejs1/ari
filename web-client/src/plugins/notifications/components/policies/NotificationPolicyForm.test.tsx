@@ -49,7 +49,7 @@ vi.mock('../../hooks/useNotificationChannels', () => ({
   })),
 }))
 
-vi.mock('@/features/groups/useGroups', () => ({
+vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   useGroups: vi.fn(() => ({
     data: [],
     isLoading: false,

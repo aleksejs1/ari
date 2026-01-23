@@ -36,6 +36,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      all: true,
+      include: ['src/**/*'],
       exclude: [
         'node_modules/',
         'src/test/',
@@ -43,6 +45,11 @@ export default defineConfig({
         'eslint.config.js',
         'postcss.config.js',
         'tailwind.config.js',
+        '**/*.d.ts',
+        '**/*.test.tsx',
+        '**/*.test.ts',
+        'src/main.tsx',
+        'src/vite-env.d.ts',
       ],
       thresholds: {
         lines: 80,

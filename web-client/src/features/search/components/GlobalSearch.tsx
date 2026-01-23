@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useContacts } from '@/features/contacts/useContacts'
 import { getHydraMember } from '@/features/contacts/utils'
-import { useGroups } from '@/features/groups/useGroups'
 import { useDebounce } from '@/hooks/useDebounce'
 import { cn } from '@/lib/utils'
+import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type Contact } from '@/types/models'
 
 interface SearchResult {

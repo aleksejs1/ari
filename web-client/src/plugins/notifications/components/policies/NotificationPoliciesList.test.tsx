@@ -16,7 +16,7 @@ vi.mock('@/features/contacts/useContacts', () => ({
   getHydraMember: (data: any) => data?.member || [],
 }))
 
-vi.mock('@/features/groups/useGroups', () => ({
+vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   useGroups: vi.fn(() => ({ data: undefined, isLoading: false })),
 }))
 

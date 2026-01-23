@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { useCreateGroup, useUpdateGroup } from '../useGroups'
+import { useCreateGroup, useUpdateGroup } from '../hooks/useGroups'
 
 import { Button } from '@/components/ui/button'
 import {

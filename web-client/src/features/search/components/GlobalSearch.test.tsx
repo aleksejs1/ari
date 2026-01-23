@@ -6,7 +6,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { GlobalSearch } from './GlobalSearch'
 
 import { useContacts } from '@/features/contacts/useContacts'
-import { useGroups } from '@/features/groups/useGroups'
+import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type Contact, type Group, type HydraCollection } from '@/types/models'
 
 // Mock hooks
@@ -14,7 +14,7 @@ vi.mock('@/features/contacts/useContacts', () => ({
   useContacts: vi.fn(),
 }))
 
-vi.mock('@/features/groups/useGroups', () => ({
+vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   useGroups: vi.fn(),
 }))
 

@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import { useCreateGroup, useUpdateGroup } from '../useGroups'
+import { useCreateGroup, useUpdateGroup } from '../hooks/useGroups'
 
 import { GroupDialog } from './GroupDialog'
 
 // Mock hooks
-vi.mock('../useGroups', () => ({
+vi.mock('../hooks/useGroups', () => ({
   useCreateGroup: vi.fn(),
   useUpdateGroup: vi.fn(),
 }))

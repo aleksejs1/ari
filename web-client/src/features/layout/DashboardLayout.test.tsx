@@ -5,15 +5,15 @@ import { describe, expect, it, vi } from 'vitest'
 
 import DashboardLayout from './DashboardLayout'
 
-import { useGroups } from '@/features/groups/useGroups'
 import { useAuth } from '@/hooks/useAuth'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { AuditLogsPlugin } from '@/plugins/audit-logs'
 import { GoogleImportPlugin } from '@/plugins/google-import'
+import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { NotificationsPlugin } from '@/plugins/notifications'
 import { type Group } from '@/types/models'
 
-vi.mock('@/features/groups/useGroups', () => ({
+vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   useGroups: vi.fn(),
 }))
 
