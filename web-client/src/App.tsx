@@ -21,7 +21,7 @@ const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'))
 // Removed GroupsPage import
 // Removed Notification imports
 // Removed SessionsPage import
-const SettingsPage = lazy(() => import('./pages/Settings'))
+// Removed SettingsPage import
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -102,12 +102,7 @@ export default function App() {
               /* Removed Sessions route */
             },
             {
-              path: '/settings',
-              element: (
-                <Suspense fallback={<PageLoader />}>
-                  <SettingsPage />
-                </Suspense>
-              ),
+              /* Removed Settings route */
             },
             {
               /* Removed User Security routes */

@@ -3,6 +3,9 @@ import type { KnipConfig } from 'knip'
 const config: KnipConfig = {
   entry: ['src/main.tsx'],
   project: ['src/**/*.{ts,tsx}'],
+  vitest: {
+    entry: ['src/**/*.test.{ts,tsx}', 'src/test/setup.tsx'],
+  },
   ignore: [
     'src/types/schema.d.ts',
     'src/components/ui/dialog.tsx',

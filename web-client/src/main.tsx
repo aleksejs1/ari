@@ -5,13 +5,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthContext'
 import { registerDashboardWidgets } from './features/dashboard/widgets/registerWidgets'
-import { DataSettingsTab } from './features/settings/DataSettingsTab'
-import { GeneralSettingsTab } from './features/settings/GeneralSettingsTab'
-import { RegionalSettingsTab } from './features/settings/RegionalSettingsTab'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
 import './index.css'
 import './lib/i18n'
-import { settingsRegistry } from './lib/settings/SettingsRegistry'
 import { AuditLogsPlugin } from './plugins/audit-logs'
 import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
@@ -19,12 +15,11 @@ import { GoogleImportPlugin } from './plugins/google-import'
 import { GroupsPlugin } from './plugins/groups'
 import { NotificationsPlugin } from './plugins/notifications'
 import { SessionsPlugin } from './plugins/sessions'
+import { SettingsPlugin } from './plugins/settings/index'
 import { UserSecurityPlugin } from './plugins/user-security'
 
 // Register Settings Tabs
-settingsRegistry.registerTab(new GeneralSettingsTab())
-settingsRegistry.registerTab(new RegionalSettingsTab())
-settingsRegistry.registerTab(new DataSettingsTab())
+// Tabs are now registered by SettingsPlugin
 
 // Register Plugins
 new ContactsPlugin().register()
@@ -35,6 +30,7 @@ new GroupsPlugin().register()
 new NotificationsPlugin().register()
 new SessionsPlugin().register()
 new UserSecurityPlugin().register()
+new SettingsPlugin().register()
 
 registerDashboardWidgets()
 

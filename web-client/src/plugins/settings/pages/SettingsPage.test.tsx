@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import SettingsPage from './Settings'
+import SettingsPage from './SettingsPage'
 
 import { useSettingsTabs } from '@/lib/settings/SettingsRegistry'
 import { SettingTab } from '@/lib/settings/SettingTab'

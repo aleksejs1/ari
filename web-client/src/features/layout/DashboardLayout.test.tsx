@@ -11,6 +11,7 @@ import { AuditLogsPlugin } from '@/plugins/audit-logs'
 import { GoogleImportPlugin } from '@/plugins/google-import'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { NotificationsPlugin } from '@/plugins/notifications'
+import { SettingsPlugin } from '@/plugins/settings/index'
 import { type Group } from '@/types/models'
 
 vi.mock('@/plugins/groups/hooks/useGroups', () => ({
@@ -49,6 +50,7 @@ describe('DashboardLayout', () => {
     new AuditLogsPlugin().register()
     new GoogleImportPlugin().register()
     new NotificationsPlugin().register()
+    new SettingsPlugin().register()
   })
 
   it('renders layout elements correctly', () => {

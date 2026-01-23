@@ -1,9 +1,9 @@
 import { Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { SidebarNavItem } from '../SidebarNavItem'
+import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
-export function SettingsRoutesSection({ onNavigate }: { onNavigate?: () => void }) {
+export function SettingsSidebarSection({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation()
 
   return (
