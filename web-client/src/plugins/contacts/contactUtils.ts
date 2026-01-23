@@ -1,6 +1,6 @@
 import { API_ORIGIN } from '@/lib/axios'
 import { formatApiDate } from '@/lib/utils'
-import { type Contact, type ContactFormValues, type ContactAvatar } from '@/types/models'
+import { type Contact, type ContactAvatar, type ContactFormValues } from '@/types/models'
 
 export function getContactAvatarUrl(
   avatar?: ContactAvatar | null,

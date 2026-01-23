@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-
-import { NotificationBell } from './NotificationBell'
+import { describe, expect, it, vi } from 'vitest'
 
 import {
-  useUnreadCount,
-  useNotifications,
   useMarkAsRead,
+  useNotifications,
+  useUnreadCount,
 } from '@/features/activity-feed/useNotifications'
+
+import { NotificationBell } from './NotificationBell'
 
 // Mock the hooks
 vi.mock('@/features/activity-feed/useNotifications', () => ({

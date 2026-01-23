@@ -10,6 +10,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import sonarjs from 'eslint-plugin-sonarjs'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -53,33 +54,26 @@ export default defineConfig([
         version: 'detect',
       },
       'boundaries/elements': [
+        // 1. Core / Shared Layers
         {
-          type: 'pages',
-          pattern: 'src/pages/**/*',
+          type: 'core',
+          pattern: 'src/{lib,components,contexts,hooks,types}/**',
         },
+        // 2. Plugins (Capture the specific plugin name!)
         {
-          type: 'features',
-          pattern: 'src/features/**/*',
+          type: 'plugin',
+          pattern: 'src/plugins/([^/]+)/**',
+          capture: ['pluginName'],
         },
+        // 3. Application Root (Entry points)
         {
-          type: 'components',
-          pattern: 'src/components/**/*',
+          type: 'app',
+          pattern: 'src/{pages,App.tsx,main.tsx}',
         },
+        // 4. Legacy Features (if strictly separated)
         {
-          type: 'hooks',
-          pattern: 'src/hooks/**/*',
-        },
-        {
-          type: 'contexts',
-          pattern: 'src/contexts/**/*',
-        },
-        {
-          type: 'lib',
-          pattern: 'src/lib/**/*',
-        },
-        {
-          type: 'types',
-          pattern: 'src/types/**/*',
+          type: 'feature',
+          pattern: 'src/features/**',
         },
       ],
     },
@@ -87,6 +81,7 @@ export default defineConfig([
       'react-refresh': reactRefresh,
       import: importPlugin,
       boundaries,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
@@ -99,14 +94,33 @@ export default defineConfig([
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-explicit-any': 'off',
-      'import/order': [
+      'import/order': 'off',
+      'simple-import-sort/imports': [
         'error',
         {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always',
-          alphabetize: { order: 'asc', caseInsensitive: true },
+          groups: [
+            // Side effect imports
+            ['^\\u0000'],
+            // React and other built-ins
+            ['^react', '^@?\\w'],
+            // Internal packages (Core, Lib, Hooks, Components)
+            ['^@/(lib|components|hooks|contexts|types)(/.*|$)'],
+            // Plugins
+            ['^@/plugins(/.*|$)'],
+            // Features (Legacy)
+            ['^@/features(/.*|$)'],
+            // Layouts/Pages/App
+            ['^@/(pages|layouts|App)(/.*|$)'],
+            // Parent imports. Put `..` last.
+            ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
+            // Other relative imports. Put same-folder imports and `.` last.
+            ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+            // Style imports.
+            ['^.+\\.?(css)$'],
+          ],
         },
       ],
+      'simple-import-sort/exports': 'error',
       'import/no-duplicates': 'error',
       eqeqeq: ['error', 'always'],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
@@ -122,26 +136,29 @@ export default defineConfig([
           default: 'allow',
           message: '${file.type} is not allowed to import ${dependency.type}',
           rules: [
+            // 1. Lib is the lowest layer
             {
-              from: 'components',
-              disallow: ['features', 'pages'],
+              from: 'core',
+              disallow: ['plugin', 'app', 'feature'],
+              message: 'Core/Shared modules cannot import Plugins or App logic.',
             },
+            // 3. Plugins can use Core and Lib, but NOT other Plugins (unless registered? no, strict isolation)
             {
-              from: 'hooks',
-              disallow: ['features', 'pages'],
+              from: 'plugin',
+              disallow: [
+                ['plugin', { pluginName: '!${from.pluginName}' }], // Block other plugins
+                'app',
+              ],
+              message:
+                'Plugins must be isolated. Cannot import other plugins or App root directly.',
             },
+            // 4. Features (Legacy) - Lock them down
             {
-              from: 'contexts',
-              disallow: ['features', 'pages'],
+              from: 'feature',
+              disallow: ['plugin', 'app'],
             },
-            {
-              from: 'lib',
-              disallow: ['features', 'pages', 'components', 'hooks', 'contexts'],
-            },
-            {
-              from: 'types',
-              disallow: ['features', 'pages', 'components', 'hooks', 'contexts', 'lib'],
-            },
+            // App layer (pages) can import anything generally, but let's be safe?
+            // Usually Pages integrate Plugins.
           ],
         },
       ],

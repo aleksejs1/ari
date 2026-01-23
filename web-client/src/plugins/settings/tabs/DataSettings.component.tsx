@@ -1,9 +1,10 @@
-import { useRef, useMemo, useCallback } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
+
 import { useExportContacts, useImportContacts } from '@/plugins/contacts/useContacts'
 
 export function DataSettings() {

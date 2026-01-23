@@ -2,11 +2,11 @@ import { type UseQueryResult } from '@tanstack/react-query'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+import { type Group } from '@/types/models'
+
 import { useGroups } from '../useContacts'
 
 import { ContactGroupSelect } from './ContactGroupSelect'
-
-import { type Group } from '@/types/models'
 
 // Mock dependencies
 vi.mock('react-i18next', () => ({

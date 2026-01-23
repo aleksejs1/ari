@@ -1,15 +1,6 @@
-import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { NotificationChannelForm } from '../components/channels/NotificationChannelForm'
-import { NotificationChannelsTable } from '../components/channels/NotificationChannelsTable'
-import {
-  useNotificationChannels,
-  useCreateNotificationChannel,
-  useUpdateNotificationChannel,
-  useDeleteNotificationChannel,
-} from '../hooks/useNotificationChannels'
+import { Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -20,6 +11,15 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { type NotificationChannel, type NotificationChannelFormValues } from '@/types/models'
+
+import { NotificationChannelForm } from '../components/channels/NotificationChannelForm'
+import { NotificationChannelsTable } from '../components/channels/NotificationChannelsTable'
+import {
+  useCreateNotificationChannel,
+  useDeleteNotificationChannel,
+  useNotificationChannels,
+  useUpdateNotificationChannel,
+} from '../hooks/useNotificationChannels'
 
 export default function NotificationChannelsPage() {
   const { t } = useTranslation()

@@ -1,6 +1,5 @@
-import path from 'path'
-
 import react from '@vitejs/plugin-react'
+import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vitest/config'
 

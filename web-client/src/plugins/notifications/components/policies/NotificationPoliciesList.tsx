@@ -1,12 +1,7 @@
-import { Plus, Trash2, Edit } from 'lucide-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-import {
-  useNotificationPolicies,
-  useDeleteNotificationPolicy,
-} from '../../hooks/useNotificationPolicies'
+import { Edit, Plus, Trash2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,9 +15,15 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import { useContacts, getHydraMember } from '@/plugins/contacts/useContacts'
-import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
+
+import { getHydraMember, useContacts } from '@/plugins/contacts/useContacts'
+import { useGroups } from '@/plugins/groups/hooks/useGroups'
+
+import {
+  useDeleteNotificationPolicy,
+  useNotificationPolicies,
+} from '../../hooks/useNotificationPolicies'
 
 const getContactLabel = (contact: Contact, id: string): string => {
   const names = contact.contactNames || []

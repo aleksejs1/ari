@@ -1,10 +1,10 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import AuditLogsPage from './AuditLogsPage'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type TimelineEvent } from '@/types/models'
+
+import AuditLogsPage from './AuditLogsPage'
 
 // Mock api
 vi.mock('@/lib/axios', () => ({

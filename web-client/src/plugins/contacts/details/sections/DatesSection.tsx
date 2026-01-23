@@ -1,13 +1,13 @@
-import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { ContactDateInlineEdit } from '../../components/ContactDateInlineEdit'
-import { DisplayItem } from '../../components/DisplayItem'
-import { useCreateContactDate, useDeleteContactDate, useUpdateContactDate } from '../../useContacts'
+import { Calendar } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact, ContactDate } from '@/types/models'
+
+import { ContactDateInlineEdit } from '../../components/ContactDateInlineEdit'
+import { DisplayItem } from '../../components/DisplayItem'
+import { useCreateContactDate, useDeleteContactDate, useUpdateContactDate } from '../../useContacts'
 
 export const DatesSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()

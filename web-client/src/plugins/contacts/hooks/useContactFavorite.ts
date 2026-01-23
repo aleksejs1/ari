@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
-import { useCreateGroup, useGroups, usePatchContact } from '../useContacts'
-
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact } from '@/types/models'
+
+import { useCreateGroup, useGroups, usePatchContact } from '../useContacts'
 
 const getGroupIri = (cg: Contact['contactGroups'] extends (infer U)[] | undefined ? U : never) =>
   typeof cg.groupResource === 'string'

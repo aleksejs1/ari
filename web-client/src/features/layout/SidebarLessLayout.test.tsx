@@ -1,12 +1,13 @@
-import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-
-import SidebarLessLayout from './SidebarLessLayout'
 
 import { useAuth } from '@/hooks/useAuth'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+
 import { ContactsTopNavSection } from '@/plugins/contacts/extensions/ContactsTopNavSection'
+
+import SidebarLessLayout from './SidebarLessLayout'
 
 // Mocks
 vi.mock('@/hooks/useAuth', () => ({

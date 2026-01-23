@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { formatChangeValue, getBadgeStyles, getContactId, getLogDescription } from './utils'
-
 import { type TimelineEvent } from '@/types/models'
+
+import { formatChangeValue, getBadgeStyles, getContactId, getLogDescription } from './utils'
 
 vi.mock('@/lib/utils', () => ({
   formatLocalizedDate: (date: string) => date,

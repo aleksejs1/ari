@@ -1,10 +1,10 @@
-import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-
-import { ContactTimeline } from '../components/ContactTimeline'
+import { ArrowLeft } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+
+import { ContactTimeline } from '../components/ContactTimeline'
 
 export default function ContactTimelinePage() {
   const { id } = useParams<{ id: string }>()

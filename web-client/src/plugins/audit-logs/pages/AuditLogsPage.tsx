@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
-import { Loader2, History } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { LogList } from '../components/LogList'
+import { useQuery } from '@tanstack/react-query'
+import { History, Loader2 } from 'lucide-react'
 
 import { api } from '@/lib/axios'
 import { type TimelineEvent } from '@/types/models'
+
+import { LogList } from '../components/LogList'
 
 interface AuditLogCollection {
   member: TimelineEvent[]

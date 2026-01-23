@@ -1,13 +1,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import App from './App'
 import { AuthProvider } from './contexts/AuthContext'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
 import { useUserPrefs } from './hooks/useUserPrefs.hook'
 import { ContactsPlugin } from './plugins/contacts'
 import { DashboardPlugin } from './plugins/dashboard'
+import App from './App'
 
 // Register plugins for the test
 new DashboardPlugin().register()

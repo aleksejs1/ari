@@ -1,21 +1,22 @@
-import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet, Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
+import { Menu } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
-  SheetTrigger,
-  SheetTitle,
   SheetDescription,
+  SheetTitle,
+  SheetTrigger,
 } from '@/components/ui/sheet'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
 import { UserMenu } from '@/features/layout/UserMenu'
 import { GlobalSearch } from '@/features/search/components/GlobalSearch'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 
 export default function SidebarLessLayout() {
   const { t } = useTranslation()

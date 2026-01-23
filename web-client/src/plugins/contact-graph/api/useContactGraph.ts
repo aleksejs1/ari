@@ -18,14 +18,19 @@ export interface GraphData {
   links: GraphLink[]
 }
 
-const fetchContactGraph = async (): Promise<GraphData> => {
-  const { data } = await api.get('/contact-graph')
+export interface FetchGraphParams {
+  contactId?: string // Center node
+  level?: number // Depth
+}
+
+const fetchContactGraph = async (params: FetchGraphParams = {}): Promise<GraphData> => {
+  const { data } = await api.get('/contact-graph', { params })
   return data
 }
 
-export const useContactGraph = () => {
+export const useContactGraph = (params: FetchGraphParams = {}) => {
   return useQuery({
-    queryKey: ['contact-graph'],
-    queryFn: fetchContactGraph,
+    queryKey: ['contact-graph', params],
+    queryFn: () => fetchContactGraph(params),
   })
 }

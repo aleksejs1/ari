@@ -2,9 +2,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useGroups, useCreateGroup, useUpdateContactGroups } from './useContactGroups'
-
 import { api } from '@/lib/axios'
+
+import { useCreateGroup, useGroups, useUpdateContactGroups } from './useContactGroups'
 
 vi.mock('@/lib/axios', () => ({
   api: {

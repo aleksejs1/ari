@@ -1,9 +1,9 @@
+import { type Contact, type ContactFormValues } from '@/types/models'
+
 import { mapContactToFormValues } from '../contactUtils'
 import { useCreateContact, useUpdateContact } from '../useContacts'
 
 import { ContactModalForm } from './ContactModalForm'
-
-import { type Contact, type ContactFormValues } from '@/types/models'
 
 interface ContactModalProps {
   isOpen: boolean

@@ -1,8 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
-import { getHydraMember, type HydraCollection } from '@/plugins/contacts/useContacts'
 import { type Group } from '@/types/models'
+
+import { getHydraMember, type HydraCollection } from '@/plugins/contacts/useContacts'
 
 export function useGroups(
   params: Record<string, string | number | boolean> = { 'order[name]': 'asc' },

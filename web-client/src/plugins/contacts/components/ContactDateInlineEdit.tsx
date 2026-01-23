@@ -1,8 +1,6 @@
-import { Check, Trash2, X } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { InlineEditTrigger } from './InlineEditTrigger'
+import { Check, Trash2, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { DateInput } from '@/components/ui/DateInput'
@@ -18,6 +16,8 @@ import { Input } from '@/components/ui/input'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { formatApiDate } from '@/lib/utils'
 import { type ContactDate } from '@/types/models'
+
+import { InlineEditTrigger } from './InlineEditTrigger'
 
 interface ContactDateInlineEditProps {
   date: ContactDate

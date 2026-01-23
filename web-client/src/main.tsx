@@ -1,13 +1,12 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import './lib/i18n'
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthContext'
 // import { registerDashboardWidgets } from './features/dashboard/widgets/registerWidgets'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
-import './index.css'
-import './lib/i18n'
 import { AuditLogsPlugin } from './plugins/audit-logs'
 import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
@@ -18,6 +17,9 @@ import { NotificationsPlugin } from './plugins/notifications'
 import { SessionsPlugin } from './plugins/sessions'
 import { SettingsPlugin } from './plugins/settings/index'
 import { UserSecurityPlugin } from './plugins/user-security'
+import App from './App.tsx'
+
+import './index.css'
 
 // Register Settings Tabs
 // Tabs are now registered by SettingsPlugin

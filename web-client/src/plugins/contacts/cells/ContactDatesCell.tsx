@@ -1,10 +1,11 @@
+import { type Contact, type ContactDate } from '@/types/models'
+
 import { ContactDateInlineEdit } from '@/plugins/contacts/components/ContactDateInlineEdit'
 import {
   useCreateContactDate,
   useDeleteContactDate,
   useUpdateContactDate,
 } from '@/plugins/contacts/useContacts'
-import { type Contact, type ContactDate } from '@/types/models'
 
 interface ContactDatesCellProps {
   contact: Contact

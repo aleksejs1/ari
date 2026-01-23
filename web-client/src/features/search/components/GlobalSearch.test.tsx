@@ -1,13 +1,14 @@
-import { type UseQueryResult } from '@tanstack/react-query'
-import { render, screen, fireEvent, act } from '@testing-library/react'
 import { useNavigate } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { type UseQueryResult } from '@tanstack/react-query'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { GlobalSearch } from './GlobalSearch'
+import { type Contact, type Group, type HydraCollection } from '@/types/models'
 
 import { useContacts } from '@/plugins/contacts/useContacts'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
-import { type Contact, type Group, type HydraCollection } from '@/types/models'
+
+import { GlobalSearch } from './GlobalSearch'
 
 // Mock hooks
 vi.mock('@/plugins/contacts/useContacts', () => ({

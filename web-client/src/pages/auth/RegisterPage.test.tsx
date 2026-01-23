@@ -1,15 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const TEST_PASSWORD = crypto.randomUUID()
 const TEST_DIFFERENT_PASSWORD = crypto.randomUUID()
 
-import RegisterPage from './RegisterPage'
-
 import { useAuth } from '@/hooks/useAuth'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { api } from '@/lib/axios'
+
+import RegisterPage from './RegisterPage'
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),

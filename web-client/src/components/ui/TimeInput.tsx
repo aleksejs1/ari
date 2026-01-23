@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Input } from './input'
-
 import { cn } from '@/lib/utils'
+
+import { Input } from './input'
 
 interface TimeInputProps {
   value?: string // 24h format HH:mm

@@ -1,9 +1,10 @@
-import { Star } from 'lucide-react'
 import { useCallback } from 'react'
+import { Star } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { useContactFavorite } from '@/plugins/contacts/hooks/useContactFavorite'
 import { type Contact } from '@/types/models'
+
+import { useContactFavorite } from '@/plugins/contacts/hooks/useContactFavorite'
 
 interface ContactFavoriteCellProps {
   contact: Contact

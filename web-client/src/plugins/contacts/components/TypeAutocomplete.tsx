@@ -1,13 +1,13 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
-
-import { useAutocomplete } from '../hooks/useAutocomplete'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import type { components } from '@/types/schema'
+
+import { useAutocomplete } from '../hooks/useAutocomplete'
 
 type Autocomplete = components['schemas']['Autocomplete']
 

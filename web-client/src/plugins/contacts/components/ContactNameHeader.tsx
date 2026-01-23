@@ -1,6 +1,6 @@
+import { useTranslation } from 'react-i18next'
 import type { HeaderContext } from '@tanstack/react-table'
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 
 import type { Contact } from '@/types/models'
 

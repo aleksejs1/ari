@@ -1,7 +1,5 @@
-import { CircleUser } from 'lucide-react'
 import React from 'react'
-
-import { registerDefaultUserMenuSections } from '../ui/defaults_usermenu'
+import { CircleUser } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -11,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+
+import { registerDefaultUserMenuSections } from '../ui/defaults_usermenu'
 
 // Register sections immediately
 registerDefaultUserMenuSections()

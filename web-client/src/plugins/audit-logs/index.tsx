@@ -1,17 +1,18 @@
-import { History, FileText } from 'lucide-react'
 import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-import { PageLoader } from './components/PageLoader'
+import { FileText, History } from 'lucide-react'
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
+
+import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
+
+import { PageLoader } from './components/PageLoader'
 
 const AuditLogsPage = lazy(() => import('./pages/AuditLogsPage'))
 const RecentAuditLogsWidget = lazy(() => import('./widgets/RecentAuditLogsWidget'))

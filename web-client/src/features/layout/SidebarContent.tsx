@@ -1,7 +1,7 @@
+import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+
 import { registerDefaultSidebarSections } from '../ui/defaults_sidebar'
 import { SidebarHeader } from '../ui/sidebar/SidebarHeader'
-
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 
 // Register sections immediately
 registerDefaultSidebarSections()

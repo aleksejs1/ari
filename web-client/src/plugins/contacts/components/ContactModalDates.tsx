@@ -1,13 +1,13 @@
-import { Plus, X } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-
-import { TypeAutocomplete } from './TypeAutocomplete' // Reusing generic type autocomplete for date label?
+import { Plus, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import type { ContactFormValues } from '@/types/models'
+
+import { TypeAutocomplete } from './TypeAutocomplete' // Reusing generic type autocomplete for date label?
 
 export function ContactModalDates() {
   const { t } = useTranslation()

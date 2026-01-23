@@ -1,12 +1,13 @@
+import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import { UserMenu } from './UserMenu'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useAuth } from '@/hooks/useAuth'
+
 import { AuditLogsPlugin } from '@/plugins/audit-logs'
+
+import { UserMenu } from './UserMenu'
 
 // Mock useAuth
 vi.mock('@/hooks/useAuth', () => ({

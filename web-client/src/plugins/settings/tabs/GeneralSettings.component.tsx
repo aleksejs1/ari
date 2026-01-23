@@ -5,6 +5,7 @@ import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
+
 import { useNotificationPolicies } from '@/plugins/notifications/hooks/useNotificationPolicies'
 
 export function GeneralSettings() {

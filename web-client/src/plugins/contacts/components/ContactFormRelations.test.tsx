@@ -1,12 +1,12 @@
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { describe, it, expect, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 
-import { ContactFormRelations } from './ContactFormRelations'
-
 import { type ContactFormValues } from '@/types/models'
+
+import { ContactFormRelations } from './ContactFormRelations'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

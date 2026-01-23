@@ -1,18 +1,16 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-
-import { useCreateGroup, useUpdateGroup } from '../hooks/useGroups'
 
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import {
   Form,
@@ -24,6 +22,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { type Group } from '@/types/models'
+
+import { useCreateGroup, useUpdateGroup } from '../hooks/useGroups'
 
 const groupSchema = z.object({
   name: z.string().min(1, 'Name is required'),

@@ -1,11 +1,11 @@
-import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { DisplayItem } from '../../components/DisplayItem'
+import { Calendar } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { Contact } from '@/types/models'
+
+import { DisplayItem } from '../../components/DisplayItem'
 
 export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()

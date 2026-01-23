@@ -1,5 +1,5 @@
-import { LogOut } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { LogOut } from 'lucide-react'
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/hooks/useAuth'

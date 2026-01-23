@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
-import { LogItem } from './LogItem'
-
 import { type TimelineEvent } from '@/types/models'
+
+import { LogItem } from './LogItem'
 
 interface LogListProps {
   logs: TimelineEvent[]

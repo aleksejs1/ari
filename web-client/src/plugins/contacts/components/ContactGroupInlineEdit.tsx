@@ -1,8 +1,6 @@
-import { Check, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { InlineEditTrigger } from './InlineEditTrigger'
+import { Check, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -10,6 +8,8 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { getContrastingTextColor } from '@/lib/colors'
 import { type Contact, type Group } from '@/types/models'
+
+import { InlineEditTrigger } from './InlineEditTrigger'
 
 interface ContactGroupInlineEditProps {
   contact: Contact

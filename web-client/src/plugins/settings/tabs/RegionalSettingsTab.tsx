@@ -1,6 +1,6 @@
-import { RegionalSettings } from './RegionalSettings.component'
-
 import { SettingTab } from '@/lib/settings/SettingTab'
+
+import { RegionalSettings } from './RegionalSettings.component'
 
 export class RegionalSettingsTab extends SettingTab {
   constructor() {

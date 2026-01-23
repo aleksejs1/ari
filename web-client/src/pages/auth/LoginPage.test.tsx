@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import LoginPage from './LoginPage'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { api } from '@/lib/axios'
+
+import LoginPage from './LoginPage'
 
 // Mock dependencies
 const mockLogin = vi.fn()

@@ -1,13 +1,13 @@
-import { Loader2, Plus, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Loader2, Plus, Users } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { type Group } from '@/types/models'
 
 import { GroupDialog } from '../components/GroupDialog'
 import { GroupsTable } from '../components/GroupsTable'
 import { useGroups } from '../hooks/useGroups'
-
-import { Button } from '@/components/ui/button'
-import { type Group } from '@/types/models'
 
 export default function GroupsPage() {
   const { t } = useTranslation()

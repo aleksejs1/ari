@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { Contact } from '@/types/models'
+
 import { useCreateContact, useUpdateContact } from '../useContacts'
 
 import { ContactSheet } from './ContactSheet'
-
-import type { Contact } from '@/types/models'
 
 // Mock Hooks
 vi.mock('../useContacts', () => ({

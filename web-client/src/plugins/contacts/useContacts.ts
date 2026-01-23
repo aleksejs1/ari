@@ -1,22 +1,22 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
-import { getHydraMember, type HydraCollection } from './utils'
-
 import { api } from '@/lib/axios'
 import type { Contact, ContactFormValues } from '@/types/models'
 
+import { getHydraMember, type HydraCollection } from './utils'
+
 // Re-export hooks to maintain backward compatibility (or just for convenience)
+export * from './hooks/useAutocomplete'
+export * from './hooks/useContactAddresses'
 export * from './hooks/useContactBios'
 export * from './hooks/useContactDates'
-export * from './hooks/useContactOrganizations'
-export * from './hooks/useContactAddresses'
 export * from './hooks/useContactEmails'
 export * from './hooks/useContactGroups'
 export * from './hooks/useContactNames'
+export * from './hooks/useContactOrganizations'
 export * from './hooks/useContactPhones'
 export * from './hooks/useContactRelations'
-export * from './hooks/useAutocomplete'
 export * from './utils'
 
 export function useContacts(

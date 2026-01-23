@@ -2,23 +2,23 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { api } from '@/lib/axios'
+import { type ContactFormValues } from '@/types/models'
+
 import {
-  useContacts,
-  useContact,
-  useCreateContact,
-  useDeleteContact,
-  useUpdateContact,
-  useUpdateContactDate,
-  useCreateContactDate,
-  useGroups,
-  useCreateGroup,
   getHydraMember,
   getHydraPagination,
   type HydraCollection,
+  useContact,
+  useContacts,
+  useCreateContact,
+  useCreateContactDate,
+  useCreateGroup,
+  useDeleteContact,
+  useGroups,
+  useUpdateContact,
+  useUpdateContactDate,
 } from './useContacts'
-
-import { api } from '@/lib/axios'
-import { type ContactFormValues } from '@/types/models'
 
 const createWrapper = () => {
   const queryClient = new QueryClient({

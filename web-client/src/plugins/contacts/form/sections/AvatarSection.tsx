@@ -1,9 +1,9 @@
 import { useFormContext } from 'react-hook-form'
 
+import { type ContactFormValues } from '@/types/models'
+
 import { AvatarUpload } from '../../components/AvatarUpload'
 import { useUploadContactAvatar } from '../../useContacts'
-
-import { type ContactFormValues } from '@/types/models'
 
 export function AvatarSection() {
   const { watch } = useFormContext<ContactFormValues>()

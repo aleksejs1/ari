@@ -1,12 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, Save, KeyRound, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { AlertCircle, CheckCircle2, Eye, EyeOff, KeyRound, Save } from 'lucide-react'
 import { z } from 'zod'
-
-import { useChangePassword } from '../hooks/useChangePassword'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,6 +18,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+
+import { useChangePassword } from '../hooks/useChangePassword'
 
 export default function ChangePasswordPage() {
   const { t } = useTranslation()

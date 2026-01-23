@@ -1,5 +1,8 @@
-import { Briefcase } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Briefcase } from 'lucide-react'
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { Contact, ContactOrganization } from '@/types/models'
 
 import { ContactOrganizationInlineEdit } from '../../components/ContactOrganizationInlineEdit'
 import { DisplayItem } from '../../components/DisplayItem'
@@ -8,9 +11,6 @@ import {
   useDeleteContactOrganization,
   useUpdateContactOrganization,
 } from '../../useContacts'
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { Contact, ContactOrganization } from '@/types/models'
 
 export const ProfessionalSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()

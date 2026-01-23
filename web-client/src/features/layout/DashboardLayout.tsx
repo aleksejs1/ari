@@ -1,16 +1,17 @@
-import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router-dom'
+import { Menu } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
-  SheetTrigger,
-  SheetTitle,
   SheetDescription,
+  SheetTitle,
+  SheetTrigger,
 } from '@/components/ui/sheet'
+
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
 import { SidebarContent } from '@/features/layout/SidebarContent'
 import { UserMenu } from '@/features/layout/UserMenu'

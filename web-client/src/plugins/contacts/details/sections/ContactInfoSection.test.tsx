@@ -2,9 +2,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render } from '@testing-library/react'
 import { describe, it } from 'vitest'
 
-import { ContactInfoSection } from './ContactInfoSection'
-
 import type { Contact } from '@/types/models'
+
+import { ContactInfoSection } from './ContactInfoSection'
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,9 +1,9 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import { NotificationSubscriptions } from './NotificationSubscriptions'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { api } from '@/lib/axios'
+
+import { NotificationSubscriptions } from './NotificationSubscriptions'
 
 // Mock useContacts
 vi.mock('../useContacts', () => ({

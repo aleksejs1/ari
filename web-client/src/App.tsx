@@ -1,13 +1,13 @@
-import { Loader2 } from 'lucide-react'
-import { Suspense, lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
-import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
-
-import DashboardLayout from './features/layout/DashboardLayout'
-import SidebarLessLayout from './features/layout/SidebarLessLayout'
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 
 import { useAuth } from '@/hooks/useAuth'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
+
+import DashboardLayout from './features/layout/DashboardLayout'
+import SidebarLessLayout from './features/layout/SidebarLessLayout'
 
 const routeRegistry = RouteRegistry.getInstance()
 

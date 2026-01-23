@@ -1,11 +1,11 @@
 import { lazy, Suspense } from 'react'
 
-import { PageLoader } from './components/PageLoader'
-import { SessionsSidebarSection } from './extensions/SessionsSidebarSection'
-
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+
+import { PageLoader } from './components/PageLoader'
+import { SessionsSidebarSection } from './extensions/SessionsSidebarSection'
 
 const SessionsPage = lazy(() => import('./pages/SessionsPage'))
 

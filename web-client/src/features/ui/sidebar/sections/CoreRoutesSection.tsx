@@ -1,5 +1,5 @@
-import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Users } from 'lucide-react'
 
 import { SidebarNavItem } from '../SidebarNavItem'
 

@@ -1,15 +1,15 @@
-import { ArrowLeft, Loader2, Trash2, Download } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-
-import { DeleteContactDialog } from '../components/DeleteContactDialog'
-import { SimilarContactsWidget } from '../components/SimilarContactsWidget'
-import { useContact, useDeleteContact, useExportContactVcard } from '../useContacts'
+import { ArrowLeft, Download, Loader2, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { type Contact } from '@/types/models'
+
+import { DeleteContactDialog } from '../components/DeleteContactDialog'
+import { SimilarContactsWidget } from '../components/SimilarContactsWidget'
+import { useContact, useDeleteContact, useExportContactVcard } from '../useContacts'
 
 function ContactDetailsContent({ contact }: { contact: Contact }) {
   const { t } = useTranslation()

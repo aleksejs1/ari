@@ -1,9 +1,10 @@
-import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { Users } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 
 export default function GroupsWidget() {

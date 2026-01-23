@@ -1,12 +1,12 @@
 import type { UseQueryResult } from '@tanstack/react-query'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { components } from '@/types/schema'
 
 import { useAutocomplete } from '../hooks/useAutocomplete'
 
 import { TypeAutocomplete } from './TypeAutocomplete'
-
-import type { components } from '@/types/schema'
 
 type Autocomplete = components['schemas']['Autocomplete']
 

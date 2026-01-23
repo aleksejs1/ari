@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
+import { type Contact, type ContactDate } from '@/types/models'
+
 import { getHydraMember, type HydraCollection } from '@/plugins/contacts/useContacts'
-import { type ContactDate, type Contact } from '@/types/models'
 
 // Helper to get displayName from the contact embedded in ContactDate
 // Note: The API response for ContactDate might need to expanded to include the Contact object or at least we hope Hydra handles it.

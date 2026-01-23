@@ -1,8 +1,8 @@
 import { CircleUser } from 'lucide-react'
 
-import { getContactAvatarUrl } from '../contactUtils'
-
 import { type Contact } from '@/types/models'
+
+import { getContactAvatarUrl } from '../contactUtils'
 
 interface ContactAvatarCellProps {
   contact: Contact

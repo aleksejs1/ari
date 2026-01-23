@@ -1,3 +1,5 @@
+import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
+
 import { ContactActionsCell } from './cells/ContactActionsCell'
 import { ContactAvatarCell } from './cells/ContactAvatarCell'
 import { ContactDatesCell } from './cells/ContactDatesCell'
@@ -8,8 +10,6 @@ import { ContactNameCell } from './cells/ContactNameCell'
 import { ContactPhonesCell } from './cells/ContactPhonesCell'
 import { ContactNameHeader } from './components/ContactNameHeader'
 import { LocalizedHeader } from './components/LocalizedHeader'
-
-import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
 
 export function registerDefaultColumns() {
   contactColumnRegistry.register({

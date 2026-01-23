@@ -1,17 +1,17 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Button } from '@/components/ui/button'
+import { Form } from '@/components/ui/form'
+import { ContactFormRegistry } from '@/lib/contacts/form/ContactFormRegistry'
+import { type ContactFormValues } from '@/types/models'
 
 import { registerDefaultContactFormSections } from '../defaults_form'
 import { cleanContactData, getContactFormDefaultValues, processContactGroups } from '../form/utils'
 import { useCreateGroup, useUploadContactAvatar } from '../useContacts'
 
 import { getContactSchema } from './ContactFormSchemas'
-
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
-import { ContactFormRegistry } from '@/lib/contacts/form/ContactFormRegistry'
-import { type ContactFormValues } from '@/types/models'
 
 // Register sections immediately
 registerDefaultContactFormSections()

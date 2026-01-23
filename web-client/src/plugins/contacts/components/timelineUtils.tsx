@@ -1,5 +1,5 @@
-import { type TFunction } from 'i18next'
 import { Link } from 'react-router-dom'
+import { type TFunction } from 'i18next'
 
 import { formatLocalizedDate } from '@/lib/utils'
 import { type ContactOrganization, type TimelineEvent } from '@/types/models'

@@ -1,8 +1,6 @@
-import { Check, ChevronsUpDown, X } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-
-import { useNotificationPolicyEventTypes } from '../../../hooks/useNotificationPolicies'
+import { Check, ChevronsUpDown, X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import type { NotificationPolicyFormValues } from '@/types/models'
+
+import { useNotificationPolicyEventTypes } from '../../../hooks/useNotificationPolicies'
 
 export const EventTypesSection = () => {
   const { t } = useTranslation()

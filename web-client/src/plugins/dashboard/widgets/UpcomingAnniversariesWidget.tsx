@@ -1,11 +1,11 @@
-import { Calendar } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-import { useUpcomingAnniversaries } from '../hooks/useUpcomingAnniversaries'
+import { Calendar } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatLocalizedDate } from '@/lib/utils'
+
+import { useUpcomingAnniversaries } from '../hooks/useUpcomingAnniversaries'
 
 export default function UpcomingAnniversariesWidget() {
   const { t, i18n } = useTranslation()

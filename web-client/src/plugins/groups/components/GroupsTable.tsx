@@ -1,7 +1,5 @@
-import { Edit, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { useDeleteGroup } from '../hooks/useGroups'
+import { Edit, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { type Group } from '@/types/models'
+
+import { useDeleteGroup } from '../hooks/useGroups'
 
 interface GroupsTableProps {
   groups: Group[]

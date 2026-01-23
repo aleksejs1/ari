@@ -1,3 +1,5 @@
+import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
+
 import { BiographySection } from './sections/BiographySection'
 import { ContactInfoSection } from './sections/ContactInfoSection'
 import { DatesSection } from './sections/DatesSection'
@@ -5,8 +7,6 @@ import { GeneralInfoSection } from './sections/GeneralInfoSection'
 import { ProfessionalSection } from './sections/ProfessionalSection'
 import { RelationsSection } from './sections/RelationsSection'
 import { UpcomingDatesSection } from './sections/UpcomingDatesSection'
-
-import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 
 export function registerDefaultContactDetailsSections() {
   const registry = ContactDetailsRegistry.getInstance()

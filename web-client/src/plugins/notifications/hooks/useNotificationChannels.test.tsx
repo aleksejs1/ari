@@ -1,15 +1,15 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import {
-  useNotificationChannels,
-  useCreateNotificationChannel,
-  useUpdateNotificationChannel,
-  useDeleteNotificationChannel,
-} from './useNotificationChannels'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { api } from '@/lib/axios'
+
+import {
+  useCreateNotificationChannel,
+  useDeleteNotificationChannel,
+  useNotificationChannels,
+  useUpdateNotificationChannel,
+} from './useNotificationChannels'
 
 vi.mock('@/lib/axios', () => ({
   api: {

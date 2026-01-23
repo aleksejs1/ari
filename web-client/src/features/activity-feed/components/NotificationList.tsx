@@ -1,10 +1,11 @@
-import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { NotificationItem } from './NotificationItem'
+import { Loader2 } from 'lucide-react'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
+
 import { useMarkAsRead, useNotifications } from '@/features/activity-feed/useNotifications'
+
+import { NotificationItem } from './NotificationItem'
 
 export function NotificationList() {
   const { t } = useTranslation()

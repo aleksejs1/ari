@@ -1,10 +1,10 @@
-import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Loader2 } from 'lucide-react'
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 import { useContactGraph } from '../api/useContactGraph'
 import { ContactGraph } from '../components/ContactGraph'
-
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 export default function ContactGraphPage() {
   const { t } = useTranslation()

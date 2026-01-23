@@ -1,5 +1,5 @@
-import { AlertTriangle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { AlertTriangle } from 'lucide-react'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'

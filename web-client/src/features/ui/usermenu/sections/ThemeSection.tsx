@@ -1,5 +1,5 @@
-import { Sun, Moon, Laptop } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Laptop, Moon, Sun } from 'lucide-react'
 
 import {
   DropdownMenuGroup,

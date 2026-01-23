@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { clsx, type ClassValue } from 'clsx'
+import { type ClassValue, clsx } from 'clsx'
 import { format, type Locale } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
 import { twMerge } from 'tailwind-merge'

@@ -2,13 +2,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { api } from '@/lib/axios'
+
 import {
   useCreateContactEmail,
-  useUpdateContactEmail,
   useDeleteContactEmail,
+  useUpdateContactEmail,
 } from './useContactEmails'
-
-import { api } from '@/lib/axios'
 
 vi.mock('@/lib/axios', () => ({
   api: {

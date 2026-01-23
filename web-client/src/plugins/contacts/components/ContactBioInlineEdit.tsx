@@ -1,8 +1,6 @@
-import { Check, Trash2, X } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { InlineEditTrigger } from './InlineEditTrigger'
+import { Check, Trash2, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -16,6 +14,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { type ContactBiography } from '@/types/models'
+
+import { InlineEditTrigger } from './InlineEditTrigger'
 
 interface ContactBioInlineEditProps {
   bio: ContactBiography

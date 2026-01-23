@@ -1,18 +1,19 @@
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { type UseQueryResult } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
-
-import DashboardLayout from './DashboardLayout'
 
 import { useAuth } from '@/hooks/useAuth'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { type Group } from '@/types/models'
+
 import { AuditLogsPlugin } from '@/plugins/audit-logs'
 import { GoogleImportPlugin } from '@/plugins/google-import'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { NotificationsPlugin } from '@/plugins/notifications'
 import { SettingsPlugin } from '@/plugins/settings/index'
-import { type Group } from '@/types/models'
+
+import DashboardLayout from './DashboardLayout'
 
 vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   useGroups: vi.fn(),

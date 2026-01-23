@@ -1,18 +1,18 @@
 import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PageLoader } from '../settings/components/PageLoader'
-
-import { ContactTimeline } from './components/ContactTimeline'
-import { registerDefaultContactFormSections } from './defaults_form'
-import { registerDefaultContactDetailsSections } from './details/defaults_details'
-import { ContactsTopNavSection } from './extensions/ContactsTopNavSection'
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+
+import { PageLoader } from '../settings/components/PageLoader'
+
+import { ContactTimeline } from './components/ContactTimeline'
+import { registerDefaultContactDetailsSections } from './details/defaults_details'
+import { ContactsTopNavSection } from './extensions/ContactsTopNavSection'
+import { registerDefaultContactFormSections } from './defaults_form'
 
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'))

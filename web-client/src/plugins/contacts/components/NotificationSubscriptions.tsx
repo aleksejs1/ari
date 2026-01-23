@@ -1,6 +1,6 @@
-import { Bell, Trash2, Plus } from 'lucide-react'
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Bell, Plus, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/axios'

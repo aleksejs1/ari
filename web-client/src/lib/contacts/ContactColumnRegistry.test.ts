@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { ContactColumnRegistry, type ContactColumnDef } from './ContactColumnRegistry'
+import { type ContactColumnDef, ContactColumnRegistry } from './ContactColumnRegistry'
 
 describe('ContactColumnRegistry', () => {
   it('should register and retrieve columns', () => {

@@ -1,11 +1,12 @@
-import { Bell } from 'lucide-react'
 import { useState } from 'react'
-
-import { NotificationList } from './NotificationList'
+import { Bell } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
 import { useUnreadCount } from '@/features/activity-feed/useNotifications'
+
+import { NotificationList } from './NotificationList'
 
 export function NotificationBell() {
   const { data: unreadCount = 0 } = useUnreadCount()

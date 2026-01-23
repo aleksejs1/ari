@@ -1,5 +1,5 @@
-import { Monitor } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Monitor } from 'lucide-react'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 

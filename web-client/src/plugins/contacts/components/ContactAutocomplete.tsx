@@ -1,13 +1,13 @@
-import { ChevronsUpDown, Check } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { useContacts, getHydraMember } from '../useContacts'
+import { Check, ChevronsUpDown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { type Contact } from '@/types/models'
+
+import { getHydraMember, useContacts } from '../useContacts'
 
 interface ContactAutocompleteProps {
   value?: string | Contact

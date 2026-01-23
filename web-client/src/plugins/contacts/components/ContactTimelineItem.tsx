@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
 
+import { formatLocalizedDateTime } from '@/lib/utils'
+import { type TimelineEvent } from '@/types/models'
+
 import {
   formatChangeValue,
   getBadgeStyles,
   getLogLabel,
   getLogSnapshotDetails,
 } from './timelineUtils'
-
-import { formatLocalizedDateTime } from '@/lib/utils'
-import { type TimelineEvent } from '@/types/models'
 
 interface ContactTimelineItemProps {
   log: TimelineEvent

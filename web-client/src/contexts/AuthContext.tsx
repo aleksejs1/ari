@@ -1,10 +1,10 @@
+import { type ReactNode, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
-import { useState, type ReactNode } from 'react'
-
-import { AuthContext } from './AuthContextInstance'
 
 import { api } from '@/lib/axios'
-import type { User, AuthState } from '@/types/auth'
+import type { AuthState, User } from '@/types/auth'
+
+import { AuthContext } from './AuthContextInstance'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(() => {

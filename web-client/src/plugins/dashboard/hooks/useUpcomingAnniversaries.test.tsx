@@ -2,9 +2,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useUpcomingAnniversaries } from './useUpcomingAnniversaries'
-
 import { api } from '@/lib/axios'
+
+import { useUpcomingAnniversaries } from './useUpcomingAnniversaries'
 
 vi.mock('@/lib/axios', () => ({
   api: {

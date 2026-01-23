@@ -1,11 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-
-import { ContactTimelineItem } from './ContactTimelineItem'
 
 import { api } from '@/lib/axios'
 import { type ContactTimeline as ContactTimelineType, type TimelineEvent } from '@/types/models'
+
+import { ContactTimelineItem } from './ContactTimelineItem'
 
 interface ContactTimelineProps {
   contactId: string

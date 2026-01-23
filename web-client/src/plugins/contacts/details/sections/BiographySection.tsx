@@ -1,5 +1,8 @@
-import { FileText } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { FileText } from 'lucide-react'
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { Contact, ContactBiography } from '@/types/models'
 
 import { ContactBioInlineEdit } from '../../components/ContactBioInlineEdit'
 import { DisplayItem } from '../../components/DisplayItem'
@@ -8,9 +11,6 @@ import {
   useDeleteContactBiography,
   useUpdateContactBiography,
 } from '../../useContacts'
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { Contact, ContactBiography } from '@/types/models'
 
 export const BiographySection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()

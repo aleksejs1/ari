@@ -1,3 +1,4 @@
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import {
   QueryClient,
   QueryClientProvider,
@@ -5,15 +6,15 @@ import {
   type UseQueryResult,
 } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { type Contact } from '@/types/models'
+
+import { ContactsPlugin } from '@/plugins/contacts'
 
 import * as useContactsHook from '../useContacts'
 
 import ContactDetailsPage from './ContactDetailsPage'
-
-import { ContactsPlugin } from '@/plugins/contacts'
-import { type Contact } from '@/types/models'
 
 // Mock components
 vi.mock('../components/ContactTimeline', () => ({

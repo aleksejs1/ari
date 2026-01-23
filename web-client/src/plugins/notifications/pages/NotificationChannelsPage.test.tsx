@@ -1,17 +1,17 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { NotificationChannel } from '@/types/models'
 
 import {
-  useNotificationChannels,
   useCreateNotificationChannel,
-  useUpdateNotificationChannel,
   useDeleteNotificationChannel,
+  useNotificationChannels,
+  useUpdateNotificationChannel,
 } from '../hooks/useNotificationChannels'
 
 import NotificationChannelsPage from './NotificationChannelsPage'
-
-import type { NotificationChannel } from '@/types/models'
 
 // Mock the hook
 vi.mock('../hooks/useNotificationChannels', () => ({

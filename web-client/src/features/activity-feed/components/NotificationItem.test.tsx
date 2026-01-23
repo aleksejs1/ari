@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { NotificationItem } from './NotificationItem'
-
 import type { ActivityFeed } from '@/types/models'
+
+import { NotificationItem } from './NotificationItem'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

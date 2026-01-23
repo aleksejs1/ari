@@ -1,19 +1,8 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-
-import { useNotificationChannels } from '../../hooks/useNotificationChannels'
-import {
-  useNotificationPolicy,
-  useCreateNotificationPolicy,
-  useUpdateNotificationPolicy,
-} from '../../hooks/useNotificationPolicies'
-
-import { EventTypesSection } from './form/EventTypesSection'
-import { ScheduleSection } from './form/ScheduleSection'
-import { TargetsSection } from './form/TargetsSection'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -26,9 +15,21 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useContacts, getHydraMember } from '@/plugins/contacts/useContacts'
-import { useGroups } from '@/plugins/groups/hooks/useGroups'
 import { type NotificationPolicyFormValues, notificationPolicySchema } from '@/types/models'
+
+import { getHydraMember, useContacts } from '@/plugins/contacts/useContacts'
+import { useGroups } from '@/plugins/groups/hooks/useGroups'
+
+import { useNotificationChannels } from '../../hooks/useNotificationChannels'
+import {
+  useCreateNotificationPolicy,
+  useNotificationPolicy,
+  useUpdateNotificationPolicy,
+} from '../../hooks/useNotificationPolicies'
+
+import { EventTypesSection } from './form/EventTypesSection'
+import { ScheduleSection } from './form/ScheduleSection'
+import { TargetsSection } from './form/TargetsSection'
 
 export default function NotificationPolicyForm() {
   const { t } = useTranslation()

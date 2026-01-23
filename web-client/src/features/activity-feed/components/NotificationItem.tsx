@@ -1,7 +1,7 @@
+import { useTranslation } from 'react-i18next'
 import { formatDistanceToNow } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'
 import { Mail, MailOpen } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import type { ActivityFeed } from '@/types/models'

@@ -1,14 +1,15 @@
 import { lazy, Suspense } from 'react'
 
-import { DashboardSidebarSection } from './extensions/DashboardSidebarSection'
-import { DashboardTopNavSection } from './extensions/DashboardTopNavSection'
-import { registerDashboardWidgets } from './hooks/registerWidgets'
-
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+
 import { PageLoader } from '@/plugins/settings/components/PageLoader'
+
+import { DashboardSidebarSection } from './extensions/DashboardSidebarSection'
+import { DashboardTopNavSection } from './extensions/DashboardTopNavSection'
+import { registerDashboardWidgets } from './hooks/registerWidgets'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 

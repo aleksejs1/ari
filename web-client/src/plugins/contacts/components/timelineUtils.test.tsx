@@ -1,15 +1,15 @@
-import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+
+import { type TimelineEvent } from '@/types/models'
 
 import {
   formatChangeValue,
-  getLogSnapshotDetails,
   getBadgeStyles,
   getLogLabel,
+  getLogSnapshotDetails,
 } from './timelineUtils'
-
-import { type TimelineEvent } from '@/types/models'
 
 // Helper to render with router context for Link
 const renderWithRouter = (ui: React.ReactElement | null) => {

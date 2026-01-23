@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 
-import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
-
 import type { Contact, Group } from '@/types/models'
+
+import { ContactGroupInlineEdit } from './ContactGroupInlineEdit'
 
 // Mock components that might be problematic in tests
 vi.mock('@/components/ui/scroll-area', () => ({

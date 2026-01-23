@@ -1,8 +1,8 @@
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { Loader2, Monitor, Smartphone, Trash2 } from 'lucide-react'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -16,8 +16,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { api } from '@/lib/axios'
-import { getHydraMember, type HydraCollection } from '@/plugins/contacts/utils'
 import type { ActiveSession } from '@/types/auth'
+
+import { getHydraMember, type HydraCollection } from '@/plugins/contacts/utils'
 
 export default function SessionsPage() {
   const { t } = useTranslation()

@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest'
-
-import { mapContactToFormValues } from './contactUtils'
+import { describe, expect, it } from 'vitest'
 
 import { type Contact } from '@/types/models'
+
+import { mapContactToFormValues } from './contactUtils'
 
 describe('mapContactToFormValues', () => {
   it('maps all collection fields correctly', () => {

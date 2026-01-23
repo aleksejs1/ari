@@ -1,19 +1,19 @@
-import { Pencil, Star } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-import { AvatarUpload } from '../../components/AvatarUpload'
-import { ContactForm } from '../../components/ContactForm'
-import { mapContactToFormValues } from '../../contactUtils'
-import { useContactFavorite } from '../../hooks/useContactFavorite'
-import { useGroups, useUpdateContact, useUploadContactAvatar } from '../../useContacts'
+import { Pencil, Star } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getContrastingTextColor } from '@/lib/colors'
 import type { Contact } from '@/types/models'
+
+import { AvatarUpload } from '../../components/AvatarUpload'
+import { ContactForm } from '../../components/ContactForm'
+import { mapContactToFormValues } from '../../contactUtils'
+import { useContactFavorite } from '../../hooks/useContactFavorite'
+import { useGroups, useUpdateContact, useUploadContactAvatar } from '../../useContacts'
 
 const getGroupFilterValue = (groupResource: any): string | null => {
   if (typeof groupResource === 'string') {

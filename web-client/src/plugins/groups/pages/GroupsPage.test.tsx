@@ -1,12 +1,12 @@
-import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import { useGroups, useCreateGroup, useUpdateGroup, useDeleteGroup } from '../hooks/useGroups'
-
-import GroupsPage from './GroupsPage'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Group } from '@/types/models'
+
+import { useCreateGroup, useDeleteGroup, useGroups, useUpdateGroup } from '../hooks/useGroups'
+
+import GroupsPage from './GroupsPage'
 
 // Mock the hooks
 vi.mock('../hooks/useGroups', () => ({

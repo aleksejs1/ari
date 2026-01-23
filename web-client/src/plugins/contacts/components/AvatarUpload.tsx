@@ -1,7 +1,5 @@
-import { Camera, CircleUser, Check, AlertCircle, Loader2 } from 'lucide-react'
 import * as React from 'react'
-
-import { getContactAvatarUrl } from '../contactUtils'
+import { AlertCircle, Camera, Check, CircleUser, Loader2 } from 'lucide-react'
 
 import {
   Dialog,
@@ -12,6 +10,8 @@ import {
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import type { ContactAvatar } from '@/types/models'
+
+import { getContactAvatarUrl } from '../contactUtils'
 
 interface AvatarUploadProps {
   currentAvatar?: ContactAvatar | null

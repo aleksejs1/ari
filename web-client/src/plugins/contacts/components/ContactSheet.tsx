@@ -1,11 +1,5 @@
 import { useTranslation } from 'react-i18next'
 
-import { mapContactToFormValues } from '../contactUtils'
-import { useCreateContact, useUpdateContact } from '../useContacts'
-
-import { ContactForm } from './ContactForm'
-import { ContactTimeline } from './ContactTimeline'
-
 import {
   Sheet,
   SheetContent,
@@ -14,6 +8,12 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { type Contact, type ContactFormValues } from '@/types/models'
+
+import { mapContactToFormValues } from '../contactUtils'
+import { useCreateContact, useUpdateContact } from '../useContacts'
+
+import { ContactForm } from './ContactForm'
+import { ContactTimeline } from './ContactTimeline'
 
 // import { useState } from "react"
 

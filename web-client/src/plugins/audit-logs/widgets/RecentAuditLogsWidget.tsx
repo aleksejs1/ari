@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query'
-import { History, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
-
-import { getBadgeStyles, getContactId, getLogDescription } from '../utils'
+import { useQuery } from '@tanstack/react-query'
+import { History, User } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { api } from '@/lib/axios'
 import { formatLocalizedDateTime } from '@/lib/utils'
 import { type TimelineEvent } from '@/types/models'
+
+import { getBadgeStyles, getContactId, getLogDescription } from '../utils'
 
 interface AuditLogCollection {
   member: TimelineEvent[]

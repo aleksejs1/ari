@@ -2,10 +2,10 @@ import { act, render, screen } from '@testing-library/react'
 import { jwtDecode } from 'jwt-decode'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AuthProvider } from './AuthContext'
-
 import { useAuth } from '@/hooks/useAuth'
 import { api } from '@/lib/axios'
+
+import { AuthProvider } from './AuthContext'
 
 vi.mock('@/lib/axios', () => ({
   api: {

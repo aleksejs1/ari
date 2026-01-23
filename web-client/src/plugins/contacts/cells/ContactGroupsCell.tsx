@@ -1,6 +1,7 @@
+import { type Contact } from '@/types/models'
+
 import { ContactGroupInlineEdit } from '@/plugins/contacts/components/ContactGroupInlineEdit'
 import { useGroups, useUpdateContactGroups } from '@/plugins/contacts/useContacts'
-import { type Contact } from '@/types/models'
 
 interface ContactGroupsCellProps {
   contact: Contact

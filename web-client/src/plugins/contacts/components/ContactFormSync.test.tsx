@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 import { useCreateGroup, useGroups } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
-
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 // Mock useUserPrefs hook
 vi.mock('@/hooks/useUserPrefs.hook', () => ({

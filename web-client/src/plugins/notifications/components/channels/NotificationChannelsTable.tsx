@@ -1,8 +1,6 @@
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { Edit, Trash2, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { useVerifyNotificationChannel } from '../../hooks/useNotificationChannels'
+import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { Check, Edit, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -14,6 +12,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { type NotificationChannel } from '@/types/models'
+
+import { useVerifyNotificationChannel } from '../../hooks/useNotificationChannels'
 
 interface NotificationChannelsTableProps {
   data: NotificationChannel[]

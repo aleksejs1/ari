@@ -1,12 +1,12 @@
-import { X } from 'lucide-react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { useGroups } from '../useContacts'
+import { X } from 'lucide-react'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { type ContactGroup, type Group } from '@/types/models'
+
+import { useGroups } from '../useContacts'
 
 interface ContactGroupSelectProps {
   value?: ContactGroup[]

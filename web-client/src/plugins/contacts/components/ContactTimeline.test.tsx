@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-
-import { ContactTimeline } from './ContactTimeline'
+import { describe, expect, it, vi } from 'vitest'
 
 import { api } from '@/lib/axios'
+
+import { ContactTimeline } from './ContactTimeline'
 
 // Mock api
 vi.mock('@/lib/axios', () => ({

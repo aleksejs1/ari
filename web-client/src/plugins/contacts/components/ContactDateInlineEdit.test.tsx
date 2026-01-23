@@ -1,11 +1,11 @@
-/* eslint-disable import/order */
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { type ContactDate } from '@/types/models'
 
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
-import { type ContactDate } from '@/types/models'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 // Mock useUserPrefs hook
 vi.mock('@/hooks/useUserPrefs.hook', () => ({

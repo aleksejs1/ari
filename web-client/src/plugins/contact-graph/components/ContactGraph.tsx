@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DataSet } from 'vis-data'
-import { Network, type Edge, type Node } from 'vis-network'
+import { type Edge, Network, type Node } from 'vis-network'
 
 import type { GraphData } from '../api/useContactGraph'
 

@@ -1,23 +1,23 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-  useContacts,
-  useDeleteContact,
-  useUpdateContactDate,
-  useCreateContactDate,
-  useUpdateContactGroups,
-  useCreateContactEmail,
-  useUpdateContactEmail,
-  useDeleteContactEmail,
-  useCreateContactPhone,
-  useUpdateContactPhone,
-  useDeleteContactPhone,
-  useCreateContactName,
-  useUpdateContactName,
-  useDeleteContactName,
   type HydraCollection,
+  useContacts,
+  useCreateContactDate,
+  useCreateContactEmail,
+  useCreateContactName,
+  useCreateContactPhone,
+  useDeleteContact,
+  useDeleteContactEmail,
+  useDeleteContactName,
+  useDeleteContactPhone,
+  useUpdateContactDate,
+  useUpdateContactEmail,
+  useUpdateContactGroups,
+  useUpdateContactName,
+  useUpdateContactPhone,
 } from '../useContacts'
 
 import ContactsPage from './ContactsPage'

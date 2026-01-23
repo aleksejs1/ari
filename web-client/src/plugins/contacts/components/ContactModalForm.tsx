@@ -1,3 +1,7 @@
+import * as React from 'react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Briefcase,
@@ -10,21 +14,6 @@ import {
   Trash2,
   Users,
 } from 'lucide-react'
-import * as React from 'react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-
-import { useCreateGroup } from '../useContacts'
-
-import { getContactSchema } from './ContactFormSchemas'
-import { ContactGroupSelect } from './ContactGroupSelect'
-import { ContactModalBiography } from './ContactModalBiography'
-import { ContactModalDates } from './ContactModalDates'
-import { ContactModalEmails } from './ContactModalEmails'
-import { ContactModalName } from './ContactModalName'
-import { ContactModalOrganization } from './ContactModalOrganization'
-import { ContactModalPhones } from './ContactModalPhones'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -37,6 +26,17 @@ import {
 } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import type { ContactFormValues, Group } from '@/types/models'
+
+import { useCreateGroup } from '../useContacts'
+
+import { getContactSchema } from './ContactFormSchemas'
+import { ContactGroupSelect } from './ContactGroupSelect'
+import { ContactModalBiography } from './ContactModalBiography'
+import { ContactModalDates } from './ContactModalDates'
+import { ContactModalEmails } from './ContactModalEmails'
+import { ContactModalName } from './ContactModalName'
+import { ContactModalOrganization } from './ContactModalOrganization'
+import { ContactModalPhones } from './ContactModalPhones'
 
 interface ContactModalFormProps {
   open: boolean

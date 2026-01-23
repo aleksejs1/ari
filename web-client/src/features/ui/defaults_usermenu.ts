@@ -1,9 +1,9 @@
+import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+
 import { CoreNavigationSection } from './usermenu/sections/CoreNavigationSection'
 import { LogoutSection } from './usermenu/sections/LogoutSection'
 import { ThemeSection } from './usermenu/sections/ThemeSection'
 import { UserIdentitySection } from './usermenu/sections/UserIdentitySection'
-
-import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 
 export function registerDefaultUserMenuSections() {
   const registry = UserMenuRegistry.getInstance()

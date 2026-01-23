@@ -1,10 +1,8 @@
-import { subDays } from 'date-fns'
-import { Plus, X } from 'lucide-react'
 import { useMemo } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-
-import { ChannelItem } from './ChannelItem'
+import { subDays } from 'date-fns'
+import { Plus, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,6 +11,8 @@ import { Input } from '@/components/ui/input'
 import { TimeInput } from '@/components/ui/TimeInput'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import type { NotificationChannel, NotificationPolicyFormValues } from '@/types/models'
+
+import { ChannelItem } from './ChannelItem'
 
 const SchedulePreview = () => {
   const { t } = useTranslation()

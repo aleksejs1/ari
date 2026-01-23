@@ -1,3 +1,5 @@
+import { ContactFormRegistry } from '@/lib/contacts/form/ContactFormRegistry'
+
 import { ContactFormAddress } from './components/ContactFormAddress'
 import { ContactFormBiography } from './components/ContactFormBiography'
 import { ContactFormEmail } from './components/ContactFormEmail'
@@ -8,8 +10,6 @@ import { ContactFormRelations } from './components/ContactFormRelations'
 import { ContactFormSync } from './components/ContactFormSync'
 import { AvatarSection } from './form/sections/AvatarSection'
 import { GroupsSection } from './form/sections/GroupsSection'
-
-import { ContactFormRegistry } from '@/lib/contacts/form/ContactFormRegistry'
 
 export function registerDefaultContactFormSections() {
   const registry = ContactFormRegistry.getInstance()

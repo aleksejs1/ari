@@ -1,15 +1,15 @@
-import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-
-import { CollapsibleSection } from './CollapsibleSection'
-import { TypeAutocomplete } from './TypeAutocomplete'
+import { Plus, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { type ContactFormValues } from '@/types/models'
+
+import { CollapsibleSection } from './CollapsibleSection'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactFormEmail() {
   const { t } = useTranslation()

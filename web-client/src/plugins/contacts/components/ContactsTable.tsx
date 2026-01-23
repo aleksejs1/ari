@@ -1,25 +1,16 @@
-import {
-  type ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type VisibilityState,
-  type SortingState,
-  type ColumnOrderState,
-} from '@tanstack/react-table'
-import { ChevronDown, Settings2, ArrowUp, ArrowDown } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-
-import { ContactActionsCell } from '../cells/ContactActionsCell'
-import { ContactAvatarCell } from '../cells/ContactAvatarCell'
-import { ContactDatesCell } from '../cells/ContactDatesCell'
-import { ContactEmailsCell } from '../cells/ContactEmailsCell'
-import { ContactFavoriteCell } from '../cells/ContactFavoriteCell'
-import { ContactGroupsCell } from '../cells/ContactGroupsCell'
-import { ContactNameCell } from '../cells/ContactNameCell'
-import { ContactPhonesCell } from '../cells/ContactPhonesCell'
+import {
+  type ColumnDef,
+  type ColumnOrderState,
+  flexRender,
+  getCoreRowModel,
+  type SortingState,
+  useReactTable,
+  type VisibilityState,
+} from '@tanstack/react-table'
+import { ArrowDown, ArrowUp, ChevronDown, Settings2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -40,6 +31,15 @@ import {
 } from '@/components/ui/table'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type Contact } from '@/types/models'
+
+import { ContactActionsCell } from '../cells/ContactActionsCell'
+import { ContactAvatarCell } from '../cells/ContactAvatarCell'
+import { ContactDatesCell } from '../cells/ContactDatesCell'
+import { ContactEmailsCell } from '../cells/ContactEmailsCell'
+import { ContactFavoriteCell } from '../cells/ContactFavoriteCell'
+import { ContactGroupsCell } from '../cells/ContactGroupsCell'
+import { ContactNameCell } from '../cells/ContactNameCell'
+import { ContactPhonesCell } from '../cells/ContactPhonesCell'
 
 interface ContactsTableProps {
   data: Contact[]

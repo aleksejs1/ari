@@ -1,5 +1,13 @@
-import { Mail, MapPin, Phone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Mail, MapPin, Phone } from 'lucide-react'
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type {
+  Contact,
+  ContactAddress,
+  ContactEmailAdress,
+  ContactPhoneNumber,
+} from '@/types/models'
 
 import { ContactAddressInlineEdit } from '../../components/ContactAddressInlineEdit'
 import { ContactEmailInlineEdit } from '../../components/ContactEmailInlineEdit'
@@ -16,14 +24,6 @@ import {
   useUpdateContactEmail,
   useUpdateContactPhone,
 } from '../../useContacts'
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type {
-  Contact,
-  ContactAddress,
-  ContactEmailAdress,
-  ContactPhoneNumber,
-} from '@/types/models'
 
 export const ContactInfoSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation()

@@ -1,9 +1,7 @@
-import { UserPlus } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-import { useCreateContactRelation, useSimilarContacts } from '../useContacts'
+import { UserPlus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,6 +15,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { type Contact, type ContactRelation, PREDEFINED_RELATIONS } from '@/types/models'
+
+import { useCreateContactRelation, useSimilarContacts } from '../useContacts'
 
 interface SimilarContactsWidgetProps {
   contactId: string

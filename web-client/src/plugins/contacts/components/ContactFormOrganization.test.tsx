@@ -1,11 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { describe, it, expect, vi } from 'vitest'
-
-import { ContactFormOrganization } from './ContactFormOrganization'
+import { FormProvider, useForm } from 'react-hook-form'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { type ContactFormValues } from '@/types/models'
+
+import { ContactFormOrganization } from './ContactFormOrganization'
 
 // Mock useUserPrefs hook
 vi.mock('@/hooks/useUserPrefs.hook', () => ({

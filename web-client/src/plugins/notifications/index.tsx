@@ -1,11 +1,11 @@
 import { lazy, Suspense } from 'react'
 
-import { PageLoader } from './components/PageLoader'
-import { NotificationsSidebarSection } from './extensions/NotificationsSidebarSection'
-
 import type { Plugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+
+import { PageLoader } from './components/PageLoader'
+import { NotificationsSidebarSection } from './extensions/NotificationsSidebarSection'
 
 const NotificationChannelsPage = lazy(() => import('./pages/NotificationChannelsPage'))
 const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))

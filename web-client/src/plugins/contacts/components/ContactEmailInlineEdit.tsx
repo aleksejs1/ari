@@ -1,9 +1,6 @@
-import { Check, Trash2, X } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { InlineEditTrigger } from './InlineEditTrigger'
-import { TypeAutocomplete } from './TypeAutocomplete'
+import { Check, Trash2, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -16,6 +13,9 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { type ContactEmailAdress } from '@/types/models'
+
+import { InlineEditTrigger } from './InlineEditTrigger'
+import { TypeAutocomplete } from './TypeAutocomplete'
 
 interface ContactEmailInlineEditProps {
   email: ContactEmailAdress

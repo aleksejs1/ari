@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import GoogleImportPage from './GoogleImportPage'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { api } from '@/lib/axios'
+
+import GoogleImportPage from './GoogleImportPage'
 
 // Mock axios
 vi.mock('@/lib/axios', () => ({

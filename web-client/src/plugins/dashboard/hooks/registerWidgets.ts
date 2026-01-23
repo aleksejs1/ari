@@ -1,8 +1,8 @@
+import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
+
 import GroupsWidget from '../widgets/GroupsWidget'
 import StatsWidget from '../widgets/StatsWidget'
 import UpcomingAnniversariesWidget from '../widgets/UpcomingAnniversariesWidget'
-
-import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 export function registerDashboardWidgets() {
   widgetRegistry.register({

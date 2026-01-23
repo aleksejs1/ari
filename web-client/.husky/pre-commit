@@ -1,1 +1,5 @@
+# Check types for the whole project first
+cd web-client
+npm run typecheck
+
 npx lint-staged

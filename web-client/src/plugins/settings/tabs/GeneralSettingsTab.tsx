@@ -1,6 +1,6 @@
-import { GeneralSettings } from './GeneralSettings.component'
-
 import { SettingTab } from '@/lib/settings/SettingTab'
+
+import { GeneralSettings } from './GeneralSettings.component'
 
 export class GeneralSettingsTab extends SettingTab {
   constructor() {

@@ -1,16 +1,17 @@
-import { Search } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { Search } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDebounce } from '@/hooks/useDebounce'
 import { cn } from '@/lib/utils'
+import { type Contact } from '@/types/models'
+
 import { useContacts } from '@/plugins/contacts/useContacts'
 import { getHydraMember } from '@/plugins/contacts/utils'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
-import { type Contact } from '@/types/models'
 
 interface SearchResult {
   id: string

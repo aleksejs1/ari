@@ -1,10 +1,10 @@
-/* eslint-disable import/order */
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { type ContactName } from '@/types/models'
 
 import { ContactNameInlineEdit } from './ContactNameInlineEdit'
-import { type ContactName } from '@/types/models'
 
 describe('ContactNameInlineEdit', () => {
   const mockName: ContactName = {

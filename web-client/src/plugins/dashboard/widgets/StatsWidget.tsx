@@ -1,10 +1,10 @@
-import { BarChart3, Users, ScrollText, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { useStats } from '../hooks/useStats'
+import { BarChart3, ScrollText, Send, Users } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+
+import { useStats } from '../hooks/useStats'
 
 export default function StatsWidget() {
   const { t } = useTranslation()

@@ -1,6 +1,6 @@
-import { Home as HomeIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { Home as HomeIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 

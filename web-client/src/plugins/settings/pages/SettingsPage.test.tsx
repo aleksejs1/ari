@@ -1,10 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import SettingsPage from './SettingsPage'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useSettingsTabs } from '@/lib/settings/SettingsRegistry'
 import { SettingTab } from '@/lib/settings/SettingTab'
+
+import SettingsPage from './SettingsPage'
 
 // Mock components
 const MockGeneralSettings = () => <div>Mock General Components</div>

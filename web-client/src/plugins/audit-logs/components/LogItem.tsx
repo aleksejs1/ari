@@ -1,12 +1,12 @@
-import { History, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-
-import { formatChangeValue, getBadgeStyles, getContactId, getLogDescription } from '../utils'
+import { History, User } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { formatLocalizedDateTime } from '@/lib/utils'
 import { type TimelineEvent } from '@/types/models'
+
+import { formatChangeValue, getBadgeStyles, getContactId, getLogDescription } from '../utils'
 
 interface LogItemProps {
   log: TimelineEvent

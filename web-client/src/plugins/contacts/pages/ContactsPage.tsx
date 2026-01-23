@@ -2,15 +2,15 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
+import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
+import { type Contact } from '@/types/models'
+
 import { registerDefaultColumns } from '../columns'
 import { ContactModal } from '../components/ContactModal'
 import { ContactsHeader } from '../components/ContactsHeader'
 import { ContactsPagination } from '../components/ContactsPagination'
 import { ContactsTable } from '../components/ContactsTable'
 import { getHydraMember, getHydraPagination, useContacts } from '../useContacts'
-
-import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
-import { type Contact } from '@/types/models'
 
 // Ensure default columns are registered
 registerDefaultColumns()

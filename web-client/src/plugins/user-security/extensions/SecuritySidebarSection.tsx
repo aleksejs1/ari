@@ -1,5 +1,5 @@
-import { Lock, UserX } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Lock, UserX } from 'lucide-react'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
