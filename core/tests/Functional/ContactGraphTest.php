@@ -81,4 +81,72 @@ class ContactGraphTest extends AbstractApiTestCase
         static::assertSame([], $data['nodes']);
         static::assertSame([], $data['links']);
     }
+
+    public function testLevelFiltering(): void
+    {
+        $client = static::createClient();
+        $em = self::getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+
+        // A -> B -> C
+        $contactA = new Contact(); $contactA->setUser($user); $em->persist($contactA);
+        $contactB = new Contact(); $contactB->setUser($user); $em->persist($contactB);
+        $contactC = new Contact(); $contactC->setUser($user); $em->persist($contactC);
+
+        $relAB = new ContactRelation($contactA); $relAB->setPerson($contactB); $em->persist($relAB);
+        $relBC = new ContactRelation($contactB); $relBC->setPerson($contactC); $em->persist($relBC);
+        $em->flush();
+
+        // Level 1 from A: A, B
+        $response = $client->request('GET', '/api/contact-graph?contactId=' . (int) $contactA->getId() . '&level=1', [
+            'auth_bearer' => $this->token,
+        ]);
+        static::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        static::assertCount(2, $data['nodes']);
+        static::assertCount(1, $data['links']);
+
+        // Level 2 from A: A, B, C
+        $response = $client->request('GET', '/api/contact-graph?contactId=' . (int) $contactA->getId() . '&level=2', [
+            'auth_bearer' => $this->token,
+        ]);
+        static::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        static::assertCount(3, $data['nodes']);
+        static::assertCount(2, $data['links']);
+    }
+
+    public function testGroupFiltering(): void
+    {
+        $client = static::createClient();
+        $em = self::getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+
+        $group = new \App\Entity\Group();
+        $group->setUser($user);
+        $group->setName('Test Group');
+        $em->persist($group);
+
+        $contactInGroup = new Contact(); $contactInGroup->setUser($user); $em->persist($contactInGroup);
+        $contactOutGroup = new Contact(); $contactOutGroup->setUser($user); $em->persist($contactOutGroup);
+
+        $cg = new \App\Entity\ContactGroup($contactInGroup);
+        $cg->setGroupResource($group);
+        $em->persist($cg);
+
+        $rel = new ContactRelation($contactInGroup);
+        $rel->setPerson($contactOutGroup);
+        $em->persist($rel);
+        $em->flush();
+
+        $response = $client->request('GET', '/api/contact-graph?groupId=' . (int) $group->getId(), [
+            'auth_bearer' => $this->token,
+        ]);
+        static::assertResponseIsSuccessful();
+        $data = $response->toArray();
+
+        // Should contain both contacts (one is in group, other is connected to it)
+        static::assertCount(2, $data['nodes']);
+        static::assertCount(1, $data['links']);
+    }
 }

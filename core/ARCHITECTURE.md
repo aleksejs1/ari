@@ -155,11 +155,22 @@ The `ContactDate` collection (Dashboard Upcoming Anniversaries) supports filteri
     *   If a policy is set, it iterates over its `NotificationRule`s.
     *   It dynamically constructs DQL using `OR` between rules, filtering by `contactGroup` (using `EXISTS`), specific `contact`, and `eventType` (case-insensitive text matching).
     *   If no rules are active for a policy, the collection returns empty by default to respect the policy constraints.
-+
-+### 10. File Storage (Avatars)
-+The application supports contact avatar uploads with abstracted storage.
-+- **Abstraction**: Uses `league/flysystem-bundle` for storage abstraction.
-+- **Drivers**: Supports `local` (default) and `s3` (AWS/Minio) drivers, switchable via environment variables.
-+- **Processing**: Uses `intervention/image` for image resizing and thumbnail generation.
-+- **Thumbnail Strategy**: Dual strategy for thumbnails (150x150): they can be stored as BLOBs in the database for fast access without disk I/O, or served from storage. Controlled via `APP_STORE_THUMBNAILS_IN_DB`.
-+- **API**: `POST /api/contacts/{id}/avatar` handles `multipart/form-data` uploads.
+### 11. Contact Graph Filtering
+
+The `/api/contact-graph` endpoint supports advanced filtering via `ContactGraphProvider`:
+
+- **Level Filtering**: Using `contactId` and `level` (default 1).
+  - `level=1`: Returns the contact and its direct relations.
+  - `level=2`: Returns the contact, its relations, and their relations (2nd degree).
+- **Group Filtering**: Using `groupId`.
+  - Returns all members of the group and all their 1st-degree connections.
+
+These filters are useful for visualizing social circles or group-specific networks.
+
+### 12. File Storage (Avatars)
+The application supports contact avatar uploads with abstracted storage.
+- **Abstraction**: Uses `league/flysystem-bundle` for storage abstraction.
+- **Drivers**: Supports `local` (default) and `s3` (AWS/Minio) drivers, switchable via environment variables.
+- **Processing**: Uses `intervention/image` for image resizing and thumbnail generation.
+- **Thumbnail Strategy**: Dual strategy for thumbnails (150x150): they can be stored as BLOBs in the database for fast access without disk I/O, or served from storage. Controlled via `APP_STORE_THUMBNAILS_IN_DB`.
+- **API**: `POST /api/contacts/{id}/avatar` handles `multipart/form-data` uploads.

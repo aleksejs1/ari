@@ -28,9 +28,33 @@ class ContactGraphProvider implements ProviderInterface
     #[\Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): ContactGraph
     {
-        $contacts = $this->entityManager->getRepository(Contact::class)->findAll();
-        $relations = $this->entityManager->getRepository(ContactRelation::class)->findAll();
+        $contactId = (int) ($context['filters']['contactId'] ?? 0);
+        $level = (int) ($context['filters']['level'] ?? 1);
+        $groupId = (int) ($context['filters']['groupId'] ?? 0);
 
+        $contactRepository = $this->entityManager->getRepository(Contact::class);
+        $relationRepository = $this->entityManager->getRepository(ContactRelation::class);
+
+        if ($contactId > 0) {
+            return $this->getGraphByLevel($contactId, $level);
+        }
+
+        if ($groupId > 0) {
+            return $this->getGraphByGroup($groupId);
+        }
+
+        $contacts = $contactRepository->findAll();
+        $relations = $relationRepository->findAll();
+
+        return $this->buildGraph($contacts, $relations);
+    }
+
+    /**
+     * @param Contact[] $contacts
+     * @param ContactRelation[] $relations
+     */
+    private function buildGraph(array $contacts, array $relations): ContactGraph
+    {
         $nodes = [];
         foreach ($contacts as $contact) {
             $nodes[] = new GraphNode(
@@ -47,9 +71,106 @@ class ContactGraphProvider implements ProviderInterface
             );
         }
 
-        return new ContactGraph(
-            nodes: $nodes,
-            links: $links,
-        );
+        return new ContactGraph(nodes: $nodes, links: $links);
+    }
+
+    private function getGraphByLevel(int $contactId, int $level): ContactGraph
+    {
+        $contactRepository = $this->entityManager->getRepository(Contact::class);
+        $relationRepository = $this->entityManager->getRepository(ContactRelation::class);
+
+        $rootContact = $contactRepository->find($contactId);
+        if (null === $rootContact) {
+            return new ContactGraph();
+        }
+
+        $relevantContactIds = [$contactId];
+        $traversedIds = [$contactId];
+
+        for ($i = 0; $i < $level; ++$i) {
+            $nextLevelIds = [];
+            $relations = $relationRepository->createQueryBuilder('cr')
+                ->where('cr.contact IN (:ids) OR cr.person IN (:ids)')
+                ->setParameter('ids', $traversedIds)
+                ->getQuery()
+                ->getResult();
+
+            foreach ($relations as $relation) {
+                $c1 = (int) $relation->getContact()?->getId();
+                $c2 = (int) $relation->getPerson()?->getId();
+                if (!in_array($c1, $relevantContactIds, true)) {
+                    $relevantContactIds[] = $c1;
+                    $nextLevelIds[] = $c1;
+                }
+                if (!in_array($c2, $relevantContactIds, true)) {
+                    $relevantContactIds[] = $c2;
+                    $nextLevelIds[] = $c2;
+                }
+            }
+            $traversedIds = $nextLevelIds;
+            if ([] === $traversedIds) {
+                break;
+            }
+        }
+
+        $contacts = $contactRepository->createQueryBuilder('c')
+            ->where('c.id IN (:ids)')
+            ->setParameter('ids', $relevantContactIds)
+            ->getQuery()
+            ->getResult();
+
+        $relations = $relationRepository->createQueryBuilder('cr')
+            ->where('cr.contact IN (:ids) AND cr.person IN (:ids)')
+            ->setParameter('ids', $relevantContactIds)
+            ->getQuery()
+            ->getResult();
+
+        return $this->buildGraph($contacts, $relations);
+    }
+
+    private function getGraphByGroup(int $groupId): ContactGraph
+    {
+        $contactRepository = $this->entityManager->getRepository(Contact::class);
+        $relationRepository = $this->entityManager->getRepository(ContactRelation::class);
+
+        // Get members of the group
+        $members = $contactRepository->createQueryBuilder('c')
+            ->join('c.contactGroups', 'cg')
+            ->where('cg.groupResource = :groupId')
+            ->setParameter('groupId', $groupId)
+            ->getQuery()
+            ->getResult();
+
+        $memberIds = array_map(fn (Contact $c) => (int) $c->getId(), $members);
+        if ([] === $memberIds) {
+            return new ContactGraph();
+        }
+
+        // Get all relations where at least one side is a member
+        $relations = $relationRepository->createQueryBuilder('cr')
+            ->where('cr.contact IN (:ids) OR cr.person IN (:ids)')
+            ->setParameter('ids', $memberIds)
+            ->getQuery()
+            ->getResult();
+
+        $relevantContactIds = $memberIds;
+        foreach ($relations as $relation) {
+            $c1 = (int) $relation->getContact()?->getId();
+            $c2 = (int) $relation->getPerson()?->getId();
+            if (!in_array($c1, $relevantContactIds, true)) {
+                $relevantContactIds[] = $c1;
+            }
+            if (!in_array($c2, $relevantContactIds, true)) {
+                $relevantContactIds[] = $c2;
+            }
+        }
+
+        $contacts = $contactRepository->createQueryBuilder('c')
+            ->where('c.id IN (:ids)')
+            ->setParameter('ids', $relevantContactIds)
+            ->getQuery()
+            ->getResult();
+
+        return $this->buildGraph($contacts, $relations);
     }
 }
