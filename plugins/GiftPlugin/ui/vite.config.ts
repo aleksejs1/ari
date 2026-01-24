@@ -1,6 +1,6 @@
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
@@ -10,24 +10,15 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist-plugins/gift',
+    outDir: 'dist',
     lib: {
-      entry: 'src/plugins/gift-plugin/index.tsx',
+      entry: path.resolve(__dirname, 'src/index.tsx'),
       name: 'GiftPlugin',
       fileName: 'gift-plugin',
       formats: ['es'],
     },
     rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
-        'react-router-dom',
-        'react-i18next',
-        'i18next',
-        '@tanstack/react-query',
-        'lucide-react', // Icons
-      ],
+      external: ['react', 'react-dom'],
       output: {
         globals: {
           react: 'React',
@@ -35,6 +26,5 @@ export default defineConfig({
         },
       },
     },
-    emptyOutDir: true,
   },
 })
