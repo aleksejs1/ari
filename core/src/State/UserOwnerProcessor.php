@@ -35,12 +35,22 @@ class UserOwnerProcessor implements ProcessorInterface
 
         if ($data instanceof TenantAwareInterface && null === $data->getTenant()) {
             $token = $this->tokenStorage->getToken();
-            $user = $token?->getUser();
-            if ($user instanceof \App\Entity\User) {
-                $data->setTenant($user);
-                if (method_exists($data, 'setUser')) {
-                    $data->setUser($user);
-                }
+            
+            if (null === $token) {
+                throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('No authentication token found. Cannot set owner.');
+            }
+
+            $user = $token->getUser();
+            
+            if (!$user instanceof \App\Entity\User) {
+                // Determine what type of user we got for debugging
+                $type = is_object($user) ? get_class($user) : gettype($user);
+                throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException(sprintf('Logged in user must be an instance of App\Entity\User (got %s). Cannot set owner.', $type));
+            }
+
+            $data->setTenant($user);
+            if (method_exists($data, 'setUser')) {
+                $data->setUser($user);
             }
         }
 

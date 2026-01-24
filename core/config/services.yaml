@@ -43,3 +43,7 @@ services:
     App\Doctrine\DBAL\SqliteForeignKeyMiddleware:
         tags:
             - { name: 'doctrine.middleware', connection: 'default', priority: 1000 }
+
+    # Ensure UserOwnerProcessor is available for plugins (loaded dynamically)
+    App\State\UserOwnerProcessor:
+        public: true

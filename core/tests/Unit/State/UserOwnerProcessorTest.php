@@ -136,7 +136,7 @@ final class UserOwnerProcessorTest extends TestCase
         self::assertCount(1, $calls);
     }
 
-    public function testProcessDoesNotSetTenantIfNoAuthenticatedUser(): void
+    public function testProcessThrowsExceptionIfNoAuthenticatedUser(): void
     {
         $data = new class () implements TenantAwareInterface {
             private ?User $tenant = null;
@@ -159,16 +159,9 @@ final class UserOwnerProcessorTest extends TestCase
         $operation = new \ApiPlatform\Metadata\Get();
         $this->tokenStorage->method('getToken')->willReturn(null);
 
-        $calls = [];
-        $this->persistProcessor->method('process')->willReturnCallback(function ($d) use (&$calls, $data) {
-            $calls[] = $d;
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('No authentication token found. Cannot set owner.');
 
-            return $data;
-        });
-
-        $result = $this->processor->process($data, $operation);
-        self::assertSame($data, $result);
-        self::assertNull($data->getTenant());
-        self::assertCount(1, $calls);
+        $this->processor->process($data, $operation);
     }
 }
