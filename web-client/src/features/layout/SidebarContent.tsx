@@ -1,4 +1,6 @@
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import { useEffect, useState } from 'react'
+
+import { SidebarRegistry, type SidebarSectionDef } from '@/lib/ui/sidebar/SidebarRegistry'
 
 import { registerDefaultSidebarSections } from '../ui/defaults_sidebar'
 import { SidebarHeader } from '../ui/sidebar/SidebarHeader'
@@ -11,8 +13,17 @@ interface SidebarContentProps {
 }
 
 export function SidebarContent({ onNavigate }: SidebarContentProps) {
-  const registry = SidebarRegistry.getInstance()
-  const sections = registry.getAll()
+  const [sections, setSections] = useState<SidebarSectionDef[]>(() =>
+    SidebarRegistry.getInstance().getAll(),
+  )
+
+  useEffect(() => {
+    const registry = SidebarRegistry.getInstance()
+
+    return registry.subscribe(() => {
+      setSections([...registry.getAll()])
+    })
+  }, [])
 
   return (
     <div className="flex h-full flex-col">

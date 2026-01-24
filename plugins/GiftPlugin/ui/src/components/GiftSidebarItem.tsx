@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Gift } from 'lucide-react'
 
-import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
+import { SidebarNavItem } from './SidebarNavItem'
 
 export function GiftSidebarItem({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation('gift-plugin')

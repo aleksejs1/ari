@@ -47,7 +47,7 @@ export class PluginLoader {
       {
         id: 'gift-plugin',
         enabled: true,
-        url: '/dist-plugins/gift/gift-plugin.js',
+        url: 'http://localhost:5001/gift-plugin.js',
       },
     ])
   }

@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react'
 
+import './index.css'
+
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
 

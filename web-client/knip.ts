@@ -1,7 +1,7 @@
 import type { KnipConfig } from 'knip'
 
 const config: KnipConfig = {
-  entry: ['src/main.tsx', 'src/plugins/*/index.tsx'],
+  entry: ['src/main.tsx', 'src/plugins/*/index.tsx', 'src/env.d.ts'],
   project: ['src/**/*.{ts,tsx}'],
   vitest: {
     entry: ['src/**/*.test.{ts,tsx}', 'src/test/setup.tsx'],
