@@ -9,6 +9,7 @@ parameters:
     paths:
         - src/
         - tests/
+        - plugins/
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
     doctrine:

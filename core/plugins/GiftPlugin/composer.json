@@ -1,0 +1,8 @@
+{
+    "name": "ari-plugins/gift-plugin",
+    "description": "Gift List Plugin",
+    "type": "symfony-bundle",
+    "require": {
+        "ari/core": "^0.1"
+    }
+}
