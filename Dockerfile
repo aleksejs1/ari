@@ -53,6 +53,11 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 # Switch to user
 USER developer
 
+# Create symlink for GiftPlugin (useful for production builds or when volumes are not mounted yet)
+# Note: For development with volumes, this symlink will vary effectively be overridden by the volume mount.
+RUN mkdir -p /app/core/plugins && \
+    ln -s /app/plugins/GiftPlugin /app/core/plugins/GiftPlugin
+
 # Expose port for symfony serve
 EXPOSE 8000
 

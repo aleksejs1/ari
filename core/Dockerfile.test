@@ -35,3 +35,8 @@ RUN addgroup -g 1000 developer \
 
 WORKDIR /app
 USER developer
+
+# Create symlink for plugins in test environment
+# This ensures that even if tests run without volume mounts (e.g. in CI), the structure matches
+RUN mkdir -p /app/plugins && \
+    ln -s /plugins/GiftPlugin /app/plugins/GiftPlugin
