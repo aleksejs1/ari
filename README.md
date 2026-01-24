@@ -1,27 +1,38 @@
-# Ari
+<p align="center">
+  <img src="assets/ari_avatar.png" alt="Ari Avatar" width="100" />
+</p>
 
-**Ari** is a self-hosted personal CRM built around **immutable history and reliable notifications**.
-  
-It is designed for people who want full control over their personal data, complete change history, and the ability to self-host with 100% privacy.
+<h1 align="center">Ari - Personal CRM</h1>
 
-Ari is an alternative to MonicaHQ, built with a strong emphasis on transparency, auditability, and longevity.
+<p align="center">
+  <a href="https://personal-ari.com/">Website</a>
+  &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+  <a href="https://app.personal-ari.com/">App</a>
+  &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+  <a href="https://docs.personal-ari.com/">Documentation</a>
+</p>
+
+<p align="center">
+  <strong>Ari</strong> is a self-hosted personal CRM built around <strong>immutable history and reliable notifications</strong>.
+</p>
+
+<p align="center">
+  It is designed for people who want full control over their personal data, complete change history, and the ability to self-host with 100% privacy.
+</p>
 
 ---
 
-## Live Demo
+## Table of contents
 
-Try Ari immediately without installing anything:
-
-👉 **[https://app.personal-ari.com/](https://app.personal-ari.com/)**
-
-*Use the **"Demo"** button on the login screen to create a temporary account populated with data.*
+- [Quick Start (Docker)](#quick-start-docker)
+- [Screenshots](#screenshots)
+- [Why this exists](#why-this-exists)
+- [Core principles](#core-principles)
+- [What exists today](#what-exists-today)
+- [Architecture at a glance](#architecture-at-a-glance)
+- [Project status & expectations](#project-status--expectations)
 
 ---
-
-## Resources
-
-- **Website**: [personal-ari.com](https://personal-ari.com/)
-- **Documentation**: [docs.personal-ari.com](https://docs.personal-ari.com/docs/getting-started/installation)
 
 ---
 ## Quick Start (Docker)
