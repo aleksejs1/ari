@@ -25,14 +25,11 @@
 ## Table of contents
 
 - [Quick Start (Docker)](#quick-start-docker)
-- [Screenshots](#screenshots)
 - [Why this exists](#why-this-exists)
 - [Core principles](#core-principles)
 - [What exists today](#what-exists-today)
 - [Architecture at a glance](#architecture-at-a-glance)
 - [Project status & expectations](#project-status--expectations)
-
----
 
 ---
 ## Quick Start (Docker)
