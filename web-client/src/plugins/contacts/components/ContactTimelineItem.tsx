@@ -15,7 +15,7 @@ interface ContactTimelineItemProps {
 }
 
 export function ContactTimelineItem({ log }: ContactTimelineItemProps) {
-  const { t, i18n } = useTranslation()
+  const { t, i18n } = useTranslation('contacts')
   const language = i18n.language
 
   const snapshotDetails = getLogSnapshotDetails(log, language)

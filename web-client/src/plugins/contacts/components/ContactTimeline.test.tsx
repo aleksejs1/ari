@@ -52,7 +52,7 @@ describe('ContactTimeline', () => {
     })
 
     render(<ContactTimeline contactId={mockContactId} />)
-    expect(screen.getByText('contacts.history.failedToLoadTimeline')).toBeInTheDocument()
+    expect(screen.getByText('history.failedToLoadTimeline')).toBeInTheDocument()
   })
 
   it('renders empty history message', () => {
@@ -63,7 +63,7 @@ describe('ContactTimeline', () => {
     })
 
     render(<ContactTimeline contactId={mockContactId} />)
-    expect(screen.getByText('contacts.history.noHistory')).toBeInTheDocument()
+    expect(screen.getByText('history.noHistory')).toBeInTheDocument()
   })
 
   it('renders timeline logs', () => {
@@ -80,7 +80,7 @@ describe('ContactTimeline', () => {
 
     render(<ContactTimeline contactId={mockContactId} />)
 
-    expect(screen.getByText('contacts.history.timeline')).toBeInTheDocument()
+    expect(screen.getByText('history.timeline')).toBeInTheDocument()
     const items = screen.getAllByTestId('timeline-item')
     expect(items).toHaveLength(2)
     expect(items[0]).toHaveTextContent('created - 1')
@@ -95,6 +95,6 @@ describe('ContactTimeline', () => {
     })
 
     render(<ContactTimeline contactId={mockContactId} fullHeight />)
-    expect(screen.queryByText('contacts.history.timeline')).not.toBeInTheDocument()
+    expect(screen.queryByText('history.timeline')).not.toBeInTheDocument()
   })
 })

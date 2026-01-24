@@ -19,7 +19,7 @@ export function ContactsPagination({
   currentPage,
   totalPages,
 }: ContactsPaginationProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">

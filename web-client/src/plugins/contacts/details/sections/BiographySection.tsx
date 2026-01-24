@@ -13,7 +13,7 @@ import {
 } from '../../useContacts'
 
 export const BiographySection = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   // Bio Mutations
   const handleCreateBioMutation = useCreateContactBiography()
@@ -48,7 +48,7 @@ export const BiographySection = ({ contact }: { contact: Contact }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t('contacts.biography')}</CardTitle>
+        <CardTitle className="text-base">{t('biography')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactBiographies.map((bio, i) => (

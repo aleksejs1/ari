@@ -34,7 +34,7 @@ export function ContactOrganizationInlineEdit({
   hideAddButton,
   className,
 }: ContactOrganizationInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
 
   const [name, setName] = useState(organization.name ?? '')
@@ -75,42 +75,42 @@ export function ContactOrganizationInlineEdit({
   const formContent = (
     <div className="flex flex-col gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="org-type">{t('contacts.typeLabel')}</Label>
+        <Label htmlFor="org-type">{t('typeLabel')}</Label>
         <Input
           id="org-type"
           value={type}
           onChange={(e) => setType(e.target.value)}
-          placeholder={t('contacts.organizationTypePlaceholder')}
+          placeholder={t('organizationTypePlaceholder')}
           className="h-8"
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="org-name">{t('contacts.organizationName')}</Label>
+        <Label htmlFor="org-name">{t('organizationName')}</Label>
         <Input
           id="org-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder={t('contacts.organizationNamePlaceholder')}
+          placeholder={t('organizationNamePlaceholder')}
           className="h-8"
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="org-title">{t('contacts.jobTitle')}</Label>
+        <Label htmlFor="org-title">{t('jobTitle')}</Label>
         <Input
           id="org-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={t('contacts.jobTitlePlaceholder')}
+          placeholder={t('jobTitlePlaceholder')}
           className="h-8"
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="org-department">{t('contacts.department')}</Label>
+        <Label htmlFor="org-department">{t('department')}</Label>
         <Input
           id="org-department"
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
-          placeholder={t('contacts.departmentPlaceholder')}
+          placeholder={t('departmentPlaceholder')}
           className="h-8"
         />
       </div>
@@ -149,15 +149,15 @@ export function ContactOrganizationInlineEdit({
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -168,7 +168,7 @@ export function ContactOrganizationInlineEdit({
   return (
     <InlineEditTrigger
       isExistent={hasOrganization}
-      label={t('contacts.organization')}
+      label={t('organization')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}

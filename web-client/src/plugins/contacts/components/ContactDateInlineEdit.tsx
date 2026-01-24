@@ -36,7 +36,7 @@ export function ContactDateInlineEdit({
   hideAddButton,
   className,
 }: ContactDateInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { formatDate } = useUserPrefs()
   const [open, setOpen] = useState(false)
 
@@ -77,14 +77,14 @@ export function ContactDateInlineEdit({
           value={dateValue}
           onChange={(d) => setDateValue(d || '')}
           className="h-8 flex-1"
-          aria-label={t('contacts.date')}
+          aria-label={t('date')}
         />
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={t('contacts.dateLabel')}
+          placeholder={t('dateLabel')}
           className="h-8 flex-1"
-          aria-label={t('contacts.dateLabel')}
+          aria-label={t('dateLabel')}
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -121,15 +121,15 @@ export function ContactDateInlineEdit({
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -140,7 +140,7 @@ export function ContactDateInlineEdit({
   return (
     <InlineEditTrigger
       isExistent={hasDate}
-      label={t('contacts.date')}
+      label={t('date')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}
@@ -150,7 +150,7 @@ export function ContactDateInlineEdit({
       {children || (
         <>
           <span className="font-medium">{date.date ? formatDate(date.date) : ''}</span>
-          <span className="text-gray-500">({date.text ?? t('contacts.noLabel')})</span>
+          <span className="text-gray-500">({date.text ?? t('noLabel')})</span>
         </>
       )}
     </InlineEditTrigger>

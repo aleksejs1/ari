@@ -14,13 +14,6 @@ vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),
 }))
 
-// Mock translations
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue?: string) => defaultValue || key,
-  }),
-}))
-
 // Mock ResizeObserver
 window.ResizeObserver = class ResizeObserver {
   observe() {
@@ -89,10 +82,10 @@ describe('UserMenu', () => {
 
     await user.click(screen.getByRole('button', { name: /open user menu/i }))
 
-    expect(await screen.findByText('Audit Logs')).toBeInTheDocument()
+    expect(await screen.findByText('app.navigation.auditLogs')).toBeInTheDocument()
 
-    expect(await screen.findByText('Settings')).toBeInTheDocument()
-    expect(await screen.findByText('Logout')).toBeInTheDocument()
+    expect(await screen.findByText('settings.title')).toBeInTheDocument()
+    expect(await screen.findByText('auth.logout')).toBeInTheDocument()
   })
 
   it('calls logout when logout button is clicked', async () => {
@@ -104,7 +97,7 @@ describe('UserMenu', () => {
     )
 
     await user.click(screen.getByRole('button', { name: /open user menu/i }))
-    await user.click(await screen.findByText('Logout'))
+    await user.click(await screen.findByText('auth.logout'))
 
     expect(mockLogout).toHaveBeenCalled()
   })

@@ -12,7 +12,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactFormEmail() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(true)
 
@@ -27,7 +27,7 @@ export function ContactFormEmail() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.emailAddresses')}
+      title={t('emailAddresses')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -40,7 +40,7 @@ export function ContactFormEmail() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addEmailAddress')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addEmailAddress')}
         </Button>
       }
     >
@@ -53,7 +53,7 @@ export function ContactFormEmail() {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input placeholder={t('contacts.emailAddress')} {...field} />
+                    <Input placeholder={t('emailAddress')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -67,7 +67,7 @@ export function ContactFormEmail() {
                   <FormControl>
                     <TypeAutocomplete
                       field="emailTypes"
-                      placeholder={t('contacts.emailTypePlaceholder')}
+                      placeholder={t('emailTypePlaceholder')}
                       {...field}
                     />
                   </FormControl>

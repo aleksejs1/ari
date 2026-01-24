@@ -10,7 +10,7 @@ import { DisplayItem } from '../../components/DisplayItem'
 import { useCreateContactDate, useDeleteContactDate, useUpdateContactDate } from '../../useContacts'
 
 export const DatesSection = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { formatDate } = useUserPrefs()
 
   // Date Mutations
@@ -41,7 +41,7 @@ export const DatesSection = ({ contact }: { contact: Contact }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t('contacts.dates')}</CardTitle>
+        <CardTitle className="text-base">{t('dates')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         {(Array.isArray(contact.contactDates) ? contact.contactDates : []).map((date, i) => (

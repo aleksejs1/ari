@@ -12,7 +12,7 @@ interface ContactModalBiographyProps {
 }
 
 export function ContactModalBiography({ onRemove }: ContactModalBiographyProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
 
   // We assume only 1 biography is allowed, so we access index 0
@@ -26,7 +26,7 @@ export function ContactModalBiography({ onRemove }: ContactModalBiographyProps) 
         render={({ field }) => (
           <FormItem className="flex-1">
             <FormControl>
-              <Textarea placeholder={t('contacts.biography')} className="resize-none" {...field} />
+              <Textarea placeholder={t('biography')} className="resize-none" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

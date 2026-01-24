@@ -12,7 +12,7 @@ interface ContactsHeaderProps {
 }
 
 export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHeaderProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [inputValue, setInputValue] = useState(search)
   const [prevSearch, setPrevSearch] = useState(search)
   const [isFocused, setIsFocused] = useState(false)
@@ -43,8 +43,8 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">{t('contacts.title')}</h2>
-        <p className="text-muted-foreground">{t('contacts.editDescription')}</p>
+        <h2 className="text-3xl font-bold tracking-tight">{t('title')}</h2>
+        <p className="text-muted-foreground">{t('editDescription')}</p>
       </div>
       <div className="flex w-full items-center gap-2 md:w-auto">
         <div className="relative w-full md:w-64">
@@ -61,7 +61,7 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
         </div>
         <Button onClick={onCreate}>
           <Plus className="mr-2 h-4 w-4" />
-          {t('contacts.create')}
+          {t('create')}
         </Button>
       </div>
     </div>

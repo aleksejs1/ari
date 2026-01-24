@@ -43,8 +43,8 @@ describe('ContactPhoneInlineEdit', () => {
     await user.hover(screen.getByText('123-456-7890'))
     await user.click(screen.getByRole('button', { name: 'common.edit' }))
 
-    const valueInput = await screen.findByLabelText('contacts.phone')
-    const typeInput = screen.getByLabelText('contacts.phoneType')
+    const valueInput = await screen.findByLabelText('phone')
+    const typeInput = screen.getByLabelText('phoneType')
 
     await user.clear(valueInput)
     await user.type(valueInput, '987-654-3210')
@@ -71,14 +71,14 @@ describe('ContactPhoneInlineEdit', () => {
     // Click the edit button
     await user.click(screen.getByRole('button', { name: 'common.edit' }))
 
-    await screen.findByLabelText('contacts.phone')
+    await screen.findByLabelText('phone')
 
     const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
     await user.click(deleteBtn)
 
     // Confirm dialog
-    expect(await screen.findByText('contacts.deleteConfirm')).toBeVisible()
-    await user.click(screen.getByRole('button', { name: 'contacts.delete' }))
+    expect(await screen.findByText('deleteConfirm')).toBeVisible()
+    await user.click(screen.getByRole('button', { name: 'delete' }))
 
     expect(onDelete).toHaveBeenCalled()
   })

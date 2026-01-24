@@ -65,7 +65,7 @@ function AddressForm({
   onCancel,
   onSave,
 }: AddressFormProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const handleDeleteConfirm = () => {
@@ -80,54 +80,54 @@ function AddressForm({
           value={type}
           onChange={(e) => setType(e.target.value)}
           field="addressTypes"
-          placeholder={t('contacts.addressTypePlaceholder')}
+          placeholder={t('addressTypePlaceholder')}
           className="h-8"
-          aria-label={t('contacts.addressType')}
+          aria-label={t('addressType')}
         />
         <Input
           value={street}
           onChange={(e) => setStreet(e.target.value)}
-          placeholder={t('contacts.addressStreet')}
+          placeholder={t('addressStreet')}
           className="h-8"
-          aria-label={t('contacts.addressStreet')}
+          aria-label={t('addressStreet')}
         />
         <Input
           value={streetExtended}
           onChange={(e) => setStreetExtended(e.target.value)}
-          placeholder={t('contacts.addressStreetExtended')}
+          placeholder={t('addressStreetExtended')}
           className="h-8"
-          aria-label={t('contacts.addressStreetExtended')}
+          aria-label={t('addressStreetExtended')}
         />
         <div className="grid grid-cols-2 gap-2">
           <Input
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            placeholder={t('contacts.addressCity')}
+            placeholder={t('addressCity')}
             className="h-8"
-            aria-label={t('contacts.addressCity')}
+            aria-label={t('addressCity')}
           />
           <Input
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            placeholder={t('contacts.addressRegion')}
+            placeholder={t('addressRegion')}
             className="h-8"
-            aria-label={t('contacts.addressRegion')}
+            aria-label={t('addressRegion')}
           />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Input
             value={postalCode}
             onChange={(e) => setPostalCode(e.target.value)}
-            placeholder={t('contacts.addressPostalCode')}
+            placeholder={t('addressPostalCode')}
             className="h-8"
-            aria-label={t('contacts.addressPostalCode')}
+            aria-label={t('addressPostalCode')}
           />
           <Input
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            placeholder={t('contacts.addressCountry')}
+            placeholder={t('addressCountry')}
             className="h-8"
-            aria-label={t('contacts.addressCountry')}
+            aria-label={t('addressCountry')}
           />
         </div>
       </div>
@@ -160,15 +160,15 @@ function AddressForm({
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -183,7 +183,7 @@ export function ContactAddressInlineEdit({
   onDelete,
   children,
 }: ContactAddressInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
   const [type, setType] = useState(address.type ?? '')
   const [street, setStreet] = useState(address.street ?? '')
@@ -225,7 +225,7 @@ export function ContactAddressInlineEdit({
   return (
     <InlineEditTrigger
       isExistent={hasAddress}
-      label={t('contacts.address')}
+      label={t('address')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={

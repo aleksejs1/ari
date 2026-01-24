@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 
@@ -9,7 +9,7 @@ import { GroupsSidebarSection } from './extensions/GroupsSidebarSection'
 
 const GroupsPage = lazy(() => import('./pages/GroupsPage'))
 
-export class GroupsPlugin implements Plugin {
+export class GroupsPlugin extends BasePlugin {
   name = 'groups'
 
   register(): void {

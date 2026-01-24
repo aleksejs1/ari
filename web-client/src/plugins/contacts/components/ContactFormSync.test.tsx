@@ -53,7 +53,7 @@ describe('ContactForm Synchronization', () => {
       />,
     )
 
-    expect(screen.getByPlaceholderText('contacts.familyName')).toHaveValue('Doe')
+    expect(screen.getByPlaceholderText('familyName')).toHaveValue('Doe')
 
     // Simulate after-save prop update with server-provided ID
     rerender(
@@ -73,7 +73,7 @@ describe('ContactForm Synchronization', () => {
     await waitFor(() => {
       // We can't easily check the internal state of RHF without devtools or exports,
       // but we can check if it still has the correct value.
-      expect(screen.getByPlaceholderText('contacts.familyName')).toHaveValue('Doe')
+      expect(screen.getByPlaceholderText('familyName')).toHaveValue('Doe')
     })
   })
 
@@ -106,7 +106,7 @@ describe('ContactForm Synchronization', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.givenName')).toHaveValue('JOHN')
+      expect(screen.getByPlaceholderText('givenName')).toHaveValue('JOHN')
     })
   })
 })

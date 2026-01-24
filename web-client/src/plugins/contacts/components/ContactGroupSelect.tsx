@@ -14,7 +14,7 @@ interface ContactGroupSelectProps {
 }
 
 export function ContactGroupSelect({ value = [], onChange }: ContactGroupSelectProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { data: groups = [] } = useGroups()
   const [open, setOpen] = React.useState(false)
   const [inputValue, setInputValue] = React.useState('')
@@ -136,7 +136,7 @@ export function ContactGroupSelect({ value = [], onChange }: ContactGroupSelectP
                 ref={inputRef}
                 type="text"
                 className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-                placeholder={value.length === 0 ? t('contacts.selectGroup') : ''}
+                placeholder={value.length === 0 ? t('selectGroup') : ''}
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value)

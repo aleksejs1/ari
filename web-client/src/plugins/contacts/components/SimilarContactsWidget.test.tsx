@@ -35,7 +35,7 @@ describe('SimilarContactsWidget', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('contacts.similarContacts')).toBeInTheDocument()
+    expect(screen.getByText('similarContacts')).toBeInTheDocument()
   })
 
   it('renders nothing if error occurs', () => {
@@ -88,7 +88,7 @@ describe('SimilarContactsWidget', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('contacts.similarContacts')).toBeInTheDocument()
+    expect(screen.getByText('similarContacts')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem')).toHaveLength(5)
     expect(screen.getByText('Contact 1')).toBeInTheDocument()
     expect(screen.queryByText('Contact 6')).not.toBeInTheDocument()
@@ -110,7 +110,7 @@ describe('SimilarContactsWidget', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.queryByTitle('contacts.addRelation')).not.toBeInTheDocument()
+    expect(screen.queryByTitle('addRelation')).not.toBeInTheDocument()
   })
 
   it('opens dialog when "Add Relation" is clicked', () => {
@@ -127,9 +127,9 @@ describe('SimilarContactsWidget', () => {
       </MemoryRouter>,
     )
 
-    const addButton = getByTitle('contacts.addRelation')
+    const addButton = getByTitle('addRelation')
     fireEvent.click(addButton)
 
-    expect(getByText('contacts.addRelation Jane')).toBeInTheDocument()
+    expect(getByText('addRelation Jane')).toBeInTheDocument()
   })
 })

@@ -50,7 +50,7 @@ vi.mock('react-i18next', () => ({
 describe('ContactFormBiography', () => {
   it('renders existing biographies', () => {
     render(<Wrapper />)
-    fireEvent.click(screen.getByText('contacts.biography'))
+    fireEvent.click(screen.getByText('biography'))
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
     // Check type field - TypeAutocomplete renders as input
     const inputs = screen.getAllByRole('textbox')
@@ -61,22 +61,22 @@ describe('ContactFormBiography', () => {
     render(<WrapperEmpty />)
 
     // Check initial state: no textareas
-    expect(screen.queryByPlaceholderText('contacts.biographyPlaceholder')).not.toBeInTheDocument()
+    expect(screen.queryByPlaceholderText('biographyPlaceholder')).not.toBeInTheDocument()
 
     // Expand first
-    fireEvent.click(screen.getByText('contacts.biography'))
+    fireEvent.click(screen.getByText('biography'))
 
-    fireEvent.click(screen.getByText('contacts.addBiography'))
+    fireEvent.click(screen.getByText('addBiography'))
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.biographyPlaceholder')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('biographyPlaceholder')).toBeInTheDocument()
     })
   })
 
   it('removes a biography', async () => {
     render(<Wrapper />)
 
-    fireEvent.click(screen.getByText('contacts.biography'))
+    fireEvent.click(screen.getByText('biography'))
     expect(screen.getByDisplayValue('Initial Bio')).toBeInTheDocument()
 
     // Find the trash icon button

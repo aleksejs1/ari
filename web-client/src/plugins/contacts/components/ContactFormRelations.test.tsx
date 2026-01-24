@@ -72,11 +72,11 @@ describe('ContactFormRelations', () => {
     )
 
     // Expand
-    fireEvent.click(screen.getByText('contacts.relations'))
+    fireEvent.click(screen.getByText('relations'))
 
-    fireEvent.click(screen.getByText('contacts.addRelation'))
+    fireEvent.click(screen.getByText('addRelation'))
 
-    expect(screen.queryByText('contacts.noContacts')).not.toBeInTheDocument()
+    expect(screen.queryByText('noContacts')).not.toBeInTheDocument()
     expect(screen.getByTestId('autocomplete')).toBeInTheDocument()
   })
 
@@ -93,7 +93,7 @@ describe('ContactFormRelations', () => {
     )
 
     // Expand
-    fireEvent.click(screen.getByText('contacts.relations'))
+    fireEvent.click(screen.getByText('relations'))
 
     expect(screen.getByTestId('autocomplete')).toBeInTheDocument()
 
@@ -113,7 +113,7 @@ describe('ContactFormRelations', () => {
     )
 
     // Expand
-    fireEvent.click(screen.getByText('contacts.relations'))
+    fireEvent.click(screen.getByText('relations'))
 
     expect(screen.getByText('John Doe')).toBeInTheDocument()
   })

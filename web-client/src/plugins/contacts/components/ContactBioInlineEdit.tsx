@@ -34,7 +34,7 @@ export function ContactBioInlineEdit({
   hideAddButton,
   className,
 }: ContactBioInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
 
   const [value, setValue] = useState(bio.value ?? '')
@@ -71,16 +71,16 @@ export function ContactBioInlineEdit({
         <Input
           value={type}
           onChange={(e) => setType(e.target.value)}
-          placeholder={t('contacts.typeLabel')}
+          placeholder={t('typeLabel')}
           className="h-8"
-          aria-label={t('contacts.type')}
+          aria-label={t('type')}
         />
         <Textarea
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('contacts.biography')}
+          placeholder={t('biography')}
           className="min-h-[100px]"
-          aria-label={t('contacts.biography')}
+          aria-label={t('biography')}
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -117,15 +117,15 @@ export function ContactBioInlineEdit({
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -136,7 +136,7 @@ export function ContactBioInlineEdit({
   return (
     <InlineEditTrigger
       isExistent={hasBio}
-      label={t('contacts.biography')}
+      label={t('biography')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}

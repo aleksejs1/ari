@@ -10,7 +10,7 @@ import type { ContactFormValues } from '@/types/models'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactModalPhones() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
 
   const { fields, append, remove } = useFieldArray({
@@ -32,7 +32,7 @@ export function ContactModalPhones() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input placeholder={t('contacts.phone')} {...field} />
+                  <Input placeholder={t('phone')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -47,7 +47,7 @@ export function ContactModalPhones() {
                   {/* Reusing TypeAutocomplete but might need styling tweaks */}
                   <TypeAutocomplete
                     field="phoneTypes"
-                    placeholder={t('contacts.type')} // "Label" in Google
+                    placeholder={t('type')} // "Label" in Google
                     className="h-9 border-none px-0 shadow-none focus-visible:ring-0" // Inline style look?
                     {...field}
                   />
@@ -74,7 +74,7 @@ export function ContactModalPhones() {
         className="w-full justify-start pl-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
         onClick={() => append({ value: '', type: 'Mobile' })}
       >
-        <Plus className="mr-2 h-4 w-4" /> {t('contacts.addPhone')}
+        <Plus className="mr-2 h-4 w-4" /> {t('addPhone')}
       </Button>
     </div>
   )

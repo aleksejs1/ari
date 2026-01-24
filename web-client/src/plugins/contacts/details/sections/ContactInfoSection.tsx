@@ -26,7 +26,7 @@ import {
 } from '../../useContacts'
 
 export const ContactInfoSection = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   // Phone Mutations
   const handleCreatePhoneMutation = useCreateContactPhone()
@@ -97,7 +97,7 @@ export const ContactInfoSection = ({ contact }: { contact: Contact }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t('contacts.contactInfo')}</CardTitle>
+        <CardTitle className="text-base">{t('contactInfo')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         {(Array.isArray(contact.phoneNumbers) ? contact.phoneNumbers : []).map((phone, i) => (

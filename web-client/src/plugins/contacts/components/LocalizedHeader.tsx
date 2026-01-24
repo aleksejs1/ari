@@ -5,6 +5,6 @@ interface LocalizedHeaderProps {
 }
 
 export function LocalizedHeader({ name }: LocalizedHeaderProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   return <>{t(name)}</>
 }

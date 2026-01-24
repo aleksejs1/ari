@@ -12,7 +12,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactFormBiography() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -27,7 +27,7 @@ export function ContactFormBiography() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.biography')}
+      title={t('biography')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -40,7 +40,7 @@ export function ContactFormBiography() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addBiography')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addBiography')}
         </Button>
       }
     >
@@ -54,7 +54,7 @@ export function ContactFormBiography() {
                 <FormItem className="flex-1">
                   <FormControl>
                     <Textarea
-                      placeholder={t('contacts.biographyPlaceholder')}
+                      placeholder={t('biographyPlaceholder')}
                       className="min-h-[100px]"
                       {...field}
                     />
@@ -71,7 +71,7 @@ export function ContactFormBiography() {
                   <FormControl>
                     <TypeAutocomplete
                       field="biographyTypes"
-                      placeholder={t('contacts.typePlaceholder')}
+                      placeholder={t('typePlaceholder')}
                       {...field}
                     />
                   </FormControl>

@@ -12,7 +12,7 @@ interface ContactModalOrganizationProps {
 }
 
 export function ContactModalOrganization({ onRemove }: ContactModalOrganizationProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
 
   // We assume only 1 organization is allowed, so we access index 0
@@ -27,11 +27,7 @@ export function ContactModalOrganization({ onRemove }: ContactModalOrganizationP
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder={t('contacts.companyName')}
-                  {...field}
-                  value={field.value || ''}
-                />
+                <Input placeholder={t('companyName')} {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -44,11 +40,7 @@ export function ContactModalOrganization({ onRemove }: ContactModalOrganizationP
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input
-                    placeholder={t('contacts.jobTitle')}
-                    {...field}
-                    value={field.value || ''}
-                  />
+                  <Input placeholder={t('jobTitle')} {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -60,11 +52,7 @@ export function ContactModalOrganization({ onRemove }: ContactModalOrganizationP
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input
-                    placeholder={t('contacts.department')}
-                    {...field}
-                    value={field.value || ''}
-                  />
+                  <Input placeholder={t('department')} {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

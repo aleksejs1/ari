@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 
@@ -10,7 +10,7 @@ import { SecuritySidebarSection } from './extensions/SecuritySidebarSection'
 const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage'))
 const DeleteAccountPage = lazy(() => import('./pages/DeleteAccountPage'))
 
-export class UserSecurityPlugin implements Plugin {
+export class UserSecurityPlugin extends BasePlugin {
   name = 'user-security'
 
   register(): void {

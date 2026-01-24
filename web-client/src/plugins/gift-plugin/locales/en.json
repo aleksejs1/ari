@@ -1,0 +1,24 @@
+{
+  "title": "Gift Lists",
+  "sidebar": "Gifts",
+  "actions": {
+    "addList": "Add List",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "dialog": {
+    "createTitle": "Create Gift List",
+    "editTitle": "Edit Gift List",
+    "createDescription": "Fill in the details to create a new gift list.",
+    "editDescription": "Update the details of your gift list."
+  },
+  "fields": {
+    "name": "Name",
+    "description": "Description",
+    "eventDate": "Event Date"
+  },
+  "deleteConfirm": "This action cannot be undone. This will permanently delete the gift list.",
+  "error": {
+    "generic": "An error occurred while saving."
+  }
+}

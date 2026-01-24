@@ -63,7 +63,7 @@ const getContactFormDefaultValues = (
     ...d,
     contactNames: d.contactNames?.length ? d.contactNames : [{ given: '', family: '' }],
     contactDates: enforceMin(d.contactDates, {
-      text: t('contacts.birthday'),
+      text: t('birthday'),
       date: '',
     }),
     phoneNumbers: enforceMin(d.phoneNumbers, { value: '', type: 'Mobile' }),
@@ -156,7 +156,7 @@ export function ContactModalForm({
   onSubmit,
   isSubmitting,
 }: ContactModalFormProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const contactSchema = getContactSchema(t)
   const { mutateAsync: createGroup } = useCreateGroup()
 
@@ -199,14 +199,10 @@ export function ContactModalForm({
       <DialogContent className="max-w-2xl overflow-hidden bg-background p-0 sm:max-w-[600px]">
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>
-            {(defaultValues as any)?.['@id']
-              ? t('contacts.editContact')
-              : t('contacts.createContact')}
+            {(defaultValues as any)?.['@id'] ? t('editContact') : t('createContact')}
           </DialogTitle>
           <DialogDescription>
-            {(defaultValues as any)?.['@id']
-              ? t('contacts.editDescription')
-              : t('contacts.createDescription')}
+            {(defaultValues as any)?.['@id'] ? t('editDescription') : t('createDescription')}
           </DialogDescription>
         </DialogHeader>
 
@@ -275,7 +271,7 @@ export function ContactModalForm({
                         ])
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" /> {t('contacts.addCompany')}
+                      <Plus className="mr-2 h-4 w-4" /> {t('addCompany')}
                     </Button>
                   )}
                 </div>
@@ -302,7 +298,7 @@ export function ContactModalForm({
                         form.setValue('contactBiographies', [{ value: '', type: 'Bio' }])
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" /> {t('contacts.addBio')}
+                      <Plus className="mr-2 h-4 w-4" /> {t('addBio')}
                     </Button>
                   )}
                 </div>
@@ -349,7 +345,7 @@ export function ContactModalForm({
                         // Do not set value here, keep it empty array but show field
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" /> {t('contacts.addGroup')}
+                      <Plus className="mr-2 h-4 w-4" /> {t('addGroup')}
                     </Button>
                   )}
                 </div>

@@ -30,24 +30,24 @@ describe('ContactForm Phone Numbers', () => {
   it('adds and removes phone number fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    // fireEvent.click(screen.getByText('contacts.addPhoneNumber'))
+    // fireEvent.click(screen.getByText('addPhoneNumber'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('contacts.phoneNumber')).toHaveLength(1)
+      expect(screen.getAllByPlaceholderText('phoneNumber')).toHaveLength(1)
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.phoneNumber'), {
+    fireEvent.change(screen.getByPlaceholderText('phoneNumber'), {
       target: { value: '+123456789' },
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.phoneTypePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText('phoneTypePlaceholder'), {
       target: { value: 'Work' },
     })
 
-    fireEvent.click(screen.getByText('contacts.addPhoneNumber'))
+    fireEvent.click(screen.getByText('addPhoneNumber'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('contacts.phoneNumber')).toHaveLength(2)
+      expect(screen.getAllByPlaceholderText('phoneNumber')).toHaveLength(2)
     })
   })
 
@@ -55,20 +55,20 @@ describe('ContactForm Phone Numbers', () => {
     const onSubmit = vi.fn()
     render(<ContactForm onSubmit={onSubmit} />)
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.givenName'), {
+    fireEvent.change(screen.getByPlaceholderText('givenName'), {
       target: { value: 'John' },
     })
 
-    // fireEvent.click(screen.getByText('contacts.addPhoneNumber'))
+    // fireEvent.click(screen.getByText('addPhoneNumber'))
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.phoneNumber')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('phoneNumber')).toBeInTheDocument()
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.phoneNumber'), {
+    fireEvent.change(screen.getByPlaceholderText('phoneNumber'), {
       target: { value: '+123456789' },
     })
-    fireEvent.change(screen.getByPlaceholderText('contacts.phoneTypePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText('phoneTypePlaceholder'), {
       target: { value: 'Work' },
     })
 

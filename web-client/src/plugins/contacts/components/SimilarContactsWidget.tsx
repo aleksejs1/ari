@@ -36,7 +36,7 @@ const getContactDisplayName = (contact: Contact, t: (key: string) => string) => 
     }
   }
 
-  return t('contacts.noName')
+  return t('noName')
 }
 
 const SimilarContactItem = ({
@@ -48,7 +48,7 @@ const SimilarContactItem = ({
   onAddRelation: (contact: Contact) => void
   isAlreadyRelated: boolean
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const id = contact['@id']?.split('/').pop()
   const displayName = getContactDisplayName(contact, t)
   const organizationName = contact.contactOrganizations?.[0]?.name
@@ -66,7 +66,7 @@ const SimilarContactItem = ({
           variant="ghost"
           size="sm"
           onClick={() => onAddRelation(contact)}
-          title={t('contacts.addRelation')}
+          title={t('addRelation')}
         >
           <UserPlus className="h-4 w-4" />
         </Button>
@@ -88,7 +88,7 @@ const RelationDialog = ({
   contact: Contact | null
   isSaving: boolean
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [relationType, setRelationType] = useState('')
 
   return (
@@ -96,15 +96,15 @@ const RelationDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t('contacts.addRelation')} {contact?.displayName}
+            {t('addRelation')} {contact?.displayName}
           </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="relation-type">{t('contacts.relationType')}</Label>
+            <Label htmlFor="relation-type">{t('relationType')}</Label>
             <Input
               id="relation-type"
-              placeholder={t('contacts.relationTypePlaceholder')}
+              placeholder={t('relationTypePlaceholder')}
               value={relationType}
               onChange={(e) => setRelationType(e.target.value)}
               list="predefined-relations-quick"
@@ -112,7 +112,7 @@ const RelationDialog = ({
             <datalist id="predefined-relations-quick">
               {PREDEFINED_RELATIONS.map((type) => (
                 <option key={type} value={type}>
-                  {t(`contacts.relationTypes.${type}`)}
+                  {t(`relationTypes.${type}`)}
                 </option>
               ))}
             </datalist>
@@ -135,7 +135,7 @@ export function SimilarContactsWidget({
   contactId,
   existingRelations,
 }: SimilarContactsWidgetProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { data: similarContacts, isLoading, error } = useSimilarContacts(contactId)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
@@ -145,7 +145,7 @@ export function SimilarContactsWidget({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('contacts.similarContacts')}</CardTitle>
+          <CardTitle>{t('similarContacts')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="py-4 text-center text-muted-foreground">{t('app.loading')}</div>
@@ -189,7 +189,7 @@ export function SimilarContactsWidget({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>{t('contacts.similarContacts')}</CardTitle>
+          <CardTitle>{t('similarContacts')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-4">

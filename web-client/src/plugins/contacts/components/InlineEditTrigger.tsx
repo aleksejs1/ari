@@ -27,7 +27,7 @@ export function InlineEditTrigger({
   hideAddButton,
   className,
 }: InlineEditTriggerProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   if (!isExistent && hideAddButton) {
     return (

@@ -26,7 +26,7 @@ interface ContactSheetProps {
 export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
   const createMutation = useCreateContact()
   const updateMutation = useUpdateContact()
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   // Transform Contact to FormValues if editing
   const defaultValues = contact ? mapContactToFormValues(contact) : undefined
@@ -48,9 +48,9 @@ export function ContactSheet({ isOpen, onClose, contact }: ContactSheetProps) {
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="overflow-y-auto sm:max-w-xl">
         <SheetHeader>
-          <SheetTitle>{contact ? t('contacts.edit') : t('contacts.create')}</SheetTitle>
+          <SheetTitle>{contact ? t('edit') : t('create')}</SheetTitle>
           <SheetDescription>
-            {contact ? t('contacts.editDescription') : t('contacts.createDescription')}
+            {contact ? t('editDescription') : t('createDescription')}
           </SheetDescription>
         </SheetHeader>
         <div className="py-4">

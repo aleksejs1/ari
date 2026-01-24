@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 
@@ -18,10 +18,14 @@ const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'))
 const ContactTimelinePage = lazy(() => import('./pages/ContactTimelinePage'))
 
-export class ContactsPlugin implements Plugin {
+import en from './locales/en.json'
+import ru from './locales/ru.json'
+
+export class ContactsPlugin extends BasePlugin {
   name = 'contacts'
 
   register(): void {
+    this.registerTranslations({ en, ru })
     const routeRegistry = RouteRegistry.getInstance()
     const topMenuRegistry = TopMenuRegistry.getInstance()
 
@@ -69,12 +73,12 @@ export class ContactsPlugin implements Plugin {
           return null
         }
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation()
+        const { t } = useTranslation('contacts')
 
         return (
           <Card className="md:col-span-2">
             <CardHeader>
-              <CardTitle>{t('contacts.history.title')}</CardTitle>
+              <CardTitle>{t('history.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ContactTimeline contactId={contact.id.toString()} />

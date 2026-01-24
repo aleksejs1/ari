@@ -18,6 +18,7 @@ void i18n
       },
     },
     fallbackLng: 'en',
+    fallbackNS: 'translation',
     interpolation: {
       escapeValue: false,
     },

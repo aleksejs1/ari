@@ -46,8 +46,8 @@ describe('ContactEmailInlineEdit', () => {
     await user.hover(screen.getByText('test@example.com'))
     await user.click(screen.getByRole('button', { name: 'common.edit' }))
 
-    const valueInput = await screen.findByLabelText('contacts.email')
-    const typeInput = screen.getByLabelText('contacts.emailType')
+    const valueInput = await screen.findByLabelText('email')
+    const typeInput = screen.getByLabelText('emailType')
 
     await user.clear(valueInput)
     await user.type(valueInput, 'new@example.com')
@@ -74,14 +74,14 @@ describe('ContactEmailInlineEdit', () => {
     // Click the edit button
     await user.click(screen.getByRole('button', { name: 'common.edit' }))
 
-    await screen.findByLabelText('contacts.email')
+    await screen.findByLabelText('email')
 
     const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
     await user.click(deleteBtn)
 
     // Confirm dialog
-    expect(await screen.findByText('contacts.deleteConfirm')).toBeVisible()
-    await user.click(screen.getByRole('button', { name: 'contacts.delete' }))
+    expect(await screen.findByText('deleteConfirm')).toBeVisible()
+    await user.click(screen.getByRole('button', { name: 'delete' }))
 
     expect(onDelete).toHaveBeenCalled()
   })

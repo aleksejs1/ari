@@ -134,7 +134,7 @@ describe('ContactNameInlineEdit', () => {
     await userEvent.click(deleteButton)
 
     // Modal should be open
-    expect(await screen.findByText('contacts.deleteConfirm')).toBeInTheDocument()
+    expect(await screen.findByText('deleteConfirm')).toBeInTheDocument()
 
     // Confirm delete inside modal
     // Note: There might be multiple "Delete" strings/buttons.

@@ -85,7 +85,7 @@ describe('ContactsPage', () => {
     } as any)
 
     render(<ContactsPage />)
-    expect(screen.getByText('contacts.loading')).toBeInTheDocument()
+    expect(screen.getByText('loading')).toBeInTheDocument()
   })
 
   it('renders error state', () => {
@@ -97,7 +97,7 @@ describe('ContactsPage', () => {
     } as any)
 
     render(<ContactsPage />)
-    expect(screen.getByText('contacts.error')).toBeInTheDocument()
+    expect(screen.getByText('error')).toBeInTheDocument()
   })
 
   it('renders contacts table', () => {

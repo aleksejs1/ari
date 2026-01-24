@@ -10,7 +10,7 @@ import type { ContactFormValues } from '@/types/models'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactModalEmails() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
 
   const { fields, append, remove } = useFieldArray({
@@ -28,7 +28,7 @@ export function ContactModalEmails() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input placeholder={t('contacts.email')} {...field} />
+                  <Input placeholder={t('email')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -42,7 +42,7 @@ export function ContactModalEmails() {
                 <FormControl>
                   <TypeAutocomplete
                     field="emailTypes"
-                    placeholder={t('contacts.type')}
+                    placeholder={t('type')}
                     className="h-9 border-none px-0 shadow-none focus-visible:ring-0"
                     {...field}
                   />
@@ -69,7 +69,7 @@ export function ContactModalEmails() {
         className="w-full justify-start pl-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
         onClick={() => append({ value: '', type: 'Personal' })}
       >
-        <Plus className="mr-2 h-4 w-4" /> {t('contacts.addEmail')}
+        <Plus className="mr-2 h-4 w-4" /> {t('addEmail')}
       </Button>
     </div>
   )

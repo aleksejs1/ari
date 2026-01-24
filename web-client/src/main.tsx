@@ -11,6 +11,7 @@ import { AuditLogsPlugin } from './plugins/audit-logs'
 import { ContactGraphPlugin } from './plugins/contact-graph'
 import { ContactsPlugin } from './plugins/contacts'
 import { DashboardPlugin } from './plugins/dashboard'
+import { GiftPlugin } from './plugins/gift-plugin'
 import { GoogleImportPlugin } from './plugins/google-import'
 import { GroupsPlugin } from './plugins/groups'
 import { NotificationsPlugin } from './plugins/notifications'
@@ -35,6 +36,7 @@ new NotificationsPlugin().register()
 new SessionsPlugin().register()
 new UserSecurityPlugin().register()
 new SettingsPlugin().register()
+new GiftPlugin().register()
 
 // registerDashboardWidgets() is now called inside DashboardPlugin.register()
 

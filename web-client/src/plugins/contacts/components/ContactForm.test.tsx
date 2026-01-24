@@ -40,14 +40,14 @@ describe('ContactForm', () => {
   it('renders correctly with default values', () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    expect(screen.getByText('contacts.names')).toBeInTheDocument()
-    // expect(screen.getByText('contacts.dates')).toBeInTheDocument()
+    expect(screen.getByText('names')).toBeInTheDocument()
+    // expect(screen.getByText('dates')).toBeInTheDocument()
     // Wait, dates section header might be inside the component which is not always visible if empty?
     // Looking at source, <ContactFormNames /> returns JSX.
     // We assume sub-components render headers.
 
     // Check initial fields (one empty name)
-    expect(screen.getAllByPlaceholderText('contacts.givenName')).toHaveLength(1)
+    expect(screen.getAllByPlaceholderText('givenName')).toHaveLength(1)
   })
 
   it('validates required fields', async () => {
@@ -70,12 +70,12 @@ describe('ContactForm', () => {
     render(<ContactForm onSubmit={onSubmit} />)
 
     // Fill required name
-    fireEvent.change(screen.getByPlaceholderText('contacts.givenName'), {
+    fireEvent.change(screen.getByPlaceholderText('givenName'), {
       target: { value: 'John' },
     })
 
     // Add assertion
-    expect(screen.getByPlaceholderText('contacts.givenName')).toHaveValue('John')
+    expect(screen.getByPlaceholderText('givenName')).toHaveValue('John')
   })
 
   it('submits form data correctly including groups', async () => {
@@ -88,7 +88,7 @@ describe('ContactForm', () => {
 
     render(<ContactForm onSubmit={onSubmit} />)
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.givenName'), {
+    fireEvent.change(screen.getByPlaceholderText('givenName'), {
       target: { value: 'John' },
     })
 

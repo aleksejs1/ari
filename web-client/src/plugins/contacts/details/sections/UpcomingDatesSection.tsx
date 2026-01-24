@@ -8,7 +8,7 @@ import type { Contact } from '@/types/models'
 import { DisplayItem } from '../../components/DisplayItem'
 
 export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { formatDate } = useUserPrefs()
   const upcomingDates = (Array.isArray(contact.contactDates) ? contact.contactDates : [])?.filter(
     (d) => d.nextAnniversaryDate,
@@ -21,7 +21,7 @@ export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t('contacts.nextAnniversary')}</CardTitle>
+        <CardTitle className="text-base">{t('nextAnniversary')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         {upcomingDates.map((date, i) => (

@@ -10,7 +10,7 @@ import type { ContactFormValues } from '@/types/models'
 import { TypeAutocomplete } from './TypeAutocomplete' // Reusing generic type autocomplete for date label?
 
 export function ContactModalDates() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
 
   const { fields, append, remove } = useFieldArray({
@@ -36,7 +36,7 @@ export function ContactModalDates() {
                    */}
                   <Input
                     type="date"
-                    placeholder={t('contacts.date')}
+                    placeholder={t('date')}
                     {...field}
                     value={String(field.value)}
                   />
@@ -54,7 +54,7 @@ export function ContactModalDates() {
                 <FormControl>
                   <TypeAutocomplete
                     field="dateTypes" // "Birthday", "Anniversary", etc.
-                    placeholder={t('contacts.label')}
+                    placeholder={t('label')}
                     className="h-9 border-none px-0 shadow-none focus-visible:ring-0"
                     {...field}
                   />
@@ -81,7 +81,7 @@ export function ContactModalDates() {
         className="w-full justify-start pl-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
         onClick={() => append({ text: 'Birthday', date: '' })}
       >
-        <Plus className="mr-2 h-4 w-4" /> {t('contacts.addDate')}
+        <Plus className="mr-2 h-4 w-4" /> {t('addDate')}
       </Button>
     </div>
   )

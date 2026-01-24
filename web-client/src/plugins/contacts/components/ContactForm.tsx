@@ -47,7 +47,7 @@ function useContactForm(
   defaultValues: ContactFormValues | undefined,
   onSubmit: (data: ContactFormValues) => void,
 ) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const contactSchema = getContactSchema(t)
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema) as any,

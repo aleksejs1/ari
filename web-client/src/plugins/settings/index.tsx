@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { settingsRegistry } from '@/lib/settings/SettingsRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
@@ -13,7 +13,7 @@ import { RegionalSettingsTab } from './tabs/RegionalSettingsTab'
 
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 
-export class SettingsPlugin implements Plugin {
+export class SettingsPlugin extends BasePlugin {
   name = 'settings'
 
   register(): void {

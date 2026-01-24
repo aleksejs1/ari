@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 
@@ -11,7 +11,7 @@ const NotificationChannelsPage = lazy(() => import('./pages/NotificationChannels
 const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))
 const NotificationPolicyFormPage = lazy(() => import('./pages/NotificationPolicyFormPage'))
 
-export class NotificationsPlugin implements Plugin {
+export class NotificationsPlugin extends BasePlugin {
   name = 'notifications'
 
   register(): void {

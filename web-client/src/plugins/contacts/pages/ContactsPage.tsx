@@ -17,7 +17,7 @@ registerDefaultColumns()
 
 export default function ContactsPage() {
   const { page, group, search, sorting, handleSearch, handleSort, setPage } = useContactsParams()
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   const { data, isLoading, isPlaceholderData, isError } = useContacts(
     page,
@@ -41,10 +41,10 @@ export default function ContactsPage() {
   }
 
   if (isLoading && !isPlaceholderData) {
-    return <div>{t('contacts.loading')}</div>
+    return <div>{t('loading')}</div>
   }
   if (isError) {
-    return <div>{t('contacts.error')}</div>
+    return <div>{t('error')}</div>
   }
 
   const contacts = getHydraMember(data)

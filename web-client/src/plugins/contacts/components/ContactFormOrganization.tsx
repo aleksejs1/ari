@@ -13,7 +13,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactFormOrganization() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -28,7 +28,7 @@ export function ContactFormOrganization() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.organizations')}
+      title={t('organizations')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -49,7 +49,7 @@ export function ContactFormOrganization() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addOrganization')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addOrganization')}
         </Button>
       }
     >
@@ -58,7 +58,7 @@ export function ContactFormOrganization() {
           <div key={field.id} className="rounded-md border border-gray-100 p-4 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase text-gray-400">
-                {t('contacts.organizationType')}:{' '}
+                {t('organizationType')}:{' '}
                 {control._formValues.contactOrganizations?.[index]?.type || ''}
               </span>
               <Button
@@ -79,7 +79,7 @@ export function ContactFormOrganization() {
                     <FormControl>
                       <TypeAutocomplete
                         field="organizationNames"
-                        placeholder={t('contacts.organizationName')}
+                        placeholder={t('organizationName')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -96,7 +96,7 @@ export function ContactFormOrganization() {
                     <FormControl>
                       <TypeAutocomplete
                         field="organizationTitles"
-                        placeholder={t('contacts.organizationTitle')}
+                        placeholder={t('organizationTitle')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -113,7 +113,7 @@ export function ContactFormOrganization() {
                     <FormControl>
                       <TypeAutocomplete
                         field="organizationDepartments"
-                        placeholder={t('contacts.organizationDepartment')}
+                        placeholder={t('organizationDepartment')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -130,7 +130,7 @@ export function ContactFormOrganization() {
                     <FormControl>
                       <TypeAutocomplete
                         field="organizationTypes"
-                        placeholder={t('contacts.organizationTypePlaceholder')}
+                        placeholder={t('organizationTypePlaceholder')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -146,7 +146,7 @@ export function ContactFormOrganization() {
                   <FormItem>
                     <FormControl>
                       <DateInput
-                        placeholder={t('contacts.organizationStartDate')}
+                        placeholder={t('organizationStartDate')}
                         {...field}
                         value={field.value ? String(field.value).split('T')[0] : ''}
                         onChange={(date) => field.onChange(date)}
@@ -163,7 +163,7 @@ export function ContactFormOrganization() {
                   <FormItem>
                     <FormControl>
                       <DateInput
-                        placeholder={t('contacts.organizationEndDate')}
+                        placeholder={t('organizationEndDate')}
                         {...field}
                         value={field.value ? String(field.value).split('T')[0] : ''}
                         onChange={(date) => field.onChange(date)}
@@ -181,7 +181,7 @@ export function ContactFormOrganization() {
                     <FormItem>
                       <FormControl>
                         <Textarea
-                          placeholder={t('contacts.organizationDescription')}
+                          placeholder={t('organizationDescription')}
                           {...field}
                           value={field.value || ''}
                         />

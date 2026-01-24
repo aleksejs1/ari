@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
@@ -13,7 +13,7 @@ import { registerDashboardWidgets } from './hooks/registerWidgets'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 
-export class DashboardPlugin implements Plugin {
+export class DashboardPlugin extends BasePlugin {
   name = 'dashboard'
 
   register(): void {

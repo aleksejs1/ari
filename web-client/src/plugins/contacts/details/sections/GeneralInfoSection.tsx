@@ -41,14 +41,14 @@ const getGroupName = (groupResource: any): string => {
 }
 
 function ContactFavoriteButton({ contact, isFavorite }: { contact: Contact; isFavorite: boolean }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { toggleFavorite } = useContactFavorite()
 
   return (
     <button
       className="ml-2 rounded-full p-2 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary"
       onClick={() => toggleFavorite(contact)}
-      aria-label={isFavorite ? t('contacts.removeFromFavorites') : t('contacts.addToFavorites')}
+      aria-label={isFavorite ? t('removeFromFavorites') : t('addToFavorites')}
     >
       <Star
         className={`h-6 w-6 transition-transform hover:scale-110 ${
@@ -106,7 +106,7 @@ function ContactGroupsBadgeList({ contactGroups }: { contactGroups: Contact['con
 }
 
 export function GeneralInfoSection({ contact }: { contact: Contact }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { isContactFavorite } = useContactFavorite()
   const isFavorite = isContactFavorite(contact)
   const [isEditing, setIsEditing] = useState(false)
@@ -165,7 +165,7 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{t('contacts.editContact')}</CardTitle>
+          <CardTitle>{t('editContact')}</CardTitle>
           <Button variant="ghost" size="sm" onClick={() => setIsEditing(false)}>
             {t('common.cancel')}
           </Button>
@@ -200,7 +200,7 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
       </div>
       <Button onClick={() => setIsEditing(true)} className="w-full gap-2 md:w-auto">
         <Pencil className="h-4 w-4" />
-        {t('common.edit')}
+        {t('edit')}
       </Button>
     </div>
   )

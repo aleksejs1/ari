@@ -102,7 +102,7 @@ describe('ContactDetailsPage', () => {
     } as any)
 
     renderWithRouter()
-    expect(screen.getByText('contacts.details')).toBeInTheDocument()
+    expect(screen.getByText('details')).toBeInTheDocument()
     expect(screen.getByText('Section 1')).toBeInTheDocument()
     expect(screen.getByText('Section 2')).toBeInTheDocument()
     expect(screen.getByTestId('similar-contacts')).toBeInTheDocument()
@@ -147,7 +147,7 @@ describe('ContactDetailsPage', () => {
 
     renderWithRouter()
 
-    fireEvent.click(screen.getByText('contacts.exportVcard'))
+    fireEvent.click(screen.getByText('exportVcard'))
     await waitFor(() => {
       expect(mockExportMutation).toHaveBeenCalledWith({
         id: '/api/contacts/1',

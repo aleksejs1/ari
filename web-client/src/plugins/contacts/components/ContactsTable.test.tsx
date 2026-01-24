@@ -208,7 +208,7 @@ describe('ContactsTable', () => {
         <ContactsTable data={[]} columns={mockColumns} onEdit={vi.fn()} />
       </TestWrapper>,
     )
-    expect(screen.getAllByText('contacts.noContacts')[0]).toBeInTheDocument()
+    expect(screen.getAllByText('noContacts')[0]).toBeInTheDocument()
   })
 
   it('renders data correctly', () => {

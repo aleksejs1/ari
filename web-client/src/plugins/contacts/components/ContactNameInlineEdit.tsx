@@ -23,7 +23,7 @@ interface ContactNameInlineEditProps {
 }
 
 export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
   const [given, setGiven] = useState(name.given ?? '')
   const [family, setFamily] = useState(name.family ?? '')
@@ -56,16 +56,16 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
         <Input
           value={given}
           onChange={(e) => setGiven(e.target.value)}
-          placeholder={t('contacts.givenName')}
+          placeholder={t('givenName')}
           className="h-8 flex-1"
-          aria-label={t('contacts.givenName')}
+          aria-label={t('givenName')}
         />
         <Input
           value={family}
           onChange={(e) => setFamily(e.target.value)}
-          placeholder={t('contacts.familyName')}
+          placeholder={t('familyName')}
           className="h-8 flex-1"
-          aria-label={t('contacts.familyName')}
+          aria-label={t('familyName')}
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -102,15 +102,15 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -121,7 +121,7 @@ export function ContactNameInlineEdit({ name, onUpdate, onDelete }: ContactNameI
   return (
     <InlineEditTrigger
       isExistent={hasName}
-      label={t('contacts.name')}
+      label={t('name')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}

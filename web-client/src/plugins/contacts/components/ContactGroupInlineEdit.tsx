@@ -18,7 +18,7 @@ interface ContactGroupInlineEditProps {
 }
 
 export function ContactGroupInlineEdit({ contact, groups, onUpdate }: ContactGroupInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
 
   // Extract group IDs from contact's groups.
@@ -157,7 +157,7 @@ export function ContactGroupInlineEdit({ contact, groups, onUpdate }: ContactGro
   return (
     <InlineEditTrigger
       isExistent={hasGroups}
-      label={t('contacts.groups')}
+      label={t('groups')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}

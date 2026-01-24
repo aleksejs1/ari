@@ -12,7 +12,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { ContactAutocomplete } from './ContactAutocomplete'
 
 export function ContactFormRelations() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control, getValues } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(false)
   const { fields, append, remove } = useFieldArray({
@@ -22,7 +22,7 @@ export function ContactFormRelations() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.relations')}
+      title={t('relations')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -35,7 +35,7 @@ export function ContactFormRelations() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addRelation')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addRelation')}
         </Button>
       }
     >
@@ -72,7 +72,7 @@ export function ContactFormRelations() {
                       <div className="relative">
                         <Input
                           {...formField}
-                          placeholder={t('contacts.relationTypePlaceholder')}
+                          placeholder={t('relationTypePlaceholder')}
                           className="pr-8" // Make space for eventual clear button or similar if needed but simple input is fine
                           list={`relation-types-${index}`}
                         />

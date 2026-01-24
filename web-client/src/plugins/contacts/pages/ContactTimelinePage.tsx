@@ -8,7 +8,7 @@ import { ContactTimeline } from '../components/ContactTimeline'
 
 export default function ContactTimelinePage() {
   const { id } = useParams<{ id: string }>()
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const navigate = useNavigate()
 
   if (!id) {

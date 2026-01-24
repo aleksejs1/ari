@@ -13,7 +13,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { NotificationSubscriptions } from './NotificationSubscriptions'
 
 export function ContactFormSync() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(true)
 
@@ -28,7 +28,7 @@ export function ContactFormSync() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.dates')}
+      title={t('dates')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -37,11 +37,11 @@ export function ContactFormSync() {
           variant="outline"
           size="sm"
           onClick={() => {
-            appendDate({ text: t('contacts.birthday'), date: '' })
+            appendDate({ text: t('birthday'), date: '' })
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addDate')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addDate')}
         </Button>
       }
     >
@@ -55,7 +55,7 @@ export function ContactFormSync() {
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormControl>
-                      <Input placeholder={t('contacts.dateLabelPlaceholder')} {...field} />
+                      <Input placeholder={t('dateLabelPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -90,9 +90,7 @@ export function ContactFormSync() {
             })()}
           </div>
         ))}
-        {dateFields.length === 0 && (
-          <p className="text-sm italic text-gray-500">{t('contacts.noDates')}</p>
-        )}
+        {dateFields.length === 0 && <p className="text-sm italic text-gray-500">{t('noDates')}</p>}
       </div>
     </CollapsibleSection>
   )

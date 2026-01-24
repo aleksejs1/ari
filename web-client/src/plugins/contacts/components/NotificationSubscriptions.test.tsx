@@ -63,8 +63,8 @@ describe('NotificationSubscriptions', () => {
       expect(screen.queryByText('app.loading')).not.toBeInTheDocument()
     })
 
-    expect(screen.getByText('contacts.subscriptions')).toBeInTheDocument()
-    expect(screen.getByText('contacts.addSubscription (email)')).toBeInTheDocument()
+    expect(screen.getByText('subscriptions')).toBeInTheDocument()
+    expect(screen.getByText('addSubscription (email)')).toBeInTheDocument()
     // Check for subscription
     // "ID: 1 (email)"
     expect(
@@ -88,10 +88,10 @@ describe('NotificationSubscriptions', () => {
     render(<NotificationSubscriptions entityType="contact" entityId={1} />)
 
     await waitFor(() => {
-      expect(screen.getByText('contacts.addSubscription (email)')).toBeInTheDocument()
+      expect(screen.getByText('addSubscription (email)')).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByText('contacts.addSubscription (email)'))
+    fireEvent.click(screen.getByText('addSubscription (email)'))
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith(

@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 
@@ -9,7 +9,7 @@ import { GoogleImportSidebarSection } from './extensions/GoogleImportSidebarSect
 
 const GoogleImportPage = lazy(() => import('./pages/GoogleImportPage'))
 
-export class GoogleImportPlugin implements Plugin {
+export class GoogleImportPlugin extends BasePlugin {
   name = 'google-import'
 
   register(): void {

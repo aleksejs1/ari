@@ -50,8 +50,8 @@ describe('ContactFormOrganization', () => {
         <ContactFormOrganization />
       </Wrapper>,
     )
-    expect(screen.getByText('contacts.organizations')).toBeInTheDocument()
-    expect(screen.getByText('contacts.addOrganization')).toBeInTheDocument()
+    expect(screen.getByText('organizations')).toBeInTheDocument()
+    expect(screen.getByText('addOrganization')).toBeInTheDocument()
   })
 
   it('adds a new organization', () => {
@@ -62,12 +62,12 @@ describe('ContactFormOrganization', () => {
     )
 
     // Expand first
-    fireEvent.click(screen.getByText('contacts.organizations'))
+    fireEvent.click(screen.getByText('organizations'))
 
-    fireEvent.click(screen.getByText('contacts.addOrganization'))
+    fireEvent.click(screen.getByText('addOrganization'))
 
-    expect(screen.getByPlaceholderText('contacts.organizationName')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('contacts.organizationTitle')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('organizationName')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('organizationTitle')).toBeInTheDocument()
   })
 
   it('removes an organization', () => {
@@ -92,7 +92,7 @@ describe('ContactFormOrganization', () => {
     )
 
     // Expand
-    fireEvent.click(screen.getByText('contacts.organizations'))
+    fireEvent.click(screen.getByText('organizations'))
 
     expect(screen.getByDisplayValue('Org 1')).toBeInTheDocument()
 
@@ -143,7 +143,7 @@ describe('ContactFormOrganization', () => {
     )
 
     // Expand
-    fireEvent.click(screen.getByText('contacts.organizations'))
+    fireEvent.click(screen.getByText('organizations'))
 
     expect(screen.getByDisplayValue('Google')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Engineer')).toBeInTheDocument()

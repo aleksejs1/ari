@@ -56,7 +56,7 @@ interface TableSettings {
 
 export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
   'use no memo'
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const navigate = useNavigate()
   const { contactTableSettings, setContactTableSettings } = useUserPrefs()
 
@@ -299,7 +299,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {t('contacts.noContacts')}
+                  {t('noContacts')}
                 </TableCell>
               </TableRow>
             )}
@@ -322,7 +322,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
             ))
         ) : (
           <div className="rounded-lg border border-dashed bg-card py-8 text-center text-muted-foreground">
-            {t('contacts.noContacts')}
+            {t('noContacts')}
           </div>
         )}
       </div>

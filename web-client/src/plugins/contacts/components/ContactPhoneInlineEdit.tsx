@@ -34,7 +34,7 @@ export function ContactPhoneInlineEdit({
   hideAddButton,
   className,
 }: ContactPhoneInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
 
   const [value, setValue] = useState(phone.value ?? '')
@@ -71,17 +71,17 @@ export function ContactPhoneInlineEdit({
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('contacts.phonePlaceholder')}
+          placeholder={t('phonePlaceholder')}
           className="h-8 flex-1"
-          aria-label={t('contacts.phone')}
+          aria-label={t('phone')}
         />
         <TypeAutocomplete
           value={type}
           onChange={(e) => setType(e.target.value)}
           field="phoneTypes"
-          placeholder={t('contacts.phoneTypePlaceholder')}
+          placeholder={t('phoneTypePlaceholder')}
           className="h-8 w-24"
-          aria-label={t('contacts.phoneType')}
+          aria-label={t('phoneType')}
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -118,15 +118,15 @@ export function ContactPhoneInlineEdit({
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -137,7 +137,7 @@ export function ContactPhoneInlineEdit({
   return (
     <InlineEditTrigger
       isExistent={hasPhone}
-      label={t('contacts.phone')}
+      label={t('phone')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}

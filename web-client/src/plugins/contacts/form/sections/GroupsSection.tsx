@@ -9,10 +9,10 @@ import { ContactGroupSelect } from '../../components/ContactGroupSelect'
 
 export function GroupsSection() {
   const { control } = useFormContext<ContactFormValues>()
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   return (
-    <CollapsibleSection title={t('contacts.groups')}>
+    <CollapsibleSection title={t('groups')}>
       <FormField
         control={control}
         name="contactGroups"

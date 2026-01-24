@@ -10,7 +10,7 @@ interface ContactActionsCellProps {
 }
 
 export function ContactActionsCell({ contact, onEdit }: ContactActionsCellProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   return (
     <div className="flex justify-end gap-2">

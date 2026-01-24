@@ -21,13 +21,6 @@ vi.mock('../widgets/UpcomingAnniversariesWidget', () => ({
   default: () => <div data-testid="anniversaries-widget">UpcomingAnniversariesWidget</div>,
 }))
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-    i18n: { language: 'en' },
-  }),
-}))
-
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },

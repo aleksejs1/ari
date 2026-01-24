@@ -55,7 +55,7 @@ describe('ContactSheet', () => {
 
   it('renders create mode correctly', () => {
     render(<ContactSheet isOpen onClose={vi.fn()} />)
-    expect(screen.getByText('contacts.create')).toBeInTheDocument()
+    expect(screen.getByText('create')).toBeInTheDocument()
     expect(screen.getByTestId('contact-form')).toBeInTheDocument()
   })
 
@@ -67,7 +67,7 @@ describe('ContactSheet', () => {
       contactDates: [],
     }
     render(<ContactSheet isOpen onClose={vi.fn()} contact={contact} />)
-    expect(screen.getByText('contacts.edit')).toBeInTheDocument()
+    expect(screen.getByText('edit')).toBeInTheDocument()
   })
 
   it('handles create submission', async () => {

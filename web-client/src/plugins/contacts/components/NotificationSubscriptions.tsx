@@ -15,7 +15,7 @@ export function NotificationSubscriptions({
   entityType,
   entityId,
 }: NotificationSubscriptionsProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [subscriptions, setSubscriptions] = useState<NotificationSubscription[]>([])
   const [channels, setChannels] = useState<NotificationChannel[]>([])
   const [loading, setLoading] = useState(true)
@@ -75,7 +75,7 @@ export function NotificationSubscriptions({
     <div className="mt-2 border-l-2 border-gray-100 pl-4">
       <div className="mb-2 flex flex-col gap-2">
         <h4 className="text-xs font-medium uppercase tracking-wider text-gray-600">
-          {t('contacts.subscriptions')}
+          {t('subscriptions')}
         </h4>
         <div className="flex flex-wrap gap-1">
           {channels.map((channel) => (
@@ -88,7 +88,7 @@ export function NotificationSubscriptions({
               onClick={() => channel['@id'] && handleAdd(channel['@id'])}
             >
               <Plus className="mr-1 h-3 w-3" />
-              {t('contacts.addSubscription')} ({channel.type})
+              {t('addSubscription')} ({channel.type})
             </Button>
           ))}
           {channels.length === 0 && (
@@ -100,7 +100,7 @@ export function NotificationSubscriptions({
       </div>
 
       {subscriptions.length === 0 ? (
-        <p className="text-xs italic text-gray-400">{t('contacts.noSubscriptions')}</p>
+        <p className="text-xs italic text-gray-400">{t('noSubscriptions')}</p>
       ) : (
         <div className="space-y-1">
           {subscriptions.map((sub) => {

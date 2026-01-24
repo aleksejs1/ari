@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { FileText, History } from 'lucide-react'
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import type { Plugin } from '@/lib/core/Plugin'
+import { BasePlugin } from '@/lib/core/Plugin'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
@@ -17,7 +17,7 @@ import { PageLoader } from './components/PageLoader'
 const AuditLogsPage = lazy(() => import('./pages/AuditLogsPage'))
 const RecentAuditLogsWidget = lazy(() => import('./widgets/RecentAuditLogsWidget'))
 
-export class AuditLogsPlugin implements Plugin {
+export class AuditLogsPlugin extends BasePlugin {
   name = 'audit-logs'
 
   register(): void {

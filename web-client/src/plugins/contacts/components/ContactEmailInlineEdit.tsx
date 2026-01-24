@@ -34,7 +34,7 @@ export function ContactEmailInlineEdit({
   hideAddButton,
   className,
 }: ContactEmailInlineEditProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
 
   const [value, setValue] = useState(email.value ?? '')
@@ -71,9 +71,9 @@ export function ContactEmailInlineEdit({
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('contacts.emailPlaceholder')}
+          placeholder={t('emailPlaceholder')}
           className="h-8 flex-1"
-          aria-label={t('contacts.email')}
+          aria-label={t('email')}
           autoComplete="off"
           data-1p-ignore
           data-lpignore="true"
@@ -83,9 +83,9 @@ export function ContactEmailInlineEdit({
           value={type}
           onChange={(e) => setType(e.target.value)}
           field="emailTypes"
-          placeholder={t('contacts.emailTypePlaceholder')}
+          placeholder={t('emailTypePlaceholder')}
           className="h-8 w-24"
-          aria-label={t('contacts.emailType')}
+          aria-label={t('emailType')}
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -122,15 +122,15 @@ export function ContactEmailInlineEdit({
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('contacts.delete')}</DialogTitle>
-            <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+            <DialogTitle>{t('delete')}</DialogTitle>
+            <DialogDescription>{t('deleteConfirm')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('contacts.delete')}
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -141,7 +141,7 @@ export function ContactEmailInlineEdit({
   return (
     <InlineEditTrigger
       isExistent={hasEmail}
-      label={t('contacts.email')}
+      label={t('email')}
       open={open}
       onOpenChange={handleOpenChange}
       popoverContent={formContent}

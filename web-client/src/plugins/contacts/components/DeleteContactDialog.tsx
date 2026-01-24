@@ -24,14 +24,14 @@ export function DeleteContactDialog({
   onConfirm,
   isPending,
 }: DeleteContactDialogProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('contacts.deleteConfirmTitle')}</DialogTitle>
-          <DialogDescription>{t('contacts.deleteConfirm')}</DialogDescription>
+          <DialogTitle>{t('deleteConfirmTitle')}</DialogTitle>
+          <DialogDescription>{t('deleteConfirm')}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import type { ContactFormValues } from '@/types/models'
 
 export function ContactModalName() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
 
   return (
@@ -17,7 +17,7 @@ export function ContactModalName() {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder={t('contacts.firstName')} {...field} />
+              <Input placeholder={t('firstName')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -29,7 +29,7 @@ export function ContactModalName() {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder={t('contacts.lastName')} {...field} />
+              <Input placeholder={t('lastName')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

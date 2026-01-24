@@ -120,7 +120,7 @@ describe('SidebarLessLayout', () => {
       </MemoryRouter>,
     )
 
-    const contactsLink = screen.getByRole('link', { name: /contacts/i })
+    const contactsLink = screen.getByRole('link', { name: 'title' })
     expect(contactsLink).toBeInTheDocument()
     expect(contactsLink).toHaveAttribute('href', '/contacts')
   })

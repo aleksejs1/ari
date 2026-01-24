@@ -12,7 +12,7 @@ import { SimilarContactsWidget } from '../components/SimilarContactsWidget'
 import { useContact, useDeleteContact, useExportContactVcard } from '../useContacts'
 
 function ContactDetailsContent({ contact }: { contact: Contact }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const navigate = useNavigate()
   const deleteMutation = useDeleteContact()
   const exportVcardMutation = useExportContactVcard()
@@ -57,7 +57,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="flex-1 truncate text-2xl font-bold">{t('contacts.details')}</h1>
+          <h1 className="flex-1 truncate text-2xl font-bold">{t('details')}</h1>
         </div>
         <div className="flex w-full items-center gap-2 md:w-auto">
           <Button
@@ -72,7 +72,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
             ) : (
               <Download className="h-4 w-4" />
             )}
-            {t('contacts.exportVcard')}
+            {t('exportVcard')}
           </Button>
           <Button
             variant="destructive"
@@ -120,7 +120,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
 export default function ContactDetailsPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { data: contact, isLoading, error } = useContact(id ?? '')
 
   if (isLoading) {

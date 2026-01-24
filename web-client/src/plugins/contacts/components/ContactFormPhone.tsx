@@ -12,7 +12,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactFormPhone() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(true)
 
@@ -27,7 +27,7 @@ export function ContactFormPhone() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.phoneNumbers')}
+      title={t('phoneNumbers')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -40,7 +40,7 @@ export function ContactFormPhone() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addPhoneNumber')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addPhoneNumber')}
         </Button>
       }
     >
@@ -53,7 +53,7 @@ export function ContactFormPhone() {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input placeholder={t('contacts.phoneNumber')} {...field} />
+                    <Input placeholder={t('phoneNumber')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -67,7 +67,7 @@ export function ContactFormPhone() {
                   <FormControl>
                     <TypeAutocomplete
                       field="phoneTypes"
-                      placeholder={t('contacts.phoneTypePlaceholder')}
+                      placeholder={t('phoneTypePlaceholder')}
                       {...field}
                     />
                   </FormControl>

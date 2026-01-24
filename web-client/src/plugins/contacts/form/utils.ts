@@ -81,7 +81,7 @@ export const getContactFormDefaultValues = (
     ...d,
     contactNames: d.contactNames?.length ? d.contactNames : [{ given: '', family: '' }],
     contactDates: enforceMin(d.contactDates, {
-      text: t('contacts.birthday'),
+      text: t('birthday'),
       date: '',
     }),
     phoneNumbers: enforceMin(d.phoneNumbers, { value: '', type: 'Mobile' }),

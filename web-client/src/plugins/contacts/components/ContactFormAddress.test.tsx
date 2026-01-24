@@ -30,24 +30,24 @@ describe('ContactForm Addresses', () => {
   it('adds and removes address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    fireEvent.click(screen.getByText('contacts.addresses'))
+    fireEvent.click(screen.getByText('addresses'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('contacts.addressStreet')).toHaveLength(1)
+      expect(screen.getAllByPlaceholderText('addressStreet')).toHaveLength(1)
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressStreet'), {
+    fireEvent.change(screen.getByPlaceholderText('addressStreet'), {
       target: { value: '123 Main St' },
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressCity'), {
+    fireEvent.change(screen.getByPlaceholderText('addressCity'), {
       target: { value: 'New York' },
     })
 
-    fireEvent.click(screen.getByText('contacts.addAddress'))
+    fireEvent.click(screen.getByText('addAddress'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('contacts.addressStreet')).toHaveLength(2)
+      expect(screen.getAllByPlaceholderText('addressStreet')).toHaveLength(2)
     })
   })
 
@@ -55,26 +55,26 @@ describe('ContactForm Addresses', () => {
     const onSubmit = vi.fn()
     render(<ContactForm onSubmit={onSubmit} />)
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.givenName'), {
+    fireEvent.change(screen.getByPlaceholderText('givenName'), {
       target: { value: 'John' },
     })
 
-    fireEvent.click(screen.getByText('contacts.addresses'))
+    fireEvent.click(screen.getByText('addresses'))
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.addressStreet')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('addressStreet')).toBeInTheDocument()
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressStreet'), {
+    fireEvent.change(screen.getByPlaceholderText('addressStreet'), {
       target: { value: '123 Main St' },
     })
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressCity'), {
+    fireEvent.change(screen.getByPlaceholderText('addressCity'), {
       target: { value: 'New York' },
     })
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressPostalCode'), {
+    fireEvent.change(screen.getByPlaceholderText('addressPostalCode'), {
       target: { value: '10001' },
     })
-    fireEvent.change(screen.getByPlaceholderText('contacts.addressTypePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText('addressTypePlaceholder'), {
       target: { value: 'Home' },
     })
 

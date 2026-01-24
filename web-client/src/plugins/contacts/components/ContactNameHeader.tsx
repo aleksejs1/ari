@@ -5,7 +5,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import type { Contact } from '@/types/models'
 
 export function ContactNameHeader({ column }: HeaderContext<Contact, unknown>) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   return (
     <div
@@ -19,7 +19,7 @@ export function ContactNameHeader({ column }: HeaderContext<Contact, unknown>) {
       role="button"
       tabIndex={0}
     >
-      {t('contacts.name')}
+      {t('name')}
       {(() => {
         if (column.getIsSorted() === 'asc') {
           return <ArrowUp className="h-4 w-4" />

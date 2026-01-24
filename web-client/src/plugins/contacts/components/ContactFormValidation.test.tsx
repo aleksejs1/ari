@@ -41,7 +41,7 @@ describe('ContactFormValidation', () => {
     render(<ContactForm onSubmit={onSubmit} />)
 
     // 1. Fill Required Name
-    const nameInput = screen.getByPlaceholderText('contacts.givenName')
+    const nameInput = screen.getByPlaceholderText('givenName')
     fireEvent.change(nameInput, { target: { value: 'Test Contact' } })
 
     // 2. Add Phone (No Type)
@@ -55,28 +55,28 @@ describe('ContactFormValidation', () => {
     // Since we mock t => key, we search for keys.
 
     // Trigger Add Phone
-    const addPhoneBtn = screen.getByText('contacts.addPhoneNumber')
+    const addPhoneBtn = screen.getByText('addPhoneNumber')
     fireEvent.click(addPhoneBtn)
     // Fill Value
-    const phoneInputs = screen.getAllByPlaceholderText('contacts.phoneNumber')
+    const phoneInputs = screen.getAllByPlaceholderText('phoneNumber')
     fireEvent.change(phoneInputs[0], { target: { value: '1234567890' } })
 
     // Clear default type
-    const phoneTypeInputs = screen.getAllByPlaceholderText('contacts.phoneTypePlaceholder')
+    const phoneTypeInputs = screen.getAllByPlaceholderText('phoneTypePlaceholder')
     fireEvent.change(phoneTypeInputs[0], { target: { value: '' } })
 
     // 3. Add Email (No Type)
-    const addEmailBtn = screen.getByText('contacts.addEmailAddress')
+    const addEmailBtn = screen.getByText('addEmailAddress')
     fireEvent.click(addEmailBtn)
-    const emailInputs = screen.getAllByPlaceholderText('contacts.emailAddress')
+    const emailInputs = screen.getAllByPlaceholderText('emailAddress')
     fireEvent.change(emailInputs[0], { target: { value: 'test@example.com' } })
 
     // Clear default type
-    const emailTypeInputs = screen.getAllByPlaceholderText('contacts.emailTypePlaceholder')
+    const emailTypeInputs = screen.getAllByPlaceholderText('emailTypePlaceholder')
     fireEvent.change(emailTypeInputs[0], { target: { value: '' } })
 
     // 4. Add Address (No Type)
-    const addAddressBtn = screen.getByText('contacts.addAddress')
+    const addAddressBtn = screen.getByText('addAddress')
     fireEvent.click(addAddressBtn)
     // Address has multiple fields. Let's fill Street.
     // Need to find inputs. Placeholders usually "contacts.street" etc.
@@ -84,16 +84,16 @@ describe('ContactFormValidation', () => {
     // Wait, "contacts.addAddress" might not be visible if section is collapsed.
     // But "Add" button is usually the trigger to open/add.
     // Clear default type
-    const addressTypeInputs = screen.getAllByPlaceholderText('contacts.addressTypePlaceholder')
+    const addressTypeInputs = screen.getAllByPlaceholderText('addressTypePlaceholder')
     fireEvent.change(addressTypeInputs[0], { target: { value: '' } })
 
     // 5. Add Bio (No Type)
-    const addBioBtn = screen.getByText('contacts.addBiography')
+    const addBioBtn = screen.getByText('addBiography')
     fireEvent.click(addBioBtn)
-    const bioInputs = screen.getAllByPlaceholderText('contacts.biographyPlaceholder')
+    const bioInputs = screen.getAllByPlaceholderText('biographyPlaceholder')
     fireEvent.change(bioInputs[0], { target: { value: 'Some bio text' } })
 
-    const bioTypeInputs = screen.getAllByPlaceholderText('contacts.typePlaceholder')
+    const bioTypeInputs = screen.getAllByPlaceholderText('typePlaceholder')
     fireEvent.change(bioTypeInputs[0], { target: { value: '' } })
 
     // Submit

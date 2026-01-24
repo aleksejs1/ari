@@ -12,7 +12,7 @@ import { CollapsibleSection } from './CollapsibleSection'
 import { TypeAutocomplete } from './TypeAutocomplete'
 
 export function ContactFormAddress() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -33,7 +33,7 @@ export function ContactFormAddress() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.addresses')}
+      title={t('addresses')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -52,7 +52,7 @@ export function ContactFormAddress() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addAddress')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addAddress')}
         </Button>
       }
     >
@@ -61,7 +61,7 @@ export function ContactFormAddress() {
           <div key={field.id} className="rounded-md border border-gray-100 p-4 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase text-gray-400">
-                {t('contacts.addressType')}: {watchedAddresses?.[index]?.type || ''}
+                {t('addressType')}: {watchedAddresses?.[index]?.type || ''}
               </span>
               <Button
                 type="button"
@@ -80,7 +80,7 @@ export function ContactFormAddress() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder={t('contacts.addressStreet')}
+                        placeholder={t('addressStreet')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -96,7 +96,7 @@ export function ContactFormAddress() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder={t('contacts.addressStreetExtended')}
+                        placeholder={t('addressStreetExtended')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -111,11 +111,7 @@ export function ContactFormAddress() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder={t('contacts.addressCity')}
-                        {...field}
-                        value={field.value || ''}
-                      />
+                      <Input placeholder={t('addressCity')} {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -128,7 +124,7 @@ export function ContactFormAddress() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder={t('contacts.addressPostalCode')}
+                        placeholder={t('addressPostalCode')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -144,7 +140,7 @@ export function ContactFormAddress() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder={t('contacts.addressCountry')}
+                        placeholder={t('addressCountry')}
                         {...field}
                         value={field.value || ''}
                       />
@@ -161,7 +157,7 @@ export function ContactFormAddress() {
                     <FormControl>
                       <TypeAutocomplete
                         field="addressTypes"
-                        placeholder={t('contacts.addressTypePlaceholder')}
+                        placeholder={t('addressTypePlaceholder')}
                         {...field}
                       />
                     </FormControl>

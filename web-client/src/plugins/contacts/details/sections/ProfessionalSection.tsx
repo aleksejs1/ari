@@ -13,7 +13,7 @@ import {
 } from '../../useContacts'
 
 export const ProfessionalSection = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   // Organization Mutations
   const handleCreateOrganizationMutation = useCreateContactOrganization()
@@ -40,7 +40,7 @@ export const ProfessionalSection = ({ contact }: { contact: Contact }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t('contacts.professional')}</CardTitle>
+        <CardTitle className="text-base">{t('professional')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         {(Array.isArray(contact.contactOrganizations) ? contact.contactOrganizations : []).map(
@@ -55,7 +55,7 @@ export const ProfessionalSection = ({ contact }: { contact: Contact }) => {
             >
               <DisplayItem
                 icon={Briefcase}
-                label={org.type || t('contacts.organization')}
+                label={org.type || t('organization')}
                 value={org.name}
                 subValue={[org.title, org.department].filter(Boolean).join(' - ')}
               />

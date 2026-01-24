@@ -39,7 +39,7 @@ const getRelatedContactName = (
 }
 
 export const RelationsSection = ({ contact }: { contact: Contact }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   if (
     !contact.contactRelations ||
     !Array.isArray(contact.contactRelations) ||
@@ -50,12 +50,12 @@ export const RelationsSection = ({ contact }: { contact: Contact }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t('contacts.relations')}</CardTitle>
+        <CardTitle className="text-base">{t('relations')}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         {contact.contactRelations.map((relation, i) => {
           const relatedId = getRelatedContactId(relation.relatedContact)
-          const label = t(`contacts.relationTypes.${relation.type}`, {
+          const label = t(`relationTypes.${relation.type}`, {
             defaultValue: relation.type,
           })
           const name = getRelatedContactName(relation, t)

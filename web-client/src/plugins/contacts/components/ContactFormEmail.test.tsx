@@ -30,24 +30,24 @@ describe('ContactForm Email Addresses', () => {
   it('adds and removes email address fields', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    // fireEvent.click(screen.getByText('contacts.addEmailAddress'))
+    // fireEvent.click(screen.getByText('addEmailAddress'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('contacts.emailAddress')).toHaveLength(1)
+      expect(screen.getAllByPlaceholderText('emailAddress')).toHaveLength(1)
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.emailAddress'), {
+    fireEvent.change(screen.getByPlaceholderText('emailAddress'), {
       target: { value: 'test@example.com' },
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.emailTypePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText('emailTypePlaceholder'), {
       target: { value: 'Work' },
     })
 
-    fireEvent.click(screen.getByText('contacts.addEmailAddress'))
+    fireEvent.click(screen.getByText('addEmailAddress'))
 
     await waitFor(() => {
-      expect(screen.getAllByPlaceholderText('contacts.emailAddress')).toHaveLength(2)
+      expect(screen.getAllByPlaceholderText('emailAddress')).toHaveLength(2)
     })
   })
 
@@ -55,20 +55,20 @@ describe('ContactForm Email Addresses', () => {
     const onSubmit = vi.fn()
     render(<ContactForm onSubmit={onSubmit} />)
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.givenName'), {
+    fireEvent.change(screen.getByPlaceholderText('givenName'), {
       target: { value: 'John' },
     })
 
-    // fireEvent.click(screen.getByText('contacts.addEmailAddress'))
+    // fireEvent.click(screen.getByText('addEmailAddress'))
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.emailAddress')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('emailAddress')).toBeInTheDocument()
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.emailAddress'), {
+    fireEvent.change(screen.getByPlaceholderText('emailAddress'), {
       target: { value: 'john.doe@example.com' },
     })
-    fireEvent.change(screen.getByPlaceholderText('contacts.emailTypePlaceholder'), {
+    fireEvent.change(screen.getByPlaceholderText('emailTypePlaceholder'), {
       target: { value: 'Personal' },
     })
 
@@ -89,13 +89,13 @@ describe('ContactForm Email Addresses', () => {
   it('validates email format', async () => {
     render(<ContactForm onSubmit={vi.fn()} />)
 
-    // fireEvent.click(screen.getByText('contacts.addEmailAddress'))
+    // fireEvent.click(screen.getByText('addEmailAddress'))
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('contacts.emailAddress')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('emailAddress')).toBeInTheDocument()
     })
 
-    fireEvent.change(screen.getByPlaceholderText('contacts.emailAddress'), {
+    fireEvent.change(screen.getByPlaceholderText('emailAddress'), {
       target: { value: 'invalid-email' },
     })
 

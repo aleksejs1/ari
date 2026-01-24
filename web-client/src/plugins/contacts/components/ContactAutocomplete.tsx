@@ -22,7 +22,7 @@ export function ContactAutocomplete({
   excludeContactId,
   initialLabel,
 }: ContactAutocompleteProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
 

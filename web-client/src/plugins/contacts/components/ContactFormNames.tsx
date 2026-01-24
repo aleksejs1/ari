@@ -11,7 +11,7 @@ import { type ContactFormValues } from '@/types/models'
 import { CollapsibleSection } from './CollapsibleSection'
 
 export function ContactFormNames() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
   const { control } = useFormContext<ContactFormValues>()
   const [isOpen, setIsOpen] = useState(true)
 
@@ -26,7 +26,7 @@ export function ContactFormNames() {
 
   return (
     <CollapsibleSection
-      title={t('contacts.names')}
+      title={t('names')}
       open={isOpen}
       onOpenChange={setIsOpen}
       action={
@@ -39,7 +39,7 @@ export function ContactFormNames() {
             setIsOpen(true)
           }}
         >
-          <Plus className="mr-1 h-4 w-4" /> {t('contacts.addName')}
+          <Plus className="mr-1 h-4 w-4" /> {t('addName')}
         </Button>
       }
     >
@@ -52,7 +52,7 @@ export function ContactFormNames() {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input placeholder={t('contacts.givenName')} {...field} />
+                    <Input placeholder={t('givenName')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -64,7 +64,7 @@ export function ContactFormNames() {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input placeholder={t('contacts.familyName')} {...field} />
+                    <Input placeholder={t('familyName')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -64,8 +64,8 @@ describe('ContactDateInlineEdit', () => {
     await userEvent.click(editButton)
 
     // Inputs should be visible (in the popover)
-    const dateInput = await screen.findByLabelText('contacts.date')
-    const textInput = screen.getByLabelText('contacts.dateLabel')
+    const dateInput = await screen.findByLabelText('date')
+    const textInput = screen.getByLabelText('dateLabel')
 
     expect(dateInput).toBeInTheDocument()
     expect(dateInput).toHaveValue('01/01/1990')
@@ -84,8 +84,8 @@ describe('ContactDateInlineEdit', () => {
     fireEvent.mouseEnter(container)
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
 
-    const dateInput = await screen.findByLabelText('contacts.date')
-    const textInput = screen.getByLabelText('contacts.dateLabel')
+    const dateInput = await screen.findByLabelText('date')
+    const textInput = screen.getByLabelText('dateLabel')
 
     // Use fireEvent.change which is reliable across environments
     fireEvent.change(dateInput, { target: { value: '05/05/2000' } })
@@ -116,7 +116,7 @@ describe('ContactDateInlineEdit', () => {
     fireEvent.mouseEnter(container)
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
 
-    const textInput = await screen.findByLabelText('contacts.dateLabel')
+    const textInput = await screen.findByLabelText('dateLabel')
     await userEvent.type(textInput, 'Changed')
 
     const cancelButton = screen.getByRole('button', { name: /cancel/i })
@@ -124,7 +124,7 @@ describe('ContactDateInlineEdit', () => {
 
     // Popover should close, inputs gone
     await waitFor(() => {
-      expect(screen.queryByLabelText('contacts.dateLabel')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('dateLabel')).not.toBeInTheDocument()
     })
 
     expect(screen.getByText('(Birthday)')).toBeInTheDocument()
@@ -146,7 +146,7 @@ describe('ContactDateInlineEdit', () => {
     const deleteButton = await screen.findByRole('button', { name: /delete/i })
     await userEvent.click(deleteButton)
 
-    expect(await screen.findByText('contacts.deleteConfirm')).toBeInTheDocument()
+    expect(await screen.findByText('deleteConfirm')).toBeInTheDocument()
 
     const dialog = screen.getByRole('dialog')
     const confirmButton = await within(dialog).findByRole('button', { name: /delete/i })

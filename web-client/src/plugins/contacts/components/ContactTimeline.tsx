@@ -13,7 +13,7 @@ interface ContactTimelineProps {
 }
 
 export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('contacts')
 
   const {
     data: timeline,
@@ -38,7 +38,7 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        {t('contacts.history.failedToLoadTimeline')}
+        {t('history.failedToLoadTimeline')}
       </div>
     )
   }
@@ -46,16 +46,12 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
   const logs = Array.isArray(timeline?.logs) ? timeline.logs : []
 
   if (logs.length === 0) {
-    return (
-      <div className="p-4 text-center text-sm text-gray-500">{t('contacts.history.noHistory')}</div>
-    )
+    return <div className="p-4 text-center text-sm text-gray-500">{t('history.noHistory')}</div>
   }
 
   return (
     <div className={fullHeight ? '' : 'mt-6 border-t pt-4'}>
-      {!fullHeight && (
-        <h3 className="mb-3 text-sm font-medium">{t('contacts.history.timeline')}</h3>
-      )}
+      {!fullHeight && <h3 className="mb-3 text-sm font-medium">{t('history.timeline')}</h3>}
       <div className={fullHeight ? 'pr-4' : 'h-[300px] overflow-y-auto pr-4'}>
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
           {logs.map((log: TimelineEvent) => (
