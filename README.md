@@ -57,47 +57,6 @@ services:
 👉 [Full Installation Guide](docs/docs/01-getting-started/installation.md)
 
 ---
-## Screenshots
-
-Here is how Ari looks today (January 2026):
-
-### Dashboard
-The new homepage features widgets for quick access to groups, upcoming anniversaries (birthdays, custom dates), and a timeline of recent activity across the system.
-![Dashboard](assets/ari_dashboard_3.png)
-
-### Contact List
-A paginated list of contacts with quick actions. Important dates and "Favorites" status are immediately visible.
-![Contact List](assets/ari_contact_list_3.png)
-
-### Search & Filtering
-Global search allows finding contacts by name or attributes instantly.
-![Contact Search](assets/ari_contact_search_3.png)
-
-### Group Management
-Contacts can be organized into groups, which are fully filterable via the sidebar. "Favorites" is implemented as a special, configurable group.
-![Contact Groups](assets/ari_contact_groups_3.png)
-
-### Contact Details
-A comprehensive view of a contact. This page aggregates contact info, professional details, dates, and relationships.
-![Contact Details](assets/ari_contact_3.png)
-
-### Inline Editing
-Most fields can be edited directly from the view mode without entering a separate form, streamlining daily usage.
-![Inline Editing](assets/ari_inline_edit_3.png)
-
-### Full Edit Mode & Relationships
-Complex data entry is handled via a dedicated form. This includes managing bidirectional relationships (e.g., husband/wife, parent/child) and organization details.
-![Edit Form](assets/ari_edit_form_3.png)
-
-### History & Context
-The system suggests similar contacts (e.g., by surname) to quickly build relationships. The audit log shows a human-readable history of changes for the specific contact.
-![Similar Contacts and History](assets/ari_similar_contacts_3.png)
-
-### User Settings
-Configure your preferences, including UI language, date formats, and system-wide settings like the default "Favorites" group.
-![Settings](assets/ari_settings_3.png)
-
----
 ## Why this exists
 
 This project started from a very practical frustration.
@@ -201,6 +160,13 @@ Workflows are being polished, and parts of the system are intentionally over-eng
 - Docker-based development environment
 - Cron-based background jobs (notifications)
 - Designed for self-hosting from day one
+
+### Extensibility (Plugins)
+
+The system now supports a **Plugin-Oriented Architecture** on both Backend and Frontend. This allows extending functionality without modifying the core codebase.
+
+- **Proof of Concept**: A full plugin system is implemented and functional.
+- **Documentation**: See [Plugin Development Overview](docs/docs/05-developer/plugins.md) for details on creating plugins for both layers.
 
 ---
 ## Project status & expectations
