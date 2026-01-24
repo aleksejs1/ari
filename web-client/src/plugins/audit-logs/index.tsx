@@ -5,10 +5,7 @@ import { FileText, History } from 'lucide-react'
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { BasePlugin } from '@/lib/core/Plugin'
-import { RouteRegistry } from '@/lib/routing/RouteRegistry'
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
-import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
-import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
+import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
@@ -20,10 +17,8 @@ const RecentAuditLogsWidget = lazy(() => import('./widgets/RecentAuditLogsWidget
 export class AuditLogsPlugin extends BasePlugin {
   name = 'audit-logs'
 
-  register(): void {
-    const routeRegistry = RouteRegistry.getInstance()
-    const sidebarRegistry = SidebarRegistry.getInstance()
-    const userMenuRegistry = UserMenuRegistry.getInstance()
+  register(context: PluginContext): void {
+    const { routeRegistry, sidebarRegistry, userMenuRegistry, widgetRegistry } = context
 
     // 1. Routing
     routeRegistry.register('dashboard', {

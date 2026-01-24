@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
+import type { PluginContext } from '@/lib/core/PluginContext'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 
@@ -24,8 +25,8 @@ import ru from './locales/ru.json'
 export class ContactsPlugin extends BasePlugin {
   name = 'contacts'
 
-  register(): void {
-    this.registerTranslations({ en, ru })
+  register(context: PluginContext): void {
+    this.registerTranslations({ en, ru }, context.i18n)
     const routeRegistry = RouteRegistry.getInstance()
     const topMenuRegistry = TopMenuRegistry.getInstance()
 

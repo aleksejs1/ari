@@ -35,11 +35,29 @@ const createWrapper = () => {
   return ReactQueryWrapper
 }
 
+import { RouteRegistry } from '@/lib/routing/RouteRegistry'
+import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
+
+// ...
+
 describe('HomePage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     registerDashboardWidgets()
-    new AuditLogsPlugin().register()
+
+    const context = {
+      routeRegistry: RouteRegistry.getInstance(),
+      sidebarRegistry: SidebarRegistry.getInstance(),
+      userMenuRegistry: UserMenuRegistry.getInstance(),
+      topMenuRegistry: {} as any,
+      widgetRegistry: widgetRegistry,
+      settingsRegistry: {} as any,
+      i18n: { addResourceBundle: vi.fn() } as any,
+      api: { get: vi.fn(), post: vi.fn() } as any,
+    }
+    new AuditLogsPlugin().register(context)
   })
 
   it('renders dashboard title', () => {

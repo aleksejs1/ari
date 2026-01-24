@@ -1,8 +1,7 @@
 import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
-import { RouteRegistry } from '@/lib/routing/RouteRegistry'
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { PageLoader } from './components/PageLoader'
 import { NotificationsSidebarSection } from './extensions/NotificationsSidebarSection'
@@ -14,9 +13,8 @@ const NotificationPolicyFormPage = lazy(() => import('./pages/NotificationPolicy
 export class NotificationsPlugin extends BasePlugin {
   name = 'notifications'
 
-  register(): void {
-    const routeRegistry = RouteRegistry.getInstance()
-    const sidebarRegistry = SidebarRegistry.getInstance()
+  register(context: PluginContext): void {
+    const { routeRegistry, sidebarRegistry } = context
 
     // 1. Register Routes
     routeRegistry.register('dashboard', {

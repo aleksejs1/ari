@@ -1,9 +1,7 @@
 import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
-import { RouteRegistry } from '@/lib/routing/RouteRegistry'
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
-import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { PageLoader } from '@/plugins/settings/components/PageLoader'
 
@@ -16,10 +14,8 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 export class DashboardPlugin extends BasePlugin {
   name = 'dashboard'
 
-  register(): void {
-    const routeRegistry = RouteRegistry.getInstance()
-    const sidebarRegistry = SidebarRegistry.getInstance()
-    const topMenuRegistry = TopMenuRegistry.getInstance()
+  register(context: PluginContext): void {
+    const { routeRegistry, sidebarRegistry, topMenuRegistry } = context
 
     // 1. Register Routes
     routeRegistry.register('sidebar-less', {

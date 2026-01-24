@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useAuth } from '@/hooks/useAuth'
+import { RouteRegistry } from '@/lib/routing/RouteRegistry'
+import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import { AuditLogsPlugin } from '@/plugins/audit-logs'
 
@@ -41,13 +45,26 @@ vi.mock('@/hooks/useAuth', () => ({
   })),
 }))
 
+// ...
+
 describe('UserMenu', () => {
   beforeEach(() => {
     vi.mocked(useAuth).mockReturnValue({
       user: mockUser,
       logout: mockLogout,
     } as unknown as ReturnType<typeof useAuth>)
-    new AuditLogsPlugin().register()
+
+    const context = {
+      routeRegistry: RouteRegistry.getInstance(),
+      sidebarRegistry: SidebarRegistry.getInstance(),
+      userMenuRegistry: UserMenuRegistry.getInstance(),
+      topMenuRegistry: {} as any, // Not used by AuditLogsPlugin
+      widgetRegistry: widgetRegistry,
+      settingsRegistry: {} as any,
+      i18n: { addResourceBundle: vi.fn() } as any,
+      api: { get: vi.fn(), post: vi.fn() } as any,
+    }
+    new AuditLogsPlugin().register(context)
   })
 
   it('renders user menu trigger', () => {

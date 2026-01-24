@@ -7,36 +7,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './contexts/AuthContext'
 // import { registerDashboardWidgets } from './features/dashboard/widgets/registerWidgets'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
-import { AuditLogsPlugin } from './plugins/audit-logs'
-import { ContactGraphPlugin } from './plugins/contact-graph'
-import { ContactsPlugin } from './plugins/contacts'
-import { DashboardPlugin } from './plugins/dashboard'
-import { GiftPlugin } from './plugins/gift-plugin'
-import { GoogleImportPlugin } from './plugins/google-import'
-import { GroupsPlugin } from './plugins/groups'
-import { NotificationsPlugin } from './plugins/notifications'
-import { SessionsPlugin } from './plugins/sessions'
-import { SettingsPlugin } from './plugins/settings/index'
-import { UserSecurityPlugin } from './plugins/user-security'
+import { PluginLoader } from './lib/core/PluginLoader'
 import App from './App.tsx'
 
 import './index.css'
 
-// Register Settings Tabs
-// Tabs are now registered by SettingsPlugin
-
-// Register Plugins
-new DashboardPlugin().register()
-new ContactsPlugin().register()
-new AuditLogsPlugin().register()
-new ContactGraphPlugin().register()
-new GoogleImportPlugin().register()
-new GroupsPlugin().register()
-new NotificationsPlugin().register()
-new SessionsPlugin().register()
-new UserSecurityPlugin().register()
-new SettingsPlugin().register()
-new GiftPlugin().register()
+// ... existing imports ...
 
 // registerDashboardWidgets() is now called inside DashboardPlugin.register()
 
@@ -47,14 +23,24 @@ if (!rootElement) {
   throw new Error('Failed to find the root element')
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <UserPrefsProvider>
-          <App />
-        </UserPrefsProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  </StrictMode>,
-)
+const initApp = async () => {
+  try {
+    await PluginLoader.getInstance().init()
+
+    createRoot(rootElement).render(
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <UserPrefsProvider>
+              <App />
+            </UserPrefsProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </StrictMode>,
+    )
+  } catch (error) {
+    console.error('Failed to initialize application:', error)
+  }
+}
+
+void initApp()

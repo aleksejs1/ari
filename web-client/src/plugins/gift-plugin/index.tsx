@@ -1,23 +1,23 @@
 import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
-import { RouteRegistry } from '@/lib/routing/RouteRegistry'
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { GiftSidebarItem } from './components/GiftSidebarItem'
 import { PageLoader } from './components/PageLoader'
 import en from './locales/en.json'
 import ru from './locales/ru.json'
+import { setApi } from './api'
 
 const GiftListsPage = lazy(() => import('./pages/GiftListsPage'))
 
-export class GiftPlugin extends BasePlugin {
+export default class GiftPlugin extends BasePlugin {
   name = 'gift-plugin'
 
-  register(): void {
-    this.registerTranslations({ en, ru })
-    const routeRegistry = RouteRegistry.getInstance()
-    const sidebarRegistry = SidebarRegistry.getInstance()
+  register(context: PluginContext): void {
+    this.registerTranslations({ en, ru }, context.i18n)
+    setApi(context.api)
+    const { routeRegistry, sidebarRegistry } = context
 
     // 1. Register Routes
     routeRegistry.register('dashboard', {

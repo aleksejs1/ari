@@ -37,6 +37,14 @@ vi.mock('@/features/search/components/GlobalSearch', () => ({
   GlobalSearch: () => <div data-testid="global-search-mock">Global Search</div>,
 }))
 
+import { RouteRegistry } from '@/lib/routing/RouteRegistry'
+import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
+import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
+
+// ...
+
 describe('DashboardLayout', () => {
   beforeAll(() => {
     ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
@@ -48,10 +56,22 @@ describe('DashboardLayout', () => {
       setDateFormat: vi.fn(),
       setShowLogo: vi.fn(),
     })
-    new AuditLogsPlugin().register()
-    new GoogleImportPlugin().register()
-    new NotificationsPlugin().register()
-    new SettingsPlugin().register()
+
+    const context = {
+      routeRegistry: RouteRegistry.getInstance(),
+      sidebarRegistry: SidebarRegistry.getInstance(),
+      userMenuRegistry: UserMenuRegistry.getInstance(),
+      topMenuRegistry: TopMenuRegistry.getInstance(),
+      widgetRegistry: widgetRegistry,
+      settingsRegistry: { registerTab: vi.fn() } as any,
+      i18n: { addResourceBundle: vi.fn() } as any,
+      api: { get: vi.fn(), post: vi.fn() } as any,
+    }
+
+    new AuditLogsPlugin().register(context)
+    new GoogleImportPlugin().register(context)
+    new NotificationsPlugin().register(context)
+    new SettingsPlugin().register(context)
   })
 
   it('renders layout elements correctly', () => {

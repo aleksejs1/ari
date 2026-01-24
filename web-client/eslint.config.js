@@ -16,6 +16,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores([
     'dist',
+    'dist-plugins',
     'node_modules',
     'node_modules_trash',
     'public',
