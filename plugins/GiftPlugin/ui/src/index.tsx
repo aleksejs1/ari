@@ -1,15 +1,13 @@
-import { lazy, Suspense } from 'react'
-
 import './index.css'
 
-import { BasePlugin } from '@/lib/core/Plugin'
-import type { PluginContext } from '@/lib/core/PluginContext'
+import { BasePlugin, type PluginContext } from '@ari/plugin-sdk'
+import { lazy, Suspense } from 'react'
 
-import { GiftSidebarItem } from './components/GiftSidebarItem'
+import { setApi } from './api'
+import { GiftTopMenuItem } from './components/GiftTopMenuItem'
 import { PageLoader } from './components/PageLoader'
 import en from './locales/en.json'
 import ru from './locales/ru.json'
-import { setApi } from './api'
 
 const GiftListsPage = lazy(() => import('./pages/GiftListsPage'))
 
@@ -19,10 +17,10 @@ export default class GiftPlugin extends BasePlugin {
   register(context: PluginContext): void {
     this.registerTranslations({ en, ru }, context.i18n)
     setApi(context.api)
-    const { routeRegistry, sidebarRegistry } = context
+    const { routeRegistry } = context
 
     // 1. Register Routes
-    routeRegistry.register('dashboard', {
+    routeRegistry.register('sidebar-less', {
       path: '/gift-lists',
       element: (
         <Suspense fallback={<PageLoader />}>
@@ -31,11 +29,14 @@ export default class GiftPlugin extends BasePlugin {
       ),
     })
 
-    // 2. Register Sidebar Section
-    sidebarRegistry.register({
-      id: 'gifts',
-      component: GiftSidebarItem,
-      order: 60, // After contacts
-    })
+    // 2. Register Top Menu Section
+    const { topMenuRegistry } = context
+    if (topMenuRegistry) {
+      topMenuRegistry.register({
+        id: 'gifts',
+        component: GiftTopMenuItem,
+        order: 10,
+      })
+    }
   }
 }

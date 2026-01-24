@@ -26,11 +26,18 @@
         "paths": {
             "@/*": [
                 "src/*"
+            ],
+            "@ari/plugin-sdk": [
+                "../../../sdk/src/index.ts"
+            ],
+            "@ari/plugin-sdk/*": [
+                "../../../sdk/src/shim/*"
             ]
         }
     },
     "include": [
-        "src"
+        "src",
+        "../../../sdk/src"
     ],
     "exclude": [
         "src/**/*.test.tsx",

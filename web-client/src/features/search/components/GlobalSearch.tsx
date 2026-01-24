@@ -163,7 +163,7 @@ export function GlobalSearch() {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-sm">
+    <div ref={containerRef} className="relative w-full max-w-sm shrink-0">
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
         <Input
@@ -180,7 +180,7 @@ export function GlobalSearch() {
       </div>
 
       {open && query.length > 0 ? (
-        <div className="fixed left-4 right-4 top-[3.5rem] z-50 mt-2 overflow-hidden rounded-lg border bg-white shadow-lg dark:bg-gray-800 md:absolute md:left-0 md:right-0 md:top-full md:mt-2 md:w-full">
+        <div className="fixed left-4 right-4 top-[3.5rem] z-[100] mt-2 overflow-hidden rounded-lg border bg-white shadow-lg dark:bg-gray-800 md:absolute md:left-0 md:right-0 md:top-full md:mt-2 md:w-full">
           <div className="flex border-b border-gray-200 dark:border-gray-700">
             {tabs.map((tab) => (
               <button

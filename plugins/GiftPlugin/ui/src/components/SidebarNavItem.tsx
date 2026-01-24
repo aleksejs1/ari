@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom'
-import { LucideIcon } from 'lucide-react'
 
 import { cn } from '../lib/utils'
 
 interface SidebarNavItemProps {
     to: string
-    icon: any
+    icon: React.ComponentType<{ className?: string }>
     label: string
     onClick?: () => void
     variant?: 'default' | 'danger'

@@ -6,13 +6,16 @@
         "dev": "concurrently \"npm run build:watch\" \"npm run serve\"",
         "build": "tsc && vite build",
         "build:watch": "vite build --watch",
-        "serve": "http-server dist -p 5001 --cors -c-1"
+        "serve": "http-server dist -p 5001 --cors -c-1",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "peerDependencies": {
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
+        "@ari/plugin-sdk": "file:../../../../sdk",
         "@hookform/resolvers": "^3.0.0",
         "@tanstack/react-query": "^4.0.0",
         "@testing-library/react": "^14.0.0",
@@ -23,15 +26,25 @@
         "autoprefixer": "^10.4.23",
         "axios": "^1.6.0",
         "concurrently": "^9.2.1",
+        "eslint": "^9.39.2",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "eslint-plugin-react-refresh": "^0.4.26",
+        "eslint-plugin-simple-import-sort": "^12.1.1",
+        "globals": "^17.1.0",
         "http-server": "^14.1.1",
         "i18next": "^23.0.0",
         "lucide-react": "^0.200.0",
         "postcss": "^8.5.6",
         "react-hook-form": "^7.71.1",
         "react-i18next": "^13.0.0",
+        "react-router-dom": "^7.13.0",
         "tailwindcss": "^3.4.17",
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.0.0",
+        "typescript-eslint": "^8.53.1",
         "vite": "^4.0.0",
         "vite-plugin-css-injected-by-js": "^3.5.2",
         "vitest": "^0.30.0",
@@ -44,7 +57,6 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
-        "react-router-dom": "^7.13.0",
         "tailwind-merge": "^3.4.0"
     }
 }

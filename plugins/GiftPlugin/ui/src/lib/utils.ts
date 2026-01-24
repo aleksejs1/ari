@@ -1,4 +1,4 @@
-/* eslint-disable complexity */
+ 
 import { type ClassValue, clsx } from 'clsx'
 import { format, type Locale } from 'date-fns'
 import { enUS, ru } from 'date-fns/locale'

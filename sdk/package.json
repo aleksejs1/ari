@@ -1,0 +1,23 @@
+{
+    "name": "@ari/plugin-sdk",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./shim/*": "./src/shim/*.ts",
+        "./react": "./src/shim/react.ts",
+        "./react-dom": "./src/shim/react-dom.ts",
+        "./react-query": "./src/shim/react-query.ts",
+        "./react-router-dom": "./src/shim/react-router-dom.ts",
+        "./react-i18next": "./src/shim/react-i18next.ts",
+        "./jsx-runtime": "./src/shim/jsx-runtime.ts"
+    },
+    "devDependencies": {
+        "@types/node": "^25.0.10",
+        "@types/react-router-dom": "^5.3.3",
+        "react-router-dom": "^7.13.0",
+        "typescript": "^5.9.3"
+    }
+}
