@@ -3,20 +3,21 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export function createTestConfig(importerUrl: string) {
+    const root = path.dirname(fileURLToPath(importerUrl));
 
-export function createTestConfig({ dirname }: { dirname: string }) {
     return defineConfig({
         plugins: [react()],
         test: {
+            root,
             globals: true,
             environment: 'jsdom',
-            setupFiles: [path.resolve(__dirname, '../test/setup.ts')],
+            include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+            setupFiles: [path.resolve(root, '../../../sdk/src/test/setup.ts')],
             css: false,
             alias: {
-                '@': path.resolve(dirname, './src'),
-                '@ari/plugin-sdk': path.resolve(__dirname, '..'),
+                '@': path.resolve(root, './src'),
+                '@ari/plugin-sdk': path.resolve(root, '../../../sdk/src'),
             },
         },
     });

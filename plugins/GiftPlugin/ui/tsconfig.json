@@ -5,20 +5,11 @@
         "paths": {
             "@/*": [
                 "src/*"
-            ],
-            "@ari/plugin-sdk": [
-                "../../../sdk/src/index.ts"
             ]
         }
     },
     "include": [
         "src",
-        "../../../sdk/src"
-    ],
-    "exclude": [
-        "src/**/*.test.tsx",
-        "src/**/*.spec.tsx",
-        "../../../sdk/src/**/*.test.tsx",
-        "../../../sdk/src/**/*.spec.tsx"
+        "../../../sdk/src/test/setup.ts"
     ]
 }

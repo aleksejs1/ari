@@ -1,17 +1,20 @@
-import { defineConfig, type UserConfig } from 'vite';
+import { type UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-interface PluginConfigOptions {
-    name: string; // Global variable name (e.g., 'GiftPlugin')
-    entry?: string;
-    dirname: string; // __dirname of the plugin
-}
+export function createPluginConfig(
+    name: string,
+    importerUrl: string,
+    options: { entry?: string } = {}
+): UserConfig {
+    const root = path.dirname(fileURLToPath(importerUrl));
+    const entry = options.entry || './src/index.tsx';
 
-export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }: PluginConfigOptions): UserConfig {
     return {
+        root,
         plugins: [
             react(),
             cssInjectedByJsPlugin(),
@@ -27,17 +30,17 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
         },
         resolve: {
             alias: [
-                { find: '@ari/plugin-sdk', replacement: path.resolve(dirname, '../../../sdk/src') },
-                { find: '@', replacement: path.resolve(dirname, './src') },
+                { find: '@ari/plugin-sdk', replacement: path.resolve(root, '../../../sdk/src') },
+                { find: '@', replacement: path.resolve(root, './src') },
             ],
         },
         build: {
             outDir: 'dist',
             emptyOutDir: true,
             lib: {
-                entry: path.resolve(dirname, entry),
+                entry: path.resolve(root, entry),
                 name,
-                fileName: (format) => `${name.toLowerCase().replace(/plugin$/, '-plugin')}.js`, // Force .js extension
+                fileName: (format) => `${name.toLowerCase().replace(/plugin$/, '-plugin')}.js`,
                 formats: ['es'],
             },
             rollupOptions: {
@@ -51,13 +54,12 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
                     'lucide-react',
                     'i18next',
                     'react-i18next',
-                    // UI Libs provided by SDK
                     'date-fns',
                     'date-fns/locale',
                     'class-variance-authority',
                     'clsx',
                     'tailwind-merge',
-                    /^@radix-ui\/.*/, // Regex for all radix packages
+                    /^@radix-ui\/.*/,
                 ],
                 output: {
                     globals: {
@@ -72,7 +74,7 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
             globals: true,
             environment: 'jsdom',
             include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
-            setupFiles: [path.resolve(dirname, '../../../sdk/src/test/setup.ts')],
+            setupFiles: [path.resolve(root, '../../../sdk/src/test/setup.ts')],
         },
         server: {
             cors: true,
