@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:ui": "vite build --config vite.config.ui.ts",
     "build:gift": "tsc && vite build --config vite.config.gift.ts",
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\"",

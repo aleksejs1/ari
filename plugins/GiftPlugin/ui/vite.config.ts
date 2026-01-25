@@ -43,7 +43,9 @@ export default defineConfig({
         'zod',
         'tailwind-merge',
         'clsx',
-        'axios'
+        'axios',
+        '@crm/ui',
+        /^@radix-ui\/.*/
       ],
       output: {
         globals: {
@@ -55,7 +57,9 @@ export default defineConfig({
           'react-hook-form': 'ReactHookForm',
           'zod': 'Zod',
           'tailwind-merge': 'twMerge',
-          'clsx': 'clsx'
+          'clsx': 'clsx',
+          'axios': 'axios',
+          '@crm/ui': 'CrmUi'
         },
       },
     },

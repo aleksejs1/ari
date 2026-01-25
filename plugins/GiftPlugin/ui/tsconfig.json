@@ -29,6 +29,9 @@
             ],
             "@ari/plugin-sdk": [
                 "../../../sdk/src/index.ts"
+            ],
+            "@crm/ui": [
+                "../../../web-client/src/shared-ui.ts"
             ]
         }
     },
