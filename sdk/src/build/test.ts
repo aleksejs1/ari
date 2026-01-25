@@ -16,7 +16,7 @@ export function createTestConfig({ dirname }: { dirname: string }) {
             css: false,
             alias: {
                 '@': path.resolve(dirname, './src'),
-                '@ari/plugin-sdk': path.resolve(__dirname, '../index.ts'),
+                '@ari/plugin-sdk': path.resolve(__dirname, '..'),
             },
         },
     });

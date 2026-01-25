@@ -14,18 +14,17 @@
     },
     "peerDependencies": {
         "@ari/plugin-sdk": "*",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0"
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0"
     },
     "devDependencies": {
-        "@testing-library/react": "^16.0.0",
-        "@types/node": "^20.0.0",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
+        "@types/node": "^24.10.1",
+        "@types/react": "^19.2.5",
+        "@types/react-dom": "^19.2.3",
         "@ari/eslint-config": "*",
         "typescript": "~5.3.3",
         "vite": "^4.5.3",
-        "vitest": "^0.30.0"
+        "vitest": "^0.34.6"
     },
     "dependencies": {}
 }

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@ari/plugin-sdk/test'
 import { describe, expect, it, vi } from 'vitest'
 
 import GiftListsPage from './GiftListsPage'

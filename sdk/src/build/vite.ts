@@ -27,7 +27,7 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
         },
         resolve: {
             alias: [
-                { find: '@ari/plugin-sdk', replacement: path.resolve(dirname, '../../../sdk/src/index.ts') },
+                { find: '@ari/plugin-sdk', replacement: path.resolve(dirname, '../../../sdk/src') },
                 { find: '@', replacement: path.resolve(dirname, './src') },
             ],
         },
