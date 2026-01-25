@@ -3,10 +3,10 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "concurrently \"npm run build:watch\" \"npm run serve\"",
+        "dev": "vite build --watch",
         "build": "tsc && vite build",
         "build:watch": "vite build --watch",
-        "serve": "http-server dist -p 5001 --cors -c-1",
+        "serve": "vite preview --port 5001",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "test": "vitest",
@@ -15,17 +15,14 @@
     "peerDependencies": {
         "@ari/plugin-sdk": "*",
         "react": "^19.0.0",
-        "react-dom": "^19.0.0",
-        "react-hook-form": "^7.51.5"
+        "react-dom": "^19.0.0"
     },
     "devDependencies": {
         "@testing-library/react": "^16.0.0",
         "@types/node": "^20.0.0",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
-        "concurrently": "^9.2.1",
         "@ari/eslint-config": "*",
-        "http-server": "^14.1.1",
         "typescript": "~5.3.3",
         "vite": "^4.5.3",
         "vitest": "^0.30.0"

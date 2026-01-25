@@ -74,5 +74,11 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
             include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
             setupFiles: [path.resolve(dirname, '../../../sdk/src/test/setup.ts')],
         },
+        server: {
+            cors: true,
+        },
+        preview: {
+            cors: true,
+        },
     };
 }
