@@ -15,7 +15,7 @@ const config: KnipConfig = {
   ],
   ignoreBinaries: ['dot'],
   ignoreExportsUsedInFile: true,
-  ignoreDependencies: ['babel-plugin-react-compiler'],
+  ignoreDependencies: [],
 }
 
 export default config
