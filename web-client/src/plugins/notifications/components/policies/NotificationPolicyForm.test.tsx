@@ -57,7 +57,7 @@ vi.mock('@/plugins/groups/hooks/useGroups', () => ({
 }))
 
 vi.mock('@/plugins/contacts/useContacts', async () => {
-  const actual = await vi.importActual('@/plugins/contacts/useContacts')
+  const actual = await vi.importActual<Record<string, unknown>>('@/plugins/contacts/useContacts')
   return {
     ...actual,
     useContacts: vi.fn(() => ({
@@ -94,7 +94,7 @@ vi.mock('@/hooks/useUserPrefs.hook', () => ({
 
 // Mock react-router-dom
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom')
+  const actual = await vi.importActual<Record<string, unknown>>('react-router-dom')
   return {
     ...actual,
     useParams: () => ({}),

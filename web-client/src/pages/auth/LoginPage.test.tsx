@@ -17,7 +17,7 @@ vi.mock('@/hooks/useAuth', () => ({
 }))
 
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom')
+  const actual = await vi.importActual<Record<string, unknown>>('react-router-dom')
   return {
     ...actual,
     useNavigate: () => mockNavigate,

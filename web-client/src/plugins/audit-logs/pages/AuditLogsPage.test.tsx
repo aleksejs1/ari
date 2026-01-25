@@ -49,7 +49,7 @@ describe('AuditLogsPage', () => {
 // Let's restart with mocking useQuery for UI state testing as it is cleaner for component tests
 // We need to re-import to mock
 vi.mock('@tanstack/react-query', async () => {
-  const actual = await vi.importActual('@tanstack/react-query')
+  const actual = await vi.importActual<Record<string, unknown>>('@tanstack/react-query')
   return {
     ...actual,
     useQuery: vi.fn(),

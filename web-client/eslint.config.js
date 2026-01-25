@@ -1,19 +1,15 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-import react from 'eslint-plugin-react'
-import jsxA11y from 'eslint-plugin-jsx-a11y'
+import { config as sharedConfig, plugins as sharedPlugins } from '@ari/eslint-config'
 import importPlugin from 'eslint-plugin-import'
-import eslintConfigPrettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import sonarjs from 'eslint-plugin-sonarjs'
-import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import globals from 'globals'
+
+const { reactRefresh, simpleImportSort, jsxA11y } = sharedPlugins
 
 export default defineConfig([
+  ...sharedConfig,
   globalIgnores([
     'dist',
     'dist-plugins',
@@ -26,15 +22,6 @@ export default defineConfig([
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
-      js.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.strict,
-      ...tseslint.configs.stylistic,
-      react.configs.flat.recommended,
-      react.configs.flat['jsx-runtime'],
-      jsxA11y.flatConfigs.recommended,
-      reactHooks.configs.flat.recommended,
-      eslintConfigPrettier,
       boundaries.configs.recommended,
       ...pluginQuery.configs['flat/recommended'],
       sonarjs.configs.recommended,

@@ -31,7 +31,7 @@ vi.mock('react-i18next', () => ({
 
 // Let's mock the hook completely for this test file
 vi.mock('@/lib/settings/SettingsRegistry', async () => {
-  const actual = await vi.importActual('@/lib/settings/SettingsRegistry')
+  const actual = await vi.importActual<Record<string, unknown>>('@/lib/settings/SettingsRegistry')
   return {
     ...actual,
     useSettingsTabs: vi.fn(),

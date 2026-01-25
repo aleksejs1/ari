@@ -1,0 +1,17 @@
+{
+    "name": "ari-monorepo",
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "plugins/*/ui",
+        "web-client",
+        "sdk"
+    ],
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "packageManager": "npm@10.8.2",
+    "devDependencies": {
+        "jsdom": "^22.1.0"
+    }
+}

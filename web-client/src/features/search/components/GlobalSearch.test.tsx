@@ -20,7 +20,7 @@ vi.mock('@/plugins/groups/hooks/useGroups', () => ({
 }))
 
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom')
+  const actual = await vi.importActual<Record<string, unknown>>('react-router-dom')
   return {
     ...actual,
     useNavigate: vi.fn(),
@@ -31,7 +31,7 @@ describe('GlobalSearch', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
-    vi.mocked(useNavigate).mockReturnValue(vi.fn())
+    vi.mocked(useNavigate).mockReturnValue(vi.fn() as any)
     vi.mocked(useContacts).mockReturnValue({
       data: { member: [] },
     } as unknown as UseQueryResult<HydraCollection<Contact>>)

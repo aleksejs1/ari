@@ -34,14 +34,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
-      react({
-        babel: {
-          plugins: [
-            // Disable React Compiler incompatibility warnings for TanStack Table
-            ['babel-plugin-react-compiler', { compilationMode: 'annotation' }],
-          ],
-        },
-      }),
+      react(),
       visualizer({
         open: false,
         gzipSize: true,

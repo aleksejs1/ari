@@ -13,9 +13,31 @@ const config: KnipConfig = {
     'src/components/ui/dropdown-menu.tsx',
     'src/components/ui/popover.tsx',
   ],
-  ignoreBinaries: ['dot'],
+  ignoreBinaries: [
+    'dot',
+    'vite',
+    'eslint',
+    'stylelint',
+    'depcruise',
+    'knip',
+    'prettier',
+    'openapi-typescript',
+    'husky',
+    'lint-staged',
+    'tsc',
+  ],
   ignoreExportsUsedInFile: true,
-  ignoreDependencies: [],
+  ignoreDependencies: [
+    '@eslint/js',
+    'typescript-eslint',
+    '@testing-library/dom',
+    'husky',
+    'lint-staged',
+    'prettier',
+    'stylelint',
+    'openapi-typescript',
+    '@ari/eslint-config',
+  ],
 }
 
 export default config

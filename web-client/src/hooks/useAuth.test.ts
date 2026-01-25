@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { useAuth } from './useAuth'
 
 vi.mock('react', async () => {
-  const actual = await vi.importActual('react')
+  const actual = await vi.importActual<Record<string, unknown>>('react')
   return {
     ...actual,
     useContext: vi.fn(),
