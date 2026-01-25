@@ -1,5 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Query } from '@ari/plugin-sdk'
 
+
+const { useMutation, useQuery, useQueryClient } = Query
 import { getApi } from '../api'
 import type { CreateGiftListDto, GiftList, UpdateGiftListDto } from '../types'
 
@@ -9,7 +11,21 @@ export const giftKeys = {
   detail: (id: number) => [...giftKeys.lists(), id] as const,
 }
 
-import { getHydraMember, type HydraCollection } from '@/lib/hydra'
+interface HydraCollection<T> {
+  'hydra:member'?: T[]
+  member?: T[]
+  'hydra:totalItems'?: number
+  totalItems?: number
+}
+
+function getHydraMember<T>(data: HydraCollection<T> | T[]): T[] {
+  if (Array.isArray(data)) {
+    return data
+  }
+  return data['hydra:member'] || data.member || []
+}
+
+
 
 // --- API Functions ---
 

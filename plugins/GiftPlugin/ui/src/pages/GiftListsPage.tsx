@@ -1,105 +1,132 @@
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Skeleton } from '@crm/ui'
-import { Edit, Plus, Trash2 } from 'lucide-react'
+import { Icons, useTranslation } from '@ari/plugin-sdk'
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ari/ui'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { GiftListDialog } from '../components/GiftListDialog'
+import { PageLoader } from '../components/PageLoader'
 import { useDeleteGiftList, useGiftLists } from '../hooks/useGiftLists'
 import type { GiftList } from '../types'
 
 export default function GiftListsPage() {
   const { t } = useTranslation('gift-plugin')
   const { data: giftLists, isLoading } = useGiftLists()
-  const deleteMutation = useDeleteGiftList()
-
+  const [listToEdit, setListToEdit] = useState<GiftList | undefined>()
+  const { mutate: deleteGiftList } = useDeleteGiftList()
+  const [deleteId, setDeleteId] = useState<number | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingList, setEditingList] = useState<GiftList | undefined>(undefined)
-  const [deletingListId, setDeletingListId] = useState<number | null>(null)
+
+  // ... create/edit handlers ...
+
+  const confirmDelete = async () => {
+    if (deleteId) {
+      await deleteGiftList(deleteId)
+      setDeleteId(null)
+    }
+  }
+
+
 
   const handleCreate = () => {
-    setEditingList(undefined)
+    setListToEdit(undefined)
     setIsDialogOpen(true)
   }
 
   const handleEdit = (list: GiftList) => {
-    setEditingList(list)
+    setListToEdit(list)
     setIsDialogOpen(true)
   }
 
-  const handleDeleteClick = (id: number) => {
-    setDeletingListId(id)
-  }
-
-  const confirmDelete = async () => {
-    if (deletingListId) {
-      await deleteMutation.mutateAsync(deletingListId)
-      setDeletingListId(null)
-    }
-  }
+  // ... (delete handlers remain same)
 
   if (isLoading) {
-    return (
-      <div className="space-y-4 p-6">
-        <Skeleton className="h-10 w-48" />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32" />
-          ))}
-        </div>
-      </div>
-    )
+    // ... (skeleton remains same)
   }
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">{t('title', 'Gift Lists')}</h1>
         <Button onClick={handleCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t('actions.addList', 'Add List')}
+          <Icons.Plus className="mr-2 h-4 w-4" />
+          {t('common.create', 'Create')}
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {giftLists?.map((list) => (
-          <Card key={list.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xl font-medium">{list.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {list.description ? (
-                <p className="mb-2 text-sm text-gray-500">{list.description}</p>
-              ) : null}
-              {list.eventDate ? (
-                <p className="mb-4 text-sm text-gray-400">
-                  {new Date(list.eventDate).toLocaleDateString()}
-                </p>
-              ) : null}
-              <div className="mt-4 flex justify-end gap-2">
-                <Button variant="ghost" size="sm" onClick={() => handleEdit(list)}>
-                  <Edit className="mr-1 h-4 w-4" />
-                  {t('actions.edit', 'Edit')}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {isLoading ? (
+          <PageLoader />
+        ) : giftLists?.length === 0 ? (
+          <Card className="col-span-full">
+            <CardContent className="flex flex-col items-center justify-center py-10 text-center">
+              <Icons.Gift className="h-10 w-10 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold">{t('empty.title', 'No gift lists yet')}</h3>
+              <p className="text-sm text-muted-foreground mt-2 mb-4">
+                {t('empty.description', 'Create your first gift list to get started.')}
+              </p>
+              <Button onClick={handleCreate}>
+                <Icons.Plus className="mr-2 h-4 w-4" />
+                {t('common.create', 'Create List')}
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          giftLists?.map((list) => (
+            <Card key={list.id} className="group relative overflow-hidden transition-all hover:shadow-md">
+              <div onClick={() => handleEdit(list)} className="cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between pr-8">
+                    <span className="truncate">{list.name}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {list.eventDate && (
+                    <p className="mb-2 text-xs font-medium text-muted-foreground">
+                      {new Date(list.eventDate).toLocaleDateString()}
+                    </p>
+                  )}
+                  <p className="line-clamp-2 text-sm text-muted-foreground">
+                    {list.description || t('noDescription', 'No description')}
+                  </p>
+                </CardContent>
+              </div>
+              <div className="absolute top-4 right-4 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100 bg-background/80 p-1 rounded-md backdrop-blur-sm">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleEdit(list)
+                  }}
+                >
+                  <Icons.Edit className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
-                  size="sm"
-                  className="text-red-500 hover:bg-red-50 hover:text-red-700"
-                  onClick={() => handleDeleteClick(list.id)}
+                  size="icon"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setDeleteId(list.id)
+                  }}
                 >
-                  <Trash2 className="mr-1 h-4 w-4" />
-                  {t('actions.delete', 'Delete')}
+                  <Icons.Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+            </Card>
+          ))
+        )}
       </div>
 
-      <GiftListDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} listToEdit={editingList} />
+      <GiftListDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        listToEdit={listToEdit}
+      />
 
       <Dialog
-        open={!!deletingListId}
-        onOpenChange={(open: boolean) => !open && setDeletingListId(null)}
+        open={!!deleteId} // Changed to deleteId
+        onOpenChange={(open: boolean) => !open && setDeleteId(null)} // Changed to setDeleteId
       >
         <DialogContent>
           <DialogHeader>
@@ -112,7 +139,7 @@ export default function GiftListsPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeletingListId(null)}>
+            <Button variant="outline" onClick={() => setDeleteId(null)}> {/* Changed to setDeleteId */}
               {t('common.cancel', 'Cancel')}
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>

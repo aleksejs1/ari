@@ -36,33 +36,15 @@ export default defineConfig({
         'react',
         'react-dom',
         'react/jsx-runtime',
-        'react-router-dom',
-        'react-i18next',
-        '@tanstack/react-query',
-        'react-hook-form',
-        'zod',
-        'tailwind-merge',
-        'clsx',
-        'axios',
-        '@crm/ui',
-        /^@radix-ui\/.*/,
-        '@hookform/resolvers/zod',
-        '@hookform/resolvers',
-        'lucide-react'
+        '@ari/plugin-sdk',
+        '@ari/ui'
       ],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
-          'react-router-dom': 'ReactRouterDOM',
-          'react-i18next': 'ReactI18next',
-          '@tanstack/react-query': 'ReactQuery',
-          'react-hook-form': 'ReactHookForm',
-          'zod': 'Zod',
-          'tailwind-merge': 'twMerge',
-          'clsx': 'clsx',
-          'axios': 'axios',
-          '@crm/ui': 'CrmUi'
+          '@ari/plugin-sdk': 'AriSdk',
+          '@ari/ui': 'SharedUI'
         },
       },
     },

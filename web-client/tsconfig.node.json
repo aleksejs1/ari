@@ -20,5 +20,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts", "vite.config.gift.ts", "vite.config.ui.ts", "knip.ts"]
+  "include": [
+    "vite.config.ts",
+    "vite.config.gift.ts",
+    "vite.config.ui.ts",
+    "vite.config.sdk.ts",
+    "knip.ts"
+  ]
 }

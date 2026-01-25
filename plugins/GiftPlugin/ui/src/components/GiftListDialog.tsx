@@ -1,11 +1,6 @@
-import { Alert, AlertDescription, AlertTitle, Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Textarea } from '@crm/ui'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AxiosError } from 'axios'
-import { AlertCircle } from 'lucide-react'
+import { AxiosError, Icons, useForm, useTranslation,z, zodResolver } from '@ari/plugin-sdk'
+import { Alert, AlertDescription, AlertTitle, Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input, Textarea } from '@ari/ui'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as z from 'zod'
 
 import { useCreateGiftList, useUpdateGiftList } from '../hooks/useGiftLists'
 import type { GiftList } from '../types'
@@ -106,7 +101,7 @@ export function GiftListDialog({ open, onOpenChange, listToEdit }: GiftListDialo
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {error ? (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
+                <Icons.AlertCircle className="h-4 w-4" />
                 <AlertTitle>{t('common.error', 'Error')}</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>

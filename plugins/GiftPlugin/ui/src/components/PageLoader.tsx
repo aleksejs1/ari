@@ -1,4 +1,4 @@
-import { Skeleton } from '@crm/ui'
+import { Skeleton } from '@ari/ui'
 
 export function PageLoader() {
   return (

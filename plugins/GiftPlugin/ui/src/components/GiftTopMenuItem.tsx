@@ -1,6 +1,6 @@
-import { Gift } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Icons, Router, useTranslation } from '@ari/plugin-sdk'
+
+const { Link } = Router
 
 export function GiftTopMenuItem({ onNavigate }: { onNavigate?: () => void }) {
     const { t } = useTranslation('gift-plugin')
@@ -16,7 +16,7 @@ export function GiftTopMenuItem({ onNavigate }: { onNavigate?: () => void }) {
                 onClick={onNavigate}
                 className={`${baseClasses} ${mobileClasses}`}
             >
-                <Gift className="h-5 w-5" />
+                <Icons.Gift className="h-5 w-5" />
                 <span>{t('sidebar', 'Gifts')}</span>
             </Link>
         )
@@ -24,7 +24,9 @@ export function GiftTopMenuItem({ onNavigate }: { onNavigate?: () => void }) {
 
     return (
         <Link to="/gift-lists" className={`${baseClasses} ${desktopClasses}`}>
-            <Gift className="h-4 w-4" />
+            <div className={`p-2 rounded-md hover:bg-muted`}>
+                <Icons.Gift className="h-4 w-4" />
+            </div>
             <span>{t('sidebar', 'Gifts')}</span>
         </Link>
     )
