@@ -1,52 +1,10 @@
-import react from '@vitejs/plugin-react'
-import path from 'path'
-import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig } from 'vite'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
-export default defineConfig({
-  plugins: [
-    react(),
-    cssInjectedByJsPlugin(),
-    visualizer({
-      open: false,
-      gzipSize: true,
-      brotliSize: true,
-    }),
-  ],
-  define: {
-    'process.env': {}
-  },
-  resolve: {
-    alias: [
-      { find: '@ari/plugin-sdk', replacement: path.resolve(__dirname, '../../../sdk/src/index.ts') },
-      { find: '@', replacement: path.resolve(__dirname, './src') },
-    ],
-  },
-  build: {
-    outDir: 'dist',
-    lib: {
-      entry: path.resolve(__dirname, 'src/index.tsx'),
-      name: 'GiftPlugin',
-      fileName: 'gift-plugin',
-      formats: ['es'],
-    },
-    rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
-        '@ari/plugin-sdk',
-        '@ari/ui'
-      ],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          '@ari/plugin-sdk': 'AriSdk',
-          '@ari/ui': 'SharedUI'
-        },
-      },
-    },
-  },
-})
+import { defineConfig } from 'vite';
+
+import { createPluginConfig } from '../../../sdk/src/build/vite';
+
+export default defineConfig(createPluginConfig({
+  name: 'GiftPlugin',
+  dirname: __dirname,
+  entry: './src/index.tsx'
+}));

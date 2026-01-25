@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
+import { cn,Router } from '@ari/plugin-sdk'
 
-import { cn } from '../lib/utils'
+const { Link } = Router
 
 interface SidebarNavItemProps {
     to: string
