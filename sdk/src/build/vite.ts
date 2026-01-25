@@ -7,7 +7,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 interface PluginConfigOptions {
     name: string; // Global variable name (e.g., 'GiftPlugin')
     entry?: string;
-    dirname: string; // __dirname плагина для резолва путей
+    dirname: string; // __dirname of the plugin
 }
 
 export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }: PluginConfigOptions): UserConfig {
@@ -19,6 +19,7 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
                 open: false,
                 gzipSize: true,
                 brotliSize: true,
+                filename: 'dist/stats.html'
             }),
         ],
         define: {
@@ -26,13 +27,13 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
         },
         resolve: {
             alias: [
-                { find: '@ari/plugin-sdk', replacement: path.resolve(dirname, '../../../../sdk/src/index.ts') }, // Путь к SDK relative to plugin
+                { find: '@ari/plugin-sdk', replacement: path.resolve(dirname, '../../../sdk/src/index.ts') },
                 { find: '@', replacement: path.resolve(dirname, './src') },
             ],
         },
         build: {
             outDir: 'dist',
-            // emptyOutDir: true, // Be careful with this in monorepos, but usually fine for plugins
+            emptyOutDir: true,
             lib: {
                 entry: path.resolve(dirname, entry),
                 name,
@@ -40,20 +41,38 @@ export function createPluginConfig({ name, dirname, entry = './src/index.tsx' }:
                 formats: ['es'],
             },
             rollupOptions: {
-                // Стандартный набор externals для всех плагинов
                 external: [
-                    'react', 'react-dom', 'react/jsx-runtime',
-                    '@ari/plugin-sdk', '@ari/ui'
+                    'react',
+                    'react-dom',
+                    'react/jsx-runtime',
+                    '@ari/plugin-sdk',
+                    'react-router-dom',
+                    '@tanstack/react-query',
+                    'lucide-react',
+                    'i18next',
+                    'react-i18next',
+                    // UI Libs provided by SDK
+                    'date-fns',
+                    'date-fns/locale',
+                    'class-variance-authority',
+                    'clsx',
+                    'tailwind-merge',
+                    /^@radix-ui\/.*/, // Regex for all radix packages
                 ],
                 output: {
                     globals: {
                         react: 'React',
                         'react-dom': 'ReactDOM',
                         '@ari/plugin-sdk': 'AriSdk',
-                        '@ari/ui': 'SharedUI'
                     },
                 },
             },
+        },
+        test: {
+            globals: true,
+            environment: 'jsdom',
+            include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+            setupFiles: [path.resolve(dirname, '../../../sdk/src/test/setup.ts')],
         },
     };
 }

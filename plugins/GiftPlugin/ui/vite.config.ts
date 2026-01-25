@@ -1,10 +1,7 @@
-
-import { defineConfig } from 'vite';
-
 import { createPluginConfig } from '../../../sdk/src/build/vite';
 
-export default defineConfig(createPluginConfig({
+export default createPluginConfig({
   name: 'GiftPlugin',
   dirname: __dirname,
-  entry: './src/index.tsx'
-}));
+  entry: './src/index.tsx',
+});

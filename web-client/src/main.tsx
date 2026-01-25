@@ -20,7 +20,6 @@ window.ReactRouterDOM = ReactRouterDOM
 window.ReactJSX = ReactJSX
 
 import { AuthProvider } from './contexts/AuthContext'
-// import { registerDashboardWidgets } from './features/dashboard/widgets/registerWidgets'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
 import { PluginLoader } from './lib/core/PluginLoader'
 import App from './App.tsx'

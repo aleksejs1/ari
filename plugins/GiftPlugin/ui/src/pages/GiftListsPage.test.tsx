@@ -21,19 +21,14 @@ vi.mock('../hooks/useGiftLists', () => ({
   useDeleteGiftList: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
-// Mock translations
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue: string) => defaultValue,
-  }),
-}))
+// Mocks handled by global setup or locally modified below
 
 describe('GiftListsPage', () => {
   it('renders the page title and add button', () => {
     render(<GiftListsPage />)
 
     expect(screen.getByText('Gift Lists')).toBeInTheDocument()
-    expect(screen.getByText('Add List')).toBeInTheDocument()
+    expect(screen.getByText('Create')).toBeInTheDocument()
   })
 
   it('renders the gift list items', () => {

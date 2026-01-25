@@ -1,16 +1,12 @@
-
 import './index.css'
 
-import { BasePlugin, type PluginContext } from '@ari/plugin-sdk'
-import React, { lazy, Suspense } from 'react'
+import { BasePlugin, type PluginContext, setSdkApi } from '@ari/plugin-sdk'
+import { lazy, Suspense } from 'react'
 
-import { setApi } from './api'
 import { GiftTopMenuItem } from './components/GiftTopMenuItem'
 import { PageLoader } from './components/PageLoader'
 import en from './locales/en.json'
 import ru from './locales/ru.json'
-
-
 
 const GiftListsPage = lazy(() => import('./pages/GiftListsPage'))
 
@@ -18,10 +14,10 @@ export default class GiftPlugin extends BasePlugin {
   name = 'gift-plugin'
 
   register(context: PluginContext): void {
-    // this.registerTranslations({ en, ru }, context.i18n)
+    setSdkApi(context.api)
     context.i18n.addResourceBundle('en', 'gift-plugin', en)
     context.i18n.addResourceBundle('ru', 'gift-plugin', ru)
-    setApi(context.api)
+
     const { routeRegistry } = context
 
     // 1. Register Routes

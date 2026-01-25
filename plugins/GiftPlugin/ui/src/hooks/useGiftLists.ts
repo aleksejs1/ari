@@ -1,8 +1,7 @@
-import { Query } from '@ari/plugin-sdk'
+import { http,Query } from '@ari/plugin-sdk'
 
 
 const { useMutation, useQuery, useQueryClient } = Query
-import { getApi } from '../api'
 import type { CreateGiftListDto, GiftList, UpdateGiftListDto } from '../types'
 
 export const giftKeys = {
@@ -30,13 +29,13 @@ function getHydraMember<T>(data: HydraCollection<T> | T[]): T[] {
 // --- API Functions ---
 
 const getGiftLists = async (): Promise<GiftList[]> => {
-  const api = getApi()
+  const api = http
   const { data } = await api.get<HydraCollection<GiftList> | GiftList[]>('/gift_lists')
   return getHydraMember(data)
 }
 
 const createGiftList = async (dto: CreateGiftListDto): Promise<GiftList> => {
-  const api = getApi()
+  const api = http
   const { data } = await api.post<GiftList>('/gift_lists', dto)
   return data
 }
@@ -45,7 +44,7 @@ const updateGiftList = async ({
   id,
   ...dto
 }: UpdateGiftListDto & { id: number }): Promise<GiftList> => {
-  const api = getApi()
+  const api = http
   const { data } = await api.patch<GiftList>(`/gift_lists/${id}`, dto, {
     headers: {
       'Content-Type': 'application/merge-patch+json',
@@ -55,7 +54,7 @@ const updateGiftList = async ({
 }
 
 const deleteGiftList = async (id: number): Promise<void> => {
-  const api = getApi()
+  const api = http
   await api.delete(`/gift_lists/${id}`)
 }
 

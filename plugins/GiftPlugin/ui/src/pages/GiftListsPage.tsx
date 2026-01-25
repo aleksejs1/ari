@@ -1,5 +1,5 @@
 import { Icons, useTranslation } from '@ari/plugin-sdk'
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ari/ui'
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ari/plugin-sdk'
 import { useState } from 'react'
 
 import { GiftListDialog } from '../components/GiftListDialog'
