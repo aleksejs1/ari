@@ -9,7 +9,6 @@
         }
     },
     "include": [
-        "src",
-        "../../../sdk/src/test/setup.ts"
+        "src"
     ]
 }
