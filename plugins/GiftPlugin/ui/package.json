@@ -21,10 +21,11 @@
         "react-i18next": "^13.0.0",
         "react-router-dom": "^7.13.0",
         "tailwind-merge": "^3.0.0",
-        "zod": "^3.0.0"
+        "zod": "^3.0.0",
+        "@hookform/resolvers": "^3.0.0",
+        "lucide-react": "^0.200.0"
     },
     "devDependencies": {
-        "@hookform/resolvers": "^3.0.0",
         "@testing-library/react": "^14.0.0",
         "@types/node": "^20.0.0",
         "@types/react": "^19.0.0",
@@ -42,7 +43,6 @@
         "globals": "^17.1.0",
         "http-server": "^14.1.1",
         "i18next": "^23.0.0",
-        "lucide-react": "^0.200.0",
         "postcss": "^8.5.6",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",

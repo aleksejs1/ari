@@ -45,7 +45,10 @@ export default defineConfig({
         'clsx',
         'axios',
         '@crm/ui',
-        /^@radix-ui\/.*/
+        /^@radix-ui\/.*/,
+        '@hookform/resolvers/zod',
+        '@hookform/resolvers',
+        'lucide-react'
       ],
       output: {
         globals: {
