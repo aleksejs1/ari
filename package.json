@@ -4,8 +4,7 @@
     "workspaces": [
         "packages/*",
         "plugins/*/ui",
-        "web-client",
-        "sdk"
+        "web-client"
     ],
     "engines": {
         "node": ">=20.0.0"

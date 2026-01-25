@@ -24,6 +24,7 @@ const config: KnipConfig = {
     'openapi-typescript',
     'husky',
     'lint-staged',
+    'vitest',
     'tsc',
   ],
   ignoreExportsUsedInFile: true,
