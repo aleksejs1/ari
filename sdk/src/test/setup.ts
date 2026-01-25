@@ -18,7 +18,3 @@ vi.mock('react-i18next', () => ({
         init: () => { },
     },
 }));
-
-// Mock @ari/plugin-sdk to avoid issues with uninitialized state if needed
-// But we want to keep UI components real, so we only mock the hooks/context if necessary.
-// For now, let's just make sure react-i18next is covered as it's the main culprit.
