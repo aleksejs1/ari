@@ -8,7 +8,8 @@
         ".": "./src/index.ts",
         "./build/vite": "./src/build/vite.ts",
         "./build/test": "./src/build/test.ts",
-        "./test": "./src/test/index.ts"
+        "./test": "./src/test/index.ts",
+        "./tailwind.preset": "./tailwind.preset.js"
     },
     "scripts": {
         "build": "vite build",
