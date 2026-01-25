@@ -62,7 +62,7 @@ services:
       - "8080:8080"
 ```
 
-👉 [Full Installation Guide](docs/docs/01-getting-started/installation.md)
+👉 [Full Installation Guide](https://github.com/aleksejs1/ari-docs/blob/master/docs/01-getting-started/installation.md)
 
 ---
 ## Why this exists
@@ -174,7 +174,7 @@ Workflows are being polished, and parts of the system are intentionally over-eng
 The system now supports a **Plugin-Oriented Architecture** on both Backend and Frontend. This allows extending functionality without modifying the core codebase.
 
 - **Proof of Concept**: A full plugin system is implemented and functional.
-- **Documentation**: See [Plugin Development Overview](docs/docs/05-developer/plugins.md) for details on creating plugins for both layers.
+- **Documentation**: See [Plugin Development Overview](https://github.com/aleksejs1/ari-docs/blob/master/docs/05-developer/plugins.md) for details on creating plugins for both layers.
 
 ---
 ## Project status & expectations
