@@ -59,7 +59,7 @@ export function DataSettings() {
     new Setting(settingsContainer)
       .setName(t('settings.importData'))
       .setDesc(t('settings.importDataDescription'))
-      // eslint-disable-next-line
+
       .addButton((btn) =>
         btn
           .setButtonText(isImporting ? t('common.loading') : t('settings.importData'))

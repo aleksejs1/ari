@@ -1,15 +1,23 @@
-import { config as sharedConfig, plugins as sharedPlugins } from '@ari/eslint-config'
 import importPlugin from 'eslint-plugin-import'
 import boundaries from 'eslint-plugin-boundaries'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import sonarjs from 'eslint-plugin-sonarjs'
+import js from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import react from 'eslint-plugin-react'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import globals from 'globals'
 
-const { reactRefresh, simpleImportSort, jsxA11y } = sharedPlugins
-
 export default defineConfig([
-  ...sharedConfig,
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
+  jsxA11y.flatConfigs.recommended,
   globalIgnores([
     'dist',
     'dist-plugins',
@@ -20,27 +28,23 @@ export default defineConfig([
     'coverage',
   ]),
   {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      boundaries.configs.recommended,
-      ...pluginQuery.configs['flat/recommended'],
-      sonarjs.configs.recommended,
-    ],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-        ...globals.es2020,
-      },
-      parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.node.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
     settings: {
       react: {
         version: 'detect',
       },
+    },
+  },
+  {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
+    settings: {
       'boundaries/elements': [
         // 1. Core / Shared Layers
         {
@@ -65,13 +69,31 @@ export default defineConfig([
         },
       ],
     },
+    extends: [
+      boundaries.configs.recommended,
+      ...pluginQuery.configs['flat/recommended'],
+      sonarjs.configs.recommended,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.browser,
+        ...globals.es2020,
+      },
+      parserOptions: {
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     plugins: {
+      'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       import: importPlugin,
       boundaries,
       'simple-import-sort': simpleImportSort,
     },
     rules: {
+      ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'react/jsx-no-leaked-render': ['error', { validStrategies: ['ternary', 'coerce'] }],
       'react/jsx-boolean-value': ['error', 'never'],

@@ -191,3 +191,12 @@ However, Ari is **not production-ready yet**:
 - Breaking changes are still possible as the domain model matures.
 
 If you care about **data reliability, transparent history, and trustworthy notifications**, and are comfortable with an evolving system — Ari is worth following.
+
+---
+## Related Repositories
+
+- **Main Repository**: [ari](https://github.com/aleksejs1/ari) (current)
+- **Documentation**: [ari-docs](https://github.com/aleksejs1/ari-docs)
+- **Landing Page**: [ari-landing](https://github.com/aleksejs1/ari-landing)
+- **Plugin SDK**: [ari-sdk](https://github.com/aleksejs1/ari-sdk)
+- **Gifts Plugin**: [ari-plugin-gifts](https://github.com/aleksejs1/ari-plugin-gifts)

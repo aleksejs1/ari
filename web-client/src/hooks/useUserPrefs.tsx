@@ -175,7 +175,7 @@ const useUserPrefsLogic = () => {
   // We use this to sync across devices/sessions when the backend data finally arrives
   useEffect(() => {
     if (themeFromPrefs && themeFromPrefs !== theme) {
-      setThemeState(themeFromPrefs) // eslint-disable-line react-hooks/set-state-in-effect
+      setThemeState(themeFromPrefs)
       localStorage.setItem('theme', themeFromPrefs)
     }
   }, [themeFromPrefs]) // eslint-disable-line react-hooks/exhaustive-deps

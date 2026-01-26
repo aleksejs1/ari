@@ -71,7 +71,6 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@ari/eslint-config": "*",
     "@eslint/js": "^9.39.1",
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@testing-library/dom": "^10.4.1",
@@ -89,6 +88,11 @@
     "eslint": "^9.39.1",
     "eslint-plugin-boundaries": "^5.3.1",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-sonarjs": "^3.0.5",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
