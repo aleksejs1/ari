@@ -1,8 +1,18 @@
+import { createMemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
+
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>
+  return {
+    ...actual,
+    createBrowserRouter: (routes: Parameters<typeof createMemoryRouter>[0]) =>
+      createMemoryRouter(routes, { initialEntries: ['/login'] }),
+  }
+})
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'

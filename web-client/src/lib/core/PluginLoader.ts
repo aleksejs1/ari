@@ -1,4 +1,4 @@
-import { api } from '@/lib/axios'
+import { api, API_ORIGIN } from '@/lib/axios'
 import i18n from '@/lib/i18n'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { settingsRegistry } from '@/lib/settings/SettingsRegistry'
@@ -32,24 +32,30 @@ export class PluginLoader {
   }
 
   private async fetchConfig(): Promise<PluginConfig[]> {
-    // Mock configuration - simulating backend response
-    return Promise.resolve([
-      { id: 'dashboard', enabled: true },
-      { id: 'contacts', enabled: true },
-      { id: 'audit-logs', enabled: true },
-      { id: 'contact-graph', enabled: true },
-      { id: 'google-import', enabled: true },
-      { id: 'groups', enabled: true },
-      { id: 'notifications', enabled: true },
-      { id: 'sessions', enabled: true },
-      { id: 'settings', enabled: true },
-      { id: 'user-security', enabled: true },
-      {
-        id: 'gift-plugin',
-        enabled: true,
-        url: 'http://localhost:5001/gift-plugin.js',
-      },
-    ])
+    const corePlugins: PluginConfig[] = Object.keys(PLUGIN_MAP).map((id) => ({
+      id,
+      enabled: true,
+    }))
+
+    try {
+      const response = await api.get('/plugins')
+      const data = response.data
+
+      // eslint-disable-next-line no-console
+      console.debug('[PluginLoader] Raw config:', data)
+
+      let remotePlugins: PluginConfig[] = []
+      if (Array.isArray(data)) {
+        remotePlugins = data
+      } else if (data && typeof data === 'object' && Array.isArray(data.plugins)) {
+        remotePlugins = data.plugins
+      }
+
+      return [...corePlugins, ...remotePlugins]
+    } catch (error) {
+      console.error('[PluginLoader] Failed to fetch plugin config', error)
+      return corePlugins
+    }
   }
 
   public async init(): Promise<void> {
@@ -86,7 +92,10 @@ export class PluginLoader {
       let PluginClass
 
       if (item.url) {
-        PluginClass = await loadRemotePlugin(item.url)
+        const url = item.url.startsWith('http') ? item.url : `${API_ORIGIN}${item.url}`
+        // eslint-disable-next-line no-console
+        console.debug(`[PluginLoader] Loading remote plugin: ${item.id} from ${url}`)
+        PluginClass = await loadRemotePlugin(url)
       } else {
         const pluginLoader = PLUGIN_MAP[item.id]
         if (pluginLoader) {

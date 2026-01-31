@@ -1,7 +1,8 @@
-import { type ReactNode, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
 
 import { api } from '@/lib/axios'
+import { PluginLoader } from '@/lib/core/PluginLoader'
 import type { AuthState, User } from '@/types/auth'
 
 import { AuthContext } from './AuthContextInstance'
@@ -16,7 +17,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const user: User = {
           uuid: decoded.username,
         }
-        return { user, token, refreshToken, isAuthenticated: true, isLoading: false }
+        return {
+          user,
+          token,
+          refreshToken,
+          isAuthenticated: true,
+          isLoading: false,
+          arePluginsLoaded: false,
+        }
       } catch {
         localStorage.removeItem('token')
         localStorage.removeItem('refresh_token')
@@ -28,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      arePluginsLoaded: false,
     }
   })
 
@@ -45,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshToken,
         isAuthenticated: true,
         isLoading: false,
+        arePluginsLoaded: false,
       })
     } catch (e) {
       console.error('Login failed to decode token', e)
@@ -70,8 +80,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      arePluginsLoaded: false,
     })
   }
+
+  useEffect(() => {
+    if (state.isAuthenticated && !state.arePluginsLoaded) {
+      PluginLoader.getInstance()
+        .init()
+        .then(() => {
+          setState((prev) => ({ ...prev, arePluginsLoaded: true }))
+        })
+        .catch((error) => {
+          console.error('Failed to load plugins:', error)
+          // Even if plugins fail, we should probably let the user in, or handle error state
+          setState((prev) => ({ ...prev, arePluginsLoaded: true }))
+        })
+    }
+  }, [state.isAuthenticated, state.arePluginsLoaded])
 
   return <AuthContext.Provider value={{ ...state, login, logout }}>{children}</AuthContext.Provider>
 }

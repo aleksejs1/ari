@@ -1,0 +1,10 @@
+# Copy this file to compose.override.yaml and adjust as needed.
+# Docker Compose automatically merges compose.override.yaml on top of compose.yaml.
+#
+# Usage:
+#   cp compose.override.yaml.dist compose.override.yaml
+#
+services:
+  app:
+    volumes:
+      - ../ari-plugin-gifts:/ari-plugin-gifts

@@ -51,8 +51,21 @@ const PageLoader = () => (
   </div>
 )
 
+const NotFound = () => {
+  const { isAuthenticated } = useAuth()
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+  return <div>404 Not Found</div>
+}
+
 export default function App() {
   useTranslation()
+  const { isAuthenticated, arePluginsLoaded } = useAuth()
+
+  if (isAuthenticated && !arePluginsLoaded) {
+    return <PageLoader />
+  }
 
   const router = createBrowserRouter([
     {
@@ -60,36 +73,11 @@ export default function App() {
       children: [
         {
           element: <SidebarLessLayout />,
-          children: [
-            {
-              /* Removed Home route */
-            },
-            {
-              /* Removed Contacts routes */
-            },
-            ...routeRegistry.getRoutes('sidebar-less'),
-          ],
+          children: [...routeRegistry.getRoutes('sidebar-less')],
         },
         {
           element: <DashboardLayout />,
-          children: [
-            ...routeRegistry.getRoutes('dashboard'),
-            {
-              /* Removed Groups route */
-            },
-            {
-              /* Removed GoogleImport route */
-            },
-            {
-              /* Removed Sessions route */
-            },
-            {
-              /* Removed Settings route */
-            },
-            {
-              /* Removed User Security routes */
-            },
-          ],
+          children: [...routeRegistry.getRoutes('dashboard')],
         },
       ],
     },
@@ -116,7 +104,7 @@ export default function App() {
     },
     {
       path: '*',
-      element: <div>404 Not Found</div>,
+      element: <NotFound />,
     },
   ])
 

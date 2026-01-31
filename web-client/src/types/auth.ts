@@ -8,6 +8,7 @@ export interface AuthState {
   refreshToken: string | null
   isAuthenticated: boolean
   isLoading: boolean
+  arePluginsLoaded: boolean
 }
 
 export interface LoginResponse {

@@ -21,7 +21,6 @@ window.ReactJSX = ReactJSX
 
 import { AuthProvider } from './contexts/AuthContext'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
-import { PluginLoader } from './lib/core/PluginLoader'
 import App from './App.tsx'
 
 import './index.css'
@@ -39,8 +38,6 @@ if (!rootElement) {
 
 const initApp = async () => {
   try {
-    await PluginLoader.getInstance().init()
-
     createRoot(rootElement).render(
       <StrictMode>
         <QueryClientProvider client={queryClient}>

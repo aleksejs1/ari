@@ -6,6 +6,9 @@ estimate_hours.sh
 # Environment files
 .env
 
+# Docker Compose local overrides
+compose.override.yaml
+
 # Logs
 logs
 *.log

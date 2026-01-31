@@ -17,6 +17,10 @@ services:
       DB_NAME: "${MARIADB_DB:-app}"
       DB_VERSION: "11.4.9-MariaDB"
       MAILER_DSN: "smtp://mailpit:1025"
+    depends_on:
+      database:
+        condition: service_healthy
+        required: false
 
   database:
     profiles: [ "mysql" ]
