@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Tests\Unit\State;
+namespace Ari\Tests\Unit\State;
 
 use ApiPlatform\Metadata\Post;
-use App\Dto\NotificationPolicy\NotificationPolicyDto;
-use App\Entity\Group;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationPolicy;
-use App\Entity\NotificationRule;
-use App\Entity\User;
-use App\Repository\GroupRepository;
-use App\Repository\NotificationChannelRepository;
-use App\State\NotificationPolicyProcessor;
+use Ari\Dto\NotificationPolicy\NotificationPolicyDto;
+use Ari\Entity\Group;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationPolicy;
+use Ari\Entity\NotificationRule;
+use Ari\Entity\User;
+use Ari\Repository\GroupRepository;
+use Ari\Repository\NotificationChannelRepository;
+use Ari\State\NotificationPolicyProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -61,7 +61,7 @@ class NotificationPolicyProcessorTest extends TestCase
         $channel = new NotificationChannel();
         $channelRepo->method('find')->with(2)->willReturn($channel);
 
-        $userRepo = self::createStub(\App\Repository\UserRepository::class);
+        $userRepo = self::createStub(\Ari\Repository\UserRepository::class);
         $userRepo->method('find')->willReturn($user);
 
         $em->method('getRepository')->willReturnCallback(

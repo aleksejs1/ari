@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\NotificationPolicy;
+namespace Ari\Dto\NotificationPolicy;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;

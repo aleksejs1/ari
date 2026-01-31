@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace Ari\Repository;
 
-use App\Entity\ImportMapping;
+use Ari\Entity\ImportMapping;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

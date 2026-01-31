@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Unit\State;
+namespace Ari\Tests\Unit\State;
 
 use ApiPlatform\Metadata\Operation;
-use App\ApiResource\ContactTimeline;
-use App\Entity\AuditLog;
-use App\Service\ContactTimelineService;
-use App\State\ContactTimelineProvider;
+use Ari\ApiResource\ContactTimeline;
+use Ari\Entity\AuditLog;
+use Ari\Service\ContactTimelineService;
+use Ari\State\ContactTimelineProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\Group;
-use App\Entity\TokenStorage;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\Group;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserDeletionTest extends AbstractApiTestCase

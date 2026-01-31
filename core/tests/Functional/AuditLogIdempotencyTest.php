@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\AuditLog;
-use App\Entity\User;
+use Ari\Entity\AuditLog;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AuditLogIdempotencyTest extends ApiTestCase

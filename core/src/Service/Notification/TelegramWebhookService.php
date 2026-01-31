@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service\Notification;
+namespace Ari\Service\Notification;
 
-use App\Entity\NotificationChannel;
-use App\Repository\NotificationChannelRepository;
+use Ari\Entity\NotificationChannel;
+use Ari\Repository\NotificationChannelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 

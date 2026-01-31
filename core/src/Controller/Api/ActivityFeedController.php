@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\Api;
+namespace Ari\Controller\Api;
 
-use App\Entity\User;
-use App\Service\ActivityManager;
+use Ari\Entity\User;
+use Ari\Service\ActivityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;

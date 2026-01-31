@@ -1,10 +1,10 @@
 <?php
 
-namespace App\EventListener;
+namespace Ari\EventListener;
 
-use App\Entity\RefreshToken;
-use App\Entity\User;
-use App\Repository\UserRepository;
+use Ari\Entity\RefreshToken;
+use Ari\Entity\User;
+use Ari\Repository\UserRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;

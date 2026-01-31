@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Service\Export\ContactExportService;
+use Ari\Service\Export\ContactExportService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -19,7 +19,7 @@ class ExportContactsAction
     ): StreamedResponse {
         $user = $security->getUser();
 
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof \Ari\Entity\User) {
             throw new AccessDeniedException();
         }
 

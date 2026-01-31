@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use App\Dto\AvatarUploadInput;
-use App\Repository\ContactAvatarRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Dto\AvatarUploadInput;
+use Ari\Repository\ContactAvatarRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
@@ -22,7 +22,7 @@ use Symfony\Component\Uid\Ulid;
             requirements: ['id' => '\d+'],
             input: AvatarUploadInput::class,
             output: ContactAvatar::class,
-            controller: 'App\Controller\AvatarUploadAction',
+            controller: 'Ari\Controller\AvatarUploadAction',
             openapi: new \ApiPlatform\OpenApi\Model\Operation(
                 summary: 'Upload a contact avatar',
                 description: 'Upload an image file (JPEG, PNG, WEBP) to be used as a contact avatar.',

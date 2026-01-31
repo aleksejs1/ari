@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Unit\Service\Notification;
+namespace Ari\Tests\Unit\Service\Notification;
 
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationQueue;
-use App\Repository\NotificationQueueRepository;
-use App\Service\Notification\NotificationProcessor;
-use App\Service\Notification\NotificationSenderInterface;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationQueue;
+use Ari\Repository\NotificationQueueRepository;
+use Ari\Service\Notification\NotificationProcessor;
+use Ari\Service\Notification\NotificationSenderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\ApiResource;
+namespace Ari\ApiResource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\Entity\AuditLog;
-use App\State\ContactTimelineProvider;
+use Ari\Entity\AuditLog;
+use Ari\State\ContactTimelineProvider;
 use Doctrine\Common\Collections\Collection;
 
 #[ApiResource(

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Unit\Service\Google;
+namespace Ari\Tests\Unit\Service\Google;
 
-use App\Entity\User;
-use App\Repository\TokenStorageRepository;
-use App\Service\Google\GoogleConnectService;
-use App\Service\Google\GoogleOAuthService;
+use Ari\Entity\User;
+use Ari\Repository\TokenStorageRepository;
+use Ari\Service\Google\GoogleConnectService;
+use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;

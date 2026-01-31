@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service\Notification;
+namespace Ari\Service\Notification;
 
-use App\Entity\NotificationQueue;
-use App\Service\ActivityManager;
+use Ari\Entity\NotificationQueue;
+use Ari\Service\ActivityManager;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
 #[AsTaggedItem(index: 'web')]

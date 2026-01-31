@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
+use Ari\Entity\Contact;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 

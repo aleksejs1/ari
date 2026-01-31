@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactGroup;
-use App\Entity\Group;
-use App\Entity\NotificationPolicy;
-use App\Entity\UserPref;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactGroup;
+use Ari\Entity\Group;
+use Ari\Entity\NotificationPolicy;
+use Ari\Entity\UserPref;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContactDatePolicyFilterTest extends AbstractApiTestCase
@@ -21,7 +21,7 @@ class ContactDatePolicyFilterTest extends AbstractApiTestCase
         /** @var EntityManagerInterface $em */
 
         // 1. Setup User
-        $user = $em->getRepository(\App\Entity\User::class)->findOneBy(['uuid' => $this->userUuid]);
+        $user = $em->getRepository(\Ari\Entity\User::class)->findOneBy(['uuid' => $this->userUuid]);
 
         // 2. Setup Groups
         $groupA = new Group();

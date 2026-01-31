@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace App\Doctrine\Filter;
+namespace Ari\Doctrine\Filter;
 
 use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
 use ApiPlatform\Doctrine\Common\Filter\OrderFilterTrait;

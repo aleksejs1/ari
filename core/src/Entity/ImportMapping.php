@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
-use App\Repository\ImportMappingRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ImportMappingRepository::class)]

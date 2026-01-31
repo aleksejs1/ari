@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity\Traits;
+namespace Ari\Entity\Traits;
 
-use App\Entity\ContactEmailAdress;
+use Ari\Entity\ContactEmailAdress;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use App\Repository\NotificationIntentRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\NotificationIntentRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 

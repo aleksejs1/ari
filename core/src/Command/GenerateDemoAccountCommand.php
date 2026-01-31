@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Command;
+namespace Ari\Command;
 
-use App\Service\Demo\DemoAccountService;
+use Ari\Service\Demo\DemoAccountService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

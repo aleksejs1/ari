@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -9,9 +9,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Put;
-use App\Repository\UserPrefRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\UserPrefRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,28 +28,28 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
         new Get(
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
-            provider: 'App\State\UserPrefStateProvider',
+            provider: 'Ari\State\UserPrefStateProvider',
             security: "is_granted('USER_PREF_VIEW', object)",
         ),
         new GetCollection(), // Optional: if we want to list all prefs
         new Put(
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
-            provider: 'App\State\UserPrefStateProvider',
-            processor: 'App\State\UserPrefProcessor',
+            provider: 'Ari\State\UserPrefStateProvider',
+            processor: 'Ari\State\UserPrefProcessor',
             security: "is_granted('USER_PREF_EDIT', object)",
         ),
         new Patch(
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
-            provider: 'App\State\UserPrefStateProvider',
-            processor: 'App\State\UserPrefProcessor',
+            provider: 'Ari\State\UserPrefStateProvider',
+            processor: 'Ari\State\UserPrefProcessor',
             security: "is_granted('USER_PREF_EDIT', object)",
         ),
         new Delete(
             uriTemplate: '/user_prefs/{type}',
             requirements: ['type' => '\w+'],
-            provider: 'App\State\UserPrefStateProvider',
+            provider: 'Ari\State\UserPrefStateProvider',
             security: "is_granted('USER_PREF_EDIT', object)",
         ),
     ],

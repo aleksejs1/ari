@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Unit\Service\Notification;
+namespace Ari\Tests\Unit\Service\Notification;
 
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationQueue;
-use App\Service\Notification\EmailSender;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationQueue;
+use Ari\Service\Notification\EmailSender;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;

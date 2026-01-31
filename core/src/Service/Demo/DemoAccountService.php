@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Service\Demo;
+namespace Ari\Service\Demo;
 
-use App\Entity\ActivityFeed;
-use App\Entity\Contact;
-use App\Entity\ContactAddress;
-use App\Entity\ContactDate;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactGroup;
-use App\Entity\ContactName;
-use App\Entity\ContactOrganization;
-use App\Entity\ContactPhoneNumber;
-use App\Entity\ContactRelation;
-use App\Entity\Group;
-use App\Entity\User;
+use Ari\Entity\ActivityFeed;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAddress;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactGroup;
+use Ari\Entity\ContactName;
+use Ari\Entity\ContactOrganization;
+use Ari\Entity\ContactPhoneNumber;
+use Ari\Entity\ContactRelation;
+use Ari\Entity\Group;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Ari\Tests\Unit\Entity;
 
-use App\Entity\Contact;
-use App\Entity\ContactInteraction;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactInteraction;
+use Ari\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class ContactInteractionTest extends TestCase

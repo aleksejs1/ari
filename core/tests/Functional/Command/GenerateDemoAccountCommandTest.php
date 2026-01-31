@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional\Command;
+namespace Ari\Tests\Functional\Command;
 
-use App\Entity\User;
-use App\Service\Demo\DemoAccountService;
+use Ari\Entity\User;
+use Ari\Service\Demo\DemoAccountService;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;

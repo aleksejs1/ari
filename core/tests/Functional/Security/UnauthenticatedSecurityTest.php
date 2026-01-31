@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Security;
+namespace Ari\Tests\Functional\Security;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;

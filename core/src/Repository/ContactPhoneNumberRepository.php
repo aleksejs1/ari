@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace Ari\Repository;
 
-use App\Entity\ContactPhoneNumber;
+use Ari\Entity\ContactPhoneNumber;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

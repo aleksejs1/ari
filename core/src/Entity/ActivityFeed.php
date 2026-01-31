@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
-use App\Repository\ActivityFeedRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\ActivityFeedRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -25,13 +25,13 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         ),
         new GetCollection(
             uriTemplate: '/activity-feed/unread-count',
-            controller: 'App\Controller\Api\ActivityFeedController::getUnreadCount',
+            controller: 'Ari\Controller\Api\ActivityFeedController::getUnreadCount',
             security: "is_granted('ROLE_USER')",
             name: 'get_unread_count',
         ),
         new Patch(
             uriTemplate: '/activity-feed/read',
-            controller: 'App\Controller\Api\ActivityFeedController::markAsRead',
+            controller: 'Ari\Controller\Api\ActivityFeedController::markAsRead',
             security: "is_granted('ROLE_USER')",
             name: 'mark_as_read',
         ),

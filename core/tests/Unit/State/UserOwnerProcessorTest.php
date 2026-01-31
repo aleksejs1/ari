@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Unit\State;
+namespace Ari\Tests\Unit\State;
 
 use ApiPlatform\State\ProcessorInterface;
-use App\Entity\User;
-use App\Security\TenantAwareInterface;
-use App\State\UserOwnerProcessor;
+use Ari\Entity\User;
+use Ari\Security\TenantAwareInterface;
+use Ari\State\UserOwnerProcessor;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Demo;
+namespace Ari\Service\Demo;
 
 class DemoDataGenerator
 {

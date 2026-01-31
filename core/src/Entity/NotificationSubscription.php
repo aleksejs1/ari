@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -11,9 +11,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\NotificationSubscriptionRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\NotificationSubscriptionRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     normalizationContext: ['groups' => ['notification_subscription:read']],
     denormalizationContext: ['groups' => ['notification_subscription:write']],
-    processor: 'App\State\UserOwnerProcessor',
+    processor: 'Ari\State\UserOwnerProcessor',
 )]
 #[ApiFilter(SearchFilter::class, properties: ['entityType' => 'exact', 'entityId' => 'exact'])]
 class NotificationSubscription implements TenantAwareInterface

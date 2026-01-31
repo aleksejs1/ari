@@ -1,14 +1,14 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\IriConverterInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Dto\NotificationPolicy\NotificationPolicyDto;
-use App\Entity\NotificationPolicy;
-use App\Entity\NotificationRule;
-use App\Entity\User;
+use Ari\Dto\NotificationPolicy\NotificationPolicyDto;
+use Ari\Entity\NotificationPolicy;
+use Ari\Entity\NotificationRule;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -125,10 +125,10 @@ class NotificationPolicyProcessor implements ProcessorInterface
                     // Ignore invalid IRI
                 }
             } else {
-                $ch = $this->em->getRepository(\App\Entity\NotificationChannel::class)->find($chId);
+                $ch = $this->em->getRepository(\Ari\Entity\NotificationChannel::class)->find($chId);
             }
 
-            if ($ch instanceof \App\Entity\NotificationChannel) {
+            if ($ch instanceof \Ari\Entity\NotificationChannel) {
                 $channels[$chId] = $ch;
             }
         }
@@ -158,10 +158,10 @@ class NotificationPolicyProcessor implements ProcessorInterface
                         // Fallback or ignore? Usually valid IRI required if it starts with /
                     }
                 } else {
-                    $group = $this->em->getRepository(\App\Entity\Group::class)->find($targetId);
+                    $group = $this->em->getRepository(\Ari\Entity\Group::class)->find($targetId);
                 }
 
-                if (!$group instanceof \App\Entity\Group) {
+                if (!$group instanceof \Ari\Entity\Group) {
                     continue;
                 }
             }
@@ -175,10 +175,10 @@ class NotificationPolicyProcessor implements ProcessorInterface
                         // Fallback or ignore
                     }
                 } else {
-                    $contact = $this->em->getRepository(\App\Entity\Contact::class)->find($targetId);
+                    $contact = $this->em->getRepository(\Ari\Entity\Contact::class)->find($targetId);
                 }
 
-                if (!$contact instanceof \App\Entity\Contact) {
+                if (!$contact instanceof \Ari\Entity\Contact) {
                     continue;
                 }
             }
@@ -202,7 +202,7 @@ class NotificationPolicyProcessor implements ProcessorInterface
 
                     foreach ($itemChannels as $channelId) {
                         $channel = $channels[$channelId] ?? null;
-                        if (!$channel instanceof \App\Entity\NotificationChannel) {
+                        if (!$channel instanceof \Ari\Entity\NotificationChannel) {
                             continue;
                         }
 
@@ -250,10 +250,10 @@ class NotificationPolicyProcessor implements ProcessorInterface
                         $rule->setPolicy($policy);
                         $rule->setTenant($policy->getTenant());
                         $rule->setTargetType($targetType);
-                        if ($group instanceof \App\Entity\Group) {
+                        if ($group instanceof \Ari\Entity\Group) {
                             $rule->setContactGroup($group);
                         }
-                        if ($contact instanceof \App\Entity\Contact) {
+                        if ($contact instanceof \Ari\Entity\Contact) {
                             $rule->setContact($contact);
                         }
                         $rule->setEventType($eventType);

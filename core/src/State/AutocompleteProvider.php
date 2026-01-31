@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\ApiResource\Autocomplete;
-use App\Service\AutocompleteService;
+use Ari\ApiResource\Autocomplete;
+use Ari\Service\AutocompleteService;
 
 /**
  * @implements ProviderInterface<Autocomplete>

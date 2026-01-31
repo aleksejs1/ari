@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Doctrine\DBAL;
+namespace Ari\Doctrine\DBAL;
 
 use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Driver\Connection;

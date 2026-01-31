@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Tests\Unit\Service\ContactImport;
+namespace Ari\Tests\Unit\Service\ContactImport;
 
-use App\Dto\ContactAddressDto;
-use App\Dto\ContactBiographyDto;
-use App\Dto\ContactDateDto;
-use App\Dto\ContactEmailDto;
-use App\Dto\ContactImportDto;
-use App\Dto\ContactNameDto;
-use App\Dto\ContactOrganizationDto;
-use App\Dto\ContactPhoneDto;
-use App\Entity\Contact;
-use App\Entity\ContactAddress;
-use App\Entity\ContactBiography;
-use App\Entity\ContactDate;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactGroup;
-use App\Entity\ContactName;
-use App\Entity\ContactOrganization;
-use App\Entity\ContactPhoneNumber;
-use App\Entity\Group;
-use App\Entity\User;
-use App\Service\ContactImport\ContactDuplicateCheckerInterface;
-use App\Service\ContactImport\ContactImportService;
+use Ari\Dto\ContactAddressDto;
+use Ari\Dto\ContactBiographyDto;
+use Ari\Dto\ContactDateDto;
+use Ari\Dto\ContactEmailDto;
+use Ari\Dto\ContactImportDto;
+use Ari\Dto\ContactNameDto;
+use Ari\Dto\ContactOrganizationDto;
+use Ari\Dto\ContactPhoneDto;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAddress;
+use Ari\Entity\ContactBiography;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactGroup;
+use Ari\Entity\ContactName;
+use Ari\Entity\ContactOrganization;
+use Ari\Entity\ContactPhoneNumber;
+use Ari\Entity\Group;
+use Ari\Entity\User;
+use Ari\Service\ContactImport\ContactDuplicateCheckerInterface;
+use Ari\Service\ContactImport\ContactImportService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -39,7 +39,7 @@ final class ContactImportServiceTest extends TestCase
         $checker = self::createStub(ContactDuplicateCheckerInterface::class);
         $checker->method('isDuplicate')->willReturn(false);
 
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
 
         $service = new ContactImportService(
             [$checker],
@@ -129,7 +129,7 @@ final class ContactImportServiceTest extends TestCase
         $checker = self::createStub(ContactDuplicateCheckerInterface::class);
         $checker->method('isDuplicate')->willReturn(true);
 
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
 
         $service = new ContactImportService(
             [$checker],
@@ -154,7 +154,7 @@ final class ContactImportServiceTest extends TestCase
             $persisted[] = $obj;
         });
 
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
 
         $service = new ContactImportService(
             [],
@@ -191,7 +191,7 @@ final class ContactImportServiceTest extends TestCase
             $persisted[] = $obj;
         });
 
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
 
         $service = new ContactImportService(
             [],
@@ -226,7 +226,7 @@ final class ContactImportServiceTest extends TestCase
             $persisted[] = $obj;
         });
 
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
         $service = new ContactImportService([], $entityManager, $avatarManager);
 
         $user = new User();
@@ -292,7 +292,7 @@ final class ContactImportServiceTest extends TestCase
     public function testMergeDoesNotDeleteMissingItems(): void
     {
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
 
         $service = new ContactImportService([], $entityManager, $avatarManager);
 
@@ -326,7 +326,7 @@ final class ContactImportServiceTest extends TestCase
     public function testSyncDeletesMissingItems(): void
     {
         $entityManager = self::createStub(EntityManagerInterface::class);
-        $avatarManager = self::createStub(\App\Service\AvatarManager::class);
+        $avatarManager = self::createStub(\Ari\Service\AvatarManager::class);
 
         $service = new ContactImportService([], $entityManager, $avatarManager);
 

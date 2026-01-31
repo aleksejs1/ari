@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\NotificationQueue;
-use App\Entity\NotificationRule;
-use App\Repository\ContactDateRepository;
-use App\Repository\NotificationQueueRepository;
-use App\Repository\NotificationRuleRepository;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\NotificationQueue;
+use Ari\Entity\NotificationRule;
+use Ari\Repository\ContactDateRepository;
+use Ari\Repository\NotificationQueueRepository;
+use Ari\Repository\NotificationRuleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class QueueGeneratorService

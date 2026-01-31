@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -10,10 +10,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Doctrine\Filter\SafeOrderFilter;
-use App\Repository\GroupRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Doctrine\Filter\SafeOrderFilter;
+use Ari\Repository\GroupRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,7 +37,7 @@ use Symfony\Component\Uid\Uuid;
     denormalizationContext: ['groups' => ['group:create']],
     order: ['name' => 'ASC'],
     security: "is_granted('ROLE_USER')",
-    processor: 'App\State\UserOwnerProcessor',
+    processor: 'Ari\State\UserOwnerProcessor',
 )]
 #[ApiFilter(SafeOrderFilter::class, properties: ['name' => 'ASC'])]
 

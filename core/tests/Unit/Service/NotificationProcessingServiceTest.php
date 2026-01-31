@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Tests\Unit\Service;
+namespace Ari\Tests\Unit\Service;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationSubscription;
-use App\Entity\User;
-use App\Service\NotificationProcessingService;
-use App\Service\TelegramService;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactName;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationSubscription;
+use Ari\Entity\User;
+use Ari\Service\NotificationProcessingService;
+use Ari\Service\TelegramService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;

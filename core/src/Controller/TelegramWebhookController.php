@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Service\Notification\TelegramWebhookService;
+use Ari\Service\Notification\TelegramWebhookService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

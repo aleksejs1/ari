@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Tests\Unit\Service\VCard;
+namespace Ari\Tests\Unit\Service\VCard;
 
-use App\Entity\Contact;
-use App\Entity\ContactAddress;
-use App\Entity\ContactBiography;
-use App\Entity\ContactDate;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactName;
-use App\Entity\ContactOrganization;
-use App\Entity\ContactPhoneNumber;
-use App\Service\VCard\VCardService;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAddress;
+use Ari\Entity\ContactBiography;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactName;
+use Ari\Entity\ContactOrganization;
+use Ari\Entity\ContactPhoneNumber;
+use Ari\Service\VCard\VCardService;
 use PHPUnit\Framework\TestCase;
 
 class VCardServiceTest extends TestCase

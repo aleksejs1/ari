@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Tests\Unit\Service;
+namespace Ari\Tests\Unit\Service;
 
-use App\Entity\AuditLog;
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
-use App\Repository\AuditLogRepository;
-use App\Service\ContactTimelineService;
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactName;
+use Ari\Repository\AuditLogRepository;
+use Ari\Service\ContactTimelineService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;

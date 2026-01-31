@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Tests\Unit\Service;
+namespace Ari\Tests\Unit\Service;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\NotificationQueue;
-use App\Entity\NotificationRule;
-use App\Entity\User;
-use App\Repository\ContactDateRepository;
-use App\Repository\NotificationQueueRepository;
-use App\Repository\NotificationRuleRepository;
-use App\Service\QueueGeneratorService;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\NotificationQueue;
+use Ari\Entity\NotificationRule;
+use Ari\Entity\User;
+use Ari\Repository\ContactDateRepository;
+use Ari\Repository\NotificationQueueRepository;
+use Ari\Repository\NotificationRuleRepository;
+use Ari\Service\QueueGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\FilterCollection;
 use PHPUnit\Framework\TestCase;

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\NotificationQueue;
-use App\Entity\NotificationRule;
+use Ari\Entity\NotificationQueue;
+use Ari\Entity\NotificationRule;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 

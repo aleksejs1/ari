@@ -1,12 +1,12 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\NotificationPolicy\NotificationPolicyDto;
-use App\Entity\NotificationPolicy;
+use Ari\Dto\NotificationPolicy\NotificationPolicyDto;
+use Ari\Entity\NotificationPolicy;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

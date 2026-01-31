@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
-use App\Repository\RefreshTokenRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\RefreshTokenRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken as BaseRefreshToken;
 use Symfony\Component\Serializer\Annotation\Groups;

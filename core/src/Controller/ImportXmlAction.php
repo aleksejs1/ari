@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Service\ContactImport\XmlImportService;
+use Ari\Service\ContactImport\XmlImportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +22,7 @@ class ImportXmlAction extends AbstractController
     public function __invoke(Request $request): Response
     {
         $user = $this->security->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof \Ari\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 

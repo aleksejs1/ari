@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -9,9 +9,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\NotificationChannelRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\NotificationChannelRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(securityPostDenormalize: "is_granted('NOTIFICATION_CHANNEL_ADD', object)"),
         new Post(
             uriTemplate: '/notification_channels/{id}/verify',
-            controller: 'App\Controller\NotificationChannelController::verify',
+            controller: 'Ari\Controller\NotificationChannelController::verify',
             openapi: new OpenApiOperation(summary: 'Send verification email for this channel'),
             denormalizationContext: ['groups' => ['notification_channel:verify']], // Use empty or specific group to avoid body requirements if body is empty
             security: "is_granted('ROLE_USER') and object.getUser() == user",
@@ -40,7 +40,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['notification_channel:read']],
     denormalizationContext: ['groups' => ['notification_channel:write']],
-    processor: 'App\State\UserOwnerProcessor',
+    processor: 'Ari\State\UserOwnerProcessor',
 )]
 class NotificationChannel implements TenantAwareInterface
 {

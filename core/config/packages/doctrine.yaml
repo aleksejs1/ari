@@ -19,20 +19,20 @@ doctrine:
         auto_mapping: true
         dql:
             datetime_functions:
-                MONTH: App\Doctrine\DQL\Month
-                DAY: App\Doctrine\DQL\Day
+                MONTH: Ari\Doctrine\DQL\Month
+                DAY: Ari\Doctrine\DQL\Day
         mappings:
-            App:
+            Ari:
                 type: attribute
                 is_bundle: false
                 dir: '%doctrine_entity_dir%'
-                prefix: 'App\Entity'
-                alias: App
+                prefix: 'Ari\Entity'
+                alias: Ari
         controller_resolver:
             auto_mapping: false
         filters:
             tenant:
-                class: App\Doctrine\Filter\TenantFilter
+                class: Ari\Doctrine\Filter\TenantFilter
                 enabled: false
 
 when@test:
@@ -44,8 +44,8 @@ when@test:
         orm:
             dql:
                 datetime_functions:
-                    MONTH: App\Doctrine\DQL\Month
-                    DAY: App\Doctrine\DQL\Day
+                    MONTH: Ari\Doctrine\DQL\Month
+                    DAY: Ari\Doctrine\DQL\Day
 
 when@prod:
     doctrine:

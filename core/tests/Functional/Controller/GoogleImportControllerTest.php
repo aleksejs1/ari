@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional\Controller;
+namespace Ari\Tests\Functional\Controller;
 
-use App\Entity\User;
-use App\Service\Google\GoogleContactsService;
+use Ari\Entity\User;
+use Ari\Service\Google\GoogleContactsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

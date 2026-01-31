@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
-use App\Repository\ContactAddressRepository;
-use App\Repository\ContactBiographyRepository;
-use App\Repository\ContactDateRepository;
-use App\Repository\ContactEmailAdressRepository;
-use App\Repository\ContactOrganizationRepository;
-use App\Repository\ContactPhoneNumberRepository;
+use Ari\Repository\ContactAddressRepository;
+use Ari\Repository\ContactBiographyRepository;
+use Ari\Repository\ContactDateRepository;
+use Ari\Repository\ContactEmailAdressRepository;
+use Ari\Repository\ContactOrganizationRepository;
+use Ari\Repository\ContactPhoneNumberRepository;
 
 class AutocompleteService
 {

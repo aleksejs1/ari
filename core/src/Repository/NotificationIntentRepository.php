@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace Ari\Repository;
 
-use App\Entity\NotificationIntent;
+use Ari\Entity\NotificationIntent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

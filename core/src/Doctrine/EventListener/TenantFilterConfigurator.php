@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Doctrine\EventListener;
+namespace Ari\Doctrine\EventListener;
 
-use App\Entity\User;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;

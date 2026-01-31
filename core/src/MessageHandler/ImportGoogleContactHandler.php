@@ -1,25 +1,25 @@
 <?php
 
-namespace App\MessageHandler;
+namespace Ari\MessageHandler;
 
-use App\Dto\ContactAddressDto;
-use App\Dto\ContactBiographyDto;
-use App\Dto\ContactDateDto;
-use App\Dto\ContactEmailDto;
-use App\Dto\ContactImportDto;
-use App\Dto\ContactNameDto;
-use App\Dto\ContactOrganizationDto;
-use App\Dto\ContactPhoneDto;
-use App\Entity\Group;
-use App\Entity\ImportMapping;
-use App\Entity\TokenStorage;
-use App\Entity\User;
-use App\Message\ImportGoogleContactMessage;
-use App\Repository\ImportMappingRepository;
-use App\Repository\TokenStorageRepository;
-use App\Repository\UserRepository;
-use App\Service\ContactImport\ContactImportService;
-use App\Service\Google\GoogleOAuthService;
+use Ari\Dto\ContactAddressDto;
+use Ari\Dto\ContactBiographyDto;
+use Ari\Dto\ContactDateDto;
+use Ari\Dto\ContactEmailDto;
+use Ari\Dto\ContactImportDto;
+use Ari\Dto\ContactNameDto;
+use Ari\Dto\ContactOrganizationDto;
+use Ari\Dto\ContactPhoneDto;
+use Ari\Entity\Group;
+use Ari\Entity\ImportMapping;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
+use Ari\Message\ImportGoogleContactMessage;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Repository\TokenStorageRepository;
+use Ari\Repository\UserRepository;
+use Ari\Service\ContactImport\ContactImportService;
+use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

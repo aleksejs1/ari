@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Ari\Tests\Unit\Entity;
 
-use App\Entity\Group;
-use App\Entity\User;
+use Ari\Entity\Group;
+use Ari\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class GroupTest extends TestCase

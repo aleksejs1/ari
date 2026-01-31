@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace Ari\Repository;
 
-use App\Entity\ContactInteraction;
+use Ari\Entity\ContactInteraction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

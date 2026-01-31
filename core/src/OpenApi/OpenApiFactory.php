@@ -1,6 +1,6 @@
 <?php
 
-namespace App\OpenApi;
+namespace Ari\OpenApi;
 
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\OpenApi\Model;

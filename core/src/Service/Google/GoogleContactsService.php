@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service\Google;
+namespace Ari\Service\Google;
 
-use App\Entity\ImportMapping;
-use App\Entity\TokenStorage;
-use App\Entity\User;
-use App\Message\ImportGoogleContactMessage;
-use App\Repository\ImportMappingRepository;
-use App\Repository\TokenStorageRepository;
+use Ari\Entity\ImportMapping;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
+use Ari\Message\ImportGoogleContactMessage;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Repository\TokenStorageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -41,13 +41,13 @@ class GoogleContactsService
         $this->importGroups($user, $accessToken);
 
         if ($addGoogleGroup) {
-            $googleGroup = $this->entityManager->getRepository(\App\Entity\Group::class)->findOneBy([
+            $googleGroup = $this->entityManager->getRepository(\Ari\Entity\Group::class)->findOneBy([
                 'user' => $user,
                 'name' => 'google',
             ]);
 
             if (null === $googleGroup) {
-                $googleGroup = new \App\Entity\Group();
+                $googleGroup = new \Ari\Entity\Group();
                 $googleGroup->setUser($user);
                 $googleGroup->setName('google');
                 $this->entityManager->persist($googleGroup);
@@ -180,13 +180,13 @@ class GoogleContactsService
                 if (null !== $group) {
                     $group->setName($name);
                 } else {
-                    $group = $this->entityManager->getRepository(\App\Entity\Group::class)->findOneBy([
+                    $group = $this->entityManager->getRepository(\Ari\Entity\Group::class)->findOneBy([
                         'user' => $user,
                         'name' => $name,
                     ]);
 
                     if (null === $group) {
-                        $group = new \App\Entity\Group();
+                        $group = new \Ari\Entity\Group();
                         $group->setUser($user);
                         $group->setName($name);
                         $this->entityManager->persist($group);

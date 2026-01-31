@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;

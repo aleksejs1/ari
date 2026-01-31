@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\AuditLog;
-use App\Entity\Contact;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationQueue;
-use App\Entity\User;
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationQueue;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StatsApiTest extends AbstractApiTestCase

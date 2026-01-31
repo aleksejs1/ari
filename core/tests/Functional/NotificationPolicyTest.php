@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Group;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationPolicy;
-use App\Entity\NotificationRule;
+use Ari\Entity\Group;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationPolicy;
+use Ari\Entity\NotificationRule;
 
 class NotificationPolicyTest extends AbstractApiTestCase
 {

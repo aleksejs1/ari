@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;

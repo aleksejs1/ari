@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Google;
+namespace Ari\Service\Google;
 
-use App\Entity\Contact;
-use App\Entity\UserPref;
-use App\Repository\ImportMappingRepository;
-use App\Repository\TokenStorageRepository;
-use App\Repository\UserPrefRepository;
+use Ari\Entity\Contact;
+use Ari\Entity\UserPref;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Repository\TokenStorageRepository;
+use Ari\Repository\UserPrefRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GoogleContactUpdateService

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\ContactGraph;
+namespace Ari\Dto\ContactGraph;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 

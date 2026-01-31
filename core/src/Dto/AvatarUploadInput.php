@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto;
+namespace Ari\Dto;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;

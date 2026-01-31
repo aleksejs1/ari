@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional\Command;
+namespace Ari\Tests\Functional\Command;
 
-use App\Service\Notification\NotificationProcessor;
+use Ari\Service\Notification\NotificationProcessor;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Security\Voter;
+namespace Ari\Security\Voter;
 
-use App\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;

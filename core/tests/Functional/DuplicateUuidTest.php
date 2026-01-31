@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Contact;
-use App\Entity\Group;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\Group;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
 

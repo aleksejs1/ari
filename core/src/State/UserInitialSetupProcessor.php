@@ -1,13 +1,13 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationPolicy;
-use App\Entity\NotificationRule;
-use App\Entity\User;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationPolicy;
+use Ari\Entity\NotificationRule;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -20,7 +20,7 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
      * @param ProcessorInterface<User, User> $innerProcessor
      */
     public function __construct(
-        #[Autowire(service: 'App\State\UserPasswordHasherProcessor')]
+        #[Autowire(service: 'Ari\State\UserPasswordHasherProcessor')]
         private ProcessorInterface $innerProcessor,
         private EntityManagerInterface $entityManager,
     ) {

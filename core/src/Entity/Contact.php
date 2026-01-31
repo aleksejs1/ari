@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -15,20 +15,20 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\MediaType;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
-use App\Entity\Traits\ContactAddressesTrait;
-use App\Entity\Traits\ContactBiographiesTrait;
-use App\Entity\Traits\ContactDatesTrait;
-use App\Entity\Traits\ContactEmailsTrait;
-use App\Entity\Traits\ContactGroupsTrait;
-use App\Entity\Traits\ContactInteractionsTrait;
-use App\Entity\Traits\ContactNamesTrait;
-use App\Entity\Traits\ContactOrganizationsTrait;
-use App\Entity\Traits\ContactPhoneNumbersTrait;
-use App\Entity\Traits\ContactRelationsTrait;
-use App\Filter\ContactSearchFilter;
-use App\Repository\ContactRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Entity\Traits\ContactAddressesTrait;
+use Ari\Entity\Traits\ContactBiographiesTrait;
+use Ari\Entity\Traits\ContactDatesTrait;
+use Ari\Entity\Traits\ContactEmailsTrait;
+use Ari\Entity\Traits\ContactGroupsTrait;
+use Ari\Entity\Traits\ContactInteractionsTrait;
+use Ari\Entity\Traits\ContactNamesTrait;
+use Ari\Entity\Traits\ContactOrganizationsTrait;
+use Ari\Entity\Traits\ContactPhoneNumbersTrait;
+use Ari\Entity\Traits\ContactRelationsTrait;
+use Ari\Filter\ContactSearchFilter;
+use Ari\Repository\ContactRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -48,20 +48,20 @@ use Symfony\Component\Uid\Uuid;
 #[Get(
     uriTemplate: '/contacts/{id}/similar',
     name: 'contact_similar',
-    provider: 'App\State\ContactSimilarProvider',
+    provider: 'Ari\State\ContactSimilarProvider',
     requirements: ['id' => '\d+'],
 )]
 #[Get(
     uriTemplate: '/contacts/{id}/vcard',
     name: 'contact_vcard',
-    controller: 'App\Controller\VCardExportAction',
+    controller: 'Ari\Controller\VCardExportAction',
     requirements: ['id' => '\d+'],
     security: "is_granted('CONTACT_VIEW', object)",
 )]
 #[GetCollection(
     uriTemplate: '/contacts/export',
     name: 'contact_export',
-    controller: 'App\Controller\ExportContactsAction',
+    controller: 'Ari\Controller\ExportContactsAction',
     normalizationContext: ['groups' => ['export']],
     security: "is_granted('ROLE_USER')",
     paginationEnabled: false,
@@ -69,12 +69,12 @@ use Symfony\Component\Uid\Uuid;
 #[GetCollection]
 #[Put(
     security: "is_granted('CONTACT_EDIT', object)",
-    processor: 'App\State\ContactProcessor',
+    processor: 'Ari\State\ContactProcessor',
     requirements: ['id' => '\d+'],
 )]
 #[Patch(
     security: "is_granted('CONTACT_EDIT', object)",
-    processor: 'App\State\ContactProcessor',
+    processor: 'Ari\State\ContactProcessor',
     requirements: ['id' => '\d+'],
 )]
 #[Delete(
@@ -84,14 +84,14 @@ use Symfony\Component\Uid\Uuid;
 #[Post(
     uriTemplate: '/contacts/import-xml',
     name: 'import_contact_xml',
-    controller: 'App\Controller\ImportXmlAction',
+    controller: 'Ari\Controller\ImportXmlAction',
     deserialize: false,
     validate: false,
     security: "is_granted('ROLE_USER')",
 )]
 #[Post(
     securityPostDenormalize: "is_granted('CONTACT_ADD', object)",
-    processor: 'App\State\ContactProcessor',
+    processor: 'Ari\State\ContactProcessor',
 )]
 #[ApiFilter(SearchFilter::class, properties: ['contactGroups.groupResource' => 'exact'])]
 #[ApiFilter(ContactSearchFilter::class)]

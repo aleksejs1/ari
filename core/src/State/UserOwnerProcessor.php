@@ -1,10 +1,10 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -42,10 +42,10 @@ class UserOwnerProcessor implements ProcessorInterface
 
             $user = $token->getUser();
             
-            if (!$user instanceof \App\Entity\User) {
+            if (!$user instanceof \Ari\Entity\User) {
                 // Determine what type of user we got for debugging
                 $type = is_object($user) ? get_class($user) : gettype($user);
-                throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException(sprintf('Logged in user must be an instance of App\Entity\User (got %s). Cannot set owner.', $type));
+                throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException(sprintf('Logged in user must be an instance of Ari\Entity\User (got %s). Cannot set owner.', $type));
             }
 
             $data->setTenant($user);

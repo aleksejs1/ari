@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Dto\ChangePasswordDto;
-use App\Entity\User;
+use Ari\Dto\ChangePasswordDto;
+use Ari\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;

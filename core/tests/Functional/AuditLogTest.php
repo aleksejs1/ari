@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\AuditLog;
-use App\Entity\Contact;
-use App\Entity\User;
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AuditLogTest extends ApiTestCase
@@ -129,7 +129,7 @@ class AuditLogTest extends ApiTestCase
 
         // Verify AuditLog for ContactName
         $log = $this->em->getRepository(AuditLog::class)->findOneBy([
-            'entityType' => 'App\Entity\ContactName',
+            'entityType' => 'Ari\Entity\ContactName',
             'entityId' => $contactNameId,
             'action' => 'INSERT',
         ]);
@@ -191,7 +191,7 @@ class AuditLogTest extends ApiTestCase
         self::assertGreaterThan(0, $allLogsData['totalItems'] ?? count($allLogsData['member'] ?? []));
 
         // Filter by entityType
-        $entityType = 'App\Entity\Contact';
+        $entityType = 'Ari\Entity\Contact';
         $response = $client->request('GET', '/api/audit_logs', [
             'auth_bearer' => $this->token,
             'query' => [

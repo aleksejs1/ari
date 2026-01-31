@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto;
+namespace Ari\Dto;
 
 class ContactBiographyDto
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\ApiResource\ContactTimeline;
-use App\Service\ContactTimelineService;
+use Ari\ApiResource\ContactTimeline;
+use Ari\Service\ContactTimelineService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**

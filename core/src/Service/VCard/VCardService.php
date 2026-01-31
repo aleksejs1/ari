@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service\VCard;
+namespace Ari\Service\VCard;
 
-use App\Entity\Contact;
+use Ari\Entity\Contact;
 use Sabre\VObject\Component\VCard;
 
 class VCardService

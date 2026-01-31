@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\User;
-use App\Entity\UserPref;
+use Ari\Entity\User;
+use Ari\Entity\UserPref;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(UserPref::class)]

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Unit\Service\Google;
+namespace Ari\Tests\Unit\Service\Google;
 
-use App\Service\Google\GoogleOAuthService;
+use Ari\Service\Google\GoogleOAuthService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;

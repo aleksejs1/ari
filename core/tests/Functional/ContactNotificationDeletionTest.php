@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationQueue;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationQueue;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContactNotificationDeletionTest extends AbstractApiTestCase
@@ -57,13 +57,13 @@ class ContactNotificationDeletionTest extends AbstractApiTestCase
         $em->persist($queue);
         
         // 3.5 Create Notification Rule linked to Channel (to test Rule Cascade)
-        $policy = new \App\Entity\NotificationPolicy();
+        $policy = new \Ari\Entity\NotificationPolicy();
         $policy->setName('Test Policy');
         $policy->setUser($channel->getUser()); // setUser also sets Tenant
         $policy->setIsActive(true);
         $em->persist($policy);
 
-        $rule = new \App\Entity\NotificationRule();
+        $rule = new \Ari\Entity\NotificationRule();
         $rule->setTenant($channel->getUser());
         $rule->setPolicy($policy);
         $rule->setChannel($channel);
@@ -71,7 +71,7 @@ class ContactNotificationDeletionTest extends AbstractApiTestCase
         $em->persist($rule);
 
         // 3.6 Create Notification Subscription linked to Channel
-        $subscription = new \App\Entity\NotificationSubscription();
+        $subscription = new \Ari\Entity\NotificationSubscription();
         $subscription->setUser($channel->getUser());
         $subscription->setChannel($channel);
         $subscription->setEntityType('contact');
@@ -79,7 +79,7 @@ class ContactNotificationDeletionTest extends AbstractApiTestCase
         $em->persist($subscription);
 
         // 3.7 Create Notification Intent linked to Channel
-        $intent = new \App\Entity\NotificationIntent();
+        $intent = new \Ari\Entity\NotificationIntent();
         $intent->setChannel($channel);
         $intent->setPayload(['test' => 'intent']);
         $em->persist($intent);
@@ -105,13 +105,13 @@ class ContactNotificationDeletionTest extends AbstractApiTestCase
         $deletedQueue = $em->getRepository(NotificationQueue::class)->find($queueId);
         self::assertNull($deletedQueue, 'Queue item should be deleted when channel is deleted');
         
-        $deletedRule = $em->getRepository(\App\Entity\NotificationRule::class)->find($ruleId);
+        $deletedRule = $em->getRepository(\Ari\Entity\NotificationRule::class)->find($ruleId);
         self::assertNull($deletedRule, 'Notification Rule should be deleted when channel is deleted');
 
-        $deletedSubscription = $em->getRepository(\App\Entity\NotificationSubscription::class)->find($subscriptionId);
+        $deletedSubscription = $em->getRepository(\Ari\Entity\NotificationSubscription::class)->find($subscriptionId);
         self::assertNull($deletedSubscription, 'Notification Subscription should be deleted when channel is deleted');
 
-        $deletedIntent = $em->getRepository(\App\Entity\NotificationIntent::class)->find($intentId);
+        $deletedIntent = $em->getRepository(\Ari\Entity\NotificationIntent::class)->find($intentId);
         self::assertNull($deletedIntent, 'Notification Intent should be deleted when channel is deleted');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Service\Demo\DemoAccountService;
+use Ari\Service\Demo\DemoAccountService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;

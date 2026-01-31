@@ -70,12 +70,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "Ari\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Ari\\Tests\\": "tests/"
         }
     },
     "replace": {

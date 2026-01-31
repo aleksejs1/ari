@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Entity\Contact;
-use App\Service\VCard\VCardService;
+use Ari\Entity\Contact;
+use Ari\Service\VCard\VCardService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 

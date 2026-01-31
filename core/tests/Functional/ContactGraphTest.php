@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactRelation;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactRelation;
+use Ari\Entity\User;
 
 class ContactGraphTest extends AbstractApiTestCase
 {
@@ -122,7 +122,7 @@ class ContactGraphTest extends AbstractApiTestCase
         $em = self::getContainer()->get('doctrine')->getManager();
         $user = $em->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
 
-        $group = new \App\Entity\Group();
+        $group = new \Ari\Entity\Group();
         $group->setUser($user);
         $group->setName('Test Group');
         $em->persist($group);
@@ -130,7 +130,7 @@ class ContactGraphTest extends AbstractApiTestCase
         $contactInGroup = new Contact(); $contactInGroup->setUser($user); $em->persist($contactInGroup);
         $contactOutGroup = new Contact(); $contactOutGroup->setUser($user); $em->persist($contactOutGroup);
 
-        $cg = new \App\Entity\ContactGroup($contactInGroup);
+        $cg = new \Ari\Entity\ContactGroup($contactInGroup);
         $cg->setGroupResource($group);
         $em->persist($cg);
 

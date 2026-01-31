@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
-use App\Entity\Contact;
-use App\Entity\ContactAvatar;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAvatar;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use League\Flysystem\FilesystemOperator;

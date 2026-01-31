@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service\Notification;
+namespace Ari\Service\Notification;
 
-use App\Repository\NotificationQueueRepository;
+use Ari\Repository\NotificationQueueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;

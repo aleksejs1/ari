@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Helper;
+namespace Ari\Service\Helper;
 
 use Doctrine\Common\Collections\Collection;
 

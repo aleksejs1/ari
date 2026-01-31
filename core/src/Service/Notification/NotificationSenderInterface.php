@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service\Notification;
+namespace Ari\Service\Notification;
 
-use App\Entity\NotificationQueue;
+use Ari\Entity\NotificationQueue;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('app.notification_sender')]

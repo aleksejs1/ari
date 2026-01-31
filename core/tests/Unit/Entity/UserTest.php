@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Ari\Tests\Unit\Entity;
 
-use App\Entity\Contact;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase

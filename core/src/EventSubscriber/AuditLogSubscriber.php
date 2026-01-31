@@ -1,10 +1,10 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace Ari\EventSubscriber;
 
-use App\Entity\AuditLog;
-use App\Entity\User;
-use App\Security\TenantAwareInterface;
+use Ari\Entity\AuditLog;
+use Ari\Entity\User;
+use Ari\Security\TenantAwareInterface;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -145,7 +145,7 @@ class AuditLogSubscriber
 
     private function shouldLog(object $entity): bool
     {
-        if ($entity instanceof AuditLog || $entity instanceof \App\Entity\ContactAvatar) {
+        if ($entity instanceof AuditLog || $entity instanceof \Ari\Entity\ContactAvatar) {
             return false;
         }
 
@@ -243,7 +243,7 @@ class AuditLogSubscriber
             $value = $metadata->getFieldValue($entity, $fieldName);
 
             if (
-                $entity instanceof \App\Entity\ContactDate
+                $entity instanceof \Ari\Entity\ContactDate
                 && 'date' === $fieldName
                 && $value instanceof \DateTimeInterface
             ) {
@@ -277,7 +277,7 @@ class AuditLogSubscriber
             [$old, $new] = $values;
 
             if ($old instanceof \DateTimeInterface && $new instanceof \DateTimeInterface) {
-                if ($entity instanceof \App\Entity\ContactDate && 'date' === $field) {
+                if ($entity instanceof \Ari\Entity\ContactDate && 'date' === $field) {
                     // For ContactDate, ignore time changes
                     if ($old->format('Y-m-d') === $new->format('Y-m-d')) {
                         unset($changeSet[$field]);

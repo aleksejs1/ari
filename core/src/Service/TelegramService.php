@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

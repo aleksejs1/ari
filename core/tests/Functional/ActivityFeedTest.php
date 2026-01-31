@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\ActivityFeed;
-use App\Entity\User;
+use Ari\Entity\ActivityFeed;
+use Ari\Entity\User;
 
 class ActivityFeedTest extends AbstractApiTestCase
 {

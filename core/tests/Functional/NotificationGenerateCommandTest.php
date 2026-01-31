@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\NotificationQueue;
+use Ari\Entity\NotificationQueue;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -102,7 +102,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
             throw new \RuntimeException('Doctrine service not found');
         }
         $entityManager = $doctrine->getManager();
-        $contact = $entityManager->getRepository(\App\Entity\Contact::class)->find($contactId);
+        $contact = $entityManager->getRepository(\Ari\Entity\Contact::class)->find($contactId);
         $queueItem = $entityManager->getRepository(NotificationQueue::class)->findOneBy(['contact' => $contact]);
 
         self::assertNotNull($queueItem, 'Queue item should exist for the created contact');

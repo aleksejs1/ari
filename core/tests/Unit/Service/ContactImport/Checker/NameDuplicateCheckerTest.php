@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Tests\Unit\Service\ContactImport\Checker;
+namespace Ari\Tests\Unit\Service\ContactImport\Checker;
 
-use App\Dto\ContactImportDto;
-use App\Dto\ContactNameDto;
-use App\Entity\Contact;
-use App\Entity\ContactName;
-use App\Entity\User;
-use App\Repository\ContactNameRepository;
-use App\Service\ContactImport\Checker\NameDuplicateChecker;
+use Ari\Dto\ContactImportDto;
+use Ari\Dto\ContactNameDto;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactName;
+use Ari\Entity\User;
+use Ari\Repository\ContactNameRepository;
+use Ari\Service\ContactImport\Checker\NameDuplicateChecker;
 use PHPUnit\Framework\TestCase;
 
 final class NameDuplicateCheckerTest extends TestCase

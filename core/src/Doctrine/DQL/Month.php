@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Doctrine\DQL;
+namespace Ari\Doctrine\DQL;
 
 use Doctrine\Common\Lexer\Token;
 use Doctrine\DBAL\Platforms\SqlitePlatform;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\NotificationPolicy;
+use Ari\Entity\NotificationPolicy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -35,7 +35,7 @@ class NotificationPolicyProcessorTest extends AbstractApiTestCase
             $container = self::getContainer();
             $em = $container->get(EntityManagerInterface::class);
             assert($em instanceof EntityManagerInterface);
-            $ch = $em->getRepository(\App\Entity\NotificationChannel::class)->findOneBy(['type' => 'web']);
+            $ch = $em->getRepository(\Ari\Entity\NotificationChannel::class)->findOneBy(['type' => 'web']);
             if (null !== $ch) {
                 $this->channelId = (string) $ch->getId();
             } else {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Controller;
+namespace Ari\Tests\Functional\Controller;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 

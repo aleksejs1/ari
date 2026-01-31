@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
-use App\Entity\AuditLog;
-use App\Entity\Contact;
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;

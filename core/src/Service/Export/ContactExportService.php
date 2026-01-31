@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service\Export;
+namespace Ari\Service\Export;
 
-use App\Entity\Contact;
-use App\Entity\User;
-use App\Repository\ContactRepository;
-use App\Repository\GroupRepository;
+use Ari\Entity\Contact;
+use Ari\Entity\User;
+use Ari\Repository\ContactRepository;
+use Ari\Repository\GroupRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ContactExportService

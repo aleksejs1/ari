@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 class PluginListApiTest extends AbstractApiTestCase
 {

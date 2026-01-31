@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service\Google;
+namespace Ari\Service\Google;
 
-use App\Entity\TokenStorage;
-use App\Entity\User;
-use App\Repository\TokenStorageRepository;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
+use Ari\Repository\TokenStorageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 

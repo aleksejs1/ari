@@ -1,14 +1,14 @@
 <?php
 
-namespace App\ApiResource;
+namespace Ari\ApiResource;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\Parameter;
-use App\Dto\ContactGraph\GraphLink;
-use App\Dto\ContactGraph\GraphNode;
-use App\State\ContactGraphProvider;
+use Ari\Dto\ContactGraph\GraphLink;
+use Ari\Dto\ContactGraph\GraphNode;
+use Ari\State\ContactGraphProvider;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(

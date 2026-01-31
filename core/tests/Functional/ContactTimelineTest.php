@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\AuditLog;
-use App\Entity\Contact;
-use App\Entity\User;
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContactTimelineTest extends ApiTestCase
@@ -131,7 +131,7 @@ class ContactTimelineTest extends ApiTestCase
         // Check Content
         $entityTypes = array_column($timeline['logs'], 'entityType');
         self::assertContains(Contact::class, $entityTypes);
-        self::assertContains('App\Entity\ContactName', $entityTypes);
-        self::assertContains('App\Entity\ContactDate', $entityTypes);
+        self::assertContains('Ari\Entity\ContactName', $entityTypes);
+        self::assertContains('Ari\Entity\ContactDate', $entityTypes);
     }
 }

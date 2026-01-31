@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity\Traits;
+namespace Ari\Entity\Traits;
 
-use App\Entity\Contact;
+use Ari\Entity\Contact;
 // Assumed for gender check
-use App\Entity\ContactRelation;
+use Ari\Entity\ContactRelation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

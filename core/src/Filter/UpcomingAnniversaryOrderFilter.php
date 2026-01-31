@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filter;
+namespace Ari\Filter;
 
 use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
-use App\Entity\NotificationPolicy;
-use App\Entity\User;
-use App\Entity\UserPref;
+use Ari\Entity\NotificationPolicy;
+use Ari\Entity\User;
+use Ari\Entity\UserPref;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
@@ -149,7 +149,7 @@ final class UpcomingAnniversaryOrderFilter extends AbstractFilter
 
                 $cgAlias = $queryNameGenerator->generateParameterName('cg');
                 $ruleExpr->add("EXISTS (
-                    SELECT 1 FROM App\Entity\ContactGroup {$cgAlias} 
+                    SELECT 1 FROM Ari\Entity\ContactGroup {$cgAlias} 
                     WHERE {$cgAlias}.contact = {$alias}.contact 
                     AND {$cgAlias}.groupResource = :{$groupParam}
                 )");

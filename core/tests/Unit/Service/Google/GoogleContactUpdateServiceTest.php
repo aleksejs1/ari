@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Tests\Unit\Service\Google;
+namespace Ari\Tests\Unit\Service\Google;
 
-use App\Entity\Contact;
-use App\Entity\ContactAddress;
-use App\Entity\ContactBiography;
-use App\Entity\ContactDate;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactName;
-use App\Entity\ContactOrganization;
-use App\Entity\ContactPhoneNumber;
-use App\Entity\ImportMapping;
-use App\Entity\TokenStorage;
-use App\Entity\User;
-use App\Entity\UserPref;
-use App\Repository\ImportMappingRepository;
-use App\Repository\TokenStorageRepository;
-use App\Repository\UserPrefRepository;
-use App\Service\Google\GoogleContactsService;
-use App\Service\Google\GoogleContactUpdateService;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAddress;
+use Ari\Entity\ContactBiography;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactName;
+use Ari\Entity\ContactOrganization;
+use Ari\Entity\ContactPhoneNumber;
+use Ari\Entity\ImportMapping;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
+use Ari\Entity\UserPref;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Repository\TokenStorageRepository;
+use Ari\Repository\UserPrefRepository;
+use Ari\Service\Google\GoogleContactsService;
+use Ari\Service\Google\GoogleContactUpdateService;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;

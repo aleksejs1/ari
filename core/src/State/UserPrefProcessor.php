@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Entity\User;
-use App\Entity\UserPref;
+use Ari\Entity\User;
+use Ari\Entity\UserPref;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 

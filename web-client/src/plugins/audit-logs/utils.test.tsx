@@ -23,14 +23,14 @@ describe('audit-logs/utils', () => {
   describe('getLogDescription', () => {
     it('returns translated string', () => {
       const t = vi.fn().mockReturnValue('Translated Action')
-      const log = { action: 'INSERT', entityType: 'App\\Entity\\Contact' } as TimelineEvent
+      const log = { action: 'INSERT', entityType: 'Ari\\Entity\\Contact' } as TimelineEvent
       expect(getLogDescription(log, t as any)).toBe('Translated Action')
       expect(t).toHaveBeenCalledWith('auditLogs.entities.Contact.INSERT')
     })
 
     it('returns fallback string if translation missing', () => {
       const t = vi.fn().mockImplementation((key) => key)
-      const log = { action: 'UPDATE', entityType: 'App\\Entity\\ContactName' } as TimelineEvent
+      const log = { action: 'UPDATE', entityType: 'Ari\\Entity\\ContactName' } as TimelineEvent
       expect(getLogDescription(log, t as any)).toBe('UPDATE ContactName')
     })
 
@@ -54,7 +54,7 @@ describe('audit-logs/utils', () => {
   describe('getContactId', () => {
     it('extracts direct contact ID', () => {
       const log = {
-        entityType: 'App\\Entity\\Contact',
+        entityType: 'Ari\\Entity\\Contact',
         entityId: 123,
       } as TimelineEvent
       expect(getContactId(log)).toBe('123')
@@ -62,8 +62,8 @@ describe('audit-logs/utils', () => {
 
     it('extracts owner contact ID', () => {
       const log = {
-        entityType: 'App\\Entity\\ContactName',
-        ownerEntityType: 'App\\Entity\\Contact',
+        entityType: 'Ari\\Entity\\ContactName',
+        ownerEntityType: 'Ari\\Entity\\Contact',
         ownerEntityId: 456,
       } as TimelineEvent
       expect(getContactId(log)).toBe('456')
@@ -73,7 +73,7 @@ describe('audit-logs/utils', () => {
       const log = {
         id: 1,
         action: 'INSERT',
-        entityType: 'App\\Entity\\Unknown',
+        entityType: 'Ari\\Entity\\Unknown',
         snapshotAfter: {
           someField: {
             contact: '/api/contacts/789',
@@ -88,7 +88,7 @@ describe('audit-logs/utils', () => {
       const log = {
         id: 2,
         action: 'INSERT',
-        entityType: 'App\\Entity\\Tag',
+        entityType: 'Ari\\Entity\\Tag',
         snapshotAfter: { name: 'tag' },
         createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent

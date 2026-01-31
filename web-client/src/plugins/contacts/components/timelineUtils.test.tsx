@@ -72,7 +72,7 @@ describe('timelineUtils', () => {
 
   describe('getLogSnapshotDetails', () => {
     it('returns null if no snapshot', () => {
-      const log = { action: 'INSERT', entityType: 'App\\Entity\\Contact' } as TimelineEvent
+      const log = { action: 'INSERT', entityType: 'Ari\\Entity\\Contact' } as TimelineEvent
       expect(getLogSnapshotDetails(log, 'en')).toBeNull()
     })
 
@@ -80,7 +80,7 @@ describe('timelineUtils', () => {
       const log = {
         id: 1,
         action: 'INSERT',
-        entityType: 'App\\Entity\\ContactName',
+        entityType: 'Ari\\Entity\\ContactName',
         snapshotAfter: { given: 'Jane', family: 'Doe' },
         createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
@@ -92,7 +92,7 @@ describe('timelineUtils', () => {
       const log = {
         id: 2,
         action: 'INSERT',
-        entityType: 'App\\Entity\\ContactOrganization',
+        entityType: 'Ari\\Entity\\ContactOrganization',
         snapshotAfter: { name: 'Acme', startDate: '2022-01-01' },
         createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
@@ -104,7 +104,7 @@ describe('timelineUtils', () => {
       const log = {
         id: 3,
         action: 'INSERT',
-        entityType: 'App\\Entity\\ContactGroup',
+        entityType: 'Ari\\Entity\\ContactGroup',
         snapshotAfter: { groupResource: { name: 'Friends' } },
         createdAt: '2023-01-01T00:00:00Z',
       } as TimelineEvent
@@ -125,7 +125,7 @@ describe('timelineUtils', () => {
   describe('getLogLabel', () => {
     it('uses translation keys', () => {
       const t = vi.fn().mockReturnValue('Translated')
-      const log = { action: 'INSERT', entityType: 'App\\Entity\\Contact' } as TimelineEvent
+      const log = { action: 'INSERT', entityType: 'Ari\\Entity\\Contact' } as TimelineEvent
       getLogLabel(log, t as any)
       expect(t).toHaveBeenCalledWith('contacts.history.actions.Contact.INSERT ', 'INSERT Contact ')
     })

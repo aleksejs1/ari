@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
-use App\Repository\NotificationRuleRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\NotificationRuleRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

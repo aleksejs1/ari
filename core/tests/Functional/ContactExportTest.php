@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactAddress;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactName;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAddress;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactName;
+use Ari\Entity\User;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**

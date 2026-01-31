@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Service\ContactImport;
+namespace Ari\Service\ContactImport;
 
-use App\Dto\ContactImportDto;
-use App\Entity\Contact;
-use App\Entity\ContactAddress;
-use App\Entity\ContactBiography;
-use App\Entity\ContactDate;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactGroup;
-use App\Entity\ContactName;
-use App\Entity\ContactOrganization;
-use App\Entity\ContactPhoneNumber;
-use App\Entity\Group;
-use App\Entity\User;
-use App\Service\AvatarManager;
+use Ari\Dto\ContactImportDto;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactAddress;
+use Ari\Entity\ContactBiography;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactGroup;
+use Ari\Entity\ContactName;
+use Ari\Entity\ContactOrganization;
+use Ari\Entity\ContactPhoneNumber;
+use Ari\Entity\Group;
+use Ari\Entity\User;
+use Ari\Service\AvatarManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 class ContactImportService
 {
-    use \App\Service\Helper\CollectionSyncTrait;
+    use \Ari\Service\Helper\CollectionSyncTrait;
 
     /**
      * @param iterable<ContactDuplicateCheckerInterface> $checkers

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 class ContactNestedEntitiesTest extends AbstractApiTestCase
 {
@@ -452,7 +452,7 @@ class ContactNestedEntitiesTest extends AbstractApiTestCase
         $addressUpdates = 0;
 
         foreach ($logs as $log) {
-            if ('App\\Entity\\ContactAddress' === $log['entityType']) {
+            if ('Ari\\Entity\\ContactAddress' === $log['entityType']) {
                 if ('INSERT' === $log['action']) {
                     ++$addressInserts;
                 } elseif ('REMOVE' === $log['action']) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ApiResource;
+namespace Ari\ApiResource;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\State\StatsProvider;
+use Ari\State\StatsProvider;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(

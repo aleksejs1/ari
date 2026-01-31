@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Google;
+namespace Ari\Service\Google;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

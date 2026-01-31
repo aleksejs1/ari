@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Security\Voter;
+namespace Ari\Security\Voter;
 
-use App\Entity\User;
-use App\Entity\UserPref;
+use Ari\Entity\User;
+use Ari\Entity\UserPref;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 

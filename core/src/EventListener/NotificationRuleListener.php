@@ -1,9 +1,9 @@
 <?php
 
-namespace App\EventListener;
+namespace Ari\EventListener;
 
-use App\Entity\NotificationQueue;
-use App\Entity\NotificationRule;
+use Ari\Entity\NotificationQueue;
+use Ari\Entity\NotificationRule;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PreRemoveEventArgs;

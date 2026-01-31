@@ -1,10 +1,10 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Entity\Contact;
+use Ari\Entity\Contact;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -37,7 +37,7 @@ class ContactProcessor implements ProcessorInterface
     {
         if (null === $data->getTenant()) {
             $user = $this->security->getUser();
-            if ($user instanceof \App\Entity\User) {
+            if ($user instanceof \Ari\Entity\User) {
                 $data->setTenant($user);
                 $data->setUser($user);
             }
@@ -249,7 +249,7 @@ class ContactProcessor implements ProcessorInterface
                 if (method_exists($incomingItem, 'setContact')) {
                     $incomingItem->setContact($owner);
                 }
-                if ($incomingItem instanceof \App\Security\TenantAwareInterface) {
+                if ($incomingItem instanceof \Ari\Security\TenantAwareInterface) {
                     $incomingItem->setTenant($owner->getTenant());
                 }
                 if (null !== $extraLogic) {
@@ -382,7 +382,7 @@ class ContactProcessor implements ProcessorInterface
         if (method_exists($item, 'setContact')) {
             $item->setContact($owner);
         }
-        if ($item instanceof \App\Security\TenantAwareInterface) {
+        if ($item instanceof \Ari\Security\TenantAwareInterface) {
             $item->setTenant($owner->getTenant());
         }
 
@@ -408,7 +408,7 @@ class ContactProcessor implements ProcessorInterface
                     $item->setContact($owner);
                 }
             }
-            if ($item instanceof \App\Security\TenantAwareInterface) {
+            if ($item instanceof \Ari\Security\TenantAwareInterface) {
                 if (null === $item->getTenant()) {
                     $item->setTenant($owner->getTenant());
                 }

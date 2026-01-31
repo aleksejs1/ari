@@ -1,12 +1,12 @@
 <?php
 
-namespace App\ApiResource;
+namespace Ari\ApiResource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\OpenApi\Model\Operation;
-use App\State\AutocompleteProvider;
+use Ari\State\AutocompleteProvider;
 
 #[ApiResource(
     shortName: 'Autocomplete',

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Service\Notification;
+namespace Ari\Service\Notification;
 
-use App\Entity\NotificationQueue;
+use Ari\Entity\NotificationQueue;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
 #[AsTaggedItem(index: 'telegram')]
 class TelegramSender implements NotificationSenderInterface
 {
     public function __construct(
-        private readonly \App\Service\TelegramService $telegramService,
+        private readonly \Ari\Service\TelegramService $telegramService,
         private readonly string $telegramBotSecret,
     ) {
     }

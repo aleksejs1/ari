@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Ari\Tests\Unit\Entity;
 
-use App\Entity\UserPref;
+use Ari\Entity\UserPref;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;

@@ -36,7 +36,7 @@ if (
     // Disable DAMA bundle for schema creation to allow persistence
     $_SERVER['DISABLE_DAMA_BUNDLE'] = true;
 
-    $kernel = new App\Kernel($debugAppEnv, (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? false));
+    $kernel = new Ari\Kernel($debugAppEnv, (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? false));
     $kernel->boot();
 
     $application = new Symfony\Bundle\FrameworkBundle\Console\Application($kernel);

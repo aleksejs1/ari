@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\NotificationPolicyRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\NotificationPolicyRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,28 +16,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new \ApiPlatform\Metadata\Post(
             uriTemplate: '/notification-policies',
-            input: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
-            processor: 'App\State\NotificationPolicyProcessor',
+            input: \Ari\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            processor: 'Ari\State\NotificationPolicyProcessor',
         ),
         new \ApiPlatform\Metadata\Get(
             uriTemplate: '/notification-policies/{id}',
-            output: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
-            provider: 'App\State\NotificationPolicyProvider',
+            output: \Ari\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            provider: 'Ari\State\NotificationPolicyProvider',
         ),
         new \ApiPlatform\Metadata\GetCollection(
             uriTemplate: '/notification-policies',
-            output: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
-            provider: 'App\State\NotificationPolicyProvider',
+            output: \Ari\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            provider: 'Ari\State\NotificationPolicyProvider',
         ),
         new \ApiPlatform\Metadata\Put(
             uriTemplate: '/notification-policies/{id}',
-            input: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
-            processor: 'App\State\NotificationPolicyProcessor',
+            input: \Ari\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            processor: 'Ari\State\NotificationPolicyProcessor',
         ),
         new \ApiPlatform\Metadata\Patch(
             uriTemplate: '/notification-policies/{id}',
-            input: \App\Dto\NotificationPolicy\NotificationPolicyDto::class,
-            processor: 'App\State\NotificationPolicyProcessor',
+            input: \Ari\Dto\NotificationPolicy\NotificationPolicyDto::class,
+            processor: 'Ari\State\NotificationPolicyProcessor',
         ),
         new \ApiPlatform\Metadata\Delete(
             uriTemplate: '/notification-policies/{id}',

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message;
+namespace Ari\Message;
 
 final readonly class ImportGoogleContactMessage
 {

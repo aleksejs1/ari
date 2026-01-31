@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationIntent;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactName;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationIntent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

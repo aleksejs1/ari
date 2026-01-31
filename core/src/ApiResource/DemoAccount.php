@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ApiResource;
+namespace Ari\ApiResource;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use App\Controller\DemoAccountAction;
+use Ari\Controller\DemoAccountAction;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Tests\Unit\Service\Google;
+namespace Ari\Tests\Unit\Service\Google;
 
-use App\Entity\TokenStorage;
-use App\Entity\User;
-use App\Message\ImportGoogleContactMessage;
-use App\Repository\ImportMappingRepository;
-use App\Repository\TokenStorageRepository;
-use App\Service\Google\GoogleContactsService;
-use App\Service\Google\GoogleOAuthService;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
+use Ari\Message\ImportGoogleContactMessage;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Repository\TokenStorageRepository;
+use Ari\Service\Google\GoogleContactsService;
+use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -130,7 +130,7 @@ class GoogleContactsServiceTest extends TestCase
             ->with(self::callback(function ($obj) {
                 // We expect Group persist AND potentially ImportMapping from group import if that was mocked to return date
                 // But here we specifically care about the 'google' group creation
-                return $obj instanceof \App\Entity\Group && 'google' === $obj->getName();
+                return $obj instanceof \Ari\Entity\Group && 'google' === $obj->getName();
             }));
 
         $this->bus->expects(self::once())

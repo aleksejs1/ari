@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Dto\ChangePasswordDto;
-use App\Repository\UserRepository;
+use Ari\Dto\ChangePasswordDto;
+use Ari\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(security: "is_granted('ROLE_USER') and object == user"),
         new Post(
-            processor: 'App\State\UserInitialSetupProcessor',
+            processor: 'Ari\State\UserInitialSetupProcessor',
             denormalizationContext: ['groups' => ['user:create']],
             validationContext: ['groups' => ['Default', 'user:create']],
         ),
@@ -33,15 +33,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             status: 200,
             security: "is_granted('ROLE_USER')",
             input: ChangePasswordDto::class,
-            provider: 'App\State\CurrentUserProvider',
-            processor: 'App\State\UserPasswordChangeProcessor',
+            provider: 'Ari\State\CurrentUserProvider',
+            processor: 'Ari\State\UserPasswordChangeProcessor',
             name: 'change_password',
         ),
         new Delete(
             uriTemplate: '/profile',
             security: "is_granted('ROLE_USER')",
-            provider: 'App\State\CurrentUserProvider',
-            processor: 'App\State\UserDeleteProcessor',
+            provider: 'Ari\State\CurrentUserProvider',
+            processor: 'Ari\State\UserDeleteProcessor',
         ),
     ],
     normalizationContext: ['groups' => ['user:read']],

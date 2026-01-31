@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Contact;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContactAddressApiTest extends ApiTestCase
@@ -158,7 +158,7 @@ class ContactAddressApiTest extends ApiTestCase
         // Find the UPDATE log for ContactAddress
         $updateLog = null;
         foreach ($logs as $log) {
-            if ('App\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
+            if ('Ari\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
                 $updateLog = $log;
                 break;
             }
@@ -205,7 +205,7 @@ class ContactAddressApiTest extends ApiTestCase
         // Find the log that has 'streetExtended' in changes (Bug reproduction)
         $bugLog = null;
         foreach ($logs as $log) {
-            if ('App\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
+            if ('Ari\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
                 if (isset($log['changes']['streetExtended'])) {
                     $bugLog = $log;
                     break;

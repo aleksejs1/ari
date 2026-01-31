@@ -191,7 +191,7 @@ export const formatChangeValue = (
 
 export const getLogLabel = (log: TimelineEvent, t: TFunction): string => {
   const { action, entityType } = log
-  const type = entityType.replace(/^App\\Entity\\/, '')
+  const type = entityType.replace(/^Ari\\Entity\\/, '')
   return t(`contacts.history.actions.${type}.${action} `, `${action} ${type} `)
 }
 
@@ -277,7 +277,7 @@ export const getLogSnapshotDetails = (
     return null
   }
 
-  const type = entityType.replace(/^App\\Entity\\/, '')
+  const type = entityType.replace(/^Ari\\Entity\\/, '')
 
   const renderers: Record<string, () => React.ReactElement | null> = {
     ContactName: () => <>{getContactNameLabel(snapshot)}</>,

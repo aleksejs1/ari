@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactEmailAdress;
-use App\Entity\ContactOrganization;
-use App\Entity\ContactPhoneNumber;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactEmailAdress;
+use Ari\Entity\ContactOrganization;
+use Ari\Entity\ContactPhoneNumber;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AutocompleteApiTest extends AbstractApiTestCase

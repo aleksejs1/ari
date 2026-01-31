@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Tests\Unit\Service\Google;
+namespace Ari\Tests\Unit\Service\Google;
 
-use App\Entity\Group;
-use App\Entity\ImportMapping;
-use App\Entity\TokenStorage;
-use App\Entity\User;
-use App\Repository\ImportMappingRepository;
-use App\Repository\TokenStorageRepository;
-use App\Service\Google\GoogleContactsService;
-use App\Service\Google\GoogleOAuthService;
+use Ari\Entity\Group;
+use Ari\Entity\ImportMapping;
+use Ari\Entity\TokenStorage;
+use Ari\Entity\User;
+use Ari\Repository\ImportMappingRepository;
+use Ari\Repository\TokenStorageRepository;
+use Ari\Service\Google\GoogleContactsService;
+use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;

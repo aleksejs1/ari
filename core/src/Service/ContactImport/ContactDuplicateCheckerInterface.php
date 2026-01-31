@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service\ContactImport;
+namespace Ari\Service\ContactImport;
 
-use App\Dto\ContactImportDto;
-use App\Entity\User;
+use Ari\Dto\ContactImportDto;
+use Ari\Entity\User;
 
 interface ContactDuplicateCheckerInterface
 {

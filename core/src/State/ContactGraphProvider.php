@@ -1,14 +1,14 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\ApiResource\ContactGraph;
-use App\Dto\ContactGraph\GraphLink;
-use App\Dto\ContactGraph\GraphNode;
-use App\Entity\Contact;
-use App\Entity\ContactRelation;
+use Ari\ApiResource\ContactGraph;
+use Ari\Dto\ContactGraph\GraphLink;
+use Ari\Dto\ContactGraph\GraphNode;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactRelation;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

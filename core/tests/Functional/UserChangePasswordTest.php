@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\User;
+use Ari\Entity\User;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(User::class)]

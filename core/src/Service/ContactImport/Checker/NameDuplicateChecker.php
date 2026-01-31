@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service\ContactImport\Checker;
+namespace Ari\Service\ContactImport\Checker;
 
-use App\Dto\ContactImportDto;
-use App\Entity\User;
-use App\Repository\ContactNameRepository;
-use App\Service\ContactImport\ContactDuplicateCheckerInterface;
+use Ari\Dto\ContactImportDto;
+use Ari\Entity\User;
+use Ari\Repository\ContactNameRepository;
+use Ari\Service\ContactImport\ContactDuplicateCheckerInterface;
 
 class NameDuplicateChecker implements ContactDuplicateCheckerInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\OpenApi;
+namespace Ari\Tests\Functional\OpenApi;
 
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

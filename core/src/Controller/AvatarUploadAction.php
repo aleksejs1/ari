@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Entity\Contact;
-use App\Service\AvatarManager;
+use Ari\Entity\Contact;
+use Ari\Service\AvatarManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -5,47 +5,47 @@ deptrac:
     - name: Service
       collectors:
         - type: classNameRegex
-          value: '#^App\\Service\\.*#'
+          value: '#^Ari\\Service\\.*#'
     - name: Command
       collectors:
         - type: classNameRegex
-          value: '#^App\\Command\\.*#'
+          value: '#^Ari\\Command\\.*#'
     - name: ApiResource
       collectors:
         - type: classNameRegex
-          value: '#^App\\ApiResource\\.*#'
+          value: '#^Ari\\ApiResource\\.*#'
     - name: Controller
       collectors:
         - type: classNameRegex
-          value: '#^App\\Controller\\.*#'
+          value: '#^Ari\\Controller\\.*#'
     - name: Entity
       collectors:
         - type: classNameRegex
-          value: '#^App\\Entity\\.*#'
+          value: '#^Ari\\Entity\\.*#'
     - name: Repository
       collectors:
         - type: classNameRegex
-          value: '#^App\\Repository\\.*#'
+          value: '#^Ari\\Repository\\.*#'
     - name: Form
       collectors:
         - type: classNameRegex
-          value: '#^App\\Form\\.*#'
+          value: '#^Ari\\Form\\.*#'
     - name: Security
       collectors:
         - type: classNameRegex
-          value: '#^App\\Security\\.*#'
+          value: '#^Ari\\Security\\.*#'
     - name: State
       collectors:
         - type: classNameRegex
-          value: '#^App\\State\\.*#'
+          value: '#^Ari\\State\\.*#'
     - name: Doctrine
       collectors:
         - type: classNameRegex
-          value: '#^App\\Doctrine\\.*#'
+          value: '#^Ari\\Doctrine\\.*#'
     - name: OpenApi
       collectors:
         - type: classNameRegex
-          value: '#^App\\OpenApi\\.*#'
+          value: '#^Ari\\OpenApi\\.*#'
     - name: Vendor
       collectors:
         - type: bool

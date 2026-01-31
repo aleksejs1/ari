@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactGroup;
-use App\Entity\ContactName;
-use App\Entity\Group;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactGroup;
+use Ari\Entity\ContactName;
+use Ari\Entity\Group;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Uid\Uuid;
@@ -74,7 +74,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $contactGroup2->setGroupResource($group2);
         $contact->addContactGroup($contactGroup2);
 
-        $organization = new \App\Entity\ContactOrganization($contact);
+        $organization = new \Ari\Entity\ContactOrganization($contact);
         $organization->setName('Acme Corp');
         $organization->setTitle('CEO');
         $contact->addContactOrganization($organization);
@@ -85,7 +85,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $spouse->setUuid(Uuid::v7());
         $this->entityManager->persist($spouse);
 
-        $relation = new \App\Entity\ContactRelation($contact);
+        $relation = new \Ari\Entity\ContactRelation($contact);
         $relation->setPerson($spouse);
         $relation->setType('Spouse');
         $contact->addContactRelation($relation);
@@ -191,7 +191,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
 
         // Check Organization
         $firstOrganization = $importedContact->getContactOrganizations()->first();
-        self::assertInstanceOf(\App\Entity\ContactOrganization::class, $firstOrganization);
+        self::assertInstanceOf(\Ari\Entity\ContactOrganization::class, $firstOrganization);
         self::assertEquals('Acme Corp', $firstOrganization->getName());
         self::assertEquals('CEO', $firstOrganization->getTitle());
 
@@ -199,7 +199,7 @@ class XmlImportReproductionTest extends AbstractApiTestCase
         $relations = $importedContact->getContactRelations();
         self::assertGreaterThan(0, $relations->count(), 'Imported contact should have the relation');
         $firstRelation = $relations->first();
-        self::assertInstanceOf(\App\Entity\ContactRelation::class, $firstRelation);
+        self::assertInstanceOf(\Ari\Entity\ContactRelation::class, $firstRelation);
         self::assertEquals('Spouse', $firstRelation->getType());
 
         $relatedPerson = $firstRelation->getPerson();

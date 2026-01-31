@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactRelation;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactRelation;
+use Ari\Entity\User;
 
 class ContactNestedRelationsTest extends AbstractApiTestCase
 {

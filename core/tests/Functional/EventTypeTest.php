@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
 
 class EventTypeTest extends AbstractApiTestCase
 {
@@ -18,7 +18,7 @@ class EventTypeTest extends AbstractApiTestCase
         $em = $doctrine->getManager();
 
         // Seed data
-        $user = $em->getRepository(\App\Entity\User::class)->findOneBy(['uuid' => $this->userUuid]);
+        $user = $em->getRepository(\Ari\Entity\User::class)->findOneBy(['uuid' => $this->userUuid]);
 
         $contact = new Contact();
         $contact->setUser($user);

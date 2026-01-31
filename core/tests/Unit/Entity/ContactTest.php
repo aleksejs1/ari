@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Ari\Tests\Unit\Entity;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactName;
+use Ari\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class ContactTest extends TestCase
@@ -51,7 +51,7 @@ class ContactTest extends TestCase
     public function testContactPhoneNumbersAssociation(): void
     {
         $contact = new Contact();
-        $phoneNumber = new \App\Entity\ContactPhoneNumber($contact);
+        $phoneNumber = new \Ari\Entity\ContactPhoneNumber($contact);
 
         $contact->addPhoneNumber($phoneNumber);
         self::assertTrue($contact->getPhoneNumbers()->contains($phoneNumber));
@@ -65,7 +65,7 @@ class ContactTest extends TestCase
     public function testContactEmailAdressesAssociation(): void
     {
         $contact = new Contact();
-        $email = new \App\Entity\ContactEmailAdress($contact);
+        $email = new \Ari\Entity\ContactEmailAdress($contact);
 
         $contact->addContactEmailAdress($email);
         self::assertTrue($contact->getContactEmailAdresses()->contains($email));
@@ -79,7 +79,7 @@ class ContactTest extends TestCase
     public function testContactAddressAssociation(): void
     {
         $contact = new Contact();
-        $address = new \App\Entity\ContactAddress($contact);
+        $address = new \Ari\Entity\ContactAddress($contact);
 
         $contact->addContactAddress($address);
         self::assertTrue($contact->getContactAddresses()->contains($address));
@@ -93,7 +93,7 @@ class ContactTest extends TestCase
     public function testContactGroupsAssociation(): void
     {
         $contact = new Contact();
-        $contactGroup = new \App\Entity\ContactGroup($contact);
+        $contactGroup = new \Ari\Entity\ContactGroup($contact);
 
         $contact->addContactGroup($contactGroup);
         self::assertTrue($contact->getContactGroups()->contains($contactGroup));

@@ -128,13 +128,13 @@ Create your entity in `plugins/MyPlugin/src/Entity/MyEntity.php`.
 namespace Plugins\MyPlugin\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'plg_my_entity')] // Prefix tables to avoid collisions
-#[ApiResource(processor: \App\State\UserOwnerProcessor::class)] // Auto-assign tenant
+#[ApiResource(processor: \Ari\State\UserOwnerProcessor::class)] // Auto-assign tenant
 class MyEntity implements TenantAwareInterface
 {
     use TenantAwareTrait;
@@ -171,7 +171,7 @@ Create a functional test in `plugins/MyPlugin/tests/Functional/MyEntityResourceT
 
 namespace Plugins\MyPlugin\Tests\Functional;
 
-use App\Tests\Functional\AbstractApiTestCase;
+use Ari\Tests\Functional\AbstractApiTestCase;
 
 class MyEntityResourceTest extends AbstractApiTestCase
 {

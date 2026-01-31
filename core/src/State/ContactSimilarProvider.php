@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Entity\Contact;
-use App\Entity\ContactName;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactName;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -57,7 +57,7 @@ class ContactSimilarProvider implements ProviderInterface
 
         // 2. Organization logic
         $orgEntity = $contact->getContactOrganizations()->first();
-        if ($orgEntity instanceof \App\Entity\ContactOrganization) {
+        if ($orgEntity instanceof \Ari\Entity\ContactOrganization) {
             $orgName = $orgEntity->getName();
             if (null !== $orgName && '' !== $orgName) {
                 $criteria[] = 'co.name = :orgName';

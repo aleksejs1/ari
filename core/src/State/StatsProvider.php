@@ -1,13 +1,13 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\ApiResource\Stats;
-use App\Entity\AuditLog;
-use App\Entity\Contact;
-use App\Entity\NotificationQueue;
+use Ari\ApiResource\Stats;
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
+use Ari\Entity\NotificationQueue;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

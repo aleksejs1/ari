@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
+use Ari\Entity\Contact;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AvatarUploadTest extends AbstractApiTestCase

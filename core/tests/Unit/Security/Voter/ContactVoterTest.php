@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Unit\Security\Voter;
+namespace Ari\Tests\Unit\Security\Voter;
 
-use App\Entity\User;
-use App\Security\TenantAwareInterface;
-use App\Security\Voter\ContactVoter;
+use Ari\Entity\User;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\Voter\ContactVoter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

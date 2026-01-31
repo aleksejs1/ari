@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ContactDateApiTest extends ApiTestCase

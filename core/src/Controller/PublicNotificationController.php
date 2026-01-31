@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Entity\NotificationChannel;
+use Ari\Entity\NotificationChannel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

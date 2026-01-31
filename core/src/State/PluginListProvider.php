@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\ApiResource\PluginList;
-use App\Kernel;
+use Ari\ApiResource\PluginList;
+use Ari\Kernel;
 use Composer\Semver\Semver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\Contact;
-use App\Entity\ContactGroup;
-use App\Entity\Group;
-use App\Entity\ImportMapping;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactGroup;
+use Ari\Entity\Group;
+use Ari\Entity\ImportMapping;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GroupDeletionTest extends AbstractApiTestCase

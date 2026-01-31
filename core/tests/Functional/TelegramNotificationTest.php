@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Command\ProcessNotificationsCommand;
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationIntent;
-use App\Entity\NotificationSubscription;
-use App\Entity\User;
-use App\Service\TelegramService;
+use Ari\Command\ProcessNotificationsCommand;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactName;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationIntent;
+use Ari\Entity\NotificationSubscription;
+use Ari\Entity\User;
+use Ari\Service\TelegramService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 

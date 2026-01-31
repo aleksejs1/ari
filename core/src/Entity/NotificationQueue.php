@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace Ari\Entity;
 
-use App\Repository\NotificationQueueRepository;
-use App\Security\TenantAwareInterface;
-use App\Security\TenantAwareTrait;
+use Ari\Repository\NotificationQueueRepository;
+use Ari\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationQueueRepository::class)]

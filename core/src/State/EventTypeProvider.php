@@ -1,14 +1,14 @@
 <?php
 
-namespace App\State;
+namespace Ari\State;
 
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\Pagination\Pagination;
 use ApiPlatform\State\Pagination\TraversablePaginator;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\NotificationPolicy\EventTypeDto;
-use App\Entity\ContactDate;
+use Ari\Dto\NotificationPolicy\EventTypeDto;
+use Ari\Entity\ContactDate;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Ari\Tests\Unit\Entity;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\User;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class ContactDateTest extends TestCase

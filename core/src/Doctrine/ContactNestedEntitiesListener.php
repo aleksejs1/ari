@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Doctrine;
+namespace Ari\Doctrine;
 
-use App\Entity\Contact;
-use App\Entity\ContactDate;
-use App\Entity\ContactName;
+use Ari\Entity\Contact;
+use Ari\Entity\ContactDate;
+use Ari\Entity\ContactName;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;

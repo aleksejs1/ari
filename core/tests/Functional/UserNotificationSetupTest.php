@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
-use App\Entity\User;
+use Ari\Entity\User;
 
 class UserNotificationSetupTest extends AbstractApiTestCase
 {
@@ -42,12 +42,12 @@ class UserNotificationSetupTest extends AbstractApiTestCase
         self::assertNotNull($user);
 
         // Check Channels
-        $channels = $em->getRepository(\App\Entity\NotificationChannel::class)->findBy(['user' => $user]);
+        $channels = $em->getRepository(\Ari\Entity\NotificationChannel::class)->findBy(['user' => $user]);
         self::assertCount(1, $channels, 'Direct DB check: Should have 1 channel');
 
         // Check Policies
-        /** @var \App\Entity\NotificationPolicy[] $policies */
-        $policies = $em->getRepository(\App\Entity\NotificationPolicy::class)->findBy(['user' => $user]);
+        /** @var \Ari\Entity\NotificationPolicy[] $policies */
+        $policies = $em->getRepository(\Ari\Entity\NotificationPolicy::class)->findBy(['user' => $user]);
         self::assertCount(1, $policies, 'Direct DB check: Should have 1 policy');
 
         $policy = $policies[0];

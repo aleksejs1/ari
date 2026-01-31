@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service;
+namespace Ari\Service;
 
-use App\Entity\ActivityFeed;
-use App\Entity\User;
-use App\Repository\ActivityFeedRepository;
+use Ari\Entity\ActivityFeed;
+use Ari\Entity\User;
+use Ari\Repository\ActivityFeedRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ActivityManager

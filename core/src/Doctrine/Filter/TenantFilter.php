@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Doctrine\Filter;
+namespace Ari\Doctrine\Filter;
 
-use App\Security\TenantAwareInterface;
+use Ari\Security\TenantAwareInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 

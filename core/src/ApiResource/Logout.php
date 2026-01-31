@@ -1,13 +1,13 @@
 <?php
 
-namespace App\ApiResource;
+namespace Ari\ApiResource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\Response;
-use App\Controller\LogoutAction;
+use Ari\Controller\LogoutAction;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(

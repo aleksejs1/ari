@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 class DeletedEntityAuditLogTest extends AbstractApiTestCase
 {
@@ -47,7 +47,7 @@ class DeletedEntityAuditLogTest extends AbstractApiTestCase
         $foundDeleteLog = false;
 
         foreach ($logs as $log) {
-            if ('App\\Entity\\ContactName' === $log['entityType'] && (string) $log['entityId'] === (string) $contactNameId) {
+            if ('Ari\\Entity\\ContactName' === $log['entityType'] && (string) $log['entityId'] === (string) $contactNameId) {
                 if ('INSERT' === $log['action']) {
                     $foundCreateLog = true;
                 }

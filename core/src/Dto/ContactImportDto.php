@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto;
+namespace Ari\Dto;
 
 class ContactImportDto
 {
@@ -12,7 +12,7 @@ class ContactImportDto
      * @param ContactAddressDto[]      $addresses
      * @param ContactOrganizationDto[] $organizations
      * @param ContactBiographyDto[]    $biographies
-     * @param \App\Entity\Group[]      $groups
+     * @param \Ari\Entity\Group[]      $groups
      */
     public function __construct(
         public readonly array $names = [],

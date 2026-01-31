@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Entity\NotificationChannel;
-use App\Entity\User;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

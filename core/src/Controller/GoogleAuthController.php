@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace Ari\Controller;
 
-use App\Entity\User;
-use App\Service\Google\GoogleConnectService;
-use App\Service\Google\GoogleOAuthService;
+use Ari\Entity\User;
+use Ari\Service\Google\GoogleConnectService;
+use Ari\Service\Google\GoogleOAuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

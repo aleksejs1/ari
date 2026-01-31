@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Ari\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\NotificationChannel;
-use App\Entity\NotificationSubscription;
-use App\Entity\User;
+use Ari\Entity\NotificationChannel;
+use Ari\Entity\NotificationSubscription;
+use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class NotificationSubscriptionFilterTest extends ApiTestCase

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service\Notification;
+namespace Ari\Service\Notification;
 
-use App\Entity\NotificationQueue;
+use Ari\Entity\NotificationQueue;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;

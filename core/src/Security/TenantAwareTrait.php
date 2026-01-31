@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Security;
+namespace Ari\Security;
 
-use App\Entity\User;
+use Ari\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 trait TenantAwareTrait
