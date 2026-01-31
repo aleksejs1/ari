@@ -83,6 +83,7 @@ describe('DashboardLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     vi.mocked(useGroups).mockReturnValue({
@@ -122,6 +123,7 @@ describe('DashboardLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     vi.mocked(useGroups).mockReturnValue({
@@ -152,6 +154,7 @@ describe('DashboardLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     vi.mocked(useGroups).mockReturnValue({
@@ -179,6 +182,7 @@ describe('DashboardLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     vi.mocked(useGroups).mockReturnValue({

@@ -38,6 +38,7 @@ describe('SidebarLessLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     render(
@@ -61,6 +62,7 @@ describe('SidebarLessLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     render(
@@ -85,6 +87,7 @@ describe('SidebarLessLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     render(
@@ -106,6 +109,7 @@ describe('SidebarLessLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     TopMenuRegistry.getInstance().register({
@@ -134,6 +138,7 @@ describe('SidebarLessLayout', () => {
       token: 'token',
       isAuthenticated: true,
       isLoading: false,
+      arePluginsLoaded: true,
     })
 
     render(
