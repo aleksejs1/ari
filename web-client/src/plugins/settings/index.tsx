@@ -5,6 +5,7 @@ import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { PageLoader } from './components/PageLoader'
 import { SettingsSidebarSection } from './extensions/SettingsSidebarSection'
+import { CommunityPluginsTab } from './tabs/CommunityPluginsTab'
 import { DataSettingsTab } from './tabs/DataSettingsTab'
 import { GeneralSettingsTab } from './tabs/GeneralSettingsTab'
 import { RegionalSettingsTab } from './tabs/RegionalSettingsTab'
@@ -38,5 +39,6 @@ export class SettingsPlugin extends BasePlugin {
     settingsRegistry.registerTab(new GeneralSettingsTab())
     settingsRegistry.registerTab(new RegionalSettingsTab())
     settingsRegistry.registerTab(new DataSettingsTab())
+    settingsRegistry.registerTab(new CommunityPluginsTab())
   }
 }

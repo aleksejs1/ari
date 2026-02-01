@@ -80,7 +80,18 @@
     "themeDescription": "Choose your preferred color theme for the application.",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "communityPlugins": "Community Plugins",
+    "enableCommunityPlugins": "Enable Community Plugins",
+    "enableCommunityPluginsDesc": "Allow installation of plugins from the community marketplace. Use at your own risk.",
+    "restrictedMode": "Restricted Mode",
+    "restrictedModeDesc": "Community plugins are disabled. Enable them to browse and install additional functionality.",
+    "communityPluginsWarningTitle": "Safety Warning",
+    "communityPluginsWarningDesc": "Community plugins run with full access to your data. Only install plugins you trust.",
+    "installedPlugins": "Installed Plugins",
+    "noPluginsInstalled": "No community plugins installed yet.",
+    "browseMarketplaceHint": "Visit the marketplace to find new plugins.",
+    "pluginsInstalled": "plugins installed"
   },
   "auth": {
     "login": "Login",

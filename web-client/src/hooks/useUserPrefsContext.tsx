@@ -9,6 +9,7 @@ export interface UserPrefsContextType {
   dashboardNotificationPolicy: string
   contactTableSettings: string
   showLogo: string
+  communityPluginsEnabled: string
   theme: 'light' | 'dark' | 'system'
   setLanguage: (lang: string) => Promise<void>
   setDateFormat: (format: string) => Promise<void>
@@ -18,6 +19,7 @@ export interface UserPrefsContextType {
   setDashboardNotificationPolicy: (value: string) => Promise<void>
   setContactTableSettings: (value: string) => Promise<void>
   setShowLogo: (value: string) => Promise<void>
+  setCommunityPluginsEnabled: (value: string) => Promise<void>
   setTheme: (theme: 'light' | 'dark' | 'system') => Promise<void>
   formatDate: (date: Date | string | null | undefined) => string
   formatTime: (date: Date | string | null | undefined) => string
@@ -33,6 +35,7 @@ export const UserPrefsContext = createContext<UserPrefsContextType>({
   dashboardNotificationPolicy: '',
   contactTableSettings: '{}',
   showLogo: '1',
+  communityPluginsEnabled: '0',
   theme: 'system',
   setLanguage: async () => {
     /* noop */
@@ -56,6 +59,9 @@ export const UserPrefsContext = createContext<UserPrefsContextType>({
     /* noop */
   },
   setShowLogo: async () => {
+    /* noop */
+  },
+  setCommunityPluginsEnabled: async () => {
     /* noop */
   },
   setTheme: async () => {

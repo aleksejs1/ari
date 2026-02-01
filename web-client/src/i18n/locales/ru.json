@@ -80,7 +80,18 @@
     "themeDescription": "Выберите цветовую тему оформления приложения.",
     "themeLight": "Светлая",
     "themeDark": "Темная",
-    "themeSystem": "Системная"
+    "themeSystem": "Системная",
+    "communityPlugins": "Плагины сообщества",
+    "enableCommunityPlugins": "Включить плагины сообщества",
+    "enableCommunityPluginsDesc": "Разрешить установку плагинов из маркетплейса сообщества. Используйте на свой страх и риск.",
+    "restrictedMode": "Ограниченный режим",
+    "restrictedModeDesc": "Плагины сообщества отключены. Включите их, чтобы просматривать и устанавливать дополнительные функции.",
+    "communityPluginsWarningTitle": "Предупреждение о безопасности",
+    "communityPluginsWarningDesc": "Плагины сообщества имеют полный доступ к вашим данным. Устанавливайте только проверенные плагины.",
+    "installedPlugins": "Установленные плагины",
+    "noPluginsInstalled": "Плагины сообщества пока не установлены.",
+    "browseMarketplaceHint": "Посетите маркетплейс, чтобы найти новые плагины.",
+    "pluginsInstalled": "плагинов установлено"
   },
   "auth": {
     "login": "Вход",
