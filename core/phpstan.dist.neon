@@ -10,6 +10,9 @@ parameters:
         - src/
         - tests/
         - plugins/
+    excludePaths:
+        analyseAndScan:
+            - plugins/*/ui/node_modules/*
     symfony:
         containerXmlPath: var/cache/dev/Ari_KernelDevDebugContainer.xml
     doctrine:

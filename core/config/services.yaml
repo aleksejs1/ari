@@ -44,6 +44,10 @@ services:
         tags:
             - { name: 'doctrine.middleware', connection: 'default', priority: 1000 }
 
+    Ari\Service\Marketplace\PluginValidatorService:
+        arguments:
+            $maxArchiveSize: '%plugin_max_archive_size%'
+
     # Ensure UserOwnerProcessor is available for plugins (loaded dynamically)
     Ari\State\UserOwnerProcessor:
         public: true

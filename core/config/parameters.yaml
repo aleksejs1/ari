@@ -39,3 +39,8 @@ parameters:
     
     # Translations
     translations_default_path: '%kernel.project_dir%/translations'
+
+    # Plugin Marketplace
+    default_plugin_registry_url: 'https://aleksejs1.github.io/ari-plugin-registry/registry.json'
+    default_plugin_registry_cache_ttl: 3600
+    default_plugin_max_archive_size: 52428800

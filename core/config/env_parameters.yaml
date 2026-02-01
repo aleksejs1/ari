@@ -56,3 +56,8 @@ parameters:
     app.xml.import_limit: '%env(int:default:default_xml_import_limit:XML_IMPORT_LIMIT)%'
     telegram_bot_secret: '%env(default:empty_string:TELEGRAM_BOT_SECRET)%'
     telegram_bot_name: '%env(default:empty_string:TELEGRAM_BOT_NAME)%'
+
+    # Plugin Marketplace
+    plugin_registry_url: '%env(default:default_plugin_registry_url:PLUGIN_REGISTRY_URL)%'
+    plugin_registry_cache_ttl: '%env(int:default:default_plugin_registry_cache_ttl:PLUGIN_REGISTRY_CACHE_TTL)%'
+    plugin_max_archive_size: '%env(int:default:default_plugin_max_archive_size:PLUGIN_MAX_ARCHIVE_SIZE)%'
