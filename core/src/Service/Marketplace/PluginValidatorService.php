@@ -9,8 +9,7 @@ class PluginValidatorService
 {
     public function __construct(
         private readonly int $maxArchiveSize,
-    ) {
-    }
+    ) {}
 
     /**
      * Validate a plugin archive before installation.

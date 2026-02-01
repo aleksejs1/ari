@@ -1,15 +1,101 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertCircle, Download, Shield } from 'lucide-react'
+import {
+  AlertCircle,
+  CheckCircle2,
+  Download,
+  Loader2,
+  RefreshCw,
+  Shield,
+  Store,
+} from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
 
+import { useMarketplaceRegistry, useUpdatePlugin } from '../hooks/useMarketplace'
+import type { RegistryPlugin } from '../types/marketplace'
+
+import { MarketplaceBrowser } from './MarketplaceBrowser'
+
+function InstalledPluginsList({
+  plugins,
+  loading,
+}: {
+  plugins: RegistryPlugin[]
+  loading: boolean
+}) {
+  const { t } = useTranslation()
+  const updatePlugin = useUpdatePlugin()
+
+  if (loading) {
+    return (
+      <div className="mt-4 flex items-center justify-center py-8">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  if (plugins.length === 0) {
+    return (
+      <div className="mt-4 flex min-h-[100px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
+        <p className="text-sm text-muted-foreground">{t('settings.noPluginsInstalled')}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{t('settings.browseMarketplaceHint')}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-4 space-y-2">
+      {plugins.map((plugin) => (
+        <div key={plugin.id} className="flex items-center justify-between rounded-md border p-3">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <div>
+              <p className="text-sm font-medium">{plugin.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {plugin.installedVersion !== undefined &&
+                  t('marketplace.version', { version: plugin.installedVersion })}
+              </p>
+            </div>
+          </div>
+          {plugin.updateAvailable ? (
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={updatePlugin.isPending}
+              onClick={() => updatePlugin.mutate(plugin.id)}
+            >
+              {updatePlugin.isPending ? (
+                <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+              ) : (
+                <RefreshCw className="mr-1 h-3 w-3" />
+              )}
+              {t('marketplace.update')}
+              {plugin.latestVersion !== undefined && (
+                <Badge variant="secondary" className="ml-1 text-xs">
+                  {t('marketplace.version', { version: plugin.latestVersion })}
+                </Badge>
+              )}
+            </Button>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function CommunityPlugins() {
   const { t } = useTranslation()
   const { communityPluginsEnabled, setCommunityPluginsEnabled, isLoading } = useUserPrefs()
+  const [browserOpen, setBrowserOpen] = useState(false)
+
+  const { data: registry, isLoading: registryLoading } = useMarketplaceRegistry()
 
   const configs: SettingConfig[] = []
   new Setting(configs)
@@ -28,6 +114,7 @@ export function CommunityPlugins() {
   }
 
   const isEnabled = communityPluginsEnabled === '1'
+  const installedPlugins = registry?.plugins?.filter((p) => p.installed) ?? []
 
   return (
     <div className="space-y-6">
@@ -56,24 +143,31 @@ export function CommunityPlugins() {
         </Alert>
       )}
 
-      {/* 3. Installed Plugins List (Placeholder) */}
+      {/* 3. Installed Plugins List */}
       {isEnabled ? (
         <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">{t('settings.installedPlugins')}</h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Download className="h-4 w-4" />
-              <span>0 {t('settings.pluginsInstalled')}</span>
+              <span>
+                {registryLoading ? '...' : installedPlugins.length} {t('settings.pluginsInstalled')}
+              </span>
             </div>
           </div>
-          <div className="mt-4 flex min-h-[100px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
-            <p className="text-sm text-muted-foreground">{t('settings.noPluginsInstalled')}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t('settings.browseMarketplaceHint')}
-            </p>
+
+          <InstalledPluginsList plugins={installedPlugins} loading={registryLoading} />
+
+          <div className="mt-4">
+            <Button variant="outline" className="w-full" onClick={() => setBrowserOpen(true)}>
+              <Store className="mr-2 h-4 w-4" />
+              {t('marketplace.browse')}
+            </Button>
           </div>
         </div>
       ) : null}
+
+      <MarketplaceBrowser open={browserOpen} onOpenChange={setBrowserOpen} />
     </div>
   )
 }

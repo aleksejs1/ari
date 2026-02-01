@@ -156,8 +156,8 @@ class PluginMarketplaceService
         $plugin = $this->findPluginInRegistry($registry, $pluginId);
         $repo = $this->getRepo($plugin, $pluginId);
 
-        $pluginDir = $this->getPluginDir($pluginId);
-        if (is_dir($pluginDir)) {
+        // Check if already installed
+        if (null !== $this->findInstalledPluginDir($pluginId)) {
             throw new \RuntimeException(sprintf('Plugin "%s" is already installed', $pluginId));
         }
 
@@ -169,6 +169,17 @@ class PluginMarketplaceService
             $extractedPath = $this->extractArchive($zipPath);
 
             try {
+                // Load manifest to determine target directory name
+                $manifest = $this->validator->loadManifest($extractedPath);
+
+                // Determine target directory
+                $targetDirName = $this->resolveTargetDirName($pluginId, $manifest);
+                $pluginDir = $this->projectDir . '/plugins/' . $targetDirName;
+
+                if (is_dir($pluginDir)) {
+                    throw new \RuntimeException(sprintf('Target directory "%s" already exists', $targetDirName));
+                }
+
                 $this->validator->validate($extractedPath, $pluginId);
                 $this->filesystem->rename($extractedPath, $pluginDir);
             } catch (\Throwable $e) {
@@ -199,8 +210,8 @@ class PluginMarketplaceService
         $plugin = $this->findPluginInRegistry($registry, $pluginId);
         $repo = $this->getRepo($plugin, $pluginId);
 
-        $pluginDir = $this->getPluginDir($pluginId);
-        if (!is_dir($pluginDir)) {
+        $pluginDir = $this->findInstalledPluginDir($pluginId);
+        if (null === $pluginDir) {
             throw new \RuntimeException(sprintf('Plugin "%s" is not installed', $pluginId));
         }
 
@@ -239,8 +250,8 @@ class PluginMarketplaceService
      */
     public function uninstallPlugin(string $pluginId): array
     {
-        $pluginDir = $this->getPluginDir($pluginId);
-        if (!is_dir($pluginDir)) {
+        $pluginDir = $this->findInstalledPluginDir($pluginId);
+        if (null === $pluginDir) {
             throw new \RuntimeException(sprintf('Plugin "%s" is not installed', $pluginId));
         }
 
@@ -293,9 +304,9 @@ class PluginMarketplaceService
     private function enrichPluginData(array $pluginData): array
     {
         $pluginId = $pluginData['id'];
-        $pluginDir = $this->getPluginDir($pluginId);
+        $pluginDir = $this->findInstalledPluginDir($pluginId);
 
-        $installed = is_dir($pluginDir);
+        $installed = null !== $pluginDir;
         $installedVersion = null;
 
         if ($installed) {
@@ -352,15 +363,66 @@ class PluginMarketplaceService
         return $repo;
     }
 
-    private function getPluginDir(string $pluginId): string
+    /**
+     * @param array<string, mixed> $manifest
+     */
+    private function resolveTargetDirName(string $pluginId, array $manifest): string
     {
-        // Sanitize plugin ID to prevent directory traversal
-        $safe = preg_replace('/[^a-zA-Z0-9_-]/', '', $pluginId);
-        if ('' === $safe || $safe !== $pluginId) {
-            throw new \RuntimeException('Invalid plugin ID');
+        // 1. Try to derive from Bundle Namespace
+        $bundleClass = $manifest['backend']['bundle'] ?? null;
+        if (is_string($bundleClass) && '' !== $bundleClass) {
+            $parts = explode('\\', $bundleClass);
+            // Expecting Plugins\GiftPlugin\GiftPlugin -> GiftPlugin
+            if (count($parts) >= 2 && $parts[0] === 'Plugins') {
+                return $parts[1];
+            }
         }
 
-        return $this->projectDir . '/plugins/' . $safe;
+        // 2. Fallback: PascalCase of Plugin ID (gift-plugin -> GiftPlugin)
+        $cleanId = preg_replace('/[^a-zA-Z0-9_-]/', '', $pluginId) ?? '';
+        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $cleanId)));
+    }
+
+    private function findInstalledPluginDir(string $pluginId): ?string
+    {
+        $pluginsDir = $this->projectDir . '/plugins';
+        if (!is_dir($pluginsDir)) {
+            return null;
+        }
+
+        // Scan all directories in /plugins to find the one matching the ID in plugin.json
+        $scanned = scandir($pluginsDir);
+        if ($scanned === false) {
+            return null;
+        }
+
+        foreach ($scanned as $dir) {
+            if (in_array($dir, ['.', '..'], true)) {
+                continue;
+            }
+
+            $path = $pluginsDir . '/' . $dir;
+            if (!is_dir($path)) {
+                continue;
+            }
+
+            try {
+                // Optimization: simple check first? No, need to read json.
+                if (!file_exists($path . '/plugin.json')) {
+                    continue;
+                }
+
+                $manifest = $this->validator->loadManifest($path);
+                if (($manifest['name'] ?? null) === $pluginId) {
+                    return $path;
+                }
+            } catch (\Throwable) {
+                // Ignore invalid plugins
+                continue;
+            }
+        }
+
+        return null;
     }
 
     private function runMigrations(): void
