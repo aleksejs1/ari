@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'ari:notifications:generate',
+    name: 'ari:notification:generate',
     description: 'Generates notification queue items based on rules and events',
 )]
 class NotificationGenerateCommand extends Command

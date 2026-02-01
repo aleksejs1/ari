@@ -267,7 +267,7 @@ class WebNotificationFlowTest extends AbstractApiTestCase
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
-        $generateCommand = $application->find('ari:notifications:generate');
+        $generateCommand = $application->find('ari:notification:generate');
         $generateTester = new CommandTester($generateCommand);
         $generateTester->execute(['--date' => $date->format('Y-m-d')]);
 

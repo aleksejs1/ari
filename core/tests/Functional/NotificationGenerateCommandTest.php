@@ -81,7 +81,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
         $kernel = self::bootKernel();
         $application = new Application($kernel);
 
-        $command = $application->find('ari:notifications:generate');
+        $command = $application->find('ari:notification:generate');
         $commandTester = new CommandTester($command);
 
         // Execute for Today

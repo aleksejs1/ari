@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:generate-demo-account',
+    name: 'ari:demo-account:generate',
     description: 'Generates a demo account with 70 contacts and complex relationships.',
 )]
 class GenerateDemoAccountCommand extends Command

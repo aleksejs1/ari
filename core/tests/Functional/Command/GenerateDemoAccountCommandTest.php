@@ -28,7 +28,7 @@ class GenerateDemoAccountCommandTest extends KernelTestCase
         // Inject Mock using the test container
         static::getContainer()->set(DemoAccountService::class, $demoService);
 
-        $command = $application->find('app:generate-demo-account');
+        $command = $application->find('ari:demo-account:generate');
         $commandTester = new CommandTester($command);
 
         $commandTester->execute([]);
@@ -53,7 +53,7 @@ class GenerateDemoAccountCommandTest extends KernelTestCase
 
         static::getContainer()->set(DemoAccountService::class, $demoService);
 
-        $command = $application->find('app:generate-demo-account');
+        $command = $application->find('ari:demo-account:generate');
         $commandTester = new CommandTester($command);
 
         $commandTester->execute([]);
