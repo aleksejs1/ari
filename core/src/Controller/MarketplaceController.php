@@ -2,7 +2,6 @@
 
 namespace Ari\Controller;
 
-use Ari\Entity\User;
 use Ari\Service\Marketplace\PluginMarketplaceService;
 use Ari\Service\Marketplace\PluginValidationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,9 +21,7 @@ class MarketplaceController extends AbstractController
 
     public function registry(): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $enabled = $this->marketplace->isCommunityPluginsEnabled($user);
+        $enabled = $this->marketplace->isCommunityPluginsEnabled();
 
         if (!$enabled) {
             return $this->json(['enabled' => false, 'plugins' => []]);
@@ -127,10 +124,7 @@ class MarketplaceController extends AbstractController
 
     private function requireCommunityPluginsEnabled(): void
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if (!$this->marketplace->isCommunityPluginsEnabled($user)) {
+        if (!$this->marketplace->isCommunityPluginsEnabled()) {
             throw $this->createAccessDeniedException('Community plugins are not enabled');
         }
     }

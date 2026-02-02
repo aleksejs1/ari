@@ -2,10 +2,8 @@
 
 namespace Ari\Service\Marketplace;
 
-use Ari\Entity\User;
-use Ari\Entity\UserPref;
 use Ari\Kernel;
-use Ari\Repository\UserPrefRepository;
+use Ari\Repository\SystemSettingRepository;
 use Composer\Semver\Semver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
@@ -19,7 +17,7 @@ class PluginMarketplaceService
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly PluginValidatorService $validator,
-        private readonly UserPrefRepository $userPrefRepository,
+        private readonly SystemSettingRepository $systemSettingRepository,
         #[Autowire('%plugin_registry_url%')]
         private readonly string $registryUrl,
         #[Autowire('%kernel.project_dir%')]
@@ -28,14 +26,9 @@ class PluginMarketplaceService
         $this->filesystem = new Filesystem();
     }
 
-    public function isCommunityPluginsEnabled(User $user): bool
+    public function isCommunityPluginsEnabled(): bool
     {
-        $pref = $this->userPrefRepository->findOneBy([
-            'user' => $user,
-            'type' => UserPref::TYPE_COMMUNITY_PLUGINS_ENABLED,
-        ]);
-
-        return null !== $pref && '1' === $pref->getValue();
+        return '1' === $this->systemSettingRepository->getValue('community_plugins_enabled');
     }
 
     /**

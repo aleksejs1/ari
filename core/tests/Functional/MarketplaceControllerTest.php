@@ -144,16 +144,15 @@ class MarketplaceControllerTest extends AbstractApiTestCase
     private function enableCommunityPlugins(): void
     {
         $em = $this->getEntityManager();
-        $user = $em->getRepository(\Ari\Entity\User::class)->findOneBy(['uuid' => 'test@example.com']);
-        self::assertNotNull($user);
 
-        $pref = new UserPref();
-        $pref->setUser($user);
-        $pref->setTenant($user);
-        $pref->setType(UserPref::TYPE_COMMUNITY_PLUGINS_ENABLED);
-        $pref->setValue('1');
+        $setting = $em->find(\Ari\Entity\SystemSetting::class, 'community_plugins_enabled');
+        if ($setting === null) {
+            $setting = new \Ari\Entity\SystemSetting('community_plugins_enabled', '1');
+            $em->persist($setting);
+        } else {
+            $setting->setValue('1');
+        }
 
-        $em->persist($pref);
         $em->flush();
     }
 
