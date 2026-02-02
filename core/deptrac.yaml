@@ -2,80 +2,140 @@ deptrac:
   paths:
     - src
   layers:
-    - name: Service
-      collectors:
-        - type: classNameRegex
-          value: '#^Ari\\Service\\.*#'
-    - name: Command
-      collectors:
-        - type: classNameRegex
-          value: '#^Ari\\Command\\.*#'
-    - name: ApiResource
-      collectors:
-        - type: classNameRegex
-          value: '#^Ari\\ApiResource\\.*#'
-    - name: Controller
-      collectors:
-        - type: classNameRegex
-          value: '#^Ari\\Controller\\.*#'
+    # ── Domain ──────────────────────────────────────────────
     - name: Entity
       collectors:
         - type: classNameRegex
           value: '#^Ari\\Entity\\.*#'
-    - name: Repository
+    - name: Dto
       collectors:
         - type: classNameRegex
-          value: '#^Ari\\Repository\\.*#'
-    - name: Form
+          value: '#^Ari\\Dto\\.*#'
+    - name: Message
       collectors:
         - type: classNameRegex
-          value: '#^Ari\\Form\\.*#'
+          value: '#^Ari\\Message\\.*#'
     - name: Security
       collectors:
         - type: classNameRegex
           value: '#^Ari\\Security\\.*#'
+
+    # ── Application ─────────────────────────────────────────
+    - name: Service
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Service\\.*#'
+    - name: MessageHandler
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\MessageHandler\\.*#'
+    - name: EventListener
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\EventListener\\.*#'
+    - name: EventSubscriber
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\EventSubscriber\\.*#'
+
+    # ── Presentation / API ──────────────────────────────────
+    - name: Controller
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Controller\\.*#'
+    - name: Command
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Command\\.*#'
     - name: State
       collectors:
         - type: classNameRegex
           value: '#^Ari\\State\\.*#'
-    - name: Doctrine
+    - name: ApiResource
       collectors:
         - type: classNameRegex
-          value: '#^Ari\\Doctrine\\.*#'
+          value: '#^Ari\\ApiResource\\.*#'
+    - name: Form
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Form\\.*#'
+    - name: Filter
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Filter\\.*#'
     - name: OpenApi
       collectors:
         - type: classNameRegex
           value: '#^Ari\\OpenApi\\.*#'
+
+    # ── Infrastructure ──────────────────────────────────────
+    - name: Repository
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Repository\\.*#'
+    - name: Doctrine
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Doctrine\\.*#'
+    - name: Kernel
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Kernel$#'
+
+    # ── External ────────────────────────────────────────────
     - name: Vendor
       collectors:
         - type: bool
           must:
             - type: classNameRegex
-              value: '#^(Symfony|Doctrine|ApiPlatform)\\.*#'
+              value: '#^(Symfony|Doctrine|ApiPlatform|Gesdinet|Intervention|League|Psr|Composer|Sabre)\\.*#'
+
   ruleset:
-    Service:
+    # ── Domain ──────────────────────────────────────────────
+    Entity:
+      - Dto            # API Platform input/output class references (metadata)
+      - Filter         # API Platform #[ApiFilter()] attributes (metadata)
+      - Repository     # Doctrine #[Entity(repositoryClass:)] attribute (metadata)
+      - Security       # TenantAwareInterface implementation
+      - Vendor
+      - Doctrine
+    Dto:
+      - Entity         # ContactImportDto references Group entity
+      - State          # API Platform provider metadata in #[ApiResource] (EventTypeDto)
+      - Vendor         # Symfony Validator constraints
+    Message: []        # Pure value objects — zero dependencies
+    Security:
       - Entity
+      - Vendor
+
+    # ── Application ─────────────────────────────────────────
+    Service:
+      - Dto
+      - Entity
+      - Kernel         # getProjectDir(), ARI_VERSION constant
+      - Message        # Dispatching Messenger messages
       - Repository
       - Security
       - Vendor
       - Doctrine
-    Command:
+    MessageHandler:
+      - Dto
       - Entity
+      - Message
+      - Repository
       - Service
       - Vendor
-      - ApiResource
-    ApiResource:
+    EventListener:
       - Entity
-      - Service
+      - Repository
       - Vendor
-      - State
-      - Controller
-    State:
+    EventSubscriber:
       - Entity
       - Security
-      - Vendor
       - Service
-      - ApiResource
+      - Vendor
+
+    # ── Presentation / API ──────────────────────────────────
     Controller:
       - Entity
       - Form
@@ -83,24 +143,42 @@ deptrac:
       - Service
       - Vendor
       - ApiResource
-    Entity:
-      - Repository
-      - Security
-      - Vendor
-      - Doctrine
-    Repository:
+    Command:
       - Entity
+      - Service
       - Vendor
+      - ApiResource
+    State:
+      - ApiResource
+      - Dto
+      - Entity
+      - Kernel         # getProjectDir(), ARI_VERSION constant
+      - Security
+      - Service
+      - Vendor
+    ApiResource:
+      - Entity
+      - Service
+      - Vendor
+      - State
+      - Controller
     Form:
       - Entity
       - Vendor
-    Security:
-      - Entity
-      - Vendor
-
-    Doctrine:
+    Filter:
       - Entity
       - Security
       - Vendor
     OpenApi:
+      - Vendor
+
+    # ── Infrastructure ──────────────────────────────────────
+    Repository:
+      - Entity
+      - Vendor
+    Doctrine:
+      - Entity
+      - Security
+      - Vendor
+    Kernel:
       - Vendor
