@@ -141,6 +141,45 @@ class MarketplaceControllerTest extends AbstractApiTestCase
         self::assertResponseStatusCodeSame(403);
     }
 
+    public function testUninstallCascades(): void
+    {
+        $this->enableCommunityPlugins();
+        $this->promoteUserToAdmin();
+
+        // 1. Create UserPlugin
+        $em = $this->getEntityManager();
+        $user = $em->getRepository(\Ari\Entity\User::class)->findOneBy(['uuid' => 'test@example.com']);
+        $plugin = new \Ari\Entity\UserPlugin();
+        $plugin->setTenant($user);
+        $plugin->setPluginId('test-plugin');
+        $em->persist($plugin);
+        $em->flush();
+
+        // 2. Mock Service
+        $mockService = $this->createMock(\Ari\Service\Marketplace\PluginMarketplaceService::class);
+        $mockService->method('isCommunityPluginsEnabled')->willReturn(true);
+        $mockService->expects($this->once())
+            ->method('uninstallPlugin')
+            ->with('test-plugin')
+            ->willReturn(['success' => true]);
+
+        $client = static::createClient();
+        $client->disableReboot();
+        $client->getContainer()->set(\Ari\Service\Marketplace\PluginMarketplaceService::class, $mockService);
+
+        $client->request('POST', '/api/marketplace/uninstall', [
+            'auth_bearer' => $this->token,
+            'json' => ['pluginId' => 'test-plugin'],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        // 3. Verify UserPlugin is gone
+        $em->clear();
+        $deletedPlugin = $em->getRepository(\Ari\Entity\UserPlugin::class)->findOneBy(['pluginId' => 'test-plugin']);
+        self::assertNull($deletedPlugin);
+    }
+
     private function enableCommunityPlugins(): void
     {
         $em = $this->getEntityManager();

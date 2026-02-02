@@ -2,8 +2,10 @@
 
 namespace Ari\Controller;
 
+use Ari\Entity\UserPlugin;
 use Ari\Service\Marketplace\PluginMarketplaceService;
 use Ari\Service\Marketplace\PluginValidationException;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +19,7 @@ class MarketplaceController extends AbstractController
 {
     public function __construct(
         private readonly PluginMarketplaceService $marketplace,
+        private readonly EntityManagerInterface $entityManager,
     ) {}
 
     public function registry(): JsonResponse
@@ -112,6 +115,11 @@ class MarketplaceController extends AbstractController
 
         try {
             $result = $this->marketplace->uninstallPlugin($pluginId);
+
+            // Cleanup UserPlugin records
+            $this->entityManager->createQuery('DELETE FROM Ari\Entity\UserPlugin up WHERE up.pluginId = :pluginId')
+                ->setParameter('pluginId', $pluginId)
+                ->execute();
         } catch (\RuntimeException $e) {
             return $this->json(
                 ['success' => false, 'error' => $e->getMessage()],
