@@ -9,3 +9,8 @@ export function useAuth() {
   }
   return context
 }
+
+export function useIsAdmin(): boolean {
+  const { user } = useAuth()
+  return user?.roles?.includes('ROLE_ADMIN') ?? false
+}

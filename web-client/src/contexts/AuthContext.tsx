@@ -13,9 +13,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshToken = localStorage.getItem('refresh_token')
     if (token) {
       try {
-        const decoded = jwtDecode<{ username: string }>(token)
+        const decoded = jwtDecode<{ username: string; roles: string[] }>(token)
         const user: User = {
           uuid: decoded.username,
+          roles: decoded.roles ?? [],
         }
         return {
           user,
@@ -44,9 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('token', token)
     localStorage.setItem('refresh_token', refreshToken)
     try {
-      const decoded = jwtDecode<{ username: string }>(token)
+      const decoded = jwtDecode<{ username: string; roles: string[] }>(token)
       const user: User = {
         uuid: decoded.username,
+        roles: decoded.roles ?? [],
       }
       setState({
         user,

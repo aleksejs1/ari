@@ -68,6 +68,7 @@ class MarketplaceControllerTest extends AbstractApiTestCase
     public function testInstallMissingPluginId(): void
     {
         $this->enableCommunityPlugins();
+        $this->promoteUserToAdmin();
 
         static::createClient()->request('POST', '/api/marketplace/install', [
             'auth_bearer' => $this->token,
@@ -80,6 +81,7 @@ class MarketplaceControllerTest extends AbstractApiTestCase
     public function testUpdateMissingPluginId(): void
     {
         $this->enableCommunityPlugins();
+        $this->promoteUserToAdmin();
 
         static::createClient()->request('POST', '/api/marketplace/update', [
             'auth_bearer' => $this->token,
@@ -92,6 +94,7 @@ class MarketplaceControllerTest extends AbstractApiTestCase
     public function testUninstallMissingPluginId(): void
     {
         $this->enableCommunityPlugins();
+        $this->promoteUserToAdmin();
 
         static::createClient()->request('POST', '/api/marketplace/uninstall', [
             'auth_bearer' => $this->token,
@@ -101,10 +104,48 @@ class MarketplaceControllerTest extends AbstractApiTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    public function testInstallDeniedForNonAdmin(): void
+    {
+        $this->enableCommunityPlugins();
+        // User is missing ROLE_ADMIN
+
+        static::createClient()->request('POST', '/api/marketplace/install', [
+            'auth_bearer' => $this->token,
+            'json' => ['pluginId' => 'gift-plugin'],
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testUpdateDeniedForNonAdmin(): void
+    {
+        $this->enableCommunityPlugins();
+
+        static::createClient()->request('POST', '/api/marketplace/update', [
+            'auth_bearer' => $this->token,
+            'json' => ['pluginId' => 'gift-plugin'],
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testUninstallDeniedForNonAdmin(): void
+    {
+        $this->enableCommunityPlugins();
+
+        static::createClient()->request('POST', '/api/marketplace/uninstall', [
+            'auth_bearer' => $this->token,
+            'json' => ['pluginId' => 'gift-plugin'],
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
     private function enableCommunityPlugins(): void
     {
         $em = $this->getEntityManager();
         $user = $em->getRepository(\Ari\Entity\User::class)->findOneBy(['uuid' => 'test@example.com']);
+        self::assertNotNull($user);
 
         $pref = new UserPref();
         $pref->setUser($user);
@@ -113,6 +154,17 @@ class MarketplaceControllerTest extends AbstractApiTestCase
         $pref->setValue('1');
 
         $em->persist($pref);
+        $em->flush();
+    }
+
+    private function promoteUserToAdmin(): void
+    {
+        $em = $this->getEntityManager();
+        $user = $em->getRepository(\Ari\Entity\User::class)->findOneBy(['uuid' => 'test@example.com']);
+        self::assertNotNull($user);
+
+        $user->setRoles(['ROLE_ADMIN']);
+        $em->persist($user);
         $em->flush();
     }
 }

@@ -23,8 +23,7 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
         #[Autowire(service: 'Ari\State\UserPasswordHasherProcessor')]
         private ProcessorInterface $innerProcessor,
         private EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @param User $data
@@ -32,6 +31,13 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
     #[\Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): User
     {
+        // Check if this is the first user (before persistence)
+        $userCount = $this->entityManager->getRepository(User::class)->count([]);
+
+        if ($userCount === 0 && $data instanceof User) {
+            $data->setRoles(['ROLE_ADMIN']);
+        }
+
         // First, persist the user via the inner processor (hashes password, persists user)
         $user = $this->innerProcessor->process($data, $operation, $uriVariables, $context);
 

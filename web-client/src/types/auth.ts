@@ -1,6 +1,8 @@
 import type { components } from './schema'
 
-export type User = components['schemas']['User-user.read']
+export type User = components['schemas']['User-user.read'] & {
+  roles: string[]
+}
 
 export interface AuthState {
   user: User | null

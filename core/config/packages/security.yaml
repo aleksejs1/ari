@@ -11,6 +11,9 @@ security:
                 class: Ari\Entity\User
                 property: uuid
 
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed

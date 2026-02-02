@@ -61,6 +61,7 @@ class MarketplaceController extends AbstractController
         return $this->json(['content' => $content]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     public function install(Request $request): JsonResponse
     {
         $this->requireCommunityPluginsEnabled();
@@ -83,6 +84,7 @@ class MarketplaceController extends AbstractController
         return $this->json($result);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     public function update(Request $request): JsonResponse
     {
         $this->requireCommunityPluginsEnabled();
@@ -105,6 +107,7 @@ class MarketplaceController extends AbstractController
         return $this->json($result);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     public function uninstall(Request $request): JsonResponse
     {
         $this->requireCommunityPluginsEnabled();
