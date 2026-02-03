@@ -409,6 +409,8 @@ function UninstallSection({
   )
 }
 
+import { useIsAdmin } from '@/hooks/useAuth'
+
 function PluginActions({
   plugin,
   confirmUninstall,
@@ -420,6 +422,12 @@ function PluginActions({
   updatePending,
   uninstallPending,
 }: Omit<PluginDetailViewProps, 'readme' | 'readmeLoading'>) {
+  const isAdmin = useIsAdmin()
+
+  if (!isAdmin) {
+    return null
+  }
+
   return (
     <div className="flex flex-wrap gap-2">
       <InstallButton plugin={plugin} onInstall={onInstall} installPending={installPending} />

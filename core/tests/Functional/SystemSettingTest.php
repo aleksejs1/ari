@@ -6,17 +6,29 @@ use Ari\Entity\SystemSetting;
 
 class SystemSettingTest extends AbstractApiTestCase
 {
-    public function testGetSystemSettingAsUser(): void
+    public function testGetSystemSettingDefaultValue(): void
     {
-        // Ensure the setting exists
-        $this->ensureSettingExists('community_plugins_enabled', '0');
+        // Ensure setting does NOT exist in DB
+        $this->ensureSettingDoesNotExist('community_plugins_enabled');
 
         static::createClient()->request('GET', '/api/system_settings/community_plugins_enabled', [
             'auth_bearer' => $this->token,
         ]);
 
         self::assertResponseIsSuccessful();
-        self::assertJsonContains(['id' => 'community_plugins_enabled']);
+        self::assertJsonContains([
+            'id' => 'community_plugins_enabled',
+            'value' => '0', // Default value provided by SystemSettingProvider
+        ]);
+    }
+
+    public function testGetSystemSettingNotFound(): void
+    {
+        static::createClient()->request('GET', '/api/system_settings/non_existent_key', [
+            'auth_bearer' => $this->token,
+        ]);
+
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testGetSystemSettingAsAnonymous(): void
@@ -47,6 +59,30 @@ class SystemSettingTest extends AbstractApiTestCase
         self::assertSame('1', $setting->getValue());
     }
 
+    public function testUpsertSystemSettingAsAdmin(): void
+    {
+        // Ensure setting does NOT exist in DB initially
+        $this->ensureSettingDoesNotExist('community_plugins_enabled');
+
+        $adminToken = $this->getAdminToken();
+
+        // Perform PUT request (Upsert)
+        static::createClient()->request('PUT', '/api/system_settings/community_plugins_enabled', [
+            'auth_bearer' => $adminToken,
+            'json' => ['value' => '1'],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains(['value' => '1']);
+
+        // Verify persistence
+        $em = $this->getEntityManager();
+        $em->clear();
+        $setting = $em->find(SystemSetting::class, 'community_plugins_enabled');
+        self::assertNotNull($setting);
+        self::assertSame('1', $setting->getValue());
+    }
+
     public function testUpdateSystemSettingAsNonAdmin(): void
     {
         $this->ensureSettingExists('community_plugins_enabled', '0');
@@ -62,17 +98,22 @@ class SystemSettingTest extends AbstractApiTestCase
 
     private function ensureSettingExists(string $id, string $value): void
     {
-        $em = $this->getEntityManager();
-        $setting = $em->find(SystemSetting::class, $id);
+        $conn = $this->getEntityManager()->getConnection();
+        $count = $conn->fetchOne('SELECT COUNT(*) FROM system_setting WHERE id = ?', [$id]);
 
-        if ($setting === null) {
-            $setting = new SystemSetting($id, $value);
-            $em->persist($setting);
+        if ($count > 0) {
+            $conn->executeStatement('UPDATE system_setting SET value = ? WHERE id = ?', [$value, $id]);
         } else {
-            $setting->setValue($value);
+            $conn->executeStatement('INSERT INTO system_setting (id, value) VALUES (?, ?)', [$id, $value]);
         }
+    }
 
-        $em->flush();
+    private function ensureSettingDoesNotExist(string $id): void
+    {
+        $this->getEntityManager()->getConnection()->executeStatement(
+            'DELETE FROM system_setting WHERE id = ?',
+            [$id]
+        );
     }
 
     private function getAdminToken(): string

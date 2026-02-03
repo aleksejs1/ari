@@ -108,6 +108,49 @@ class UserPluginTest extends AbstractApiTestCase
         self::assertTrue($found);
     }
 
+    public function testAvailablePlugins(): void
+    {
+        // 1. Check BEFORE activation
+        $response = static::createClient()->request('GET', '/api/user-plugins/available', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+
+        $target = null;
+        foreach ($data as $p) {
+            if (($p['pluginId'] ?? $p['name']) === self::PLUGIN_ID) {
+                $target = $p;
+                break;
+            }
+        }
+
+        self::assertNotNull($target, 'Plugin should be in available list');
+        self::assertFalse($target['enabled'], 'Should be disabled initially');
+        self::assertEquals('1.0.0', $target['version']);
+
+        // 2. Activate
+        $this->testActivatePlugin();
+
+        // 3. Check AFTER activation
+        $response = static::createClient()->request('GET', '/api/user-plugins/available', [
+            'auth_bearer' => $this->token,
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+
+        $target = null;
+        foreach ($data as $p) {
+            if (($p['pluginId'] ?? $p['name']) === self::PLUGIN_ID) {
+                $target = $p;
+                break;
+            }
+        }
+
+        self::assertNotNull($target);
+        self::assertTrue($target['enabled'], 'Should be enabled after activation');
+    }
+
     public function testPluginListFiltering(): void
     {
         // 1. Initially (before activation), list should NOT contain test plugin
@@ -162,12 +205,49 @@ class UserPluginTest extends AbstractApiTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    public function testActivatePluginWithMismatchedDirectory(): void
+    {
+        // 1. Setup: Create plugin with ID 'mismatched-id' in directory 'random-dir-name'
+        $fs = new Filesystem();
+        $projectDir = self::getContainer()->getParameter('kernel.project_dir');
+        assert(is_string($projectDir));
+        $targetDir = $projectDir . '/plugins/random-dir-name';
+        $fs->mkdir($targetDir);
+        $pluginId = 'mismatched-id';
+
+        try {
+            file_put_contents($targetDir . '/plugin.json', json_encode([
+                'name' => $pluginId,
+                'version' => '1.0.0',
+            ], JSON_THROW_ON_ERROR));
+
+            // 2. Activate using the ID (not dir name)
+            static::createClient()->request('POST', '/api/user-plugins/activate', [
+                'auth_bearer' => $this->token,
+                'json' => ['pluginId' => $pluginId],
+            ]);
+
+            self::assertResponseIsSuccessful();
+
+            // 3. Verify DB
+            $em = $this->getEntityManager();
+            $em->clear();
+            $plugin = $em->getRepository(UserPlugin::class)->findOneBy(['pluginId' => $pluginId]);
+            self::assertNotNull($plugin);
+            self::assertTrue($plugin->isEnabled());
+        } finally {
+            $fs->remove($targetDir);
+        }
+    }
+
     private function ensureGlobalSettingEnabled(): void
     {
         $em = $this->getEntityManager();
         $setting = $em->find(SystemSetting::class, 'community_plugins_enabled');
         if ($setting === null) {
-            $setting = new SystemSetting('community_plugins_enabled', '1');
+            $setting = new SystemSetting();
+            $setting->setId('community_plugins_enabled');
+            $setting->setValue('1');
             $em->persist($setting);
         } else {
             $setting->setValue('1');

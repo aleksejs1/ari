@@ -376,7 +376,66 @@ class PluginMarketplaceService
         return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $cleanId)));
     }
 
-    private function findInstalledPluginDir(string $pluginId): ?string
+    /**
+     * Get a list of all locally installed plugins.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getInstalledPlugins(): array
+    {
+        $pluginsDir = $this->projectDir . '/plugins';
+        if (!is_dir($pluginsDir)) {
+            return [];
+        }
+
+        $scanned = scandir($pluginsDir);
+        if ($scanned === false) {
+            return [];
+        }
+
+        $installed = [];
+        foreach ($scanned as $dir) {
+            if (in_array($dir, ['.', '..'], true)) {
+                continue;
+            }
+
+            $path = $pluginsDir . '/' . $dir;
+            if (!is_dir($path)) {
+                continue;
+            }
+
+            try {
+                if (!file_exists($path . '/plugin.json')) {
+                    continue;
+                }
+
+                $manifest = $this->validator->loadManifest($path);
+                // Enrich with directory name just in case
+                $manifest['directory'] = $dir;
+
+                // Add default keys if missing
+                $manifest['installed'] = true;
+                $manifest['compatible'] = $this->checkCompatibility($manifest['minCoreVersion'] ?? null);
+
+                $installed[] = $manifest;
+            } catch (\Throwable) {
+                // Ignore invalid plugins
+                continue;
+            }
+        }
+
+        return $installed;
+    }
+
+    private function checkCompatibility(?string $minCoreVersion): bool
+    {
+        if (is_string($minCoreVersion) && '' !== $minCoreVersion) {
+            return Semver::satisfies(Kernel::VERSION, '>=' . $minCoreVersion);
+        }
+        return true;
+    }
+
+    public function findInstalledPluginDir(string $pluginId): ?string
     {
         $pluginsDir = $this->projectDir . '/plugins';
         if (!is_dir($pluginsDir)) {

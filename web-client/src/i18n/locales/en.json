@@ -382,5 +382,21 @@
     "uninstallSuccess": "Plugin uninstalled successfully.",
     "uninstallError": "Failed to uninstall plugin.",
     "back": "Back to plugins"
+  },
+  "plugins": {
+    "available": "Available Plugins",
+    "plugin": "Plugin",
+    "version": "Version",
+    "status": "Status",
+    "action": "Action",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "activating": "Activating...",
+    "deactivate": "Deactivate",
+    "deactivating": "Deactivating...",
+    "noPlugins": "No plugins available.",
+    "loading": "Loading plugins...",
+    "error": "Error loading plugins."
   }
 }

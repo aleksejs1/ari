@@ -14,10 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            provider: 'Ari\State\SystemSettingProvider'
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('ROLE_ADMIN')",
+            provider: 'Ari\State\SystemSettingProvider'
         ),
     ]
 )]
@@ -30,15 +32,16 @@ class SystemSetting
     #[ORM\Column(type: Types::TEXT)]
     private string $value;
 
-    public function __construct(string $id, string $value)
-    {
-        $this->id = $id;
-        $this->value = $value;
-    }
-
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getValue(): string

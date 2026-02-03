@@ -186,7 +186,9 @@ class MarketplaceControllerTest extends AbstractApiTestCase
 
         $setting = $em->find(\Ari\Entity\SystemSetting::class, 'community_plugins_enabled');
         if ($setting === null) {
-            $setting = new \Ari\Entity\SystemSetting('community_plugins_enabled', '1');
+            $setting = new \Ari\Entity\SystemSetting();
+            $setting->setId('community_plugins_enabled');
+            $setting->setValue('1');
             $em->persist($setting);
         } else {
             $setting->setValue('1');

@@ -13,7 +13,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useIsAdmin } from '@/hooks/useAuth'
+import { useSystemSetting, useUpdateSystemSetting } from '@/hooks/useSystemSettings'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
@@ -21,6 +22,7 @@ import type { SettingConfig } from '@/lib/settings/types'
 import { useMarketplaceRegistry, useUpdatePlugin } from '../hooks/useMarketplace'
 import type { RegistryPlugin } from '../types/marketplace'
 
+import { AvailablePluginsList } from './AvailablePluginsList'
 import { MarketplaceBrowser } from './MarketplaceBrowser'
 
 function InstalledPluginsList({
@@ -90,11 +92,17 @@ function InstalledPluginsList({
   )
 }
 
-export function CommunityPlugins() {
+function AdminCommunityPlugins({
+  isEnabled,
+  communityPluginsEnabled,
+  updateSystemSetting,
+}: {
+  isEnabled: boolean
+  communityPluginsEnabled: string | null
+  updateSystemSetting: ReturnType<typeof useUpdateSystemSetting>
+}) {
   const { t } = useTranslation()
-  const { communityPluginsEnabled, setCommunityPluginsEnabled, isLoading } = useUserPrefs()
   const [browserOpen, setBrowserOpen] = useState(false)
-
   const { data: registry, isLoading: registryLoading } = useMarketplaceRegistry()
 
   const configs: SettingConfig[] = []
@@ -105,15 +113,12 @@ export function CommunityPlugins() {
       radio
         .addOption('1', t('settings.enabled'))
         .addOption('0', t('settings.disabled'))
-        .setValue(communityPluginsEnabled)
-        .onChange((val) => setCommunityPluginsEnabled(val)),
+        .setValue(communityPluginsEnabled ?? '0')
+        .onChange((val) =>
+          updateSystemSetting.mutate({ key: 'community_plugins_enabled', value: val }),
+        ),
     )
 
-  if (isLoading) {
-    return <div>{t('app.loading')}</div>
-  }
-
-  const isEnabled = communityPluginsEnabled === '1'
   const installedPlugins = registry?.plugins?.filter((p) => p.installed) ?? []
 
   return (
@@ -170,4 +175,48 @@ export function CommunityPlugins() {
       <MarketplaceBrowser open={browserOpen} onOpenChange={setBrowserOpen} />
     </div>
   )
+}
+
+function UserCommunityPlugins({ isEnabled }: { isEnabled: boolean }) {
+  const { t } = useTranslation()
+
+  if (!isEnabled) {
+    return (
+      <Alert variant="default" className="bg-muted/50">
+        <Shield className="h-4 w-4" />
+        <AlertTitle>{t('settings.restrictedMode')}</AlertTitle>
+        <AlertDescription>{t('settings.restrictedModeDesc')}</AlertDescription>
+      </Alert>
+    )
+  }
+
+  return <AvailablePluginsList />
+}
+
+export function CommunityPlugins() {
+  const { t } = useTranslation()
+  const isAdmin = useIsAdmin()
+
+  const { data: communityPluginsEnabled, isLoading: settingsLoading } = useSystemSetting(
+    'community_plugins_enabled',
+  )
+  const updateSystemSetting = useUpdateSystemSetting()
+
+  if (settingsLoading) {
+    return <div>{t('app.loading')}</div>
+  }
+
+  const isEnabled = communityPluginsEnabled === '1'
+
+  if (isAdmin) {
+    return (
+      <AdminCommunityPlugins
+        isEnabled={isEnabled}
+        communityPluginsEnabled={communityPluginsEnabled ?? null}
+        updateSystemSetting={updateSystemSetting}
+      />
+    )
+  }
+
+  return <UserCommunityPlugins isEnabled={isEnabled} />
 }

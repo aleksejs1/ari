@@ -30,7 +30,9 @@ class SystemSettingRepository extends ServiceEntityRepository
         if ($setting !== null) {
             $setting->setValue($value);
         } else {
-            $setting = new SystemSetting($id, $value);
+            $setting = new SystemSetting();
+            $setting->setId($id);
+            $setting->setValue($value);
             $this->getEntityManager()->persist($setting);
         }
 
