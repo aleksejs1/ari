@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { useAuth } from './useAuth'
+import { useAuth, useIsAdmin } from './useAuth'
 
 vi.mock('react', async () => {
   const actual = await vi.importActual<Record<string, unknown>>('react')
@@ -25,5 +25,34 @@ describe('useAuth', () => {
     vi.mocked(useContext).mockReturnValue(undefined)
 
     expect(() => renderHook(() => useAuth())).toThrow('useAuth must be used within an AuthProvider')
+  })
+})
+
+describe('useIsAdmin', () => {
+  it('returns true if user has ROLE_ADMIN', () => {
+    // @ts-expect-error - mock context
+    const mockContext = { user: { uuid: 'test', roles: ['ROLE_USER', 'ROLE_ADMIN'] } }
+    vi.mocked(useContext).mockReturnValue(mockContext)
+
+    const { result } = renderHook(() => useIsAdmin())
+    expect(result.current).toBe(true)
+  })
+
+  it('returns false if user does not have ROLE_ADMIN', () => {
+    // @ts-expect-error - mock context
+    const mockContext = { user: { uuid: 'test', roles: ['ROLE_USER'] } }
+    vi.mocked(useContext).mockReturnValue(mockContext)
+
+    const { result } = renderHook(() => useIsAdmin())
+    expect(result.current).toBe(false)
+  })
+
+  it('returns false if user is null', () => {
+    // @ts-expect-error - mock context
+    const mockContext = { user: null }
+    vi.mocked(useContext).mockReturnValue(mockContext)
+
+    const { result } = renderHook(() => useIsAdmin())
+    expect(result.current).toBe(false)
   })
 })
