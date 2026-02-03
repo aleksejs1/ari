@@ -66,9 +66,9 @@ export const AvailablePluginsList = () => {
                       variant="destructive"
                       size="sm"
                       onClick={() => deactivateMutation.mutate(plugin.pluginId)}
-                      disabled={deactivateMutation.isLoading}
+                      disabled={deactivateMutation.isPending}
                     >
-                      {deactivateMutation.isLoading
+                      {deactivateMutation.isPending
                         ? t('plugins.deactivating')
                         : t('plugins.deactivate')}
                     </Button>
@@ -77,9 +77,9 @@ export const AvailablePluginsList = () => {
                       variant="default"
                       size="sm"
                       onClick={() => activateMutation.mutate(plugin.pluginId)}
-                      disabled={activateMutation.isLoading}
+                      disabled={activateMutation.isPending}
                     >
-                      {activateMutation.isLoading ? t('plugins.activating') : t('plugins.activate')}
+                      {activateMutation.isPending ? t('plugins.activating') : t('plugins.activate')}
                     </Button>
                   )}
                 </TableCell>

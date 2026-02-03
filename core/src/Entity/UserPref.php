@@ -68,7 +68,6 @@ class UserPref implements TenantAwareInterface
     public const TYPE_CONTACT_TABLE_SETTINGS = 'contact_table_settings';
     public const TYPE_THEME = 'theme';
     public const TYPE_SHOW_LOGO = 'show_logo';
-    public const TYPE_COMMUNITY_PLUGINS_ENABLED = 'community_plugins_enabled';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -80,7 +79,6 @@ class UserPref implements TenantAwareInterface
         self::TYPE_CONTACT_TABLE_SETTINGS,
         self::TYPE_THEME,
         self::TYPE_SHOW_LOGO,
-        self::TYPE_COMMUNITY_PLUGINS_ENABLED,
     ];
 
     public const DEFAULTS = [
@@ -93,7 +91,6 @@ class UserPref implements TenantAwareInterface
         self::TYPE_CONTACT_TABLE_SETTINGS => '{}',
         self::TYPE_THEME => 'system',
         self::TYPE_SHOW_LOGO => '1',
-        self::TYPE_COMMUNITY_PLUGINS_ENABLED => '0',
     ];
 
     #[ORM\Id]
@@ -167,12 +164,6 @@ class UserPref implements TenantAwareInterface
         } elseif (self::TYPE_DASHBOARD_NOTIFICATION_POLICY === $this->type) {
             if (null !== $this->value && '' !== $this->value && !is_numeric($this->value)) {
                 $context->buildViolation('Invalid value for dashboard_notification_policy. Must be a numeric ID.')
-                    ->atPath('value')
-                    ->addViolation();
-            }
-        } elseif (self::TYPE_COMMUNITY_PLUGINS_ENABLED === $this->type) {
-            if (!in_array($this->value, ['0', '1'], true)) {
-                $context->buildViolation('Invalid value for community_plugins_enabled. Must be "0" or "1".')
                     ->atPath('value')
                     ->addViolation();
             }

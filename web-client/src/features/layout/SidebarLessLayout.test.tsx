@@ -31,7 +31,7 @@ describe('SidebarLessLayout', () => {
 
   it('renders layout elements correctly', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { id: 1, uuid: 'test-uuid' },
+      user: { id: 1, uuid: 'test-uuid', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -55,7 +55,7 @@ describe('SidebarLessLayout', () => {
 
   it('renders child routes', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -80,7 +80,7 @@ describe('SidebarLessLayout', () => {
 
   it('logo links to home page', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -102,7 +102,7 @@ describe('SidebarLessLayout', () => {
 
   it('renders contacts link in header', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -131,7 +131,7 @@ describe('SidebarLessLayout', () => {
 
   it('renders mobile menu button', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,

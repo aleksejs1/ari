@@ -2,8 +2,6 @@
 
 namespace Ari\Tests\Functional;
 
-use Ari\Entity\UserPref;
-
 class MarketplaceControllerTest extends AbstractApiTestCase
 {
     public function testRegistryUnauthenticated(): void
@@ -14,6 +12,8 @@ class MarketplaceControllerTest extends AbstractApiTestCase
 
     public function testRegistryWithCommunityPluginsDisabled(): void
     {
+        $this->disableCommunityPlugins();
+
         $client = static::createClient();
         $response = $client->request('GET', '/api/marketplace/registry', [
             'auth_bearer' => $this->token,
@@ -28,6 +28,8 @@ class MarketplaceControllerTest extends AbstractApiTestCase
 
     public function testReadmeWithCommunityPluginsDisabled(): void
     {
+        $this->disableCommunityPlugins();
+
         static::createClient()->request('GET', '/api/marketplace/readme/test-plugin', [
             'auth_bearer' => $this->token,
         ]);
@@ -37,6 +39,8 @@ class MarketplaceControllerTest extends AbstractApiTestCase
 
     public function testInstallWithCommunityPluginsDisabled(): void
     {
+        $this->disableCommunityPlugins();
+
         static::createClient()->request('POST', '/api/marketplace/install', [
             'auth_bearer' => $this->token,
             'json' => ['pluginId' => 'test-plugin'],
@@ -47,6 +51,8 @@ class MarketplaceControllerTest extends AbstractApiTestCase
 
     public function testUpdateWithCommunityPluginsDisabled(): void
     {
+        $this->disableCommunityPlugins();
+
         static::createClient()->request('POST', '/api/marketplace/update', [
             'auth_bearer' => $this->token,
             'json' => ['pluginId' => 'test-plugin'],
@@ -57,6 +63,8 @@ class MarketplaceControllerTest extends AbstractApiTestCase
 
     public function testUninstallWithCommunityPluginsDisabled(): void
     {
+        $this->disableCommunityPlugins();
+
         static::createClient()->request('POST', '/api/marketplace/uninstall', [
             'auth_bearer' => $this->token,
             'json' => ['pluginId' => 'test-plugin'],
@@ -192,6 +200,23 @@ class MarketplaceControllerTest extends AbstractApiTestCase
             $em->persist($setting);
         } else {
             $setting->setValue('1');
+        }
+
+        $em->flush();
+    }
+
+    private function disableCommunityPlugins(): void
+    {
+        $em = $this->getEntityManager();
+
+        $setting = $em->find(\Ari\Entity\SystemSetting::class, 'community_plugins_enabled');
+        if ($setting === null) {
+            $setting = new \Ari\Entity\SystemSetting();
+            $setting->setId('community_plugins_enabled');
+            $setting->setValue('0');
+            $em->persist($setting);
+        } else {
+            $setting->setValue('0');
         }
 
         $em->flush();

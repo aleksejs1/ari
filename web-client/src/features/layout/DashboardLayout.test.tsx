@@ -76,7 +76,7 @@ describe('DashboardLayout', () => {
 
   it('renders layout elements correctly', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -116,7 +116,7 @@ describe('DashboardLayout', () => {
 
   it('navigates when links are clicked', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -147,7 +147,7 @@ describe('DashboardLayout', () => {
 
   it('logo links to home page', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,
@@ -175,7 +175,7 @@ describe('DashboardLayout', () => {
 
   it('renders mobile menu button', () => {
     vi.mocked(useAuth).mockReturnValue({
-      user: { uuid: 'test-user' },
+      user: { uuid: 'test-user', roles: ['ROLE_USER'] },
       login: vi.fn(),
       logout: vi.fn(),
       refreshToken: null,

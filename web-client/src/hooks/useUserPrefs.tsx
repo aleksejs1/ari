@@ -18,7 +18,6 @@ type UserPrefType =
   | 'dashboard_notification_policy'
   | 'contact_table_settings'
   | 'show_logo'
-  | 'community_plugins_enabled'
   | 'theme'
 type Theme = 'light' | 'dark' | 'system'
 type DateInput = Date | string | null | undefined
@@ -159,7 +158,6 @@ const useUserPrefsLogic = () => {
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
   const contactTableSettings = getPrefValue(prefs, 'contact_table_settings', '{}')
   const showLogo = getPrefValue(prefs, 'show_logo', '1')
-  const communityPluginsEnabled = getPrefValue(prefs, 'community_plugins_enabled', '0')
   const themeFromPrefs = getPrefValue(prefs, 'theme', '') as Theme | ''
 
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -225,13 +223,6 @@ const useUserPrefsLogic = () => {
     [savePrefMutation],
   )
 
-  const setCommunityPluginsEnabled = useCallback(
-    async (value: string) => {
-      await savePrefMutation.mutateAsync({ type: 'community_plugins_enabled', value })
-    },
-    [savePrefMutation],
-  )
-
   useEffect(() => {
     void i18n.changeLanguage(language)
   }, [language, i18n])
@@ -245,11 +236,9 @@ const useUserPrefsLogic = () => {
     dashboardNotificationPolicy,
     contactTableSettings,
     showLogo,
-    communityPluginsEnabled,
     theme,
     setTheme,
     setShowLogo,
-    setCommunityPluginsEnabled,
     isLoading,
     savePrefMutation,
     i18n,
@@ -266,11 +255,9 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     dashboardNotificationPolicy,
     contactTableSettings,
     showLogo,
-    communityPluginsEnabled,
     theme,
     setTheme: setThemeLogic,
     setShowLogo: setShowLogoLogic,
-    setCommunityPluginsEnabled,
     isLoading,
     savePrefMutation,
     i18n,
@@ -364,7 +351,6 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       dashboardNotificationPolicy,
       contactTableSettings,
       showLogo,
-      communityPluginsEnabled,
       theme,
       setLanguage,
       setDateFormat,
@@ -374,7 +360,6 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setDashboardNotificationPolicy,
       setContactTableSettings,
       setShowLogo,
-      setCommunityPluginsEnabled,
       setTheme,
       formatDate,
       formatTime,
@@ -389,7 +374,6 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       dashboardNotificationPolicy,
       contactTableSettings,
       showLogo,
-      communityPluginsEnabled,
       theme,
       setLanguage,
       setDateFormat,
@@ -399,7 +383,6 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setDashboardNotificationPolicy,
       setContactTableSettings,
       setShowLogo,
-      setCommunityPluginsEnabled,
       setTheme,
       formatDate,
       formatTime,

@@ -30,7 +30,6 @@ describe('useAuth', () => {
 
 describe('useIsAdmin', () => {
   it('returns true if user has ROLE_ADMIN', () => {
-    // @ts-expect-error - mock context
     const mockContext = { user: { uuid: 'test', roles: ['ROLE_USER', 'ROLE_ADMIN'] } }
     vi.mocked(useContext).mockReturnValue(mockContext)
 
@@ -39,7 +38,6 @@ describe('useIsAdmin', () => {
   })
 
   it('returns false if user does not have ROLE_ADMIN', () => {
-    // @ts-expect-error - mock context
     const mockContext = { user: { uuid: 'test', roles: ['ROLE_USER'] } }
     vi.mocked(useContext).mockReturnValue(mockContext)
 
@@ -48,7 +46,6 @@ describe('useIsAdmin', () => {
   })
 
   it('returns false if user is null', () => {
-    // @ts-expect-error - mock context
     const mockContext = { user: null }
     vi.mocked(useContext).mockReturnValue(mockContext)
 
