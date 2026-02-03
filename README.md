@@ -175,6 +175,7 @@ Workflows are being polished, and parts of the system are intentionally over-eng
 The system now supports a **Plugin-Oriented Architecture** on both Backend and Frontend. This allows extending functionality without modifying the core codebase.
 
 - **Proof of Concept**: A full plugin system is implemented and functional.
+- **Demo Video**: [Building Ari: Plugin Marketplace & User Activation Logic](https://www.youtube.com/watch?v=LJMYiSRanC4)
 - **Documentation**: See [Plugin Development Overview](https://github.com/aleksejs1/ari-docs/blob/master/docs/05-developer/plugins.md) for details on creating plugins for both layers.
 
 ---
@@ -201,3 +202,4 @@ If you care about **data reliability, transparent history, and trustworthy notif
 - **Landing Page**: [ari-landing](https://github.com/aleksejs1/ari-landing)
 - **Plugin SDK**: [ari-sdk](https://github.com/aleksejs1/ari-sdk)
 - **Gifts Plugin**: [ari-plugin-gifts](https://github.com/aleksejs1/ari-plugin-gifts)
+- **Plugin Registry**: [ari-plugin-registry](https://github.com/aleksejs1/ari-plugin-registry)
