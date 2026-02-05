@@ -27,4 +27,5 @@ export interface MarketplaceActionResponse {
 
 export interface PluginReadmeResponse {
   content: string
+  latestVersion?: string | null
 }

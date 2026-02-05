@@ -59,9 +59,11 @@ class PluginMarketplaceService
     }
 
     /**
-     * Fetch the README.md content for a plugin from its GitHub repo.
+     * Fetch the README.md content and latest version for a plugin from its GitHub repo.
+     *
+     * @return array{content: string, latestVersion: ?string}
      */
-    public function fetchReadme(string $pluginId): string
+    public function fetchReadme(string $pluginId): array
     {
         $registry = $this->fetchRegistry();
         $plugin = $this->findPluginInRegistry($registry, $pluginId);
@@ -73,8 +75,20 @@ class PluginMarketplaceService
 
         $url = sprintf('https://raw.githubusercontent.com/%s/HEAD/README.md', $repo);
         $response = $this->httpClient->request('GET', $url);
+        $content = $response->getContent();
 
-        return $response->getContent();
+        $latestVersion = null;
+        try {
+            $release = $this->resolveLatestRelease($repo);
+            $latestVersion = $release['version'];
+        } catch (\Throwable) {
+            // GitHub API failure — version info is non-critical
+        }
+
+        return [
+            'content' => $content,
+            'latestVersion' => $latestVersion,
+        ];
     }
 
     /**
@@ -323,6 +337,24 @@ class PluginMarketplaceService
         $pluginData['installed'] = $installed;
         $pluginData['installedVersion'] = $installedVersion;
         $pluginData['compatible'] = $compatible;
+
+        // For installed plugins, resolve latest version from GitHub
+        $pluginData['latestVersion'] = null;
+        $pluginData['updateAvailable'] = false;
+
+        if ($installed) {
+            $repo = $pluginData['repo'] ?? null;
+            if (is_string($repo) && '' !== $repo) {
+                try {
+                    $release = $this->resolveLatestRelease($repo);
+                    $pluginData['latestVersion'] = $release['version'];
+                    $pluginData['updateAvailable'] = null !== $installedVersion
+                        && version_compare($release['version'], $installedVersion, '>');
+                } catch (\Throwable) {
+                    // GitHub API failure — skip version check
+                }
+            }
+        }
 
         return $pluginData;
     }

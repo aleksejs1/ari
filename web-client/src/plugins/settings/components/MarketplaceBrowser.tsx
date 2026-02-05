@@ -165,6 +165,7 @@ export function MarketplaceBrowser({ open, onOpenChange }: MarketplaceBrowserPro
           <PluginDetailView
             plugin={state.selectedPlugin}
             readme={readme?.content}
+            readmeLatestVersion={readme?.latestVersion}
             readmeLoading={readmeLoading}
             confirmUninstall={state.confirmUninstall}
             onInstall={() => installPlugin.mutate(state.selectedPlugin!.id)}
@@ -271,6 +272,7 @@ function PluginGridView({
 interface PluginDetailViewProps {
   plugin: RegistryPlugin
   readme?: string
+  readmeLatestVersion?: string | null
   readmeLoading: boolean
   confirmUninstall: boolean
   onInstall: () => void
@@ -282,14 +284,21 @@ interface PluginDetailViewProps {
   uninstallPending: boolean
 }
 
-function PluginVersionInfo({ plugin }: { plugin: RegistryPlugin }) {
+function PluginVersionInfo({
+  plugin,
+  readmeLatestVersion,
+}: {
+  plugin: RegistryPlugin
+  readmeLatestVersion?: string | null
+}) {
   const { t } = useTranslation()
+  const latestVersion = plugin.latestVersion ?? readmeLatestVersion
 
   return (
     <div className="mt-1 flex flex-wrap items-center gap-2">
-      {plugin.latestVersion !== undefined && (
+      {latestVersion !== undefined && latestVersion !== null && (
         <Badge variant="outline" className="text-xs">
-          {t('marketplace.version', { version: plugin.latestVersion })}
+          {t('marketplace.version', { version: latestVersion })}
         </Badge>
       )}
       {plugin.compatible ? (
@@ -421,7 +430,7 @@ function PluginActions({
   installPending,
   updatePending,
   uninstallPending,
-}: Omit<PluginDetailViewProps, 'readme' | 'readmeLoading'>) {
+}: Omit<PluginDetailViewProps, 'readme' | 'readmeLatestVersion' | 'readmeLoading'>) {
   const isAdmin = useIsAdmin()
 
   if (!isAdmin) {
@@ -469,6 +478,7 @@ function ReadmeContent({ readme, readmeLoading }: { readme?: string; readmeLoadi
 function PluginDetailView({
   plugin,
   readme,
+  readmeLatestVersion,
   readmeLoading,
   confirmUninstall,
   onInstall,
@@ -492,7 +502,7 @@ function PluginDetailView({
           <p className="text-sm text-muted-foreground">
             {t('marketplace.by', { author: plugin.author })}
           </p>
-          <PluginVersionInfo plugin={plugin} />
+          <PluginVersionInfo plugin={plugin} readmeLatestVersion={readmeLatestVersion} />
         </div>
       </div>
 

@@ -50,7 +50,7 @@ class MarketplaceController extends AbstractController
         $this->requireCommunityPluginsEnabled();
 
         try {
-            $content = $this->marketplace->fetchReadme($pluginId);
+            $data = $this->marketplace->fetchReadme($pluginId);
         } catch (\Throwable $e) {
             return $this->json(
                 ['error' => $e->getMessage()],
@@ -58,7 +58,7 @@ class MarketplaceController extends AbstractController
             );
         }
 
-        return $this->json(['content' => $content]);
+        return $this->json($data);
     }
 
     #[IsGranted('ROLE_ADMIN')]
