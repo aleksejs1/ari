@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 
+import { ReloadPrompt } from '@/components/ReloadPrompt'
+import { ReloadProvider } from '@/contexts/ReloadContext'
 import { useAuth } from '@/hooks/useAuth'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 
@@ -69,7 +71,12 @@ export default function App() {
 
   const router = createBrowserRouter([
     {
-      element: <ProtectedRoute />,
+      element: (
+        <ReloadProvider>
+          <ReloadPrompt />
+          <ProtectedRoute />
+        </ReloadProvider>
+      ),
       children: [
         {
           element: <SidebarLessLayout />,

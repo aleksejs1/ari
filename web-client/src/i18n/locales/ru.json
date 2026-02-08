@@ -1,6 +1,9 @@
 {
   "app": {
     "title": "ari CRM",
+    "reloadRequired": "Требуется перезагрузка",
+    "reloadDescription": "Изменения вступят в силу после перезагрузки",
+    "reload": "Перезагрузить",
     "loading": "Загрузка...",
     "notFound": "404 Страница не найдена",
     "navigation": {

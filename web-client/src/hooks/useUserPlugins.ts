@@ -21,8 +21,14 @@ export const useUserPlugins = () => {
   })
 }
 
+import { useReload } from '@/contexts/ReloadContext'
+
+// ... existing imports ...
+
 export const useActivatePlugin = () => {
   const queryClient = useQueryClient()
+  const { setReloadNeeded } = useReload()
+
   return useMutation({
     mutationFn: async (pluginId: string) => {
       await api.post('/user-plugins/activate', { pluginId })
@@ -30,12 +36,15 @@ export const useActivatePlugin = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user-plugins'] })
       await queryClient.invalidateQueries({ queryKey: ['plugins'] }) // Refresh global plugin list
+      setReloadNeeded(true)
     },
   })
 }
 
 export const useDeactivatePlugin = () => {
   const queryClient = useQueryClient()
+  const { setReloadNeeded } = useReload()
+
   return useMutation({
     mutationFn: async (pluginId: string) => {
       await api.post('/user-plugins/deactivate', { pluginId })
@@ -43,6 +52,7 @@ export const useDeactivatePlugin = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user-plugins'] })
       await queryClient.invalidateQueries({ queryKey: ['plugins'] }) // Refresh global plugin list
+      setReloadNeeded(true)
     },
   })
 }

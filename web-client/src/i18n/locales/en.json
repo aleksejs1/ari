@@ -1,6 +1,9 @@
 {
   "app": {
     "title": "ari CRM",
+    "reloadRequired": "Reload Required",
+    "reloadDescription": "Changes will take effect after reload",
+    "reload": "Reload",
     "loading": "Loading...",
     "notFound": "404 Not Found",
     "navigation": {
