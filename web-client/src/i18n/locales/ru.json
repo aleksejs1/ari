@@ -29,7 +29,8 @@
         "changePassword": "Смена пароля",
         "deleteAccount": "Удалить аккаунт",
         "home": "Главная",
-        "sessions": "Сессии"
+        "sessions": "Сессии",
+        "loginHistory": "История входов"
       }
     }
   },
@@ -343,7 +344,12 @@
     "stats": "Статистика системы",
     "totalContacts": "Всего контактов",
     "totalAuditLogs": "Всего логов аудита",
-    "totalSentNotifications": "Отправлено уведомлений"
+    "totalSentNotifications": "Отправлено уведомлений",
+    "recentLogins": "Последние входы"
+  },
+  "loginHistory": {
+    "title": "История входов",
+    "noLogins": "Записей о входах не найдено"
   },
   "notifications": {
     "errorLoading": "Не удалось загрузить уведомления",

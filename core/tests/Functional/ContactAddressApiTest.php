@@ -155,10 +155,12 @@ class ContactAddressApiTest extends ApiTestCase
         $timelineData = $timelineResponse->toArray();
         $logs = $timelineData['logs'];
 
-        // Find the UPDATE log for ContactAddress
+        // Find the UPDATE log for ContactAddress that contains the 'type' change (from PUT)
+        // Note: timeline is ordered by createdAt DESC, so PATCH (city) update may appear first
         $updateLog = null;
         foreach ($logs as $log) {
-            if ('Ari\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']) {
+            if ('Ari\\Entity\\ContactAddress' === $log['entityType'] && 'UPDATE' === $log['action']
+                && isset($log['changes']['type'])) {
                 $updateLog = $log;
                 break;
             }

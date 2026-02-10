@@ -9,26 +9,66 @@ interface DynamicDashboardProps {
 }
 
 export default function DynamicDashboard({ layout }: DynamicDashboardProps) {
-  return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-      {layout.map((widgetId, index) => {
-        const widgetDef = widgetRegistry.get(widgetId)
+  const widgets = layout.map((id) => ({ id, def: widgetRegistry.get(id) }))
 
-        if (!widgetDef) {
-          return (
-            <div key={widgetId} className="col-span-12">
-              <FallbackWidget id={widgetId} />
+  // Split into full-width and column groups
+  const sections: { type: 'full' | 'columns'; items: typeof widgets }[] = []
+  let currentColumns: typeof widgets = []
+
+  for (const widget of widgets) {
+    const w = widget.def?.defaultDimensions.w ?? 12
+    if (w >= 12) {
+      if (currentColumns.length > 0) {
+        sections.push({ type: 'columns', items: currentColumns })
+        currentColumns = []
+      }
+      sections.push({ type: 'full', items: [widget] })
+    } else {
+      currentColumns.push(widget)
+    }
+  }
+  if (currentColumns.length > 0) {
+    sections.push({ type: 'columns', items: currentColumns })
+  }
+
+  return (
+    <div className="space-y-4">
+      {sections.map((section, sIdx) => {
+        if (section.type === 'full') {
+          const { id, def } = section.items[0]
+          return def ? (
+            <div key={`full-${sIdx}`}>
+              <def.component />
             </div>
+          ) : (
+            <FallbackWidget key={`full-${sIdx}`} id={id} />
           )
         }
 
-        const WidgetComponent = widgetDef.component
-        const { w } = widgetDef.defaultDimensions
-        const colSpanClass = getColSpanClass(w)
+        // Distribute column widgets into left and right columns
+        const left: typeof widgets = []
+        const right: typeof widgets = []
+        for (const widget of section.items) {
+          const w = widget.def?.defaultDimensions.w ?? 6
+          if (w > 6) {
+            left.push(widget)
+          } else {
+            right.push(widget)
+          }
+        }
 
         return (
-          <div key={`${widgetId}-${index}`} className={`col-span-12 ${colSpanClass}`}>
-            <WidgetComponent />
+          <div key={`cols-${sIdx}`} className="flex flex-col gap-4 md:flex-row">
+            <div className="flex flex-1 flex-col gap-4 md:basis-7/12">
+              {left.map(({ id, def }) =>
+                def ? <def.component key={id} /> : <FallbackWidget key={id} id={id} />,
+              )}
+            </div>
+            <div className="flex flex-1 flex-col gap-4 md:basis-5/12">
+              {right.map(({ id, def }) =>
+                def ? <def.component key={id} /> : <FallbackWidget key={id} id={id} />,
+              )}
+            </div>
           </div>
         )
       })}
@@ -48,23 +88,4 @@ function FallbackWidget({ id }: { id: string }) {
       </CardContent>
     </Card>
   )
-}
-
-function getColSpanClass(width: number): string {
-  const safeWidth = Math.min(Math.max(width, 1), 12)
-  const spanMap: Record<number, string> = {
-    1: 'md:col-span-1',
-    2: 'md:col-span-2',
-    3: 'md:col-span-3',
-    4: 'md:col-span-4',
-    5: 'md:col-span-5',
-    6: 'md:col-span-6',
-    7: 'md:col-span-7',
-    8: 'md:col-span-8',
-    9: 'md:col-span-9',
-    10: 'md:col-span-10',
-    11: 'md:col-span-11',
-    12: 'md:col-span-12',
-  }
-  return spanMap[safeWidth] || 'md:col-span-6'
 }

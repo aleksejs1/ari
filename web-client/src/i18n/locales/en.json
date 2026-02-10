@@ -28,7 +28,8 @@
         "changePassword": "Change Password",
         "deleteAccount": "Delete Account",
         "home": "Home",
-        "sessions": "Sessions"
+        "sessions": "Sessions",
+        "loginHistory": "Login History"
       },
       "toggleMenu": "Toggle menu"
     }
@@ -341,7 +342,12 @@
     "stats": "System Stats",
     "totalContacts": "Total Contacts",
     "totalAuditLogs": "Total Audit Logs",
-    "totalSentNotifications": "Sent Notifications"
+    "totalSentNotifications": "Sent Notifications",
+    "recentLogins": "Recent Logins"
+  },
+  "loginHistory": {
+    "title": "Login History",
+    "noLogins": "No login records found"
   },
   "notifications": {
     "errorLoading": "Failed to load notifications",

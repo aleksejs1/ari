@@ -16,7 +16,7 @@ export function registerDashboardWidgets() {
     id: 'groups',
     title: 'Groups',
     component: GroupsWidget,
-    defaultDimensions: { w: 12, h: 2 }, // Full width
+    defaultDimensions: { w: 5, h: 4 },
   })
 
   widgetRegistry.register({
