@@ -15,7 +15,7 @@ export default function StatsWidget() {
   }
 
   return (
-    <Card className="h-full">
+    <Card>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base font-semibold">
           <BarChart3 className="h-5 w-5 text-indigo-500" />

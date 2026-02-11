@@ -20,6 +20,7 @@ import {
 import { AlertTriangle } from 'lucide-react'
 
 import { Card, CardContent } from '@/components/ui/card'
+import { type LayoutPreset, layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import DroppableZone from './DroppableZone'
@@ -27,6 +28,7 @@ import SortableWidget from './SortableWidget'
 
 interface DynamicDashboardProps {
   zones: Record<string, string[]>
+  layoutId: string
   isEditMode?: boolean
   onReorder?: (zone: string, oldIndex: number, newIndex: number) => void
   onMoveWidget?: (widgetId: string, fromZone: string, toZone: string, index: number) => void
@@ -53,16 +55,46 @@ function resolveTargetZone(zones: Record<string, string[]>, overId: string): str
   return zones[overId] ? overId : findZoneForWidget(zones, overId)
 }
 
+function basisToPercent(basis?: string): string | undefined {
+  if (!basis) {
+    return undefined
+  }
+  if (basis === '100%') {
+    return '100%'
+  }
+  const match = /^(\d+)\/(\d+)$/.exec(basis)
+  if (match) {
+    return `${(Number(match[1]) / Number(match[2])) * 100}%`
+  }
+  return undefined
+}
+
+function getPreset(layoutId: string): LayoutPreset {
+  return (
+    layoutPresetRegistry.get(layoutId) ?? {
+      id: layoutId,
+      name: layoutId,
+      description: '',
+      zones: [{ id: 'main', label: 'Main', basis: '100%' }],
+    }
+  )
+}
+
 function EditModeDashboard({
   zones,
+  layoutId,
   onReorder,
   onMoveWidget,
 }: {
   zones: Record<string, string[]>
+  layoutId: string
   onReorder?: (zone: string, oldIndex: number, newIndex: number) => void
   onMoveWidget?: (widgetId: string, fromZone: string, toZone: string, index: number) => void
 }) {
   const [activeId, setActiveId] = useState<string | null>(null)
+  const preset = getPreset(layoutId)
+  const fullWidthZones = preset.zones.filter((z) => z.basis === '100%')
+  const columnZones = preset.zones.filter((z) => z.basis !== '100%')
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -115,10 +147,6 @@ function EditModeDashboard({
   }
 
   const allItems = Object.values(zones).flat()
-  const fullIds = zones.full || []
-  const leftIds = zones.left || []
-  const rightIds = zones.right || []
-  const hasColumns = leftIds.length > 0 || rightIds.length > 0
 
   return (
     <DndContext
@@ -130,34 +158,33 @@ function EditModeDashboard({
     >
       <div className="space-y-4 pl-4">
         <SortableContext items={allItems} strategy={verticalListSortingStrategy}>
-          <DroppableZone id="full" label="dashboard.zone.full" isEditMode>
-            {fullIds.map((id) => (
-              <SortableWidget key={id} id={id} isEditMode>
-                <WidgetRenderer id={id} />
-              </SortableWidget>
-            ))}
-          </DroppableZone>
+          {fullWidthZones.map((zoneDef) => (
+            <DroppableZone key={zoneDef.id} id={zoneDef.id} label={zoneDef.label} isEditMode>
+              {(zones[zoneDef.id] || []).map((id) => (
+                <SortableWidget key={id} id={id} isEditMode>
+                  <WidgetRenderer id={id} />
+                </SortableWidget>
+              ))}
+            </DroppableZone>
+          ))}
 
-          {hasColumns ? (
+          {columnZones.length > 0 ? (
             <div className="flex flex-col gap-4 md:flex-row">
-              <div className="flex flex-1 flex-col md:basis-7/12">
-                <DroppableZone id="left" label="dashboard.zone.left" isEditMode>
-                  {leftIds.map((id) => (
-                    <SortableWidget key={id} id={id} isEditMode>
-                      <WidgetRenderer id={id} />
-                    </SortableWidget>
-                  ))}
-                </DroppableZone>
-              </div>
-              <div className="flex flex-1 flex-col md:basis-5/12">
-                <DroppableZone id="right" label="dashboard.zone.right" isEditMode>
-                  {rightIds.map((id) => (
-                    <SortableWidget key={id} id={id} isEditMode>
-                      <WidgetRenderer id={id} />
-                    </SortableWidget>
-                  ))}
-                </DroppableZone>
-              </div>
+              {columnZones.map((zoneDef) => (
+                <div
+                  key={zoneDef.id}
+                  className="flex min-w-0 flex-col"
+                  style={{ flexBasis: basisToPercent(zoneDef.basis) }}
+                >
+                  <DroppableZone id={zoneDef.id} label={zoneDef.label} isEditMode>
+                    {(zones[zoneDef.id] || []).map((id) => (
+                      <SortableWidget key={id} id={id} isEditMode>
+                        <WidgetRenderer id={id} />
+                      </SortableWidget>
+                    ))}
+                  </DroppableZone>
+                </div>
+              ))}
             </div>
           ) : null}
         </SortableContext>
@@ -168,33 +195,41 @@ function EditModeDashboard({
   )
 }
 
-function StaticDashboard({ zones }: { zones: Record<string, string[]> }) {
-  const fullIds = zones.full || []
-  const leftIds = zones.left || []
-  const rightIds = zones.right || []
-  const hasColumns = leftIds.length > 0 || rightIds.length > 0
+function StaticDashboard({
+  zones,
+  layoutId,
+}: {
+  zones: Record<string, string[]>
+  layoutId: string
+}) {
+  const preset = getPreset(layoutId)
+  const fullWidthZones = preset.zones.filter((z) => z.basis === '100%')
+  const columnZones = preset.zones.filter((z) => z.basis !== '100%')
 
   return (
     <div className="space-y-4">
-      {fullIds.map((id) => (
-        <WidgetRenderer key={id} id={id} />
-      ))}
-      {hasColumns ? (
+      {fullWidthZones.map((zoneDef) =>
+        (zones[zoneDef.id] || []).map((id) => <WidgetRenderer key={id} id={id} />),
+      )}
+      {columnZones.length > 0 ? (
         <div className="flex flex-col gap-4 md:flex-row">
-          {leftIds.length > 0 ? (
-            <div className="flex flex-1 flex-col gap-4 md:basis-7/12">
-              {leftIds.map((id) => (
-                <WidgetRenderer key={id} id={id} />
-              ))}
-            </div>
-          ) : null}
-          {rightIds.length > 0 ? (
-            <div className="flex flex-1 flex-col gap-4 md:basis-5/12">
-              {rightIds.map((id) => (
-                <WidgetRenderer key={id} id={id} />
-              ))}
-            </div>
-          ) : null}
+          {columnZones.map((zoneDef) => {
+            const ids = zones[zoneDef.id] || []
+            if (ids.length === 0) {
+              return null
+            }
+            return (
+              <div
+                key={zoneDef.id}
+                className="flex min-w-0 flex-col gap-4"
+                style={{ flexBasis: basisToPercent(zoneDef.basis) }}
+              >
+                {ids.map((id) => (
+                  <WidgetRenderer key={id} id={id} />
+                ))}
+              </div>
+            )
+          })}
         </div>
       ) : null}
     </div>
@@ -203,14 +238,22 @@ function StaticDashboard({ zones }: { zones: Record<string, string[]> }) {
 
 export default function DynamicDashboard({
   zones,
+  layoutId,
   isEditMode = false,
   onReorder,
   onMoveWidget,
 }: DynamicDashboardProps) {
   if (isEditMode) {
-    return <EditModeDashboard zones={zones} onReorder={onReorder} onMoveWidget={onMoveWidget} />
+    return (
+      <EditModeDashboard
+        zones={zones}
+        layoutId={layoutId}
+        onReorder={onReorder}
+        onMoveWidget={onMoveWidget}
+      />
+    )
   }
-  return <StaticDashboard zones={zones} />
+  return <StaticDashboard zones={zones} layoutId={layoutId} />
 }
 
 function FallbackWidget({ id }: { id: string }) {

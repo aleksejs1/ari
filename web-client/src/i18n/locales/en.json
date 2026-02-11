@@ -370,16 +370,28 @@
       "done": "Done",
       "cancel": "Cancel",
       "reset": "Reset",
-      "reorder": "Reorder"
+      "reorder": "Reorder",
+      "changeLayout": "Layout"
     },
     "zone": {
       "full": "Full Width",
       "left": "Left Column",
-      "right": "Right Column"
+      "center": "Center Column",
+      "right": "Right Column",
+      "main": "Main",
+      "sidebar": "Sidebar"
     },
     "layout": {
+      "title": "Choose Layout",
+      "description": "Select a layout for your dashboard",
+      "singleColumn": "Single Column",
+      "singleColumn.description": "All widgets in one column",
       "twoColumn": "Two Columns",
-      "twoColumn.description": "Main content with sidebar"
+      "twoColumn.description": "Main content with sidebar",
+      "threeColumn": "Three Columns",
+      "threeColumn.description": "Three equal columns",
+      "sidebarRight": "Sidebar Right",
+      "sidebarRight.description": "Wide main area with narrow sidebar"
     }
   },
   "loginHistory": {

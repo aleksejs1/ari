@@ -1,21 +1,30 @@
 import { useTranslation } from 'react-i18next'
-import { Check, RotateCcw, X } from 'lucide-react'
+import { Check, LayoutGrid, RotateCcw, X } from 'lucide-react'
 
 interface DashboardEditToolbarProps {
   onSave: () => void
   onCancel: () => void
   onReset: () => void
+  onChangeLayout: () => void
 }
 
 export default function DashboardEditToolbar({
   onSave,
   onCancel,
   onReset,
+  onChangeLayout,
 }: DashboardEditToolbarProps) {
   const { t } = useTranslation()
 
   return (
     <div className="flex items-center gap-2">
+      <button
+        onClick={onChangeLayout}
+        className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+      >
+        <LayoutGrid className="h-4 w-4" />
+        {t('dashboard.edit.changeLayout', 'Layout')}
+      </button>
       <button
         onClick={onReset}
         className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-300"

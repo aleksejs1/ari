@@ -6,6 +6,7 @@ import type { settingsRegistry } from '@/lib/settings/SettingsRegistry'
 import type { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import type { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 import type { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+import type { layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import type { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 export interface PluginContext {
@@ -14,6 +15,7 @@ export interface PluginContext {
   userMenuRegistry: UserMenuRegistry
   topMenuRegistry: TopMenuRegistry
   widgetRegistry: typeof widgetRegistry
+  layoutPresetRegistry: typeof layoutPresetRegistry
   settingsRegistry: typeof settingsRegistry
   i18n: i18n
   api: AxiosInstance

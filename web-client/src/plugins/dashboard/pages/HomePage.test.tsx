@@ -53,6 +53,7 @@ describe('HomePage', () => {
       userMenuRegistry: UserMenuRegistry.getInstance(),
       topMenuRegistry: {} as any,
       widgetRegistry: widgetRegistry,
+      layoutPresetRegistry: { register: vi.fn(), get: vi.fn(), getAll: () => [] } as any,
       settingsRegistry: {} as any,
       i18n: { addResourceBundle: vi.fn() } as any,
       api: { get: vi.fn(), post: vi.fn() } as any,

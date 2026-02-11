@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
-import { layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
+import { type LayoutPreset, layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 export interface DashboardSettings {
@@ -93,6 +93,70 @@ function cloneZones(zones: Record<string, string[]>): Record<string, string[]> {
   return result
 }
 
+function redistributeWidgets(
+  currentZones: Record<string, string[]>,
+  targetPreset: LayoutPreset,
+): Record<string, string[]> {
+  // Collect all widget IDs preserving order
+  const allWidgetIds = Object.values(currentZones).flat()
+
+  // Initialize empty zones from target preset
+  const newZones: Record<string, string[]> = {}
+  for (const zone of targetPreset.zones) {
+    newZones[zone.id] = []
+  }
+
+  // Distribute widgets into new zones based on defaultDimensions
+  const zoneIds = targetPreset.zones.map((z) => z.id)
+  const hasFullZone = zoneIds.includes('full')
+  const columnZones = targetPreset.zones.filter((z) => z.basis !== '100%')
+
+  for (const widgetId of allWidgetIds) {
+    const def = widgetRegistry.get(widgetId)
+    if (!def) {
+      continue
+    }
+    const w = def.defaultDimensions.w
+    if (w >= 12 && hasFullZone) {
+      newZones['full'].push(widgetId)
+    } else if (columnZones.length > 0) {
+      // Round-robin or use heuristic based on width
+      const targetZone = pickColumnZone(w, columnZones, newZones)
+      newZones[targetZone].push(widgetId)
+    } else {
+      // Single zone layout — put everything in the first zone
+      newZones[zoneIds[0]].push(widgetId)
+    }
+  }
+
+  return newZones
+}
+
+function pickColumnZone(
+  w: number,
+  columnZones: { id: string; basis?: string }[],
+  currentZones: Record<string, string[]>,
+): string {
+  if (columnZones.length === 1) {
+    return columnZones[0].id
+  }
+  // For wider widgets prefer the first (wider) column zone
+  if (w > 6) {
+    return columnZones[0].id
+  }
+  // For narrower widgets, pick the zone with fewest items for balance
+  let minCount = Infinity
+  let targetId = columnZones[0].id
+  for (const zone of columnZones) {
+    const count = currentZones[zone.id]?.length ?? 0
+    if (count < minCount) {
+      minCount = count
+      targetId = zone.id
+    }
+  }
+  return targetId
+}
+
 export function useDashboardSettings() {
   const { dashboardSettings, setDashboardSettings } = useUserPrefs()
 
@@ -108,15 +172,25 @@ export function useDashboardSettings() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [draftZones, setDraftZones] = useState<Record<string, string[]>>({})
   const [draftHidden, setDraftHidden] = useState<string[]>([])
-  const snapshotRef = useRef<{ zones: Record<string, string[]>; hidden: string[] } | null>(null)
+  const [draftLayout, setDraftLayout] = useState<string>(DEFAULT_LAYOUT_ID)
+  const snapshotRef = useRef<{
+    zones: Record<string, string[]>
+    hidden: string[]
+    layout: string
+  } | null>(null)
 
   const enterEditMode = useCallback(() => {
     const zonesClone = cloneZones(effectiveZones)
     setDraftZones(zonesClone)
     setDraftHidden([...settings.hidden])
-    snapshotRef.current = { zones: zonesClone, hidden: [...settings.hidden] }
+    setDraftLayout(settings.layout)
+    snapshotRef.current = {
+      zones: zonesClone,
+      hidden: [...settings.hidden],
+      layout: settings.layout,
+    }
     setIsEditMode(true)
-  }, [effectiveZones, settings.hidden])
+  }, [effectiveZones, settings.hidden, settings.layout])
 
   const exitEditMode = useCallback(() => {
     setIsEditMode(false)
@@ -125,14 +199,14 @@ export function useDashboardSettings() {
 
   const saveAndExit = useCallback(async () => {
     const newSettings: DashboardSettings = {
-      ...settings,
+      layout: draftLayout,
       zones: draftZones,
       hidden: draftHidden,
     }
     await setDashboardSettings(JSON.stringify(newSettings))
     setIsEditMode(false)
     snapshotRef.current = null
-  }, [settings, draftZones, draftHidden, setDashboardSettings])
+  }, [draftLayout, draftZones, draftHidden, setDashboardSettings])
 
   const resetToDefault = useCallback(async () => {
     await setDashboardSettings('{}')
@@ -161,9 +235,24 @@ export function useDashboardSettings() {
     [],
   )
 
+  const switchLayout = useCallback(
+    (presetId: string) => {
+      const preset = layoutPresetRegistry.get(presetId)
+      if (!preset) {
+        return
+      }
+      const currentZones = isEditMode ? draftZones : effectiveZones
+      const newZones = redistributeWidgets(currentZones, preset)
+      setDraftLayout(presetId)
+      setDraftZones(newZones)
+    },
+    [isEditMode, draftZones, effectiveZones],
+  )
+
   // Zones used for rendering: draft in edit mode, effective otherwise
   const activeZones = isEditMode ? draftZones : effectiveZones
   const activeHidden = isEditMode ? draftHidden : settings.hidden
+  const activeLayout = isEditMode ? draftLayout : settings.layout
 
   const isWidgetVisible = useCallback((id: string) => !activeHidden.includes(id), [activeHidden])
 
@@ -202,6 +291,7 @@ export function useDashboardSettings() {
 
   return {
     settings,
+    activeLayout,
     effectiveZones: activeZones,
     visibleLayout,
     allWidgets,
@@ -215,5 +305,6 @@ export function useDashboardSettings() {
     resetToDefault,
     reorderInZone,
     moveWidget,
+    switchLayout,
   }
 }

@@ -63,6 +63,7 @@ describe('DashboardLayout', () => {
       userMenuRegistry: UserMenuRegistry.getInstance(),
       topMenuRegistry: TopMenuRegistry.getInstance(),
       widgetRegistry: widgetRegistry,
+      layoutPresetRegistry: { register: vi.fn(), get: vi.fn(), getAll: () => [] } as any,
       settingsRegistry: { registerTab: vi.fn() } as any,
       i18n: { addResourceBundle: vi.fn() } as any,
       api: { get: vi.fn(), post: vi.fn() } as any,

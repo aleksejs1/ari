@@ -6,14 +6,18 @@ import { useDashboardSettings } from '@/hooks/useDashboardSettings'
 
 import DashboardEditToolbar from '../components/DashboardEditToolbar'
 import DynamicDashboard from '../components/DynamicDashboard'
+import LayoutPicker from '../components/LayoutPicker'
 import WidgetTogglePanel from '../components/WidgetTogglePanel'
 
 export default function HomePage() {
   const { t } = useTranslation()
   const [customizeOpen, setCustomizeOpen] = useState(false)
+  const [layoutPickerOpen, setLayoutPickerOpen] = useState(false)
   const {
+    activeLayout,
     visibleLayout,
     allWidgets,
+    availableLayouts,
     isWidgetVisible,
     toggleWidget,
     isEditMode,
@@ -23,6 +27,7 @@ export default function HomePage() {
     resetToDefault,
     reorderInZone,
     moveWidget,
+    switchLayout,
   } = useDashboardSettings()
 
   return (
@@ -34,6 +39,7 @@ export default function HomePage() {
             onSave={saveAndExit}
             onCancel={exitEditMode}
             onReset={resetToDefault}
+            onChangeLayout={() => setLayoutPickerOpen(true)}
           />
         ) : (
           <div className="flex items-center gap-2">
@@ -56,6 +62,7 @@ export default function HomePage() {
 
       <DynamicDashboard
         zones={visibleLayout}
+        layoutId={activeLayout}
         isEditMode={isEditMode}
         onReorder={reorderInZone}
         onMoveWidget={moveWidget}
@@ -67,6 +74,14 @@ export default function HomePage() {
         widgets={allWidgets}
         isWidgetVisible={isWidgetVisible}
         onToggle={toggleWidget}
+      />
+
+      <LayoutPicker
+        open={layoutPickerOpen}
+        onOpenChange={setLayoutPickerOpen}
+        layouts={availableLayouts}
+        activeLayoutId={activeLayout}
+        onSelect={switchLayout}
       />
     </div>
   )

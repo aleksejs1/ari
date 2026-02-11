@@ -372,16 +372,28 @@
       "done": "Готово",
       "cancel": "Отмена",
       "reset": "Сбросить",
-      "reorder": "Изменить порядок"
+      "reorder": "Изменить порядок",
+      "changeLayout": "Макет"
     },
     "zone": {
       "full": "Во всю ширину",
       "left": "Левая колонка",
-      "right": "Правая колонка"
+      "center": "Центральная колонка",
+      "right": "Правая колонка",
+      "main": "Основная",
+      "sidebar": "Боковая панель"
     },
     "layout": {
+      "title": "Выбрать макет",
+      "description": "Выберите макет для вашего дашборда",
+      "singleColumn": "Одна колонка",
+      "singleColumn.description": "Все виджеты в одну колонку",
       "twoColumn": "Две колонки",
-      "twoColumn.description": "Основное содержимое с боковой панелью"
+      "twoColumn.description": "Основное содержимое с боковой панелью",
+      "threeColumn": "Три колонки",
+      "threeColumn.description": "Три равные колонки",
+      "sidebarRight": "Боковая панель справа",
+      "sidebarRight.description": "Широкая основная область с узкой боковой панелью"
     }
   },
   "loginHistory": {

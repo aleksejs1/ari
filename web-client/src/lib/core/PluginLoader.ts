@@ -5,6 +5,7 @@ import { settingsRegistry } from '@/lib/settings/SettingsRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
+import { layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import { loadRemotePlugin } from './RemoteLoader'
@@ -69,6 +70,7 @@ export class PluginLoader {
         userMenuRegistry: UserMenuRegistry.getInstance(),
         topMenuRegistry: TopMenuRegistry.getInstance(),
         widgetRegistry: widgetRegistry,
+        layoutPresetRegistry: layoutPresetRegistry,
         settingsRegistry: settingsRegistry,
         i18n: i18n,
         api: api,
