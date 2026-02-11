@@ -9,6 +9,7 @@ The core provides several **Registries**:
 -   `SidebarRegistry`: For main navigation items.
 -   `UserMenuRegistry`: For user-specific actions.
 -   `WidgetRegistry`: For dashboard widgets.
+-   `LayoutPresetRegistry`: For dashboard layout presets.
 -   `ContactDetailsRegistry`: For sections within the Contact Details page.
 
 A **Plugin** is a class that implements the `Plugin` interface and uses these registries during its `register()` phase.
