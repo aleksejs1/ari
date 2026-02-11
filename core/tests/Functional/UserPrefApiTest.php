@@ -309,6 +309,64 @@ class UserPrefApiTest extends AbstractApiTestCase
         self::assertResponseStatusCodeSame(422);
     }
 
+    public function testUpdateDashboardSettings(): void
+    {
+        $client = static::createClient();
+
+        $jsonValue = json_encode([
+            'layout' => 'two-column',
+            'zones' => [
+                'full' => ['stats'],
+                'left' => ['recent-logins', 'recent-audit-logs'],
+                'right' => ['upcoming-anniversaries', 'groups'],
+            ],
+            'hidden' => ['recent-audit-logs'],
+        ]);
+
+        // 1. Update with valid JSON
+        $response = $client->request('PATCH', '/api/user_prefs/dashboard_settings', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'dashboard_settings',
+                'value' => $jsonValue,
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        $data = $response->toArray();
+        self::assertEquals($jsonValue, $data['value']);
+
+        // 2. Persist check (GET)
+        $response = $client->request('GET', '/api/user_prefs/dashboard_settings', [
+            'auth_bearer' => $this->token,
+        ]);
+        $data = $response->toArray();
+        self::assertEquals($jsonValue, $data['value']);
+
+        // 3. Invalid JSON rejected
+        $client->request('PATCH', '/api/user_prefs/dashboard_settings', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'dashboard_settings',
+                'value' => '{not valid json!!!}',
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(422);
+
+        // 4. Empty JSON is valid (means "use defaults")
+        $response = $client->request('PATCH', '/api/user_prefs/dashboard_settings', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'type' => 'dashboard_settings',
+                'value' => '{}',
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+        self::assertEquals('{}', $response->toArray()['value']);
+    }
+
     public function testUpdateShowLogo(): void
     {
         $client = static::createClient();

@@ -345,7 +345,29 @@
     "totalContacts": "Всего контактов",
     "totalAuditLogs": "Всего логов аудита",
     "totalSentNotifications": "Отправлено уведомлений",
-    "recentLogins": "Последние входы"
+    "recentLogins": "Последние входы",
+    "customize": "Настроить",
+    "widgetToggle": {
+      "title": "Виджеты дашборда",
+      "description": "Выберите, какие виджеты отображать на дашборде"
+    },
+    "widget": {
+      "stats": {
+        "description": "Обзор ключевых показателей"
+      },
+      "recentLogins": {
+        "description": "Ваша недавняя активность входа"
+      },
+      "upcomingAnniversaries": {
+        "description": "Предстоящие годовщины контактов"
+      },
+      "groups": {
+        "description": "Ваши группы контактов"
+      },
+      "recentAuditLogs": {
+        "description": "Журнал недавней активности"
+      }
+    }
   },
   "loginHistory": {
     "title": "История входов",

@@ -5,73 +5,52 @@ import { Card, CardContent } from '@/components/ui/card'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 interface DynamicDashboardProps {
-  layout: string[]
+  zones: Record<string, string[]>
 }
 
-export default function DynamicDashboard({ layout }: DynamicDashboardProps) {
-  const widgets = layout.map((id) => ({ id, def: widgetRegistry.get(id) }))
-
-  // Split into full-width and column groups
-  const sections: { type: 'full' | 'columns'; items: typeof widgets }[] = []
-  let currentColumns: typeof widgets = []
-
-  for (const widget of widgets) {
-    const w = widget.def?.defaultDimensions.w ?? 12
-    if (w >= 12) {
-      if (currentColumns.length > 0) {
-        sections.push({ type: 'columns', items: currentColumns })
-        currentColumns = []
-      }
-      sections.push({ type: 'full', items: [widget] })
-    } else {
-      currentColumns.push(widget)
-    }
+function WidgetRenderer({ id }: { id: string }) {
+  const def = widgetRegistry.get(id)
+  if (!def) {
+    return <FallbackWidget id={id} />
   }
-  if (currentColumns.length > 0) {
-    sections.push({ type: 'columns', items: currentColumns })
-  }
+  return <def.component />
+}
+
+function ZoneWidgets({ ids }: { ids: string[] }) {
+  return (
+    <>
+      {ids.map((id) => (
+        <WidgetRenderer key={id} id={id} />
+      ))}
+    </>
+  )
+}
+
+export default function DynamicDashboard({ zones }: DynamicDashboardProps) {
+  const fullIds = zones.full || []
+  const leftIds = zones.left || []
+  const rightIds = zones.right || []
+
+  const hasColumns = leftIds.length > 0 || rightIds.length > 0
 
   return (
     <div className="space-y-4">
-      {sections.map((section, sIdx) => {
-        if (section.type === 'full') {
-          const { id, def } = section.items[0]
-          return def ? (
-            <div key={`full-${sIdx}`}>
-              <def.component />
-            </div>
-          ) : (
-            <FallbackWidget key={`full-${sIdx}`} id={id} />
-          )
-        }
+      {fullIds.length > 0 ? <ZoneWidgets ids={fullIds} /> : null}
 
-        // Distribute column widgets into left and right columns
-        const left: typeof widgets = []
-        const right: typeof widgets = []
-        for (const widget of section.items) {
-          const w = widget.def?.defaultDimensions.w ?? 6
-          if (w > 6) {
-            left.push(widget)
-          } else {
-            right.push(widget)
-          }
-        }
-
-        return (
-          <div key={`cols-${sIdx}`} className="flex flex-col gap-4 md:flex-row">
+      {hasColumns ? (
+        <div className="flex flex-col gap-4 md:flex-row">
+          {leftIds.length > 0 ? (
             <div className="flex flex-1 flex-col gap-4 md:basis-7/12">
-              {left.map(({ id, def }) =>
-                def ? <def.component key={id} /> : <FallbackWidget key={id} id={id} />,
-              )}
+              <ZoneWidgets ids={leftIds} />
             </div>
+          ) : null}
+          {rightIds.length > 0 ? (
             <div className="flex flex-1 flex-col gap-4 md:basis-5/12">
-              {right.map(({ id, def }) =>
-                def ? <def.component key={id} /> : <FallbackWidget key={id} id={id} />,
-              )}
+              <ZoneWidgets ids={rightIds} />
             </div>
-          </div>
-        )
-      })}
+          ) : null}
+        </div>
+      ) : null}
     </div>
   )
 }

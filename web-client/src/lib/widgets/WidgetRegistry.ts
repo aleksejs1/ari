@@ -3,6 +3,8 @@ import type React from 'react'
 export interface WidgetDefinition {
   id: string
   title: string
+  description?: string
+  icon?: React.ComponentType
   component: React.ComponentType
   defaultDimensions: { w: number; h: number }
 }

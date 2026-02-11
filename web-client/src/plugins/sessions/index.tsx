@@ -67,6 +67,7 @@ export class SessionsPlugin extends BasePlugin {
     widgetRegistry.register({
       id: 'recent-logins',
       title: 'Recent Logins',
+      description: 'dashboard.widget.recentLogins.description',
       component: () => (
         <Suspense fallback={null}>
           <RecentLoginsWidget />

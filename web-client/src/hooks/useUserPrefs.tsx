@@ -17,6 +17,7 @@ type UserPrefType =
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
   | 'contact_table_settings'
+  | 'dashboard_settings'
   | 'show_logo'
   | 'theme'
 type Theme = 'light' | 'dark' | 'system'
@@ -157,6 +158,7 @@ const useUserPrefsLogic = () => {
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
   const contactTableSettings = getPrefValue(prefs, 'contact_table_settings', '{}')
+  const dashboardSettings = getPrefValue(prefs, 'dashboard_settings', '{}')
   const showLogo = getPrefValue(prefs, 'show_logo', '1')
   const themeFromPrefs = getPrefValue(prefs, 'theme', '') as Theme | ''
 
@@ -235,6 +237,7 @@ const useUserPrefsLogic = () => {
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
     contactTableSettings,
+    dashboardSettings,
     showLogo,
     theme,
     setTheme,
@@ -254,6 +257,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
     contactTableSettings,
+    dashboardSettings,
     showLogo,
     theme,
     setTheme: setThemeLogic,
@@ -313,6 +317,13 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     [savePrefMutation],
   )
 
+  const setDashboardSettings = useCallback(
+    async (value: string) => {
+      await savePrefMutation.mutateAsync({ type: 'dashboard_settings', value })
+    },
+    [savePrefMutation],
+  )
+
   const setTheme = useCallback(
     async (value: Theme) => {
       await setThemeLogic(value)
@@ -350,6 +361,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
       contactTableSettings,
+      dashboardSettings,
       showLogo,
       theme,
       setLanguage,
@@ -359,6 +371,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
       setContactTableSettings,
+      setDashboardSettings,
       setShowLogo,
       setTheme,
       formatDate,
@@ -373,6 +386,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
       contactTableSettings,
+      dashboardSettings,
       showLogo,
       theme,
       setLanguage,
@@ -382,6 +396,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
       setContactTableSettings,
+      setDashboardSettings,
       setShowLogo,
       setTheme,
       formatDate,

@@ -56,6 +56,8 @@ const defaultPrefs = {
   setGoogleSyncOnUpdate: vi.fn(),
   setDashboardNotificationPolicy: vi.fn(),
   setContactTableSettings: vi.fn(),
+  dashboardSettings: '{}',
+  setDashboardSettings: vi.fn(),
   showLogo: '1',
   setShowLogo: vi.fn(),
   theme: 'system',
@@ -67,6 +69,10 @@ const defaultPrefs = {
 
 // Global mock for useUserPrefs
 vi.mock('@/hooks/useUserPrefs', () => ({
+  useUserPrefs: () => defaultPrefs,
+}))
+
+vi.mock('@/hooks/useUserPrefs.hook', () => ({
   useUserPrefs: () => defaultPrefs,
 }))
 

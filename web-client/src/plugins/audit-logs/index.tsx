@@ -72,6 +72,7 @@ export class AuditLogsPlugin extends BasePlugin {
     widgetRegistry.register({
       id: 'recent-audit-logs',
       title: 'Recent Audit Logs',
+      description: 'dashboard.widget.recentAuditLogs.description',
       component: () => (
         <Suspense fallback={null}>
           <RecentAuditLogsWidget />

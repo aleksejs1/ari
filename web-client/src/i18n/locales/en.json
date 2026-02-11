@@ -343,7 +343,29 @@
     "totalContacts": "Total Contacts",
     "totalAuditLogs": "Total Audit Logs",
     "totalSentNotifications": "Sent Notifications",
-    "recentLogins": "Recent Logins"
+    "recentLogins": "Recent Logins",
+    "customize": "Customize",
+    "widgetToggle": {
+      "title": "Dashboard Widgets",
+      "description": "Choose which widgets to show on your dashboard"
+    },
+    "widget": {
+      "stats": {
+        "description": "Key statistics overview"
+      },
+      "recentLogins": {
+        "description": "Your recent login activity"
+      },
+      "upcomingAnniversaries": {
+        "description": "Upcoming contact anniversaries"
+      },
+      "groups": {
+        "description": "Your contact groups"
+      },
+      "recentAuditLogs": {
+        "description": "Recent activity log"
+      }
+    }
   },
   "loginHistory": {
     "title": "Login History",

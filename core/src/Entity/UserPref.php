@@ -68,6 +68,7 @@ class UserPref implements TenantAwareInterface
     public const TYPE_CONTACT_TABLE_SETTINGS = 'contact_table_settings';
     public const TYPE_THEME = 'theme';
     public const TYPE_SHOW_LOGO = 'show_logo';
+    public const TYPE_DASHBOARD_SETTINGS = 'dashboard_settings';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -79,6 +80,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_CONTACT_TABLE_SETTINGS,
         self::TYPE_THEME,
         self::TYPE_SHOW_LOGO,
+        self::TYPE_DASHBOARD_SETTINGS,
     ];
 
     public const DEFAULTS = [
@@ -91,6 +93,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_CONTACT_TABLE_SETTINGS => '{}',
         self::TYPE_THEME => 'system',
         self::TYPE_SHOW_LOGO => '1',
+        self::TYPE_DASHBOARD_SETTINGS => '{}',
     ];
 
     #[ORM\Id]
@@ -136,6 +139,12 @@ class UserPref implements TenantAwareInterface
         } elseif (self::TYPE_CONTACT_TABLE_SETTINGS === $this->type) {
             if (null !== $this->value && '' !== $this->value && !json_validate($this->value)) {
                 $context->buildViolation('Invalid JSON for contact table settings.')
+                    ->atPath('value')
+                    ->addViolation();
+            }
+        } elseif (self::TYPE_DASHBOARD_SETTINGS === $this->type) {
+            if (null !== $this->value && '' !== $this->value && !json_validate($this->value)) {
+                $context->buildViolation('Invalid JSON for dashboard settings.')
                     ->atPath('value')
                     ->addViolation();
             }

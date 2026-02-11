@@ -8,6 +8,7 @@ export function registerDashboardWidgets() {
   widgetRegistry.register({
     id: 'stats',
     title: 'Stats',
+    description: 'dashboard.widget.stats.description',
     component: StatsWidget,
     defaultDimensions: { w: 12, h: 2 },
   })
@@ -15,6 +16,7 @@ export function registerDashboardWidgets() {
   widgetRegistry.register({
     id: 'groups',
     title: 'Groups',
+    description: 'dashboard.widget.groups.description',
     component: GroupsWidget,
     defaultDimensions: { w: 5, h: 4 },
   })
@@ -22,7 +24,8 @@ export function registerDashboardWidgets() {
   widgetRegistry.register({
     id: 'upcoming-anniversaries',
     title: 'Upcoming Anniversaries',
+    description: 'dashboard.widget.upcomingAnniversaries.description',
     component: UpcomingAnniversariesWidget,
-    defaultDimensions: { w: 5, h: 4 }, // ~40% width
+    defaultDimensions: { w: 5, h: 4 },
   })
 }
