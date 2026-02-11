@@ -367,6 +367,21 @@
       "recentAuditLogs": {
         "description": "Журнал недавней активности"
       }
+    },
+    "edit": {
+      "done": "Готово",
+      "cancel": "Отмена",
+      "reset": "Сбросить",
+      "reorder": "Изменить порядок"
+    },
+    "zone": {
+      "full": "Во всю ширину",
+      "left": "Левая колонка",
+      "right": "Правая колонка"
+    },
+    "layout": {
+      "twoColumn": "Две колонки",
+      "twoColumn.description": "Основное содержимое с боковой панелью"
     }
   },
   "loginHistory": {

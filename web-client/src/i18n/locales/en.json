@@ -365,6 +365,21 @@
       "recentAuditLogs": {
         "description": "Recent activity log"
       }
+    },
+    "edit": {
+      "done": "Done",
+      "cancel": "Cancel",
+      "reset": "Reset",
+      "reorder": "Reorder"
+    },
+    "zone": {
+      "full": "Full Width",
+      "left": "Left Column",
+      "right": "Right Column"
+    },
+    "layout": {
+      "twoColumn": "Two Columns",
+      "twoColumn.description": "Main content with sidebar"
     }
   },
   "loginHistory": {

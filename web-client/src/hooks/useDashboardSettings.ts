@@ -1,6 +1,7 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 export interface DashboardSettings {
@@ -9,7 +10,7 @@ export interface DashboardSettings {
   hidden: string[]
 }
 
-const DEFAULT_LAYOUT = 'two-column'
+const DEFAULT_LAYOUT_ID = 'two-column'
 
 const DEFAULT_ZONE_ORDER = [
   'stats',
@@ -23,12 +24,12 @@ function parseSettings(json: string): DashboardSettings {
   try {
     const parsed = JSON.parse(json) as Partial<DashboardSettings>
     return {
-      layout: parsed.layout || DEFAULT_LAYOUT,
+      layout: parsed.layout || DEFAULT_LAYOUT_ID,
       zones: parsed.zones || {},
       hidden: parsed.hidden || [],
     }
   } catch {
-    return { layout: DEFAULT_LAYOUT, zones: {}, hidden: [] }
+    return { layout: DEFAULT_LAYOUT_ID, zones: {}, hidden: [] }
   }
 }
 
@@ -84,6 +85,14 @@ function mergeWithRegistry(zones: Record<string, string[]>): Record<string, stri
   return result
 }
 
+function cloneZones(zones: Record<string, string[]>): Record<string, string[]> {
+  const result: Record<string, string[]> = {}
+  for (const [key, value] of Object.entries(zones)) {
+    result[key] = [...value]
+  }
+  return result
+}
+
 export function useDashboardSettings() {
   const { dashboardSettings, setDashboardSettings } = useUserPrefs()
 
@@ -95,21 +104,85 @@ export function useDashboardSettings() {
     return mergeWithRegistry(zones)
   }, [settings.zones])
 
-  const isWidgetVisible = useCallback(
-    (id: string) => !settings.hidden.includes(id),
-    [settings.hidden],
+  // Edit mode state
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [draftZones, setDraftZones] = useState<Record<string, string[]>>({})
+  const [draftHidden, setDraftHidden] = useState<string[]>([])
+  const snapshotRef = useRef<{ zones: Record<string, string[]>; hidden: string[] } | null>(null)
+
+  const enterEditMode = useCallback(() => {
+    const zonesClone = cloneZones(effectiveZones)
+    setDraftZones(zonesClone)
+    setDraftHidden([...settings.hidden])
+    snapshotRef.current = { zones: zonesClone, hidden: [...settings.hidden] }
+    setIsEditMode(true)
+  }, [effectiveZones, settings.hidden])
+
+  const exitEditMode = useCallback(() => {
+    setIsEditMode(false)
+    snapshotRef.current = null
+  }, [])
+
+  const saveAndExit = useCallback(async () => {
+    const newSettings: DashboardSettings = {
+      ...settings,
+      zones: draftZones,
+      hidden: draftHidden,
+    }
+    await setDashboardSettings(JSON.stringify(newSettings))
+    setIsEditMode(false)
+    snapshotRef.current = null
+  }, [settings, draftZones, draftHidden, setDashboardSettings])
+
+  const resetToDefault = useCallback(async () => {
+    await setDashboardSettings('{}')
+    setIsEditMode(false)
+    snapshotRef.current = null
+  }, [setDashboardSettings])
+
+  const reorderInZone = useCallback((zone: string, oldIndex: number, newIndex: number) => {
+    setDraftZones((prev) => {
+      const items = [...(prev[zone] || [])]
+      const [moved] = items.splice(oldIndex, 1)
+      items.splice(newIndex, 0, moved)
+      return { ...prev, [zone]: items }
+    })
+  }, [])
+
+  const moveWidget = useCallback(
+    (widgetId: string, fromZone: string, toZone: string, newIndex: number) => {
+      setDraftZones((prev) => {
+        const from = [...(prev[fromZone] || [])].filter((id) => id !== widgetId)
+        const to = fromZone === toZone ? from : [...(prev[toZone] || [])]
+        to.splice(newIndex, 0, widgetId)
+        return { ...prev, [fromZone]: from, [toZone]: to }
+      })
+    },
+    [],
   )
+
+  // Zones used for rendering: draft in edit mode, effective otherwise
+  const activeZones = isEditMode ? draftZones : effectiveZones
+  const activeHidden = isEditMode ? draftHidden : settings.hidden
+
+  const isWidgetVisible = useCallback((id: string) => !activeHidden.includes(id), [activeHidden])
 
   const visibleLayout = useMemo(() => {
     const result: Record<string, string[]> = {}
-    for (const [zone, ids] of Object.entries(effectiveZones)) {
-      result[zone] = ids.filter((id) => !settings.hidden.includes(id))
+    for (const [zone, ids] of Object.entries(activeZones)) {
+      result[zone] = ids.filter((id) => !activeHidden.includes(id))
     }
     return result
-  }, [effectiveZones, settings.hidden])
+  }, [activeZones, activeHidden])
 
   const toggleWidget = useCallback(
     async (widgetId: string) => {
+      if (isEditMode) {
+        setDraftHidden((prev) =>
+          prev.includes(widgetId) ? prev.filter((id) => id !== widgetId) : [...prev, widgetId],
+        )
+        return
+      }
       const newHidden = settings.hidden.includes(widgetId)
         ? settings.hidden.filter((id) => id !== widgetId)
         : [...settings.hidden, widgetId]
@@ -121,17 +194,26 @@ export function useDashboardSettings() {
       }
       await setDashboardSettings(JSON.stringify(newSettings))
     },
-    [settings, effectiveZones, setDashboardSettings],
+    [isEditMode, settings, effectiveZones, setDashboardSettings],
   )
 
   const allWidgets = useMemo(() => widgetRegistry.getAll(), [])
+  const availableLayouts = useMemo(() => layoutPresetRegistry.getAll(), [])
 
   return {
     settings,
-    effectiveZones,
+    effectiveZones: activeZones,
     visibleLayout,
     allWidgets,
+    availableLayouts,
     isWidgetVisible,
     toggleWidget,
+    isEditMode,
+    enterEditMode,
+    exitEditMode,
+    saveAndExit,
+    resetToDefault,
+    reorderInZone,
+    moveWidget,
   }
 }
