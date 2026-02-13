@@ -56,10 +56,10 @@ class NotificationPolicyProcessorTest extends TestCase
         $tokenStorage->method('getToken')->willReturn($token);
 
         $group = new Group();
-        $groupRepo->method('find')->with(1)->willReturn($group);
+        $groupRepo->method('find')->willReturn($group);
 
         $channel = new NotificationChannel();
-        $channelRepo->method('find')->with(2)->willReturn($channel);
+        $channelRepo->method('find')->willReturn($channel);
 
         $userRepo = self::createStub(\Ari\Repository\UserRepository::class);
         $userRepo->method('find')->willReturn($user);

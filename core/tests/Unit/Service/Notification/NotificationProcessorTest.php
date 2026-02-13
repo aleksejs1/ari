@@ -63,8 +63,8 @@ class NotificationProcessorTest extends TestCase
             }
         });
 
-        $this->senders->method('has')->with('email')->willReturn(true);
-        $this->senders->method('get')->with('email')->willReturn($sender);
+        $this->senders->method('has')->willReturn(true);
+        $this->senders->method('get')->willReturn($sender);
 
         $this->queueRepository->method('findPendingItems')->willReturn([$item]);
 
@@ -173,7 +173,7 @@ class NotificationProcessorTest extends TestCase
         });
 
         $this->queueRepository->method('findPendingItems')->willReturn([$item]);
-        $this->senders->method('has')->with('unsupported')->willReturn(false);
+        $this->senders->method('has')->willReturn(false);
 
         $processed = $this->processor->process();
         self::assertEquals(0, $processed);
@@ -209,8 +209,8 @@ class NotificationProcessorTest extends TestCase
         });
 
         $sender = self::createStub(NotificationSenderInterface::class);
-        $this->senders->method('has')->with('email')->willReturn(true);
-        $this->senders->method('get')->with('email')->willReturn($sender);
+        $this->senders->method('has')->willReturn(true);
+        $this->senders->method('get')->willReturn($sender);
 
         $this->queueRepository->method('findPendingItems')->willReturn([$item]);
 

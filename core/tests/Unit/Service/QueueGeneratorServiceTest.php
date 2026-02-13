@@ -74,7 +74,7 @@ class QueueGeneratorServiceTest extends TestCase
         // Mock Filters (Spy)
         $filters = self::createStub(FilterCollection::class);
         $this->entityManager->method('getFilters')->willReturn($filters);
-        $filters->method('isEnabled')->with('tenant')->willReturn(true);
+        $filters->method('isEnabled')->willReturn(true);
 
         $disabledFilters = [];
         $filters->method('disable')->willReturnCallback(function ($f) use (&$disabledFilters) {

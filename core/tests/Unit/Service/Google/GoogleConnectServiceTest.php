@@ -106,11 +106,11 @@ class GoogleConnectServiceTest extends TestCase
         $userRepo = self::createStub(EntityRepository::class);
         $userRepo->method('findOneBy')->willReturn($user);
 
-        $this->entityManager->method('getRepository')->with(User::class)->willReturn($userRepo);
+        $this->entityManager->method('getRepository')->willReturn($userRepo);
 
         $config = self::createStub(Configuration::class);
         $this->entityManager->method('getConfiguration')->willReturn($config);
-        $config->method('getFilterClassName')->with('tenant')->willReturn(TestSQLFilter::class);
+        $config->method('getFilterClassName')->willReturn(TestSQLFilter::class);
 
         $filters = new FilterCollection($this->entityManager);
         $this->entityManager->method('getFilters')->willReturn($filters);
