@@ -3,7 +3,6 @@ import i18n from '@/lib/i18n'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { settingsRegistry } from '@/lib/settings/SettingsRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
-import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 import { layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
@@ -68,7 +67,6 @@ export class PluginLoader {
         routeRegistry: RouteRegistry.getInstance(),
         sidebarRegistry: SidebarRegistry.getInstance(),
         userMenuRegistry: UserMenuRegistry.getInstance(),
-        topMenuRegistry: TopMenuRegistry.getInstance(),
         widgetRegistry: widgetRegistry,
         layoutPresetRegistry: layoutPresetRegistry,
         settingsRegistry: settingsRegistry,

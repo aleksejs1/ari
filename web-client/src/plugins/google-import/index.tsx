@@ -4,7 +4,6 @@ import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { PageLoader } from './components/PageLoader'
-import { GoogleImportSidebarSection } from './extensions/GoogleImportSidebarSection'
 
 const GoogleImportPage = lazy(() => import('./pages/GoogleImportPage'))
 
@@ -12,11 +11,11 @@ export class GoogleImportPlugin extends BasePlugin {
   name = 'google-import'
 
   register(context: PluginContext): void {
-    const { routeRegistry, sidebarRegistry } = context
+    const { routeRegistry } = context
 
-    // 1. Register Route
-    routeRegistry.register('dashboard', {
-      path: '/google-import',
+    // 1. Settings sub-route
+    routeRegistry.register('settings', {
+      path: 'google-import',
       element: (
         <Suspense fallback={<PageLoader />}>
           <GoogleImportPage />
@@ -24,11 +23,13 @@ export class GoogleImportPlugin extends BasePlugin {
       ),
     })
 
-    // 2. Register Sidebar Section
-    sidebarRegistry.register({
-      id: 'google-import',
-      component: GoogleImportSidebarSection,
-      order: 50, // Integrations section
+    // Redirect from old URL
+    routeRegistry.register('main', {
+      path: '/google-import',
+      lazy: async () => {
+        const { Navigate } = await import('react-router-dom')
+        return { Component: () => <Navigate to="/settings/google-import" replace /> }
+      },
     })
   }
 }

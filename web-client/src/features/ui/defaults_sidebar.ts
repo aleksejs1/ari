@@ -1,16 +1,5 @@
-// Removed IntegrationsRoutesSection import
-// Removed NotificationRoutesSection import
-// Removed SessionRoutesSection import
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
-
-import { CoreRoutesSection } from './sidebar/sections/CoreRoutesSection'
-
+// Default sidebar sections are now registered by individual plugins.
+// This function is kept for backward compatibility but registers nothing.
 export function registerDefaultSidebarSections() {
-  const registry = SidebarRegistry.getInstance()
-
-  registry.register({
-    id: 'core',
-    component: CoreRoutesSection,
-    order: 10,
-  })
+  // No default sections — all items are registered by plugins
 }

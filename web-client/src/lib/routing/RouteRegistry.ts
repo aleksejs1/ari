@@ -1,12 +1,12 @@
 import { type RouteObject } from 'react-router-dom'
 
-export type RouteSlot = 'dashboard' | 'sidebar-less' | 'public'
+export type RouteSlot = 'main' | 'settings' | 'public'
 
 export class RouteRegistry {
   private static instance: RouteRegistry
   private routes: Record<RouteSlot, RouteObject[]> = {
-    dashboard: [],
-    'sidebar-less': [],
+    main: [],
+    settings: [],
     public: [],
   }
 
@@ -21,8 +21,10 @@ export class RouteRegistry {
     return RouteRegistry.instance
   }
 
-  public register(slot: RouteSlot, route: RouteObject): void {
-    this.routes[slot].push(route)
+  public register(slot: RouteSlot | 'dashboard' | 'sidebar-less', route: RouteObject): void {
+    // Backward compatibility: both 'dashboard' and 'sidebar-less' map to 'main'
+    const resolvedSlot: RouteSlot = slot === 'dashboard' || slot === 'sidebar-less' ? 'main' : slot
+    this.routes[resolvedSlot].push(route)
   }
 
   public getRoutes(slot: RouteSlot): RouteObject[] {

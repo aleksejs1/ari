@@ -51,7 +51,6 @@ describe('HomePage', () => {
       routeRegistry: RouteRegistry.getInstance(),
       sidebarRegistry: SidebarRegistry.getInstance(),
       userMenuRegistry: UserMenuRegistry.getInstance(),
-      topMenuRegistry: {} as any,
       widgetRegistry: widgetRegistry,
       layoutPresetRegistry: { register: vi.fn(), get: vi.fn(), getAll: () => [] } as any,
       settingsRegistry: {} as any,

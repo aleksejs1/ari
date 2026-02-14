@@ -11,27 +11,32 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { useSidebarCollapsed } from '@/hooks/useSidebarCollapsed'
 
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
 import { SidebarContent } from '@/features/layout/SidebarContent'
 import { UserMenu } from '@/features/layout/UserMenu'
 import { GlobalSearch } from '@/features/search/components/GlobalSearch'
 
-export default function DashboardLayout() {
+export default function AppLayout() {
   const { t } = useTranslation()
-  const [open, setOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const { collapsed, toggle } = useSidebarCollapsed()
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Desktop Sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r bg-white dark:bg-gray-800 md:flex">
-        <SidebarContent />
+      <aside
+        className="sticky top-0 hidden h-screen flex-col border-r bg-white transition-[width] duration-200 dark:bg-gray-800 md:flex"
+        style={{ width: collapsed ? '64px' : '256px' }}
+      >
+        <SidebarContent collapsed={collapsed} onToggleCollapse={toggle} />
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-gray-50/50 dark:bg-gray-900/50">
+      <main className="flex min-w-0 flex-1 flex-col overflow-auto bg-gray-50/50 dark:bg-gray-900/50">
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-white px-6 shadow-sm dark:bg-gray-800">
-          <Sheet open={open} onOpenChange={setOpen}>
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
@@ -43,7 +48,7 @@ export default function DashboardLayout() {
               <SheetDescription className="sr-only">
                 {t('app.navigation.toggleMenu')}
               </SheetDescription>
-              <SidebarContent onNavigate={() => setOpen(false)} />
+              <SidebarContent onNavigate={() => setMobileOpen(false)} />
             </SheetContent>
           </Sheet>
 
@@ -53,7 +58,7 @@ export default function DashboardLayout() {
             <UserMenu />
           </div>
         </header>
-        <div className="p-8">
+        <div className="flex-1 p-8">
           <Outlet />
         </div>
       </main>

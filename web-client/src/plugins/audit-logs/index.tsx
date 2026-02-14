@@ -1,13 +1,7 @@
 import { lazy, Suspense } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-import { FileText, History } from 'lucide-react'
 
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
-
-import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -18,11 +12,11 @@ export class AuditLogsPlugin extends BasePlugin {
   name = 'audit-logs'
 
   register(context: PluginContext): void {
-    const { routeRegistry, sidebarRegistry, userMenuRegistry, widgetRegistry } = context
+    const { routeRegistry, widgetRegistry } = context
 
-    // 1. Routing
-    routeRegistry.register('dashboard', {
-      path: '/audit-logs',
+    // 1. Settings sub-route
+    routeRegistry.register('settings', {
+      path: 'audit-logs',
       element: (
         <Suspense fallback={<PageLoader />}>
           <AuditLogsPage />
@@ -30,45 +24,16 @@ export class AuditLogsPlugin extends BasePlugin {
       ),
     })
 
-    // 2. Sidebar
-    sidebarRegistry.register({
-      id: 'audit-logs-sidebar',
-      component: ({ onNavigate }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation()
-        return (
-          <SidebarNavItem
-            to="/audit-logs"
-            icon={History}
-            label={t('app.navigation.sidebar.auditLogs', 'Audit Logs')}
-            onClick={onNavigate}
-          />
-        )
+    // Redirect from old URL
+    routeRegistry.register('main', {
+      path: '/audit-logs',
+      lazy: async () => {
+        const { Navigate } = await import('react-router-dom')
+        return { Component: () => <Navigate to="/settings/audit-logs" replace /> }
       },
-      order: 15,
     })
 
-    // 3. User Menu
-    userMenuRegistry.register({
-      id: 'audit-logs-usermenu',
-      component: () => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation()
-        return (
-          <DropdownMenuItem asChild>
-            <Link to="/audit-logs" className="cursor-pointer p-4 md:px-2 md:py-1.5">
-              <FileText className="mr-3 h-5 w-5 md:mr-2 md:h-4 md:w-4" />
-              <span className="text-base md:text-sm">
-                {t('app.navigation.auditLogs', 'Audit Logs')}
-              </span>
-            </Link>
-          </DropdownMenuItem>
-        )
-      },
-      order: 25,
-    })
-
-    // 4. Dashboard Widgets
+    // 2. Dashboard Widgets
     widgetRegistry.register({
       id: 'recent-audit-logs',
       title: 'Recent Audit Logs',

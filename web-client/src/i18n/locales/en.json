@@ -34,12 +34,22 @@
       "toggleMenu": "Toggle menu"
     }
   },
+  "sidebar": {
+    "collapse": "Collapse",
+    "expand": "Expand sidebar"
+  },
   "settings": {
     "title": "Settings",
     "tabs": {
       "general": "General",
       "regional": "Regional",
       "data": "Data"
+    },
+    "nav": {
+      "preferences": "Preferences",
+      "notifications": "Notifications",
+      "activity": "Activity",
+      "account": "Account"
     },
     "language": "Language",
     "languageDescription": "Select your preferred language.",

@@ -47,7 +47,7 @@ export function GlobalSearch() {
     {
       id: 'nav-audit-logs',
       title: t('app.navigation.sidebar.auditLogs'),
-      url: '/audit-logs',
+      url: '/settings/audit-logs',
     },
     {
       id: 'nav-groups',
@@ -57,7 +57,7 @@ export function GlobalSearch() {
     {
       id: 'nav-notification-channels',
       title: t('app.navigation.sidebar.notificationChannels'),
-      url: '/notification-channels',
+      url: '/settings/notification-channels',
     },
     {
       id: 'nav-notification-policies',
@@ -72,22 +72,22 @@ export function GlobalSearch() {
     {
       id: 'nav-google-import',
       title: t('app.navigation.sidebar.googleImport'),
-      url: '/google-import',
+      url: '/settings/google-import',
     },
     {
       id: 'nav-settings',
       title: t('app.navigation.sidebar.settings'),
-      url: '/settings',
+      url: '/settings/general',
     },
     {
       id: 'settings-export',
       title: t('settings.exportData'),
-      url: '/settings',
+      url: '/settings/data',
     },
     {
       id: 'settings-import',
       title: t('settings.importData'),
-      url: '/settings',
+      url: '/settings/data',
     },
   ]
   const filteredSettings = settingsRoutes.filter((setting) =>

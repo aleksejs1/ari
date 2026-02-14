@@ -1,15 +1,9 @@
 import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { useAuth } from '@/hooks/useAuth'
-import { RouteRegistry } from '@/lib/routing/RouteRegistry'
-import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
-import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
-import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
-
-import { AuditLogsPlugin } from '@/plugins/audit-logs'
 
 import { UserMenu } from './UserMenu'
 
@@ -38,13 +32,6 @@ const mockUser = {
 
 const mockLogout = vi.fn()
 
-vi.mock('@/hooks/useAuth', () => ({
-  useAuth: vi.fn(() => ({
-    logout: mockLogout,
-    user: mockUser,
-  })),
-}))
-
 // ...
 
 describe('UserMenu', () => {
@@ -53,19 +40,6 @@ describe('UserMenu', () => {
       user: mockUser,
       logout: mockLogout,
     } as unknown as ReturnType<typeof useAuth>)
-
-    const context = {
-      routeRegistry: RouteRegistry.getInstance(),
-      sidebarRegistry: SidebarRegistry.getInstance(),
-      userMenuRegistry: UserMenuRegistry.getInstance(),
-      topMenuRegistry: {} as any, // Not used by AuditLogsPlugin
-      widgetRegistry: widgetRegistry,
-      layoutPresetRegistry: { register: vi.fn(), get: vi.fn(), getAll: () => [] } as any,
-      settingsRegistry: {} as any,
-      i18n: { addResourceBundle: vi.fn() } as any,
-      api: { get: vi.fn(), post: vi.fn() } as any,
-    }
-    new AuditLogsPlugin().register(context)
   })
 
   it('renders user menu trigger', () => {
@@ -100,9 +74,6 @@ describe('UserMenu', () => {
 
     await user.click(screen.getByRole('button', { name: /open user menu/i }))
 
-    expect(await screen.findByText('app.navigation.auditLogs')).toBeInTheDocument()
-
-    expect(await screen.findByText('settings.title')).toBeInTheDocument()
     expect(await screen.findByText('auth.logout')).toBeInTheDocument()
   })
 

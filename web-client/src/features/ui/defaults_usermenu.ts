@@ -1,6 +1,5 @@
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 
-import { CoreNavigationSection } from './usermenu/sections/CoreNavigationSection'
 import { LogoutSection } from './usermenu/sections/LogoutSection'
 import { ThemeSection } from './usermenu/sections/ThemeSection'
 import { UserIdentitySection } from './usermenu/sections/UserIdentitySection'
@@ -12,12 +11,6 @@ export function registerDefaultUserMenuSections() {
     id: 'identity',
     component: UserIdentitySection,
     order: 10,
-  })
-
-  registry.register({
-    id: 'core-nav',
-    component: CoreNavigationSection,
-    order: 20,
   })
 
   registry.register({

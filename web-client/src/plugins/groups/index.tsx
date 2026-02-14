@@ -15,7 +15,7 @@ export class GroupsPlugin extends BasePlugin {
     const { routeRegistry, sidebarRegistry } = context
 
     // 1. Register Routes
-    routeRegistry.register('dashboard', {
+    routeRegistry.register('main', {
       path: '/groups',
       element: (
         <Suspense fallback={<PageLoader />}>
@@ -24,11 +24,11 @@ export class GroupsPlugin extends BasePlugin {
       ),
     })
 
-    // 2. Register Sidebar Section
+    // 2. Register Sidebar Section (collapsible groups)
     sidebarRegistry.register({
       id: 'groups',
       component: GroupsSidebarSection,
-      order: 15,
+      order: 20,
     })
   }
 }

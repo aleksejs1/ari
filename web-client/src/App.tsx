@@ -8,26 +8,13 @@ import { ReloadProvider } from '@/contexts/ReloadContext'
 import { useAuth } from '@/hooks/useAuth'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 
-import DashboardLayout from './features/layout/DashboardLayout'
-import SidebarLessLayout from './features/layout/SidebarLessLayout'
+import AppLayout from './features/layout/AppLayout'
+import { SettingsLayout } from './plugins/settings/components/SettingsLayout'
 
 const routeRegistry = RouteRegistry.getInstance()
 
-// Removed ContactDetailsPage import
-// Removed ContactsPage import
-// Removed ContactGraphPage import
-
-// ... inside Layout
-// Removed /contact-graph route
-// Removed GoogleImportPage import
-// Removed GroupsPage import
-// Removed Notification imports
-// Removed SessionsPage import
-// Removed SettingsPage import
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
-// Removed HomePage import
-// Removed User Security imports
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -79,12 +66,15 @@ export default function App() {
       ),
       children: [
         {
-          element: <SidebarLessLayout />,
-          children: [...routeRegistry.getRoutes('sidebar-less')],
-        },
-        {
-          element: <DashboardLayout />,
-          children: [...routeRegistry.getRoutes('dashboard')],
+          element: <AppLayout />,
+          children: [
+            ...routeRegistry.getRoutes('main'),
+            {
+              path: '/settings',
+              element: <SettingsLayout />,
+              children: routeRegistry.getRoutes('settings'),
+            },
+          ],
         },
       ],
     },

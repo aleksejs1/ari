@@ -1,6 +1,6 @@
 export interface SidebarSectionDef {
   id: string
-  component: React.ComponentType<{ onNavigate?: () => void }>
+  component: React.ComponentType<{ onNavigate?: () => void; collapsed?: boolean }>
   order: number
 }
 

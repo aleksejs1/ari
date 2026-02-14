@@ -34,12 +34,22 @@
       }
     }
   },
+  "sidebar": {
+    "collapse": "Свернуть",
+    "expand": "Развернуть панель"
+  },
   "settings": {
     "title": "Настройки",
     "tabs": {
       "general": "Общие",
       "regional": "Региональные",
       "data": "Данные"
+    },
+    "nav": {
+      "preferences": "Предпочтения",
+      "notifications": "Уведомления",
+      "activity": "Активность",
+      "account": "Аккаунт"
     },
     "language": "Язык",
     "languageDescription": "Выберите предпочитаемый язык.",

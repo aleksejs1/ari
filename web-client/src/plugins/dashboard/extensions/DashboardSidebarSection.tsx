@@ -3,7 +3,13 @@ import { Home } from 'lucide-react'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
-export function DashboardSidebarSection({ onNavigate }: { onNavigate?: () => void }) {
+export function DashboardSidebarSection({
+  onNavigate,
+  collapsed,
+}: {
+  onNavigate?: () => void
+  collapsed?: boolean
+}) {
   const { t } = useTranslation()
 
   return (
@@ -12,6 +18,7 @@ export function DashboardSidebarSection({ onNavigate }: { onNavigate?: () => voi
       icon={Home}
       label={t('app.navigation.home', 'Home')}
       onClick={onNavigate}
+      collapsed={collapsed}
     />
   )
 }

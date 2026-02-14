@@ -11,7 +11,6 @@ import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
 import { ContactGraphWidget } from './components/ContactGraphWidget'
 import { PageLoader } from './components/PageLoader'
-import { GraphTopNavSection } from './extensions/GraphTopNavSection'
 
 const ContactGraphPage = lazy(() => import('./pages/ContactGraphPage'))
 
@@ -19,11 +18,11 @@ export class ContactGraphPlugin extends BasePlugin {
   name = 'contact-graph'
 
   register(context: PluginContext): void {
-    const { routeRegistry, sidebarRegistry, topMenuRegistry } = context
+    const { routeRegistry, sidebarRegistry } = context
     const contactDetailsRegistry = ContactDetailsRegistry.getInstance()
 
     // 1. Register Route
-    routeRegistry.register('sidebar-less', {
+    routeRegistry.register('main', {
       path: '/contact-graph',
       element: (
         <Suspense fallback={<PageLoader />}>
@@ -35,7 +34,7 @@ export class ContactGraphPlugin extends BasePlugin {
     // 2. Register Sidebar Link
     sidebarRegistry.register({
       id: 'contact-graph-link',
-      component: ({ onNavigate }) => {
+      component: ({ onNavigate, collapsed }) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const { t } = useTranslation()
         return (
@@ -44,24 +43,18 @@ export class ContactGraphPlugin extends BasePlugin {
             icon={Network}
             label={t('contactGraph.title', 'Contact Graph')}
             onClick={onNavigate}
+            collapsed={collapsed}
           />
         )
       },
-      order: 45,
+      order: 30,
     })
 
-    // 3. Register Top Menu Extension
-    topMenuRegistry.register({
-      id: 'contact-graph-top',
-      component: GraphTopNavSection,
-      order: 20,
-    })
-
-    // 4. Register Contact Details Widget
+    // 3. Register Contact Details Widget
     contactDetailsRegistry.register({
       id: 'graph-connections',
       order: 90,
-      layout: 'half', // or full based on preference
+      layout: 'half',
       component: ({ contact }) => {
         if (!contact.id) {
           return null

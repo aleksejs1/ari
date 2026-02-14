@@ -1,14 +1,9 @@
 import { lazy, Suspense } from 'react'
-import { useTranslation } from 'react-i18next'
-import { LogIn } from 'lucide-react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
 
-import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
-
 import { PageLoader } from './components/PageLoader'
-import { SessionsSidebarSection } from './extensions/SessionsSidebarSection'
 
 const SessionsPage = lazy(() => import('./pages/SessionsPage'))
 const LoginHistoryPage = lazy(() => import('./pages/LoginHistoryPage'))
@@ -18,11 +13,11 @@ export class SessionsPlugin extends BasePlugin {
   name = 'sessions'
 
   register(context: PluginContext): void {
-    const { routeRegistry, sidebarRegistry, widgetRegistry } = context
+    const { routeRegistry, widgetRegistry } = context
 
-    // 1. Register Routes
-    routeRegistry.register('dashboard', {
-      path: '/sessions',
+    // 1. Settings sub-routes
+    routeRegistry.register('settings', {
+      path: 'sessions',
       element: (
         <Suspense fallback={<PageLoader />}>
           <SessionsPage />
@@ -30,8 +25,8 @@ export class SessionsPlugin extends BasePlugin {
       ),
     })
 
-    routeRegistry.register('dashboard', {
-      path: '/login-history',
+    routeRegistry.register('settings', {
+      path: 'login-history',
       element: (
         <Suspense fallback={<PageLoader />}>
           <LoginHistoryPage />
@@ -39,31 +34,24 @@ export class SessionsPlugin extends BasePlugin {
       ),
     })
 
-    // 2. Register Sidebar Sections
-    sidebarRegistry.register({
-      id: 'sessions',
-      component: SessionsSidebarSection,
-      order: 40,
-    })
-
-    sidebarRegistry.register({
-      id: 'login-history',
-      component: ({ onNavigate }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation()
-        return (
-          <SidebarNavItem
-            to="/login-history"
-            icon={LogIn}
-            label={t('app.navigation.sidebar.loginHistory', 'Login History')}
-            onClick={onNavigate}
-          />
-        )
+    // Redirects from old URLs
+    routeRegistry.register('main', {
+      path: '/sessions',
+      lazy: async () => {
+        const { Navigate } = await import('react-router-dom')
+        return { Component: () => <Navigate to="/settings/sessions" replace /> }
       },
-      order: 42,
     })
 
-    // 3. Register Dashboard Widget
+    routeRegistry.register('main', {
+      path: '/login-history',
+      lazy: async () => {
+        const { Navigate } = await import('react-router-dom')
+        return { Component: () => <Navigate to="/settings/login-history" replace /> }
+      },
+    })
+
+    // 2. Register Dashboard Widget
     widgetRegistry.register({
       id: 'recent-logins',
       title: 'Recent Logins',

@@ -3,15 +3,22 @@ import { Settings } from 'lucide-react'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
-export function SettingsSidebarSection({ onNavigate }: { onNavigate?: () => void }) {
+export function SettingsSidebarSection({
+  onNavigate,
+  collapsed,
+}: {
+  onNavigate?: () => void
+  collapsed?: boolean
+}) {
   const { t } = useTranslation()
 
   return (
     <SidebarNavItem
-      to="/settings"
+      to="/settings/general"
       icon={Settings}
       label={t('app.navigation.sidebar.settings', 'Settings')}
       onClick={onNavigate}
+      collapsed={collapsed}
     />
   )
 }

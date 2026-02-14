@@ -14,7 +14,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   }
 })
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
-import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
@@ -30,7 +29,6 @@ const context = {
   routeRegistry: RouteRegistry.getInstance(),
   sidebarRegistry: SidebarRegistry.getInstance(),
   userMenuRegistry: UserMenuRegistry.getInstance(),
-  topMenuRegistry: TopMenuRegistry.getInstance(),
   widgetRegistry: widgetRegistry,
   layoutPresetRegistry: { register: vi.fn(), get: vi.fn(), getAll: () => [] } as any,
   settingsRegistry: {} as any,

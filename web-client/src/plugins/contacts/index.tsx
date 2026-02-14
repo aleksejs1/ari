@@ -1,18 +1,18 @@
 import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Users } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
-import { RouteRegistry } from '@/lib/routing/RouteRegistry'
-import { TopMenuRegistry } from '@/lib/ui/topmenu/TopMenuRegistry'
+
+import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
 import { PageLoader } from '../settings/components/PageLoader'
 
 import { ContactTimeline } from './components/ContactTimeline'
 import { registerDefaultContactDetailsSections } from './details/defaults_details'
-import { ContactsTopNavSection } from './extensions/ContactsTopNavSection'
 import { registerDefaultContactFormSections } from './defaults_form'
 
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
@@ -27,11 +27,10 @@ export class ContactsPlugin extends BasePlugin {
 
   register(context: PluginContext): void {
     this.registerTranslations({ en, ru }, context.i18n)
-    const routeRegistry = RouteRegistry.getInstance()
-    const topMenuRegistry = TopMenuRegistry.getInstance()
+    const { routeRegistry, sidebarRegistry } = context
 
     // 1. Register Routes
-    routeRegistry.register('sidebar-less', {
+    routeRegistry.register('main', {
       path: '/contacts',
       element: (
         <Suspense fallback={<PageLoader />}>
@@ -40,7 +39,7 @@ export class ContactsPlugin extends BasePlugin {
       ),
     })
 
-    routeRegistry.register('sidebar-less', {
+    routeRegistry.register('main', {
       path: '/contacts/:id',
       element: (
         <Suspense fallback={<PageLoader />}>
@@ -49,7 +48,7 @@ export class ContactsPlugin extends BasePlugin {
       ),
     })
 
-    routeRegistry.register('sidebar-less', {
+    routeRegistry.register('main', {
       path: '/contacts/:id/timeline',
       element: (
         <Suspense fallback={<PageLoader />}>
@@ -58,14 +57,26 @@ export class ContactsPlugin extends BasePlugin {
       ),
     })
 
-    // 3. Register Top Menu Extension
-    topMenuRegistry.register({
-      id: 'contacts-top',
-      component: ContactsTopNavSection,
+    // 2. Register Sidebar Section
+    sidebarRegistry.register({
+      id: 'contacts',
+      component: ({ onNavigate, collapsed }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const { t } = useTranslation('contacts')
+        return (
+          <SidebarNavItem
+            to="/contacts"
+            icon={Users}
+            label={t('title', 'Contacts')}
+            onClick={onNavigate}
+            collapsed={collapsed}
+          />
+        )
+      },
       order: 10,
     })
 
-    // 4. Register Contact Details Sections
+    // 3. Register Contact Details Sections
     const contactDetailsRegistry = ContactDetailsRegistry.getInstance()
     contactDetailsRegistry.register({
       id: 'history',
@@ -91,7 +102,7 @@ export class ContactsPlugin extends BasePlugin {
       layout: 'full',
     })
 
-    // 5. Register Registry Sections
+    // 4. Register Registry Sections
     registerDefaultContactFormSections()
     registerDefaultContactDetailsSections()
   }

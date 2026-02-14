@@ -4,7 +4,6 @@ import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
 
 import { PageLoader } from './components/PageLoader'
-import { NotificationsSidebarSection } from './extensions/NotificationsSidebarSection'
 
 const NotificationChannelsPage = lazy(() => import('./pages/NotificationChannelsPage'))
 const NotificationPoliciesPage = lazy(() => import('./pages/NotificationPoliciesPage'))
@@ -14,11 +13,11 @@ export class NotificationsPlugin extends BasePlugin {
   name = 'notifications'
 
   register(context: PluginContext): void {
-    const { routeRegistry, sidebarRegistry } = context
+    const { routeRegistry } = context
 
-    // 1. Register Routes
-    routeRegistry.register('dashboard', {
-      path: '/notification-channels',
+    // 1. Settings sub-routes
+    routeRegistry.register('settings', {
+      path: 'notification-channels',
       element: (
         <Suspense fallback={<PageLoader />}>
           <NotificationChannelsPage />
@@ -26,8 +25,8 @@ export class NotificationsPlugin extends BasePlugin {
       ),
     })
 
-    routeRegistry.register('dashboard', {
-      path: '/settings/notification-policies',
+    routeRegistry.register('settings', {
+      path: 'notification-policies',
       element: (
         <Suspense fallback={<PageLoader />}>
           <NotificationPoliciesPage />
@@ -35,8 +34,8 @@ export class NotificationsPlugin extends BasePlugin {
       ),
     })
 
-    routeRegistry.register('dashboard', {
-      path: '/settings/notification-policies/new',
+    routeRegistry.register('settings', {
+      path: 'notification-policies/new',
       element: (
         <Suspense fallback={<PageLoader />}>
           <NotificationPolicyFormPage />
@@ -44,8 +43,8 @@ export class NotificationsPlugin extends BasePlugin {
       ),
     })
 
-    routeRegistry.register('dashboard', {
-      path: '/settings/notification-policies/:id',
+    routeRegistry.register('settings', {
+      path: 'notification-policies/:id',
       element: (
         <Suspense fallback={<PageLoader />}>
           <NotificationPolicyFormPage />
@@ -53,11 +52,13 @@ export class NotificationsPlugin extends BasePlugin {
       ),
     })
 
-    // 2. Register Sidebar Section
-    sidebarRegistry.register({
-      id: 'notifications',
-      component: NotificationsSidebarSection,
-      order: 30, // Maintains original order
+    // Redirect from old URL
+    routeRegistry.register('main', {
+      path: '/notification-channels',
+      lazy: async () => {
+        const { Navigate } = await import('react-router-dom')
+        return { Component: () => <Navigate to="/settings/notification-channels" replace /> }
+      },
     })
   }
 }
