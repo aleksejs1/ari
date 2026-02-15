@@ -27,7 +27,8 @@ export function GroupsSidebarSection({
 }) {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(getGroupsExpanded)
-  const { data: groups = [] } = useGroups()
+  const { data: allGroups = [] } = useGroups()
+  const groups = allGroups.filter((g) => (g.contactsCount ?? 0) > 0)
 
   const toggleExpanded = () => {
     setExpanded((prev) => {
@@ -97,6 +98,9 @@ export function GroupsSidebarSection({
                   />
                 ) : null}
                 <span className="min-w-0 truncate">{group.name}</span>
+                <span className="ml-auto shrink-0 text-xs text-gray-400 dark:text-gray-500">
+                  {group.contactsCount}
+                </span>
               </Link>
             )
           })}
