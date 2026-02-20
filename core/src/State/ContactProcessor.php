@@ -124,10 +124,32 @@ class ContactProcessor implements ProcessorInterface
                     'addContactBiography',
                     null,
                 );
-                $existing->getReverseContactRelationsCollection()->clear();
+                // Filter out reverse relations from incoming data.
+                // Reverse relations are read-only (owned by other contacts);
+                // only forward relations should be synced during PUT.
+                /** @var array<int, true> $reverseIds */
+                $reverseIds = [];
+                foreach ($existing->getReverseContactRelationsCollection() as $rev) {
+                    $revId = $rev->getId();
+                    if (null !== $revId) {
+                        $reverseIds[$revId] = true;
+                    }
+                }
+                $forwardRelations = [];
+                foreach ($data->getContactRelations() as $rel) {
+                    $relId = $rel->getId();
+                    if (null !== $relId && isset($reverseIds[$relId])) {
+                        // Reverse relation: undo any denormalizer modifications
+                        if ($this->entityManager->contains($rel)) {
+                            $this->entityManager->refresh($rel);
+                        }
+                        continue; // Skip reverse relations — managed by their owner contact
+                    }
+                    $forwardRelations[] = $rel;
+                }
                 $this->handleClearAndReplace(
                     $existing,
-                    $data->getContactRelations(),
+                    $forwardRelations,
                     $existing->getContactRelationsCollection(),
                     'addContactRelation',
                     null,
