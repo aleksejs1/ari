@@ -55,7 +55,7 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
       <div className={fullHeight ? 'pr-4' : 'h-[300px] overflow-y-auto pr-4'}>
         <div className="relative ml-2 space-y-6 border-l border-gray-200 pb-4">
           {logs.map((log: TimelineEvent) => (
-            <ContactTimelineItem key={log.id} log={log} />
+            <ContactTimelineItem key={log.id} log={log} contactId={contactId} />
           ))}
         </div>
       </div>

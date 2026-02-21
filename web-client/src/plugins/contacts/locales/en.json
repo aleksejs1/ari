@@ -158,7 +158,11 @@
         "UPDATE": "Biography changed",
         "REMOVE": "Biography removed"
       }
-    }
+    },
+    "viewSnapshot": "View state",
+    "snapshotTitle": "Contact state at {{date}}",
+    "snapshotEmpty": "No data available",
+    "snapshotError": "Failed to load snapshot"
   },
   "subscriptions": "Notification Subscriptions",
   "addSubscription": "Add Subscription",
