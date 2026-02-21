@@ -96,7 +96,7 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>{t('auth.uuid')}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('auth.uuid')} {...field} />
+                      <Input placeholder={t('auth.uuid')} data-testid="register-uuid" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>{t('auth.password')}</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" data-testid="register-password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,14 +122,18 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>{t('auth.confirmPassword')}</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" data-testid="register-confirm-password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {error ? <div className="text-sm text-red-500">{error}</div> : null}
-              <Button type="submit" className="w-full">
+              {error ? (
+                <div className="text-sm text-red-500" data-testid="register-error">
+                  {error}
+                </div>
+              ) : null}
+              <Button type="submit" className="w-full" data-testid="register-submit">
                 {t('auth.signUp')}
               </Button>
             </form>

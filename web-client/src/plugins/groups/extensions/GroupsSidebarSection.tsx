@@ -78,10 +78,7 @@ export function GroupsSidebarSection({
       {expanded ? (
         <div className="ml-4 mt-1 space-y-0.5 border-l border-gray-200 pl-3 dark:border-gray-700">
           {groups.map((group) => {
-            const groupId =
-              typeof group.id === 'string' && group.id.startsWith('/api')
-                ? group.id.split('/').pop()
-                : group.id
+            const groupId = group.id
             return (
               <Link
                 key={group.id}

@@ -50,7 +50,7 @@ describe('axios api', () => {
 
     // @ts-expect-error - accessing internal interceptors for testing
     const interceptor = api.interceptors.request.handlers[0].fulfilled
-    const config = { headers: {} }
+    const config = { headers: {} } as any
     const result = await interceptor(config)
 
     expect(result.headers.Authorization).toBe(`Bearer ${validToken}`)
@@ -77,7 +77,7 @@ describe('axios api', () => {
 
     // @ts-expect-error - accessing internal interceptors for testing
     const interceptor = api.interceptors.request.handlers[0].fulfilled
-    const config = { headers: {} }
+    const config = { headers: {} } as any
     const result = await interceptor(config)
 
     expect(axios.post).toHaveBeenCalledWith(
@@ -110,7 +110,7 @@ describe('axios api', () => {
 
     // @ts-expect-error - accessing internal interceptors for testing
     const interceptor = api.interceptors.request.handlers[0].fulfilled
-    const config = { headers: {} }
+    const config = { headers: {} } as any
 
     await expect(interceptor(config)).rejects.toThrow('Refresh failed')
     expect(window.location.href).toBe('/login')
@@ -141,8 +141,8 @@ describe('axios api', () => {
     // @ts-expect-error - accessing internal interceptors for testing
     const interceptor = api.interceptors.request.handlers[0].fulfilled
 
-    const config1 = { headers: {} }
-    const config2 = { headers: {} }
+    const config1 = { headers: {} } as any
+    const config2 = { headers: {} } as any
 
     const promise1 = interceptor(config1)
     const promise2 = interceptor(config2)

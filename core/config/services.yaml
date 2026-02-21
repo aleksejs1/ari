@@ -29,6 +29,10 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     Ari\:
         resource: '../src/'
+        exclude:
+            - '../src/Controller/Api/E2eController.php'
+            - '../src/Service/E2e/'
+            - '../src/Command/E2eSeedCommand.php'
 
     _instanceof:
         Ari\Service\ContactImport\ContactDuplicateCheckerInterface:

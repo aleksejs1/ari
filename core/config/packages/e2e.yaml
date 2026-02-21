@@ -1,0 +1,50 @@
+when@e2e:
+    services:
+        Ari\Service\E2e\E2eSeedService:
+            autowire: true
+            autoconfigure: true
+
+        Ari\Controller\Api\E2eController:
+            autowire: true
+            autoconfigure: true
+            tags: ['controller.service_arguments']
+
+        Ari\Command\E2eSeedCommand:
+            autowire: true
+            autoconfigure: true
+
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system
+        router:
+            strict_requirements: null
+
+    monolog:
+        handlers:
+            main:
+                type: fingers_crossed
+                action_level: error
+                handler: nested
+                excluded_http_codes: [404, 405]
+                channels: ["!deprecation"]
+                buffer_size: 50
+            nested:
+                type: stream
+                path: php://stderr
+                level: debug
+                formatter: monolog.formatter.json
