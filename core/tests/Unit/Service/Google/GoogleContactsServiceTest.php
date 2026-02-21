@@ -51,6 +51,8 @@ class GoogleContactsServiceTest extends TestCase
             $this->entityManager,
             $this->bus,
             70,
+            'https://people.googleapis.com/v1/people/me/connections',
+            'https://people.googleapis.com/v1/contactGroups',
         );
     }
 
@@ -152,6 +154,8 @@ class GoogleContactsServiceTest extends TestCase
             $this->entityManager,
             $this->bus,
             70,
+            'https://people.googleapis.com/v1/people/me/connections',
+            'https://people.googleapis.com/v1/contactGroups',
         );
     }
 

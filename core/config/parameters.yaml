@@ -15,6 +15,13 @@ parameters:
 
     default_google_contacts_import_limit: 70
     default_xml_import_limit: 70
+
+    default_google_auth_url: 'https://accounts.google.com/o/oauth2/v2/auth'
+    default_google_token_url: 'https://oauth2.googleapis.com/token'
+    default_google_people_api_url: 'https://people.googleapis.com/v1/people/me/connections'
+    default_google_groups_api_url: 'https://people.googleapis.com/v1/contactGroups'
+    default_google_people_api_base_url: 'https://people.googleapis.com/v1/'
+    default_telegram_api_base_url: 'https://api.telegram.org'
     
     # Storage
     default_s3_bucket: 'ari'

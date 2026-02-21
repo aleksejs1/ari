@@ -21,14 +21,13 @@ use Ari\Repository\UserRepository;
 use Ari\Service\ContactImport\ContactImportService;
 use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsMessageHandler]
 final class ImportGoogleContactHandler
 {
-    private const PEOPLE_API_BASE = 'https://people.googleapis.com/v1/';
-
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly TokenStorageRepository $tokenStorageRepository,
@@ -37,6 +36,8 @@ final class ImportGoogleContactHandler
         private readonly HttpClientInterface $httpClient,
         private readonly ContactImportService $contactImportService,
         private readonly EntityManagerInterface $entityManager,
+        #[Autowire('%google_people_api_base_url%')]
+        private readonly string $peopleApiBase,
     ) {
     }
 
@@ -97,7 +98,7 @@ final class ImportGoogleContactHandler
      */
     private function fetchContact(string $resourceName, string $accessToken): array
     {
-        $response = $this->httpClient->request('GET', self::PEOPLE_API_BASE . $resourceName, [
+        $response = $this->httpClient->request('GET', $this->peopleApiBase . $resourceName, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
             ],
@@ -327,7 +328,7 @@ final class ImportGoogleContactHandler
 
         // Fallback: Fetch group from Google if not found
         try {
-            $response = $this->httpClient->request('GET', self::PEOPLE_API_BASE . $resourceName, [
+            $response = $this->httpClient->request('GET', $this->peopleApiBase . $resourceName, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $accessToken,
                 ],

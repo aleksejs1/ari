@@ -8,7 +8,13 @@ parameters:
     google_client_id: '%env(GOOGLE_CLIENT_ID)%'
     google_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
     google_redirect_uri: '%env(GOOGLE_REDIRECT_URI)%'
-    
+    google_auth_url: '%env(default:default_google_auth_url:GOOGLE_AUTH_URL)%'
+    google_token_url: '%env(default:default_google_token_url:GOOGLE_TOKEN_URL)%'
+    google_people_api_url: '%env(default:default_google_people_api_url:GOOGLE_PEOPLE_API_URL)%'
+    google_groups_api_url: '%env(default:default_google_groups_api_url:GOOGLE_GROUPS_API_URL)%'
+    google_people_api_base_url: '%env(default:default_google_people_api_base_url:GOOGLE_PEOPLE_API_BASE_URL)%'
+    telegram_api_base_url: '%env(default:default_telegram_api_base_url:TELEGRAM_API_BASE_URL)%'
+
     # DB
     database_server_version: '%env(default:default_db_server_version:DATABASE_SERVER_VERSION)%'
     test_token: '%env(default::TEST_TOKEN)%'

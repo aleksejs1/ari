@@ -51,6 +51,7 @@ class E2eController extends AbstractController
             'password' => $password,
             'email' => $result['email'],
             'token' => $result['token'],
+            'userId' => $result['userId'],
         ], 201);
     }
 

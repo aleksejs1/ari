@@ -43,7 +43,7 @@ class E2eSeedService
     }
 
     /**
-     * @return array{token: string, email: string}
+     * @return array{token: string, email: string, userId: int|null}
      */
     public function createIsolatedUser(string $uuid, string $password): array
     {
@@ -76,7 +76,7 @@ class E2eSeedService
 
         $token = $this->jwtManager->create($user);
 
-        return ['token' => $token, 'email' => $uuid . '@e2e.local'];
+        return ['token' => $token, 'email' => $uuid . '@e2e.local', 'userId' => $user->getId()];
     }
 
     public function deleteUser(string $uuid): void

@@ -7,9 +7,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GoogleOAuthService
 {
-    private const AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
-    private const TOKEN_URL = 'https://oauth2.googleapis.com/token';
-
     public function __construct(
         #[Autowire('%google_client_id%')]
         private readonly string $clientId,
@@ -17,6 +14,10 @@ class GoogleOAuthService
         private readonly string $clientSecret,
         #[Autowire('%google_redirect_uri%')]
         private readonly string $redirectUri,
+        #[Autowire('%google_auth_url%')]
+        private readonly string $authUrl,
+        #[Autowire('%google_token_url%')]
+        private readonly string $tokenUrl,
         private readonly HttpClientInterface $httpClient,
     ) {
     }
@@ -36,7 +37,7 @@ class GoogleOAuthService
             $params['state'] = $state;
         }
 
-        return self::AUTH_URL . '?' . http_build_query($params);
+        return $this->authUrl . '?' . http_build_query($params);
     }
 
     /**
@@ -51,7 +52,7 @@ class GoogleOAuthService
      */
     public function getAccessToken(string $code): array
     {
-        $response = $this->httpClient->request('POST', self::TOKEN_URL, [
+        $response = $this->httpClient->request('POST', $this->tokenUrl, [
             'body' => [
                 'code' => $code,
                 'client_id' => $this->clientId,
@@ -81,7 +82,7 @@ class GoogleOAuthService
      */
     public function refreshAccessToken(string $refreshToken): array
     {
-        $response = $this->httpClient->request('POST', self::TOKEN_URL, [
+        $response = $this->httpClient->request('POST', $this->tokenUrl, [
             'body' => [
                 'refresh_token' => $refreshToken,
                 'client_id' => $this->clientId,

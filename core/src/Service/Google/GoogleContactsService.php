@@ -9,14 +9,12 @@ use Ari\Message\ImportGoogleContactMessage;
 use Ari\Repository\ImportMappingRepository;
 use Ari\Repository\TokenStorageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GoogleContactsService
 {
-    private const PEOPLE_API_URL = 'https://people.googleapis.com/v1/people/me/connections';
-    private const GROUPS_API_URL = 'https://people.googleapis.com/v1/contactGroups';
-
     public function __construct(
         private readonly TokenStorageRepository $tokenStorageRepository,
         private readonly ImportMappingRepository $importMappingRepository,
@@ -25,6 +23,10 @@ class GoogleContactsService
         private readonly EntityManagerInterface $entityManager,
         private readonly MessageBusInterface $bus,
         private readonly int $importLimit,
+        #[Autowire('%google_people_api_url%')]
+        private readonly string $peopleApiUrl,
+        #[Autowire('%google_groups_api_url%')]
+        private readonly string $groupsApiUrl,
     ) {
     }
 
@@ -69,7 +71,7 @@ class GoogleContactsService
                 $query['pageToken'] = $pageToken;
             }
 
-            $response = $this->httpClient->request('GET', self::PEOPLE_API_URL, [
+            $response = $this->httpClient->request('GET', $this->peopleApiUrl, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $accessToken,
                 ],
@@ -139,7 +141,7 @@ class GoogleContactsService
                 $query['pageToken'] = $pageToken;
             }
 
-            $response = $this->httpClient->request('GET', self::GROUPS_API_URL, [
+            $response = $this->httpClient->request('GET', $this->groupsApiUrl, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $accessToken,
                 ],

@@ -25,6 +25,8 @@ final class GoogleOAuthServiceTest extends TestCase
             'client_id',
             'client_secret',
             'redirect_uri',
+            'https://accounts.google.com/o/oauth2/v2/auth',
+            'https://oauth2.googleapis.com/token',
             $this->httpClient,
         );
     }
@@ -51,6 +53,8 @@ final class GoogleOAuthServiceTest extends TestCase
             'client_id',
             'client_secret',
             'redirect_uri',
+            'https://accounts.google.com/o/oauth2/v2/auth',
+            'https://oauth2.googleapis.com/token',
             $this->httpClient,
         );
 
@@ -71,6 +75,8 @@ final class GoogleOAuthServiceTest extends TestCase
             'client_id',
             'client_secret',
             'redirect_uri',
+            'https://accounts.google.com/o/oauth2/v2/auth',
+            'https://oauth2.googleapis.com/token',
             $this->httpClient,
         );
 

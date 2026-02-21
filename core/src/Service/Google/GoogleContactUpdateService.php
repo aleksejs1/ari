@@ -7,6 +7,7 @@ use Ari\Entity\UserPref;
 use Ari\Repository\ImportMappingRepository;
 use Ari\Repository\TokenStorageRepository;
 use Ari\Repository\UserPrefRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GoogleContactUpdateService
@@ -17,6 +18,8 @@ class GoogleContactUpdateService
         private readonly UserPrefRepository $userPrefRepository,
         private readonly GoogleContactsService $googleContactsService,
         private readonly HttpClientInterface $httpClient,
+        #[Autowire('%google_people_api_base_url%')]
+        private readonly string $peopleApiBase,
     ) {
     }
 
@@ -158,7 +161,7 @@ class GoogleContactUpdateService
         }
 
         // Send GET request to fetch the latest etag
-        $personUrl = sprintf('https://people.googleapis.com/v1/%s', $resourceName);
+        $personUrl = sprintf('%s%s', $this->peopleApiBase, $resourceName);
         $getResponse = $this->httpClient->request('GET', $personUrl, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
@@ -176,7 +179,7 @@ class GoogleContactUpdateService
         }
 
         // Send PATCH request to Google People API
-        $url = sprintf('https://people.googleapis.com/v1/%s:updateContact', $resourceName);
+        $url = sprintf('%s%s:updateContact', $this->peopleApiBase, $resourceName);
 
         $this->httpClient->request('PATCH', $url, [
             'headers' => [

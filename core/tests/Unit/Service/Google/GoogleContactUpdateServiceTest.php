@@ -53,6 +53,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $this->userPrefRepository,
             $this->googleContactsService,
             $this->httpClient,
+            'https://people.googleapis.com/v1/',
         );
     }
 
@@ -179,6 +180,7 @@ class GoogleContactUpdateServiceTest extends TestCase
             $this->userPrefRepository,
             $this->googleContactsService,
             $this->httpClient,
+            'https://people.googleapis.com/v1/',
         );
     }
 }
