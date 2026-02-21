@@ -9,7 +9,7 @@ use Ari\Repository\NotificationIntentRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: NotificationIntentRepository::class)]
 #[ApiResource(

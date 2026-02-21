@@ -13,7 +13,7 @@ use Ari\Repository\UserPrefRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 

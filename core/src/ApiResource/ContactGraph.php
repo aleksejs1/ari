@@ -9,7 +9,7 @@ use ApiPlatform\OpenApi\Model\Parameter;
 use Ari\Dto\ContactGraph\GraphLink;
 use Ari\Dto\ContactGraph\GraphNode;
 use Ari\State\ContactGraphProvider;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     shortName: 'ContactGraph',

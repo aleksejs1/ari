@@ -10,8 +10,8 @@ use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: ActivityFeedRepository::class)]
 #[ORM\Index(columns: ['user_id', 'is_read'], name: 'idx_activity_feed_user_unread')]
