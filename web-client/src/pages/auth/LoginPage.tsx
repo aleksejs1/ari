@@ -104,7 +104,11 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>{t('auth.username')}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('auth.username')} {...field} />
+                      <Input
+                        placeholder={t('auth.username')}
+                        data-testid="login-username"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -117,14 +121,23 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>{t('auth.password')}</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" data-testid="login-password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {error ? <div className="text-sm text-red-500">{error}</div> : null}
-              <Button type="submit" className="w-full" disabled={isDemoLoading}>
+              {error ? (
+                <div className="text-sm text-red-500" data-testid="login-error">
+                  {error}
+                </div>
+              ) : null}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isDemoLoading}
+                data-testid="login-submit"
+              >
                 {t('auth.signIn')}
               </Button>
             </form>

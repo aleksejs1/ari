@@ -22,7 +22,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Button variant="ghost" size="icon" className="h-9 w-9" data-testid="user-menu-trigger">
           <CircleUser className="h-5 w-5" />
           <span className="sr-only">Open user menu</span>
         </Button>

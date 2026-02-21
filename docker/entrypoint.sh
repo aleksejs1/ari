@@ -109,8 +109,12 @@ echo "Starting messenger worker..."
 (while true; do php bin/console messenger:consume async --memory-limit=128M --time-limit=3600; sleep 5; done) &
 
 # Start cron daemon in background
-echo "Starting crond..."
-crond -b
+if [ "${DISABLE_CRON}" = "1" ]; then
+    echo "Cron disabled (DISABLE_CRON=1)"
+else
+    echo "Starting crond..."
+    crond -b
+fi
 
 # Go back to app root for the main command
 cd /app
