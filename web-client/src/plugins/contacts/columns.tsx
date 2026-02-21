@@ -53,7 +53,7 @@ export function registerDefaultColumns() {
     label: 'Phone Numbers',
     definition: () => ({
       accessorKey: 'phoneNumbers',
-      header: () => <LocalizedHeader name="contacts.phoneNumbers" />,
+      header: () => <LocalizedHeader name="phoneNumbers" />,
       cell: ({ row }) => <ContactPhonesCell contact={row.original} />,
       meta: { titleKey: 'contacts.phoneNumbers' },
     }),
@@ -64,7 +64,7 @@ export function registerDefaultColumns() {
     label: 'Email Addresses',
     definition: () => ({
       accessorKey: 'contactEmailAdresses',
-      header: () => <LocalizedHeader name="contacts.emailAddresses" />,
+      header: () => <LocalizedHeader name="emailAddresses" />,
       cell: ({ row }) => <ContactEmailsCell contact={row.original} />,
       meta: { titleKey: 'contacts.emailAddresses' },
     }),
@@ -75,7 +75,7 @@ export function registerDefaultColumns() {
     label: 'Groups',
     definition: () => ({
       accessorKey: 'contactGroups',
-      header: () => <LocalizedHeader name="contacts.groups" />,
+      header: () => <LocalizedHeader name="groups" />,
       cell: ({ row }) => <ContactGroupsCell contact={row.original} />,
       meta: { titleKey: 'contacts.groups' },
     }),
@@ -86,7 +86,7 @@ export function registerDefaultColumns() {
     label: 'Dates',
     definition: () => ({
       accessorKey: 'contactDates',
-      header: () => <LocalizedHeader name="contacts.dates" />,
+      header: () => <LocalizedHeader name="dates" />,
       cell: ({ row }) => <ContactDatesCell contact={row.original} />,
       meta: { titleKey: 'contacts.dates' },
     }),

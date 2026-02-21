@@ -201,6 +201,15 @@
     },
     "showAllResults": "Показать все результаты"
   },
+  "contacts": {
+    "favorite": "Избранное",
+    "avatar": "Аватар",
+    "name": "Имя",
+    "phoneNumbers": "Телефоны",
+    "emailAddresses": "Email адреса",
+    "groups": "Группы",
+    "dates": "Даты"
+  },
   "groups": {
     "title": "Группы контактов",
     "createGroup": "Создать группу",

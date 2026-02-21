@@ -202,6 +202,15 @@
     },
     "showAllResults": "Show all results"
   },
+  "contacts": {
+    "favorite": "Favorite",
+    "avatar": "Avatar",
+    "name": "Name",
+    "phoneNumbers": "Phone Numbers",
+    "emailAddresses": "Email Addresses",
+    "groups": "Groups",
+    "dates": "Dates"
+  },
   "groups": {
     "title": "Contact Groups",
     "createGroup": "Create Group",
