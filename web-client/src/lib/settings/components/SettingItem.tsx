@@ -85,7 +85,12 @@ function ControlRenderer({ control }: { control: ControlConfig }) {
     case 'button':
       return (
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Button variant={control.variant} onClick={control.onClick} disabled={control.disabled}>
+          <Button
+            variant={control.variant}
+            onClick={control.onClick}
+            disabled={control.disabled}
+            data-testid={control.testId}
+          >
             {control.label}
           </Button>
         </div>

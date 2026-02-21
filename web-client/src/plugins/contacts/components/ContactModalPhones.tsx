@@ -32,7 +32,7 @@ export function ContactModalPhones() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input placeholder={t('phone')} {...field} />
+                  <Input placeholder={t('phone')} {...field} data-testid="contact-phone-input" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

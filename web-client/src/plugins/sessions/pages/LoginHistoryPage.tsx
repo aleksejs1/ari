@@ -135,7 +135,10 @@ export default function LoginHistoryPage() {
         </div>
       </div>
 
-      <div className="flex min-h-[400px] flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+      <div
+        className="flex min-h-[400px] flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800"
+        data-testid="login-history-list"
+      >
         <div className="flex-1">
           {logins.length === 0 ? (
             <div className="flex h-full items-center justify-center p-12">

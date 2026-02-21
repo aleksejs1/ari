@@ -287,6 +287,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   className="group/row cursor-pointer"
+                  data-testid="contact-row"
                   onClick={() => navigate(`/contacts/${row.original.id}`)}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -297,7 +298,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow data-testid="contacts-empty">
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   {t('noContacts')}
                 </TableCell>

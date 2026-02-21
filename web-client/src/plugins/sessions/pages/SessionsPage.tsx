@@ -59,7 +59,7 @@ export default function SessionsPage() {
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="sessions-list">
           {sessions.map((session) => (
             <Card key={session.id} className={session.isCurrent ? 'border-blue-500' : ''}>
               <CardContent className="flex items-center justify-between p-6">

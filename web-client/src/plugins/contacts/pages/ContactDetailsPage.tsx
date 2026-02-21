@@ -54,6 +54,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
             onClick={async () => {
               await navigate(-1)
             }}
+            data-testid="contact-details-back"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -66,6 +67,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
             onClick={() => void handleExportVcard()}
             disabled={exportVcardMutation.isPending}
             className="flex-1 gap-2 md:flex-none"
+            data-testid="contact-export-vcard"
           >
             {exportVcardMutation.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -79,6 +81,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
             size="sm"
             onClick={() => setIsDeleteDialogOpen(true)}
             className="flex-1 gap-2 md:flex-none"
+            data-testid="contact-delete-button"
           >
             <Trash2 className="h-4 w-4" />
             {t('common.delete')}

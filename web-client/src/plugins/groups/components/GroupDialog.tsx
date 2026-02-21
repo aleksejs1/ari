@@ -96,7 +96,7 @@ function GroupFormContent({ group, onOpenChange }: GroupFormContentProps) {
             <FormItem>
               <FormLabel>{t('groups.fields.name', 'Name')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} data-testid="group-name-input" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,10 +128,15 @@ function GroupFormContent({ group, onOpenChange }: GroupFormContentProps) {
         />
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            data-testid="group-form-cancel"
+          >
             {t('common.cancel', 'Cancel')}
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading} data-testid="group-form-save">
             {getButtonLabel()}
           </Button>
         </DialogFooter>
@@ -145,7 +150,7 @@ export function GroupDialog({ open, onOpenChange, group }: GroupDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent data-testid="group-form-dialog">
         <DialogHeader>
           <DialogTitle>
             {group ? t('groups.editGroup', 'Edit Group') : t('groups.createGroup', 'Create Group')}

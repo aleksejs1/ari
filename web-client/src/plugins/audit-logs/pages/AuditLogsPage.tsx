@@ -63,7 +63,10 @@ export default function AuditLogsPage() {
         </div>
       </div>
 
-      <div className="flex min-h-[400px] flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+      <div
+        className="flex min-h-[400px] flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800"
+        data-testid="audit-logs-list"
+      >
         <div className="flex-1">
           <LogList logs={logs} isPlaceholderData={isPlaceholderData} language={language} />
         </div>

@@ -37,6 +37,7 @@ export interface ButtonControlConfig extends BaseControlConfig {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   onClick?: () => void
   disabled?: boolean
+  testId?: string
 }
 
 export type ControlConfig =

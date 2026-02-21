@@ -52,6 +52,7 @@ export function DataSettings() {
         btn
           .setButtonText(isExporting ? t('common.loading') : t('settings.exportData'))
           .setDisabled(isExporting)
+          .setTestId('export-data-button')
           .onClick(() => exportContacts()),
       )
 
@@ -65,6 +66,7 @@ export function DataSettings() {
           .setButtonText(isImporting ? t('common.loading') : t('settings.importData'))
           .setVariant('secondary')
           .setDisabled(isImporting)
+          .setTestId('import-data-button')
           .onClick(handleImportClick),
       )
 

@@ -46,7 +46,7 @@ export default function GroupsPage() {
             {t('groups.title', 'Contact Groups')}
           </h1>
         </div>
-        <Button onClick={handleCreate} className="gap-2">
+        <Button onClick={handleCreate} className="gap-2" data-testid="groups-create-button">
           <Plus className="h-4 w-4" />
           {t('groups.createGroup', 'Create Group')}
         </Button>

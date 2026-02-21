@@ -34,10 +34,19 @@ export function DeleteContactDialog({
           <DialogDescription>{t('deleteConfirm')}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            data-testid="delete-dialog-cancel"
+          >
             {t('common.cancel')}
           </Button>
-          <Button variant="destructive" onClick={() => void onConfirm()} disabled={isPending}>
+          <Button
+            variant="destructive"
+            onClick={() => void onConfirm()}
+            disabled={isPending}
+            data-testid="delete-dialog-confirm"
+          >
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             {t('common.delete')}
           </Button>

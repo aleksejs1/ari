@@ -17,7 +17,7 @@ export function ContactModalName() {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder={t('firstName')} {...field} />
+              <Input placeholder={t('firstName')} {...field} data-testid="contact-first-name" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -29,7 +29,7 @@ export function ContactModalName() {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder={t('lastName')} {...field} />
+              <Input placeholder={t('lastName')} {...field} data-testid="contact-last-name" />
             </FormControl>
             <FormMessage />
           </FormItem>

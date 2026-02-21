@@ -39,7 +39,11 @@ function WidgetRenderer({ id }: { id: string }) {
   if (!def) {
     return <FallbackWidget id={id} />
   }
-  return <def.component />
+  return (
+    <div data-testid={`widget-${id}`}>
+      <def.component />
+    </div>
+  )
 }
 
 function findZoneForWidget(zones: Record<string, string[]>, widgetId: string): string | null {

@@ -28,7 +28,7 @@ export function ContactModalEmails() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input placeholder={t('email')} {...field} />
+                  <Input placeholder={t('email')} {...field} data-testid="contact-email-input" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

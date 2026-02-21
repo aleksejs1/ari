@@ -196,7 +196,10 @@ export function ContactModalForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl overflow-hidden bg-background p-0 sm:max-w-[600px]">
+      <DialogContent
+        className="max-w-2xl overflow-hidden bg-background p-0 sm:max-w-[600px]"
+        data-testid="contact-form-dialog"
+      >
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>
             {(defaultValues as any)?.['@id'] ? t('editContact') : t('createContact')}
@@ -352,10 +355,15 @@ export function ContactModalForm({
               </div>
             </div>
             <DialogFooter className="border-t px-6 py-4">
-              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onOpenChange(false)}
+                data-testid="contact-form-cancel"
+              >
                 {t('common.cancel')}
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} data-testid="contact-form-save">
                 {isSubmitting ? t('common.saving') : t('common.save')}
               </Button>
             </DialogFooter>

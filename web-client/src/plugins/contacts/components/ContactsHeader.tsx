@@ -57,9 +57,10 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className="pl-8"
+            data-testid="contacts-search-input"
           />
         </div>
-        <Button onClick={onCreate}>
+        <Button onClick={onCreate} data-testid="contacts-create-button">
           <Plus className="mr-2 h-4 w-4" />
           {t('create')}
         </Button>

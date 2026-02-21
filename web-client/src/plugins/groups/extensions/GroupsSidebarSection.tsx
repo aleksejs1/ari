@@ -63,7 +63,7 @@ export function GroupsSidebarSection({
   const Chevron = expanded ? ChevronDown : ChevronRight
 
   return (
-    <div>
+    <div data-testid="sidebar-groups-section">
       {/* Groups header — click to toggle */}
       <button
         onClick={toggleExpanded}

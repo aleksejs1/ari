@@ -35,6 +35,7 @@ export function ContactsPagination({
           onClick={onPrevious}
           disabled={!hasPrevious}
           className="bg-white px-4 py-2 dark:bg-gray-800"
+          data-testid="pagination-previous"
         >
           {t('pagination.previous')}
         </Button>
@@ -43,6 +44,7 @@ export function ContactsPagination({
           onClick={onNext}
           disabled={!hasNext}
           className="bg-white px-4 py-2 dark:bg-gray-800"
+          data-testid="pagination-next"
         >
           {t('pagination.next')}
         </Button>

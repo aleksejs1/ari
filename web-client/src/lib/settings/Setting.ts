@@ -105,6 +105,11 @@ export class ButtonBuilder {
     return this
   }
 
+  setTestId(testId: string): this {
+    this.config.testId = testId
+    return this
+  }
+
   onClick(cb: () => void): this {
     this.config.onClick = cb
     return this

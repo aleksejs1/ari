@@ -41,7 +41,7 @@ export function GroupsTable({ groups, onEdit }: GroupsTableProps) {
         </TableHeader>
         <TableBody>
           {groups.map((group) => (
-            <TableRow key={group.id}>
+            <TableRow key={group.id} data-testid={`group-row-${group.id}`}>
               <TableCell>
                 <div
                   className="h-6 w-6 rounded-full border border-gray-200 shadow-sm"
@@ -51,7 +51,12 @@ export function GroupsTable({ groups, onEdit }: GroupsTableProps) {
               <TableCell className="font-medium">{group.name}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => onEdit(group)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEdit(group)}
+                    data-testid={`group-edit-${group.id}`}
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
                   <Button
@@ -59,6 +64,7 @@ export function GroupsTable({ groups, onEdit }: GroupsTableProps) {
                     size="icon"
                     className="text-red-500 hover:text-red-600"
                     onClick={() => group.id && handleDelete(group.id)}
+                    data-testid={`group-delete-${group.id}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
