@@ -198,6 +198,7 @@ If you care about **data reliability, transparent history, and trustworthy notif
 ## Related Repositories
 
 - **Main Repository**: [ari](https://github.com/aleksejs1/ari) (current)
+- **E2E Tests**: [ari-e2e](https://github.com/aleksejs1/ari-e2e)
 - **Documentation**: [ari-docs](https://github.com/aleksejs1/ari-docs)
 - **Landing Page**: [ari-landing](https://github.com/aleksejs1/ari-landing)
 - **Plugin SDK**: [ari-sdk](https://github.com/aleksejs1/ari-sdk)
