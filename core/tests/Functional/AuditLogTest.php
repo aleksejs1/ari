@@ -170,6 +170,113 @@ class AuditLogTest extends ApiTestCase
         self::assertEquals($contactId, $snapshotBefore['id']);
     }
 
+    public function testUpdateNowIncludesSnapshotAfter(): void
+    {
+        $client = static::createClient();
+
+        // Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // Add ContactName
+        $response = $client->request('POST', '/api/contact_names', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'family' => 'Original',
+                'given' => 'Name',
+                'contact' => $contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $nameIri = $response->toArray()['@id'];
+        $nameId = $response->toArray()['id'];
+
+        // Update ContactName
+        $client->request('PATCH', $nameIri, [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'family' => 'Updated',
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(200);
+
+        $this->em->clear();
+
+        // Find the UPDATE audit log
+        $log = $this->em->getRepository(AuditLog::class)->findOneBy([
+            'entityType' => 'Ari\Entity\ContactName',
+            'entityId' => $nameId,
+            'action' => 'UPDATE',
+        ]);
+
+        self::assertNotNull($log, 'AuditLog for UPDATE not found');
+        self::assertNotNull($log->getSnapshotAfter(), 'snapshotAfter should not be null for UPDATE');
+        self::assertNotNull($log->getChanges(), 'changes should still be present for UPDATE');
+    }
+
+    public function testSnapshotAfterReflectsNewValues(): void
+    {
+        $client = static::createClient();
+
+        // Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // Add ContactName
+        $response = $client->request('POST', '/api/contact_names', [
+            'auth_bearer' => $this->token,
+            'json' => [
+                'family' => 'Before',
+                'given' => 'Test',
+                'contact' => $contactIri,
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+        $nameIri = $response->toArray()['@id'];
+        $nameId = $response->toArray()['id'];
+
+        // Update
+        $client->request('PATCH', $nameIri, [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+            'json' => [
+                'family' => 'After',
+            ],
+        ]);
+        self::assertResponseStatusCodeSame(200);
+
+        $this->em->clear();
+
+        $log = $this->em->getRepository(AuditLog::class)->findOneBy([
+            'entityType' => 'Ari\Entity\ContactName',
+            'entityId' => $nameId,
+            'action' => 'UPDATE',
+        ]);
+
+        self::assertNotNull($log);
+
+        // snapshotAfter should reflect the new value
+        $snapshotAfter = $log->getSnapshotAfter();
+        self::assertNotNull($snapshotAfter);
+        self::assertArrayHasKey('family', $snapshotAfter);
+        self::assertEquals('After', $snapshotAfter['family']);
+        self::assertEquals('Test', $snapshotAfter['given']);
+
+        // changes should contain [old, new]
+        $changes = $log->getChanges();
+        self::assertNotNull($changes);
+        self::assertArrayHasKey('family', $changes);
+        self::assertEquals('Before', $changes['family'][0]);
+        self::assertEquals('After', $changes['family'][1]);
+    }
+
     public function testFilterAuditLogs(): void
     {
         $client = static::createClient();

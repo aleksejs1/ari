@@ -50,7 +50,14 @@ class AuditLogSubscriber
                 $filteredChangeSet = $this->filterChangeSet($changeSet, $entity);
 
                 if ([] !== $filteredChangeSet) {
-                    $this->logChange($em, $entity, 'UPDATE', $filteredChangeSet);
+                    $this->logChange(
+                        $em,
+                        $entity,
+                        'UPDATE',
+                        $filteredChangeSet,
+                        null,
+                        $this->getEntitySnapshot($em, $entity),
+                    );
                 }
             }
         }
