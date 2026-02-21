@@ -9,7 +9,7 @@ use Ari\Repository\RefreshTokenRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken as BaseRefreshToken;
+use Gesdinet\JWTRefreshTokenBundle\Model\AbstractRefreshToken as BaseRefreshToken;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
@@ -26,6 +26,20 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class RefreshToken extends BaseRefreshToken implements TenantAwareInterface
 {
     use TenantAwareTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    protected $id;
+
+    #[ORM\Column(name: 'refresh_token', type: 'string', length: 128, unique: true)]
+    protected $refreshToken;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    protected $username;
+
+    #[ORM\Column(type: 'datetime')]
+    protected $valid;
 
     #[ORM\Column(length: 45, nullable: true)]
     #[Groups(['active_session:read'])]
