@@ -20,8 +20,7 @@ final readonly class UserPasswordHasherProcessor implements ProcessorInterface
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private ProcessorInterface $persistProcessor,
         private UserPasswordHasherInterface $passwordHasher,
-    ) {
-    }
+    ) {}
 
     /**
      * @param User $data
@@ -39,7 +38,6 @@ final readonly class UserPasswordHasherProcessor implements ProcessorInterface
             $plainPassword,
         );
         $data->setPassword($hashedPassword);
-        $data->eraseCredentials();
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
     }

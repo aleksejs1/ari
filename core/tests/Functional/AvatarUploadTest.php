@@ -22,7 +22,6 @@ class AvatarUploadTest extends AbstractApiTestCase
         $image = imagecreatetruecolor(100, 100);
         self::assertNotFalse($image);
         imagejpeg($image, $filePath);
-        imagedestroy($image);
 
         $uploadedFile = new UploadedFile(
             $filePath,
@@ -91,7 +90,6 @@ class AvatarUploadTest extends AbstractApiTestCase
         $image = imagecreatetruecolor(100, 100);
         self::assertNotFalse($image);
         imagejpeg($image, $filePath);
-        imagedestroy($image);
 
         $uploadedFile = new UploadedFile($filePath, 'avatar.jpg', 'image/jpeg', null, true);
 

@@ -133,6 +133,7 @@
         "friendsofphp/php-cs-fixer": "^3.94.0",
         "infection/infection": "^0.31.9",
         "phpstan/phpstan": "^2.1.39",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0.16",
         "phpstan/phpstan-phpunit": "^2.0.15",
         "phpstan/phpstan-strict-rules": "^2.0.10",

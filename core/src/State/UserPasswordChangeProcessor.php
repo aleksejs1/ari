@@ -26,8 +26,7 @@ final readonly class UserPasswordChangeProcessor implements ProcessorInterface
         private ProcessorInterface $persistProcessor,
         private UserPasswordHasherInterface $passwordHasher,
         private Security $security,
-    ) {
-    }
+    ) {}
 
     /**
      * @param ChangePasswordDto $data
@@ -54,7 +53,6 @@ final readonly class UserPasswordChangeProcessor implements ProcessorInterface
             $data->newPassword,
         );
         $user->setPassword($hashedPassword);
-        $user->eraseCredentials();
 
         return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
     }
