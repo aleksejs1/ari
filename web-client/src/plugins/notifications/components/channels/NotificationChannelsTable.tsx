@@ -38,6 +38,7 @@ function VerifyButton({ id }: { id: number | string }) {
       className="h-7 text-xs"
       disabled={isPending}
       onClick={() => mutate(id)}
+      data-testid="channel-verify-button"
     >
       {isPending ? t('common.loading') : t('notificationChannels.verify')}
     </Button>
@@ -141,7 +142,12 @@ export function NotificationChannelsTable({
       cell: ({ row }) => {
         return (
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" size="icon" onClick={() => onEdit(row.original)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(row.original)}
+              data-testid="channel-edit-button"
+            >
               <Edit className="h-4 w-4" />
             </Button>
             <Button
@@ -149,6 +155,7 @@ export function NotificationChannelsTable({
               size="icon"
               className="text-red-500 hover:text-red-600"
               onClick={() => onDelete(row.original)}
+              data-testid="channel-delete-button"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -185,7 +192,7 @@ export function NotificationChannelsTable({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow key={row.id} data-testid="channel-row">
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

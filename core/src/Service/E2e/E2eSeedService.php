@@ -285,16 +285,16 @@ class E2eSeedService
     private function disableTenantFilter(): void
     {
         $filters = $this->entityManager->getFilters();
-        if ($filters->isEnabled('tenant_filter')) {
-            $filters->disable('tenant_filter');
+        if ($filters->isEnabled('tenant')) {
+            $filters->disable('tenant');
         }
     }
 
     private function enableTenantFilter(): void
     {
         $filters = $this->entityManager->getFilters();
-        if (!$filters->isEnabled('tenant_filter')) {
-            $filters->enable('tenant_filter');
+        if (!$filters->isEnabled('tenant')) {
+            $filters->enable('tenant');
         }
     }
 }

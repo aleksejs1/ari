@@ -101,6 +101,7 @@ export const ScheduleSection = ({ channels }: ScheduleSectionProps) => {
                           type="number"
                           {...field}
                           onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                          data-testid="schedule-offset-days"
                         />
                       </FormControl>
                       <FormMessage />

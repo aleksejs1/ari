@@ -90,6 +90,7 @@ export function NotificationChannelForm({
                 <select
                   {...field}
                   id="type-select"
+                  data-testid="channel-type-select"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="telegram">Telegram</option>
@@ -114,6 +115,7 @@ export function NotificationChannelForm({
                     {...field}
                     value={field.value ?? ''}
                     type="email"
+                    data-testid="channel-email-input"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </FormControl>
@@ -123,7 +125,12 @@ export function NotificationChannelForm({
           />
         )}
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full"
+          data-testid="channel-form-save"
+        >
           {isSubmitting ? t('common.saving') : t('common.save')}
         </Button>
       </form>

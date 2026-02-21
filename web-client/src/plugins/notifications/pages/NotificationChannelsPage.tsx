@@ -89,7 +89,7 @@ export default function NotificationChannelsPage() {
           <h1 className="text-3xl font-bold tracking-tight">{t('notificationChannels.title')}</h1>
           <p className="text-muted-foreground">{t('notificationChannels.description')}</p>
         </div>
-        <Button onClick={handleCreate} className="gap-2">
+        <Button onClick={handleCreate} className="gap-2" data-testid="channel-add-button">
           <Plus className="h-4 w-4" />
           {t('notificationChannels.add')}
         </Button>

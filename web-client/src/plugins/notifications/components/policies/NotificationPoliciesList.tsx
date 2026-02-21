@@ -114,7 +114,7 @@ export default function NotificationPoliciesList() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{t('notification_policies.title', 'Notification Policies')}</CardTitle>
-        <Button asChild>
+        <Button asChild data-testid="policy-create-button">
           <Link to="/settings/notification-policies/new">
             <Plus className="mr-2 h-4 w-4" />
             {t('common.create', 'Create')}
@@ -135,7 +135,7 @@ export default function NotificationPoliciesList() {
           </TableHeader>
           <TableBody>
             {policies?.map((policy) => (
-              <TableRow key={policy.id}>
+              <TableRow key={policy.id} data-testid="policy-row">
                 <TableCell>{policy.name}</TableCell>
                 <TableCell className="capitalize">
                   {policy.targets?.type
@@ -192,6 +192,7 @@ export default function NotificationPoliciesList() {
                       size="icon"
                       className="text-destructive"
                       onClick={() => policy.id && handleDelete(policy.id)}
+                      data-testid="policy-delete-button"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

@@ -50,6 +50,7 @@ export const TargetsSection = ({ groups, contacts }: TargetsSectionProps) => {
                   <div key={type} className="flex items-center space-x-2">
                     <Checkbox
                       id={`type-${type}`}
+                      data-testid={`target-type-${type}`}
                       checked={field.value === type}
                       onCheckedChange={() => {
                         field.onChange(type)

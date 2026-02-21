@@ -133,6 +133,7 @@ export default function NotificationPolicyForm() {
                     <Input
                       placeholder={t('notification_policies.name', 'Policy Name')}
                       {...field}
+                      data-testid="policy-name-input"
                     />
                   </FormControl>
                   <FormMessage />
@@ -154,10 +155,11 @@ export default function NotificationPolicyForm() {
                 type="button"
                 variant="outline"
                 onClick={() => navigate('/settings/notification-policies')}
+                data-testid="policy-form-cancel"
               >
                 {t('common.cancel', 'Cancel')}
               </Button>
-              <Button type="submit">
+              <Button type="submit" data-testid="policy-form-save">
                 {isEdit ? t('common.save', 'Save') : t('common.create', 'Create')}
               </Button>
             </div>
