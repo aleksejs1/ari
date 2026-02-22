@@ -141,6 +141,9 @@ class ContactSnapshotService
     private function applyChanges(array $snapshot, array $changes): array
     {
         foreach ($changes as $field => $values) {
+            if (in_array($field, self::SYSTEM_FIELDS, true)) {
+                continue;
+            }
             if (is_array($values) && 2 === count($values)) {
                 $snapshot[$field] = $values[1]; // new value
             }
@@ -148,6 +151,9 @@ class ContactSnapshotService
 
         return $snapshot;
     }
+
+    /** @var list<string> */
+    private const SYSTEM_FIELDS = ['user', 'tenant'];
 
     /**
      * @param array<string, mixed>|null                              $contact
@@ -158,7 +164,7 @@ class ContactSnapshotService
     private function buildResult(?array $contact, array $collections): array
     {
         $result = [
-            'contact' => $contact,
+            'contact' => null !== $contact ? $this->stripSystemFields($contact) : null,
         ];
 
         foreach (self::CHILD_COLLECTION_KEYS as $key) {
@@ -167,10 +173,27 @@ class ContactSnapshotService
 
         foreach (self::ENTITY_TYPE_TO_COLLECTION as $entityType => $collectionKey) {
             if (isset($collections[$entityType])) {
-                $result[$collectionKey] = array_values($collections[$entityType]);
+                $result[$collectionKey] = array_values(array_map(
+                    $this->stripSystemFields(...),
+                    $collections[$entityType],
+                ));
             }
         }
 
         return $result;
+    }
+
+    /**
+     * @param array<string, mixed> $snapshot
+     *
+     * @return array<string, mixed>
+     */
+    private function stripSystemFields(array $snapshot): array
+    {
+        foreach (self::SYSTEM_FIELDS as $field) {
+            unset($snapshot[$field]);
+        }
+
+        return $snapshot;
     }
 }

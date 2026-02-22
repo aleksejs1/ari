@@ -134,6 +134,22 @@ class ContactSnapshotServiceTest extends TestCase
         self::assertNull($result);
     }
 
+    public function testStripsSystemFields(): void
+    {
+        $log1 = $this->makeLog(Contact::class, '1', 'INSERT', snapshotAfter: ['id' => 1, 'uuid' => 'abc', 'user' => '/api/users/1', 'tenant' => '/api/users/1']);
+        $log2 = $this->makeLog('Ari\Entity\ContactName', '10', 'INSERT', snapshotAfter: ['id' => 10, 'given' => 'John', 'user' => '/api/users/1', 'tenant' => '/api/users/1']);
+
+        $this->repository->method('findTimelineLogsUpTo')->willReturn([$log1, $log2]);
+
+        $result = $this->service->getSnapshotAtLog(1, 2);
+
+        self::assertNotNull($result);
+        self::assertArrayNotHasKey('user', $result['contact']);
+        self::assertArrayNotHasKey('tenant', $result['contact']);
+        self::assertArrayNotHasKey('user', $result['contactNames'][0]);
+        self::assertArrayNotHasKey('tenant', $result['contactNames'][0]);
+    }
+
     /**
      * @param array<string, mixed>|null $snapshotAfter
      * @param array<string, mixed>|null $changes
