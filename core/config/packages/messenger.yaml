@@ -12,6 +12,17 @@ framework:
                 retry_strategy:
                     max_retries: 3
                     multiplier: 2
+            # Dedicated transport for AI tasks — isolates AI retries from critical notifications.
+            # During Google import of 70 contacts, exponential backoff retries (5 min, 30 min, 2 h)
+            # would block Telegram/Email if sharing the 'async' queue.
+            ai_async:
+                dsn: '%messenger_transport_ai_dsn%'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 5
+                    multiplier: 4
             failed: 'doctrine://default?queue_name=failed'
             sync: 'sync://'
 
@@ -27,3 +38,5 @@ framework:
 
             # Route your messages to the transports
             'Ari\Message\ImportGoogleContactMessage': async
+            'Ari\Message\GenerateAiSuggestionMessage': ai_async
+            'Ari\Message\TriggerBatchAiAnalysisMessage': ai_async

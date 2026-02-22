@@ -34,6 +34,10 @@ services:
             - '../src/Service/E2e/'
             - '../src/Command/E2eSeedCommand.php'
 
+    # AI: bind NullLlmClient as the default implementation.
+    # Replace with SymfonyAiBundleClient in Phase 2 when a real provider is configured.
+    Ari\Service\Ai\LlmClientInterface: '@Ari\Service\Ai\NullLlmClient'
+
     _instanceof:
         Ari\Service\ContactImport\ContactDuplicateCheckerInterface:
             tags: ['app.contact_duplicate_checker']

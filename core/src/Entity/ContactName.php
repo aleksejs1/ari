@@ -59,6 +59,14 @@ class ContactName implements TenantAwareInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
 
+    #[Groups(['contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[ORM\Column(length: 16, nullable: true)]
+    private ?string $locale = null;
+
+    #[Groups(['contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[ORM\Column(length: 128, nullable: true)]
+    private ?string $nameType = null;
+
     #[Groups(['contact_name:read', 'contact_name:create'])]
     #[ORM\ManyToOne(inversedBy: 'contactNames')]
     #[ORM\JoinColumn(nullable: false)]
@@ -97,6 +105,30 @@ class ContactName implements TenantAwareInterface
     public function setGiven(?string $given): static
     {
         $this->given = '' === $given ? null : $given;
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(?string $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    public function getNameType(): ?string
+    {
+        return $this->nameType;
+    }
+
+    public function setNameType(?string $nameType): static
+    {
+        $this->nameType = $nameType;
 
         return $this;
     }

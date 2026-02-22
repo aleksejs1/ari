@@ -51,3 +51,8 @@ parameters:
     default_plugin_registry_url: 'https://aleksejs1.github.io/ari-plugin-registry/registry.json'
     default_plugin_registry_cache_ttl: 3600
     default_plugin_max_archive_size: 52428800
+
+    # AI feature
+    default_ai_max_tokens: 200
+    default_ai_context_locales: 'ru,lv,en'
+    default_messenger_transport_ai_dsn: 'doctrine://default?queue_name=ai_async'

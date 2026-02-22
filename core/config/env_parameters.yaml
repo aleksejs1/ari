@@ -67,3 +67,12 @@ parameters:
     plugin_registry_url: '%env(default:default_plugin_registry_url:PLUGIN_REGISTRY_URL)%'
     plugin_registry_cache_ttl: '%env(int:default:default_plugin_registry_cache_ttl:PLUGIN_REGISTRY_CACHE_TTL)%'
     plugin_max_archive_size: '%env(int:default:default_plugin_max_archive_size:PLUGIN_MAX_ARCHIVE_SIZE)%'
+
+    # AI feature
+    ai_api_key: '%env(default:empty_string:AI_API_KEY)%'
+    ai_provider: '%env(default:empty_string:AI_PROVIDER)%'
+    ai_model: '%env(default:empty_string:AI_MODEL)%'
+    ai_api_base_url: '%env(default:empty_string:AI_API_BASE_URL)%'
+    ai_max_tokens: '%env(int:default:default_ai_max_tokens:AI_MAX_TOKENS)%'
+    ai_context_locales: '%env(default:default_ai_context_locales:AI_CONTEXT_LOCALES)%'
+    messenger_transport_ai_dsn: '%env(default:default_messenger_transport_ai_dsn:MESSENGER_TRANSPORT_AI_DSN)%'
