@@ -43,7 +43,8 @@
     "tabs": {
       "general": "General",
       "regional": "Regional",
-      "data": "Data"
+      "data": "Data",
+      "ai": "AI Settings"
     },
     "nav": {
       "preferences": "Preferences",
@@ -105,7 +106,22 @@
     "installedPlugins": "Installed Plugins",
     "noPluginsInstalled": "No community plugins installed yet.",
     "browseMarketplaceHint": "Visit the marketplace to find new plugins.",
-    "pluginsInstalled": "plugins installed"
+    "pluginsInstalled": "plugins installed",
+    "ai": {
+      "gdprTitle": "Data Privacy Notice",
+      "gdprDescription": "When AI suggestions are enabled, contact names are sent to a third-party provider for processing. Ensure this complies with your organization's privacy policy and GDPR requirements. For full privacy, use a local provider (Ollama).",
+      "statistics": "AI Suggestions Statistics",
+      "statsPending": "Pending",
+      "statsAccepted": "Accepted",
+      "statsDismissed": "Dismissed",
+      "statsError": "Error",
+      "statsTokensPrompt": "Prompt Tokens",
+      "statsTokensCompletion": "Completion Tokens",
+      "analyzeContacts": "Analyze Existing Contacts",
+      "analyzeContactsDescription": "Trigger AI analysis for all contact names that have not yet been analyzed. Runs in the background.",
+      "analyzeContactsButton": "Start Analysis",
+      "analyzeStarted": "Analysis started. Suggestions will appear as the AI processes your contacts."
+    }
   },
   "auth": {
     "login": "Login",

@@ -2,6 +2,7 @@ import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsReg
 
 import { BiographySection } from './sections/BiographySection'
 import { ContactInfoSection } from './sections/ContactInfoSection'
+import { ContactNamesSection } from './sections/ContactNamesSection'
 import { DatesSection } from './sections/DatesSection'
 import { GeneralInfoSection } from './sections/GeneralInfoSection'
 import { ProfessionalSection } from './sections/ProfessionalSection'
@@ -16,6 +17,13 @@ export function registerDefaultContactDetailsSections() {
     component: GeneralInfoSection,
     order: 10,
     layout: 'full',
+  })
+
+  registry.register({
+    id: 'contact_names',
+    component: ContactNamesSection,
+    order: 15,
+    layout: 'half',
   })
 
   registry.register({

@@ -19,6 +19,9 @@ const DataSettings = lazy(() =>
 const CommunityPlugins = lazy(() =>
   import('./components/CommunityPlugins.component').then((m) => ({ default: m.CommunityPlugins })),
 )
+const AiSettings = lazy(() =>
+  import('./tabs/AiSettings.component').then((m) => ({ default: m.AiSettings })),
+)
 
 export class SettingsPlugin extends BasePlugin {
   name = 'settings'
@@ -65,6 +68,15 @@ export class SettingsPlugin extends BasePlugin {
       element: (
         <Suspense fallback={<PageLoader />}>
           <CommunityPlugins />
+        </Suspense>
+      ),
+    })
+
+    routeRegistry.register('settings', {
+      path: 'ai',
+      element: (
+        <Suspense fallback={<PageLoader />}>
+          <AiSettings />
         </Suspense>
       ),
     })

@@ -166,5 +166,28 @@
   },
   "subscriptions": "Подписки на уведомления",
   "addSubscription": "Добавить подписку",
-  "noSubscriptions": "Нет подписок"
+  "noSubscriptions": "Нет подписок",
+  "contactName": {
+    "locale": "Язык",
+    "localePlaceholder": "Язык (необязательно)",
+    "nameType": "Тип имени",
+    "nameTypePlaceholder": "напр. Псевдоним, Девичья фамилия",
+    "localeOptions": {
+      "ru": "Русский",
+      "lv": "Латышский",
+      "en": "Английский",
+      "de": "Немецкий",
+      "fr": "Французский",
+      "lt": "Литовский",
+      "et": "Эстонский",
+      "pl": "Польский",
+      "uk": "Украинский"
+    }
+  },
+  "aiSuggestion": {
+    "title": "AI-подсказка",
+    "description": "Это имя похоже на {{detected}} написание. Предлагаемый вариант на {{suggested}}:",
+    "apply": "Применить",
+    "dismiss": "Отменить"
+  }
 }

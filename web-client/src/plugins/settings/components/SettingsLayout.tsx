@@ -14,6 +14,7 @@ import {
   Plug,
   Settings,
   Shield,
+  Sparkles,
   Trash2,
 } from 'lucide-react'
 
@@ -46,6 +47,7 @@ const settingsNavGroups: SettingsNavGroup[] = [
       { path: '/settings/general', label: 'settings.tabs.general', icon: Settings },
       { path: '/settings/regional', label: 'settings.tabs.regional', icon: Globe },
       { path: '/settings/data', label: 'settings.tabs.data', icon: Database },
+      { path: '/settings/ai', label: 'settings.tabs.ai', icon: Sparkles },
       { path: '/settings/plugins', label: 'settings.communityPlugins', icon: Plug },
     ],
   },

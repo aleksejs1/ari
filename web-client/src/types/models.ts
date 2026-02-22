@@ -73,6 +73,8 @@ export const contactNameSchema = z.object({
   '@type': z.string().optional(),
   given: z.string().min(1),
   family: z.string().optional(),
+  locale: z.string().optional().nullable(),
+  nameType: z.string().optional().nullable(),
 })
 
 export const contactDateSchema = z.object({

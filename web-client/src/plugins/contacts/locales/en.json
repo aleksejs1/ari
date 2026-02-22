@@ -166,5 +166,28 @@
   },
   "subscriptions": "Notification Subscriptions",
   "addSubscription": "Add Subscription",
-  "noSubscriptions": "No subscriptions"
+  "noSubscriptions": "No subscriptions",
+  "contactName": {
+    "locale": "Language",
+    "localePlaceholder": "Language (optional)",
+    "nameType": "Name type",
+    "nameTypePlaceholder": "e.g. Nickname, Maiden name",
+    "localeOptions": {
+      "ru": "Russian",
+      "lv": "Latvian",
+      "en": "English",
+      "de": "German",
+      "fr": "French",
+      "lt": "Lithuanian",
+      "et": "Estonian",
+      "pl": "Polish",
+      "uk": "Ukrainian"
+    }
+  },
+  "aiSuggestion": {
+    "title": "AI Suggestion",
+    "description": "This name appears to be in {{detected}} script. Suggested alternative in {{suggested}}:",
+    "apply": "Apply",
+    "dismiss": "Dismiss"
+  }
 }
