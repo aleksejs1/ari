@@ -1,0 +1,12 @@
+framework:
+    rate_limiter:
+        ai_requests:
+            policy: sliding_window
+            limit: 60
+            interval: '1 minute'
+
+when@test:
+    framework:
+        rate_limiter:
+            ai_requests:
+                policy: no_limit

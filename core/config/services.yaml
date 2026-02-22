@@ -34,9 +34,19 @@ services:
             - '../src/Service/E2e/'
             - '../src/Command/E2eSeedCommand.php'
 
-    # AI: bind NullLlmClient as the default implementation.
-    # Replace with SymfonyAiBundleClient in Phase 2 when a real provider is configured.
-    Ari\Service\Ai\LlmClientInterface: '@Ari\Service\Ai\NullLlmClient'
+    # AI: SymfonyAiBundleClient with optional PlatformInterface.
+    # $platform is null when no platform is configured in ai.yaml → isAvailable() returns false.
+    # To enable AI: install a bridge (e.g., composer require symfony/ai-open-ai-platform),
+    # configure ai.yaml with the provider, and set AI_API_KEY + AI_MODEL in .env.local.
+    Ari\Service\Ai\Provider\SymfonyAiBundleClient:
+        arguments:
+            $platform: '@?Symfony\AI\Platform\PlatformInterface'
+            $apiKey: '%ai_api_key%'
+            $model: '%ai_model%'
+            $maxTokens: '%ai_max_tokens%'
+            $provider: '%ai_provider%'
+
+    Ari\Service\Ai\LlmClientInterface: '@Ari\Service\Ai\Provider\SymfonyAiBundleClient'
 
     _instanceof:
         Ari\Service\ContactImport\ContactDuplicateCheckerInterface:
