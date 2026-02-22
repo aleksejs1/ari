@@ -1,0 +1,4 @@
+ai:
+    platform:
+        openai:
+            api_key: '%env(default:empty_string:AI_API_KEY)%'

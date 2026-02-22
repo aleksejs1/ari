@@ -5,7 +5,7 @@ namespace Ari\EventListener;
 use Ari\Entity\ContactName;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PostRemoveEventArgs;
+use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 
 /**
@@ -13,8 +13,11 @@ use Doctrine\ORM\Events;
  *
  * AiSuggestion.entityId is not a foreign key (to support multiple entity types),
  * so cascade deletes are not available at the DB level. This listener handles it.
+ *
+ * NOTE: Uses preRemove (not postRemove) because Doctrine ORM 3 nulls the entity ID
+ * before dispatching postRemove, making getId() unreliable in that hook.
  */
-#[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: ContactName::class)]
+#[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: ContactName::class)]
 final class AiSuggestionCleanupListener
 {
     public function __construct(
@@ -22,7 +25,7 @@ final class AiSuggestionCleanupListener
     ) {
     }
 
-    public function postRemove(ContactName $contactName, PostRemoveEventArgs $_event): void
+    public function preRemove(ContactName $contactName, PreRemoveEventArgs $_event): void
     {
         $id = $contactName->getId();
         if (null === $id) {

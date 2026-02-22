@@ -32,10 +32,10 @@ export function useAiSuggestions(entityType: string, entityId: number | null | u
   return useQuery({
     queryKey: ['ai_suggestions', entityType, entityId],
     queryFn: async () => {
-      const response = await api.get<{ 'hydra:member': AiSuggestion[] }>('/ai_suggestions', {
+      const response = await api.get<{ member: AiSuggestion[] }>('/ai_suggestions', {
         params: { entityType, entityId },
       })
-      return (response.data['hydra:member'] ?? []) as AiSuggestion[]
+      return (response.data.member ?? []) as AiSuggestion[]
     },
     enabled: !!entityId && entityId > 0,
     staleTime: 1000 * 60 * 2,

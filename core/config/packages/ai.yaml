@@ -2,9 +2,8 @@ ai:
     platform:
         # Inference Platform configuration
         # see https://github.com/symfony/ai/tree/main/src/platform#platform-bridges
-
-        # openai:
-        #    api_key: '%env(OPENAI_API_KEY)%'
+        # OpenAI bridge: configured in ai_open_ai_platform.yaml (Symfony Flex recipe).
+        # AI_API_KEY env var enables the feature; AI_PROVIDER/AI_MODEL read by SymfonyAiBundleClient.
 
     agent:
         # Agent configuration

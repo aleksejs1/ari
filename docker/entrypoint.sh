@@ -107,6 +107,7 @@ php bin/console cache:clear --no-interaction
 echo "Starting messenger worker..."
 # Using a loop to ensure it restarts if it crashes (simple supervision)
 (while true; do php bin/console messenger:consume async --memory-limit=128M --time-limit=3600; sleep 5; done) &
+(while true; do php bin/console messenger:consume ai_async --memory-limit=128M --time-limit=3600; sleep 5; done) &
 
 # Start cron daemon in background
 if [ "${DISABLE_CRON}" = "1" ]; then

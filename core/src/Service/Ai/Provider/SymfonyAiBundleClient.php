@@ -62,7 +62,7 @@ final class SymfonyAiBundleClient implements LlmClientInterface
             $messageBag,
             [
                 'temperature' => 0.0,
-                'max_tokens' => $this->maxTokens,
+                'max_output_tokens' => $this->maxTokens,
             ],
         );
 

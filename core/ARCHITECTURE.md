@@ -183,3 +183,47 @@ The application supports contact avatar uploads with abstracted storage.
 - **Processing**: Uses `intervention/image` for image resizing and thumbnail generation.
 - **Thumbnail Strategy**: Dual strategy for thumbnails (150x150): they can be stored as BLOBs in the database for fast access without disk I/O, or served from storage. Controlled via `APP_STORE_THUMBNAILS_IN_DB`.
 - **API**: `POST /api/contacts/{id}/avatar` handles `multipart/form-data` uploads.
+
+
+### 13. AI Contact Suggestions
+
+The AI suggestions subsystem analyzes `ContactName` entries and proposes locale-aware transliterated alternatives (e.g., Cyrillic → Latvian Latin).
+
+#### Entity: `AiSuggestion`
+- Tenant-aware, non-FK reference to any entity via `entityType` + `entityId`
+- `status`: `pending` | `accepted` | `dismissed` | `error` | `skipped`
+- `sourceHash`: `md5(trim(given) . '|' . trim(family))` — deduplication key
+- Unique constraint: `(tenant_id, entity_type, entity_id, suggestion_type, source_hash)`
+
+#### Dispatch Flow
+1. `ContactName` saved (INSERT/UPDATE without locale) → `AiSuggestionService::maybeDispatch()`
+2. Eligibility check: locale not set, name ≥ 3 chars, no digits/special chars, single script
+3. Duplicate check via `sourceHash` in `AiSuggestionRepository::findExisting()`
+4. If eligible and not duplicate: dispatch `GenerateAiSuggestionMessage` to `async` queue
+5. `GenerateAiSuggestionMessageHandler` calls `LlmClientInterface::suggestLocaleAlternative()`
+6. Result validated via `isValidLocale()` against `ALLOWED_LOCALES`
+7. `AiSuggestion` persisted with `status=pending` and full payload
+
+#### LLM Client Interface
+- `LlmClientInterface::isAvailable()` — checks if provider is configured
+- `LlmClientInterface::suggestLocaleAlternative(given, family, allowedLocales)` — returns `SuggestionResult|null`
+- Implementations: `AnthropicLlmClient`, `OpenAiLlmClient`; `NullLlmClient` when `AI_API_KEY` is empty
+- Configured via `AI_API_KEY`, `AI_PROVIDER`, `AI_MODEL`, `AI_BASE_URL` env vars
+
+#### Resolution (PATCH /api/ai_suggestions/{id})
+- `accepted`: original ContactName gets `detectedLocale`, new ContactName created with `suggestedLocale` + transliterated names
+- `dismissed`: marks suggestion as dismissed; no new ContactName created
+- `AiSuggestionProcessor` (API Platform State Processor) handles both cases
+- Voter: `AI_SUGGESTION_RESOLVE` — ensures only the tenant who owns the suggestion can resolve it
+
+#### Batch Trigger
+- `POST /api/ai_suggestions/batch` → dispatches `TriggerBatchAiAnalysisMessage`
+- Handler iterates all ContactNames for the user without locale and calls `maybeDispatch()` for each
+
+#### Orphan Cleanup
+- `AiSuggestionCleanupListener` — registered on `preRemove` for `ContactName`
+- Runs DQL `DELETE FROM AiSuggestion WHERE entityType='contact_name' AND entityId=:id`
+- Uses `preRemove` (not `postRemove`) because Doctrine ORM 3 nulls the entity ID before `postRemove` fires
+
+#### Architecture Note
+The `entityType` + `entityId` pattern (instead of FK) allows the suggestion table to reference future entity types (phone numbers, emails) without schema changes.
