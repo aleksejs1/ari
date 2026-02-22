@@ -49,7 +49,7 @@ A **Plugin** is a class that implements the `Plugin` interface and uses these re
 | Plugin Name | Directory | Description |
 | :--- | :--- | :--- |
 | **Audit Logs** | `src/plugins/audit-logs` | Provides the "Activity History" features, including the timeline view for contacts, the settings audit logs page, and the dashboard widget. |
-| **Contacts** | `src/plugins/contacts` | Manages the Contact Details page layout and sections (General Info, Dates, Relations, etc.) via `ContactDetailsRegistry`. |
+| **Contacts** | `src/plugins/contacts` | Manages the Contact Details page layout and sections (General Info, Dates, Relations, etc.) via `ContactDetailsRegistry`. Includes `ContactSnapshotModal` for viewing point-in-time contact state from the timeline. |
 | **Contact Graph** | `src/plugins/contact-graph` | Visualization of contact relationships. |
 | **Dashboard** | `src/plugins/dashboard` | Manages the home dashboard layout and widgets. |
 | **Google Import** | `src/plugins/google-import` | Imports contacts from Google. |

@@ -43,12 +43,10 @@ class AuditLogRepository extends ServiceEntityRepository
         }
 
         $qb = $this->createQueryBuilder('a')
-            ->where('(a.entityType = :contactClass AND a.entityId = :contactId)')
-            ->orWhere('(a.ownerEntityType = :contactClass AND a.ownerEntityId = :contactId)')
-            ->andWhere('a.createdAt <= :targetDate OR (a.createdAt = :targetDate AND a.id <= :targetLogId)')
+            ->where('(a.entityType = :contactClass AND a.entityId = :contactId) OR (a.ownerEntityType = :contactClass AND a.ownerEntityId = :contactId)')
+            ->andWhere('a.id <= :targetLogId')
             ->setParameter('contactClass', $contactClass)
             ->setParameter('contactId', $contactId)
-            ->setParameter('targetDate', $targetLog->getCreatedAt())
             ->setParameter('targetLogId', $targetLogId)
             ->orderBy('a.createdAt', 'ASC')
             ->addOrderBy('a.id', 'ASC');

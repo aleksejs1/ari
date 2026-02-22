@@ -69,8 +69,16 @@ Security is handled at the object level using Symfony Voters.
 ### 4. Audit Logging
 Changes to critical entities are tracked via `Ari\EventSubscriber\AuditLogSubscriber`.
 - **Mechanism**: Listens to Doctrine `onFlush` and `postPersist` events.
-- **Storage**: Stores changes as JSON snapshots (`snapshotBefore`, `snapshotAfter`) and change sets in the `AuditLog` entity.
+- **Storage**: Stores changes as JSON snapshots (`snapshotBefore`, `snapshotAfter`) and change sets in the `AuditLog` entity. For UPDATE operations, `snapshotAfter` contains the full entity state after the change.
 - **Scope**: Automatically audits any entity implementing `TenantAwareInterface` (unless explicitly excluded).
+
+#### Contact Point-in-Time Snapshots
+The system can reconstruct the complete state of a contact at any point in its history.
+- **API**: `GET /api/contacts/{contactId}/snapshot/{logId}` returns the aggregated contact state at the specified audit log entry.
+- **Service**: `ContactSnapshotService` uses a forward-replay algorithm — it fetches all timeline logs up to the target log ID and sequentially applies INSERT/UPDATE/REMOVE operations to build the state.
+- **Provider**: `ContactSnapshotProvider` (API Platform State Provider) handles the endpoint, returning 404 if the log doesn't exist or doesn't belong to the contact.
+- **Backward Compatibility**: Supports both old-format UPDATE logs (with `changes` only) and new-format logs (with full `snapshotAfter`).
+- **Collections**: The snapshot includes the contact itself and all child entity collections: `contactNames`, `contactPhoneNumbers`, `contactDates`, `contactEmailAddresses`, `contactAddresses`, `contactOrganizations`, `contactBiographies`, `contactInteractions`, `contactRelations`.
 
 ### 5. Notification System
 Entities: `NotificationRule`, `NotificationQueue`, `NotificationPolicy`, `NotificationChannel`.
