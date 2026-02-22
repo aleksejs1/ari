@@ -3,7 +3,9 @@
 namespace Ari\Service\Ai;
 
 use Ari\Entity\ContactName;
+use Ari\Entity\User;
 use Ari\Message\GenerateAiSuggestionMessage;
+use Ari\Message\TriggerBatchAiAnalysisMessage;
 use Ari\Repository\AiSuggestionRepository;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -58,6 +60,45 @@ final class AiSuggestionService
         }
 
         $this->messageBus->dispatch(new GenerateAiSuggestionMessage($id, $sourceHash));
+    }
+
+    /**
+     * Returns pending suggestions for the given entity/tenant combination.
+     * Called by AiSuggestionProvider (State layer cannot depend on Repository).
+     *
+     * @return list<\Ari\Entity\AiSuggestion>
+     */
+    public function findPendingByEntity(User $user, string $entityType, int $entityId): array
+    {
+        return $this->repository->findByEntityForTenant($user, $entityType, $entityId);
+    }
+
+    /**
+     * Returns aggregated token/status stats for the given tenant.
+     * Called by AiSuggestionStatsProvider (State layer cannot depend on Repository).
+     *
+     * @return array{pending: int, accepted: int, dismissed: int, error: int, skipped: int, tokensPrompt: int, tokensCompletion: int}
+     */
+    public function getStats(User $user): array
+    {
+        return $this->repository->getStatsByTenant($user);
+    }
+
+    /**
+     * Dispatch TriggerBatchAiAnalysisMessage for the given tenant.
+     * The handler iterates all ContactNames in batches and dispatches
+     * GenerateAiSuggestionMessage for each eligible name.
+     *
+     * Returns immediately — actual work runs in the background (ai_async transport).
+     */
+    public function dispatchBatch(User $user): void
+    {
+        $id = $user->getId();
+        if (null === $id) {
+            return;
+        }
+
+        $this->messageBus->dispatch(new TriggerBatchAiAnalysisMessage($id));
     }
 
     /**

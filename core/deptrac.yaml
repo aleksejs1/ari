@@ -97,6 +97,8 @@ deptrac:
       - Filter         # API Platform #[ApiFilter()] attributes (metadata)
       - Repository     # Doctrine #[Entity(repositoryClass:)] attribute (metadata)
       - Security       # TenantAwareInterface implementation
+      - State          # API Platform provider/processor class references in #[ApiResource] (metadata)
+      - Controller     # API Platform controller class references in #[ApiResource] (metadata)
       - Vendor
       - Doctrine
     Dto:
