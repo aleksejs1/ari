@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useSystemSetting } from '@/hooks/useSystemSettings'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
@@ -38,9 +39,21 @@ const getFormattedTimezones = (): { value: string; label: string }[] => {
 }
 
 export function RegionalSettings() {
-  const { t } = useTranslation()
-  const { dateFormat, timeFormat, timezone, setDateFormat, setTimeFormat, setTimezone, isLoading } =
-    useUserPrefs()
+  const { t, i18n } = useTranslation()
+  const {
+    dateFormat,
+    timeFormat,
+    timezone,
+    aiContextLocale,
+    setDateFormat,
+    setTimeFormat,
+    setTimezone,
+    setAiContextLocale,
+    isLoading: isPrefsLoading,
+  } = useUserPrefs()
+
+  const { data: aiContextLocalesString, isLoading: isSettingsLoading } =
+    useSystemSetting('ai_context_locales')
 
   const settings = useMemo(() => {
     const settingsContainer: SettingConfig[] = []
@@ -78,10 +91,53 @@ export function RegionalSettings() {
         getFormattedTimezones().forEach((tz) => dropdown.addOption(tz.value, tz.label))
       })
 
-    return settingsContainer
-  }, [t, dateFormat, timeFormat, timezone, setDateFormat, setTimeFormat, setTimezone])
+    // Preferred Contact Name Locale
+    new Setting(settingsContainer)
+      .setName(t('settings.preferredLocale'))
+      .setDesc(t('settings.preferredLocaleDescription'))
+      .addDropdown((dropdown) => {
+        dropdown.setValue(aiContextLocale).onChange((val) => setAiContextLocale(val))
 
-  if (isLoading) {
+        dropdown.addOption('', t('common.default', 'Default / Original'))
+
+        let supportedLocales: string[] = []
+        if (aiContextLocalesString) {
+          try {
+            supportedLocales = JSON.parse(aiContextLocalesString)
+          } catch (e) {
+            console.error('Failed to parse ai_context_locales', e)
+          }
+        }
+
+        const displayNames = new Intl.DisplayNames([i18n.language], { type: 'language' })
+
+        supportedLocales.forEach((locale) => {
+          try {
+            const translatedName = displayNames.of(locale) || locale
+            const label = `${locale} - ${translatedName.charAt(0).toUpperCase() + translatedName.slice(1)}`
+            dropdown.addOption(locale, label)
+          } catch {
+            dropdown.addOption(locale, locale)
+          }
+        })
+      })
+
+    return settingsContainer
+  }, [
+    t,
+    i18n.language,
+    dateFormat,
+    timeFormat,
+    timezone,
+    aiContextLocale,
+    setDateFormat,
+    setTimeFormat,
+    setTimezone,
+    setAiContextLocale,
+    aiContextLocalesString,
+  ])
+
+  if (isPrefsLoading || isSettingsLoading) {
     return <div>{t('app.loading')}</div>
   }
 

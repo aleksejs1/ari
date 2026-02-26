@@ -60,6 +60,8 @@
     "timeFormatDescription": "Choose how time is displayed across the application.",
     "timezone": "Time Zone",
     "timezoneDescription": "Choose your local time zone.",
+    "preferredLocale": "Preferred Contact Name Locale",
+    "preferredLocaleDescription": "Select the language you want contact names to be translated and displayed in (e.g. Cyrillic to Latin).",
     "favouriteGroupName": "Favorite Group Name",
     "favouriteGroupNameDescription": "The name of the group used for favorite contacts.",
     "groupName": "Group Name",

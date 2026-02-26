@@ -14,6 +14,7 @@ type UserPrefType =
   | 'dateFormat'
   | 'timeFormat'
   | 'timezone'
+  | 'ai_context_locale'
   | 'favourite_group_name'
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
@@ -160,6 +161,7 @@ const useUserPrefsLogic = () => {
     'timezone',
     Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
   )
+  const aiContextLocale = getPrefValue(prefs, 'ai_context_locale', '')
   const favouriteGroupName = getPrefValue(prefs, 'favourite_group_name', 'favourites')
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
@@ -240,6 +242,7 @@ const useUserPrefsLogic = () => {
     dateFormat,
     timeFormat,
     timezone,
+    aiContextLocale,
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
@@ -261,6 +264,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     dateFormat,
     timeFormat,
     timezone,
+    aiContextLocale,
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
@@ -300,6 +304,12 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
   const setTimezone = useCallback(
     async (tz: string) => {
       await savePrefMutation.mutateAsync({ type: 'timezone', value: tz })
+    },
+    [savePrefMutation],
+  )
+  const setAiContextLocale = useCallback(
+    async (locale: string) => {
+      await savePrefMutation.mutateAsync({ type: 'ai_context_locale', value: locale })
     },
     [savePrefMutation],
   )
@@ -373,6 +383,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       dateFormat,
       timeFormat,
       timezone,
+      aiContextLocale,
       favouriteGroupName,
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
@@ -384,6 +395,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setDateFormat,
       setTimeFormat,
       setTimezone,
+      setAiContextLocale,
       setFavouriteGroupName,
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
@@ -400,6 +412,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       dateFormat,
       timeFormat,
       timezone,
+      aiContextLocale,
       favouriteGroupName,
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
@@ -411,6 +424,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setDateFormat,
       setTimeFormat,
       setTimezone,
+      setAiContextLocale,
       setFavouriteGroupName,
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,

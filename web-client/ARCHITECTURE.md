@@ -54,7 +54,10 @@ src/
   - **JWT Refresh**: Implemented via Axios interceptors. On 401 Unauthorized, the client attempts to refresh the access token using a stored `refresh_token`. Concurrent requests are queued during refresh to prevent race conditions. If refresh fails, the user is logged out.
   - **Session Management**: Users can view active sessions (device, IP, time) via the Sessions page and terminate individual sessions remotely.
   - **State**: `AuthContext` manages global auth state (user, token, refresh_token).
-- **User Preferences**: Global preferences (language, date format, time format, timezone, google sync, dashboard notification policy, dashboard settings) are managed via `useUserPrefs` hook and persisted to backend.
+- **User Preferences**:Available globally via `useUserPrefs()` hook:
+- Regional: `language`, `dateFormat`, `timeFormat`, `timezone`, `ai_context_locale`
+- UI Settings: `theme` (light/dark/system), `showLogo`
+- Feature Flags: `googleSyncOnUpdate`, `dashboardNotificationPolicy`, dashboard settings) are managed via `useUserPrefs` hook and persisted to backend.
 - **Settings System**: Settings pages are organized under `/settings/*` with a secondary sidebar for navigation. Core settings (General, Regional, Data, Plugins) and administrative pages (Sessions, Audit Logs, Password, etc.) each have their own URL. The `SettingsRegistry` manages settings tab content using the `Setting` builder API. Plugins register settings routes in the `'settings'` route slot.
 - **Notification Channels**: Support for multiple types (Telegram, Web). Telegram required config (token, ID), Web is config-less.
 - **Validation**: All forms use Zod schemas defined in `src/types/models.ts` or co-located with forms ensures type safety between API and UI.

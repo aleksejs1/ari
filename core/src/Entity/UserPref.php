@@ -70,6 +70,7 @@ class UserPref implements TenantAwareInterface
     public const TYPE_SHOW_LOGO = 'show_logo';
     public const TYPE_DASHBOARD_SETTINGS = 'dashboard_settings';
     public const TYPE_TIMEZONE = 'timezone';
+    public const TYPE_AI_CONTEXT_LOCALE = 'ai_context_locale';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -83,6 +84,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_SHOW_LOGO,
         self::TYPE_DASHBOARD_SETTINGS,
         self::TYPE_TIMEZONE,
+        self::TYPE_AI_CONTEXT_LOCALE,
     ];
 
     public const DEFAULTS = [
@@ -97,6 +99,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_SHOW_LOGO => '1',
         self::TYPE_DASHBOARD_SETTINGS => '{}',
         self::TYPE_TIMEZONE => 'UTC',
+        self::TYPE_AI_CONTEXT_LOCALE => '',
     ];
 
     #[ORM\Id]
@@ -164,8 +167,15 @@ class UserPref implements TenantAwareInterface
                     ->addViolation();
             }
         } elseif (self::TYPE_TIMEZONE === $this->type) {
-            if (!in_array($this->value, \DateTimeZone::listIdentifiers(), true)) {
-                $context->buildViolation('Invalid timezone')
+            $validTimezones = \DateTimeZone::listIdentifiers();
+            if (!\in_array($this->value, $validTimezones, true)) {
+                $context->buildViolation('Invalid timezone string.')
+                    ->atPath('value')
+                    ->addViolation();
+            }
+        } elseif (self::TYPE_AI_CONTEXT_LOCALE === $this->type) {
+            if ('' !== $this->value && !\in_array($this->value, ['ru', 'lv', 'en', 'de', 'fr', 'lt', 'et', 'pl', 'uk'], true)) {
+                $context->buildViolation('Invalid AI Context Locale string.')
                     ->atPath('value')
                     ->addViolation();
             }

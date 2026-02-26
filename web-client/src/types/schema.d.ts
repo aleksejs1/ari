@@ -104,6 +104,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ai_suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of AiSuggestion resources.
+         * @description Retrieves the collection of AiSuggestion resources.
+         */
+        get: operations["api_ai_suggestions_get_collection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai_suggestions/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a AiSuggestion resource.
+         * @description Creates a AiSuggestion resource.
+         */
+        post: operations["ai_suggestions_batch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai_suggestions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates the AiSuggestion resource.
+         * @description Updates the AiSuggestion resource.
+         */
+        patch: operations["api_ai_suggestions_id_patch"];
+        trace?: never;
+    };
+    "/api/ai_suggestions/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a AiSuggestionStats resource.
+         * @description Retrieves a AiSuggestionStats resource.
+         */
+        get: operations["ai_suggestions_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/audit_logs": {
         parameters: {
             query?: never;
@@ -221,7 +301,7 @@ export interface paths {
          * Import contacts from XML
          * @description Upload an XML file to import contacts and groups.
          */
-        post: operations["import_contact_xml"];
+        post: operations["importContactXml"];
         delete?: never;
         options?: never;
         head?: never;
@@ -620,6 +700,62 @@ export interface paths {
         patch: operations["api_contact_groups_id_patch"];
         trace?: never;
     };
+    "/api/contact_interactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ContactInteraction resources.
+         * @description Retrieves the collection of ContactInteraction resources.
+         */
+        get: operations["api_contact_interactions_get_collection"];
+        put?: never;
+        /**
+         * Creates a ContactInteraction resource.
+         * @description Creates a ContactInteraction resource.
+         */
+        post: operations["api_contact_interactions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contact_interactions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactInteraction resource.
+         * @description Retrieves a ContactInteraction resource.
+         */
+        get: operations["api_contact_interactions_id_get"];
+        /**
+         * Replaces the ContactInteraction resource.
+         * @description Replaces the ContactInteraction resource.
+         */
+        put: operations["api_contact_interactions_id_put"];
+        post?: never;
+        /**
+         * Removes the ContactInteraction resource.
+         * @description Removes the ContactInteraction resource.
+         */
+        delete: operations["api_contact_interactions_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ContactInteraction resource.
+         * @description Updates the ContactInteraction resource.
+         */
+        patch: operations["api_contact_interactions_id_patch"];
+        trace?: never;
+    };
     "/api/contact_names": {
         parameters: {
             query?: never;
@@ -844,6 +980,26 @@ export interface paths {
         patch: operations["api_contact_relations_id_patch"];
         trace?: never;
     };
+    "/api/contacts/{contactId}/snapshot/{logId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactSnapshot resource.
+         * @description Retrieves a ContactSnapshot resource.
+         */
+        get: operations["get_contact_snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contacts/{id}/timeline": {
         parameters: {
             query?: never;
@@ -902,6 +1058,58 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/gift_lists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of GiftList resources.
+         * @description Retrieves the collection of GiftList resources.
+         */
+        get: operations["api_gift_lists_get_collection"];
+        put?: never;
+        /**
+         * Creates a GiftList resource.
+         * @description Creates a GiftList resource.
+         */
+        post: operations["api_gift_lists_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gift_lists/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a GiftList resource.
+         * @description Retrieves a GiftList resource.
+         */
+        get: operations["api_gift_lists_id_get"];
+        put?: never;
+        post?: never;
+        /**
+         * Removes the GiftList resource.
+         * @description Removes the GiftList resource.
+         */
+        delete: operations["api_gift_lists_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the GiftList resource.
+         * @description Updates the GiftList resource.
+         */
+        patch: operations["api_gift_lists_id_patch"];
         trace?: never;
     };
     "/api/connect/google/check": {
@@ -1040,6 +1248,126 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth_history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of LoginHistory resources.
+         * @description Retrieves the collection of LoginHistory resources.
+         */
+        get: operations["get_login_history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplace/install": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a Marketplace resource.
+         * @description Creates a Marketplace resource.
+         */
+        post: operations["marketplace_install"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplace/readme/{pluginId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a Marketplace resource.
+         * @description Retrieves a Marketplace resource.
+         */
+        get: operations["marketplace_readme"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplace/registry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a Marketplace resource.
+         * @description Retrieves a Marketplace resource.
+         */
+        get: operations["marketplace_registry"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplace/uninstall": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a Marketplace resource.
+         * @description Creates a Marketplace resource.
+         */
+        post: operations["marketplace_uninstall"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplace/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a Marketplace resource.
+         * @description Creates a Marketplace resource.
+         */
+        post: operations["marketplace_update"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notification_channels": {
         parameters: {
             query?: never;
@@ -1094,6 +1422,26 @@ export interface paths {
          * @description Updates the NotificationChannel resource.
          */
         patch: operations["api_notification_channels_id_patch"];
+        trace?: never;
+    };
+    "/api/notification_channels/{id}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send verification email for this channel
+         * @description Creates a NotificationChannel resource.
+         */
+        post: operations["verify_channel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/notification_intents": {
@@ -1248,6 +1596,26 @@ export interface paths {
         patch: operations["api_notification_subscriptions_id_patch"];
         trace?: never;
     };
+    "/api/plugins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a PluginList resource.
+         * @description Retrieves a PluginList resource.
+         */
+        get: operations["get_plugin_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/stats": {
         parameters: {
             query?: never;
@@ -1261,6 +1629,30 @@ export interface paths {
          */
         get: operations["get_stats"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/system_settings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a SystemSetting resource.
+         * @description Retrieves a SystemSetting resource.
+         */
+        get: operations["api_system_settings_id_get"];
+        /**
+         * Replaces the SystemSetting resource.
+         * @description Replaces the SystemSetting resource.
+         */
+        put: operations["api_system_settings_id_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -1405,22 +1797,28 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         "ActiveSession-active_session.read": {
+            readonly id?: number;
+            /**
+             * Format: date-time
+             * @description {@inheritdoc}
+             */
+            valid?: string;
             ipAddress?: string | null;
             userAgent?: string | null;
             /** Format: date-time */
             readonly createdAt?: string;
-            readonly id?: number | string | null;
-            /** Format: date-time */
-            valid?: string | null;
         };
         "ActiveSession.jsonld-active_session.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /**
+             * Format: date-time
+             * @description {@inheritdoc}
+             */
+            valid?: string;
             ipAddress?: string | null;
             userAgent?: string | null;
             /** Format: date-time */
             readonly createdAt?: string;
-            readonly id?: number | string | null;
-            /** Format: date-time */
-            valid?: string | null;
         };
         "ActivityFeed-activity_feed.read": {
             readonly id?: number;
@@ -1450,6 +1848,108 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             expiresAt?: string | null;
+        };
+        "AiSuggestion-ai_suggestion.read": {
+            readonly id?: number;
+            /** @description Entity type, e.g. 'contact_name', 'contact_phone_number' (future) */
+            entityType?: string;
+            /** @description ID of the related entity (e.g. ContactName.id) */
+            entityId?: number;
+            /** @description Suggestion type, e.g. 'locale_alternative', 'phone_prefix' (future) */
+            suggestionType?: string;
+            /** @description Hash of the source value: md5(trim(given) . '|' . trim(family)). */
+            sourceHash?: string;
+            /** @description Suggestion payload as JSON. */
+            payload?: {
+                [key: string]: string | null;
+            };
+            /**
+             * @description pending | accepted | dismissed | error | skipped
+             * @default pending
+             */
+            status: string;
+            /** @description Provider used for the request, e.g. 'openai', 'anthropic' */
+            providerUsed?: string | null;
+            /** @description Model identifier (length: 255 — Ollama/HuggingFace model names can be long). */
+            modelUsed?: string | null;
+            tokensPrompt?: number | null;
+            tokensCompletion?: number | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            resolvedAt?: string | null;
+        };
+        "AiSuggestion-ai_suggestion.write": {
+            /**
+             * @description pending | accepted | dismissed | error | skipped
+             * @default pending
+             */
+            status: string;
+        };
+        "AiSuggestion-ai_suggestion.write.jsonMergePatch": {
+            /**
+             * @description pending | accepted | dismissed | error | skipped
+             * @default pending
+             */
+            status: string;
+        };
+        "AiSuggestion.jsonld-ai_suggestion.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            /** @description Entity type, e.g. 'contact_name', 'contact_phone_number' (future) */
+            entityType?: string;
+            /** @description ID of the related entity (e.g. ContactName.id) */
+            entityId?: number;
+            /** @description Suggestion type, e.g. 'locale_alternative', 'phone_prefix' (future) */
+            suggestionType?: string;
+            /** @description Hash of the source value: md5(trim(given) . '|' . trim(family)). */
+            sourceHash?: string;
+            /** @description Suggestion payload as JSON. */
+            payload?: {
+                [key: string]: string | null;
+            };
+            /**
+             * @description pending | accepted | dismissed | error | skipped
+             * @default pending
+             */
+            status: string;
+            /** @description Provider used for the request, e.g. 'openai', 'anthropic' */
+            providerUsed?: string | null;
+            /** @description Model identifier (length: 255 — Ollama/HuggingFace model names can be long). */
+            modelUsed?: string | null;
+            tokensPrompt?: number | null;
+            tokensCompletion?: number | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            resolvedAt?: string | null;
+        };
+        /**
+         * @description Singleton resource — one stats object per authenticated user.
+         *     Used by the frontend to poll progress during batch analysis.
+         */
+        "AiSuggestionStats-ai_suggestion_stats.read": {
+            id?: string;
+            pending?: number;
+            accepted?: number;
+            dismissed?: number;
+            error?: number;
+            skipped?: number;
+            tokensPrompt?: number;
+            tokensCompletion?: number;
+        };
+        /**
+         * @description Singleton resource — one stats object per authenticated user.
+         *     Used by the frontend to poll progress during batch analysis.
+         */
+        "AiSuggestionStats.jsonld-ai_suggestion_stats.read": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: string;
+            pending?: number;
+            accepted?: number;
+            dismissed?: number;
+            error?: number;
+            skipped?: number;
+            tokensPrompt?: number;
+            tokensCompletion?: number;
         };
         AuditLog: {
             readonly id?: number;
@@ -1591,9 +2091,17 @@ export interface components {
             status: number;
             violations?: {
                 /** @description The property path of the violation */
-                propertyPath?: string;
+                propertyPath: string;
                 /** @description The message associated with the violation */
-                message?: string;
+                message: string;
+                /** @description The code of the violation */
+                code?: string;
+                /** @description An extra hint to understand the violation */
+                hint?: string;
+                /** @description The serialized payload of the violation */
+                payload?: {
+                    [key: string]: unknown;
+                };
             }[];
             readonly detail?: string;
             readonly type?: string;
@@ -1606,9 +2114,17 @@ export interface components {
             status: number;
             violations?: {
                 /** @description The property path of the violation */
-                propertyPath?: string;
+                propertyPath: string;
                 /** @description The message associated with the violation */
-                message?: string;
+                message: string;
+                /** @description The code of the violation */
+                code?: string;
+                /** @description An extra hint to understand the violation */
+                hint?: string;
+                /** @description The serialized payload of the violation */
+                payload?: {
+                    [key: string]: unknown;
+                };
             }[];
             readonly detail?: string;
             readonly description?: string;
@@ -1624,6 +2140,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
+            contactInteractions?: components["schemas"]["ContactInteraction-contact.create"][];
             contactBiographies?: components["schemas"]["ContactBiography-contact.create"][];
             contactRelations?: components["schemas"]["ContactRelation-contact.create"][];
         };
@@ -1635,6 +2152,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-contact.create"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.create"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.create"][];
+            contactInteractions?: components["schemas"]["ContactInteraction-contact.create"][];
             contactBiographies?: components["schemas"]["ContactBiography-contact.create"][];
             contactRelations?: components["schemas"]["ContactRelation-contact.create"][];
         };
@@ -1650,6 +2168,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-contact.read"][];
             contactGroups?: components["schemas"]["ContactGroup-contact.read"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-contact.read"][];
+            contactInteractions?: components["schemas"]["ContactInteraction-contact.read"][];
             contactBiographies?: components["schemas"]["ContactBiography-contact.read"][];
             contactRelations?: components["schemas"]["ContactRelation-contact.read"][];
             readonly displayName?: string;
@@ -1673,6 +2192,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress-export"][];
             contactGroups?: components["schemas"]["ContactGroup-export"][];
             contactOrganizations?: components["schemas"]["ContactOrganization-export"][];
+            contactInteractions?: components["schemas"]["ContactInteraction-export"][];
             contactBiographies?: components["schemas"]["ContactBiography-export"][];
             contactRelations?: components["schemas"]["ContactRelation-export"][];
         };
@@ -1688,6 +2208,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress.jsonld-contact.read"][];
             contactGroups?: components["schemas"]["ContactGroup.jsonld-contact.read"][];
             contactOrganizations?: components["schemas"]["ContactOrganization.jsonld-contact.read"][];
+            contactInteractions?: components["schemas"]["ContactInteraction.jsonld-contact.read"][];
             contactBiographies?: components["schemas"]["ContactBiography.jsonld-contact.read"][];
             contactRelations?: components["schemas"]["ContactRelation.jsonld-contact.read"][];
             readonly displayName?: string;
@@ -1711,6 +2232,7 @@ export interface components {
             contactAddresses?: components["schemas"]["ContactAddress.jsonld-export"][];
             contactGroups?: components["schemas"]["ContactGroup.jsonld-export"][];
             contactOrganizations?: components["schemas"]["ContactOrganization.jsonld-export"][];
+            contactInteractions?: components["schemas"]["ContactInteraction.jsonld-export"][];
             contactBiographies?: components["schemas"]["ContactBiography.jsonld-export"][];
             contactRelations?: components["schemas"]["ContactRelation.jsonld-export"][];
         };
@@ -1834,6 +2356,7 @@ export interface components {
             path?: string;
             mimeType?: string;
             size?: number;
+            readonly thumbnailDataEncoded?: string | null;
         };
         "ContactAvatar-contact_avatar.read": {
             /** Format: ulid */
@@ -1853,6 +2376,7 @@ export interface components {
             path?: string;
             mimeType?: string;
             size?: number;
+            readonly thumbnailDataEncoded?: string | null;
         };
         "ContactAvatar.jsonld-contact_avatar.read": components["schemas"]["HydraItemBaseSchema"] & {
             /** Format: ulid */
@@ -2122,6 +2646,84 @@ export interface components {
         "ContactGroup.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
             readonly groupUuid?: string | null;
         };
+        "ContactInteraction-contact.create": {
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+        };
+        "ContactInteraction-contact.read": {
+            readonly id?: number;
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+        };
+        "ContactInteraction-contact_interaction.create_contact_interaction.update": {
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+        };
+        "ContactInteraction-contact_interaction.create_contact_interaction.update.jsonMergePatch": {
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+        };
+        "ContactInteraction-contact_interaction.read": {
+            readonly id?: number;
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+        };
+        "ContactInteraction-export": {
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+        };
+        "ContactInteraction.jsonld-contact.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+        };
+        "ContactInteraction.jsonld-contact_interaction.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            contact?: string | null;
+        };
+        "ContactInteraction.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
+            type?: string;
+            description?: string;
+            /** Format: date-time */
+            timestamp?: string;
+        };
         "ContactName-contact.create": {
             family?: string | null;
             given?: string | null;
@@ -2134,6 +2736,8 @@ export interface components {
         "ContactName-contact_name.create_contact_name.update": {
             family?: string | null;
             given?: string | null;
+            locale?: string | null;
+            nameType?: string | null;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -2143,6 +2747,8 @@ export interface components {
         "ContactName-contact_name.create_contact_name.update.jsonMergePatch": {
             family?: string | null;
             given?: string | null;
+            locale?: string | null;
+            nameType?: string | null;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -2153,6 +2759,8 @@ export interface components {
             readonly id?: number;
             family?: string | null;
             given?: string | null;
+            locale?: string | null;
+            nameType?: string | null;
             contact?: components["schemas"]["Contact-contact_name.read"] | null;
         };
         "ContactName-export": {
@@ -2168,6 +2776,8 @@ export interface components {
             readonly id?: number;
             family?: string | null;
             given?: string | null;
+            locale?: string | null;
+            nameType?: string | null;
             contact?: components["schemas"]["Contact.jsonld-contact_name.read"] | null;
         };
         "ContactName.jsonld-export": components["schemas"]["HydraItemBaseSchema"] & {
@@ -2429,6 +3039,22 @@ export interface components {
             type?: string | null;
             readonly personUuid?: string | null;
         };
+        ContactSnapshot: {
+            id?: string;
+            contactId?: number;
+            logId?: number;
+            snapshot?: {
+                [key: string]: string | null;
+            };
+        };
+        "ContactSnapshot.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: string;
+            contactId?: number;
+            logId?: number;
+            snapshot?: {
+                [key: string]: string | null;
+            };
+        };
         ContactTimeline: {
             id?: number;
             logs?: components["schemas"]["AuditLog"][];
@@ -2484,6 +3110,42 @@ export interface components {
         };
         "EventType.jsonld-event_type.read": components["schemas"]["HydraItemBaseSchema"] & {
             text?: string;
+        };
+        GiftList: {
+            readonly id?: number;
+            name: string;
+            description?: string | null;
+            /** Format: date-time */
+            eventDate?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            tenant?: string;
+        };
+        "GiftList.jsonMergePatch": {
+            readonly id?: number;
+            name?: string;
+            description?: string | null;
+            /** Format: date-time */
+            eventDate?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            tenant?: string;
+        };
+        "GiftList.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: number;
+            name: string;
+            description?: string | null;
+            /** Format: date-time */
+            eventDate?: string | null;
+            /**
+             * Format: iri-reference
+             * @example https://example.com/
+             */
+            tenant?: string;
         };
         "GraphLink-contact_graph.read": {
             source?: number;
@@ -2597,6 +3259,22 @@ export interface components {
             "@id": string;
             "@type": string;
         };
+        "LoginHistory-login_history.read": {
+            id?: number | null;
+            ipAddress?: string | null;
+            userAgent?: string | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+        };
+        "LoginHistory.jsonld-login_history.read": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: number | null;
+            ipAddress?: string | null;
+            userAgent?: string | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+        };
+        Marketplace: Record<string, never>;
+        "Marketplace.jsonld": components["schemas"]["HydraItemBaseSchema"] & Record<string, never>;
         "NotificationChannel-notification_channel.read": {
             readonly id?: number;
             type?: string;
@@ -2608,6 +3286,7 @@ export interface components {
             /** Format: date-time */
             createdAt?: string;
         };
+        "NotificationChannel-notification_channel.verify": Record<string, never>;
         "NotificationChannel-notification_channel.write": {
             type?: string;
             config?: {
@@ -2755,7 +3434,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            channel?: string | null;
+            channel?: string;
             targetType?: string | null;
             /**
              * Format: iri-reference
@@ -2777,7 +3456,7 @@ export interface components {
              * Format: iri-reference
              * @example https://example.com/
              */
-            channel?: string | null;
+            channel?: string;
             targetType?: string | null;
             /**
              * Format: iri-reference
@@ -2839,6 +3518,16 @@ export interface components {
             /** @default 1 */
             enabled: number;
         };
+        "PluginList-plugin.read": {
+            plugins?: {
+                [key: string]: boolean | string;
+            }[];
+        };
+        "PluginList.jsonld-plugin.read": components["schemas"]["HydraItemBaseSchema"] & {
+            plugins?: {
+                [key: string]: boolean | string;
+            }[];
+        };
         "Stats-stats.read": {
             totalContacts?: number;
             totalAuditLogs?: number;
@@ -2849,6 +3538,14 @@ export interface components {
             totalAuditLogs?: number;
             totalSentNotifications?: number;
         };
+        SystemSetting: {
+            id?: string;
+            value?: string;
+        };
+        "SystemSetting.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+            id?: string;
+            value?: string;
+        };
         "User-user.create": {
             uuid?: string;
             plainPassword?: string | null;
@@ -2856,6 +3553,8 @@ export interface components {
         "User-user.read": {
             readonly id?: number;
             uuid?: string;
+            /** @description The user roles */
+            roles?: string[];
         };
         "User.ChangePasswordDto": {
             currentPassword: string | null;
@@ -2864,25 +3563,27 @@ export interface components {
         "User.jsonld-user.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
             uuid?: string;
+            /** @description The user roles */
+            roles?: string[];
         };
         "UserPref-user_pref.create_user_pref.update": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
             value?: string | null;
         };
         "UserPref-user_pref.create_user_pref.update.jsonMergePatch": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
             value?: string | null;
         };
         "UserPref-user_pref.read": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
             value?: string | null;
         };
         "UserPref.jsonld-user_pref.read": components["schemas"]["HydraItemBaseSchema"] & {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
             value?: string | null;
         };
         Token: {
@@ -3127,6 +3828,219 @@ export interface operations {
             };
         };
     };
+    api_ai_suggestions_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiSuggestion collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["AiSuggestion.jsonld-ai_suggestion.read"][];
+                    };
+                    "application/json": components["schemas"]["AiSuggestion-ai_suggestion.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ai_suggestions_batch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new AiSuggestion resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["AiSuggestion-ai_suggestion.write"];
+                "application/json": components["schemas"]["AiSuggestion-ai_suggestion.write"];
+            };
+        };
+        responses: {
+            /** @description AiSuggestion resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["AiSuggestion.jsonld-ai_suggestion.read"];
+                    "application/json": components["schemas"]["AiSuggestion-ai_suggestion.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_ai_suggestions_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description AiSuggestion identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated AiSuggestion resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["AiSuggestion-ai_suggestion.write.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description AiSuggestion resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["AiSuggestion.jsonld-ai_suggestion.read"];
+                    "application/json": components["schemas"]["AiSuggestion-ai_suggestion.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    ai_suggestions_stats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiSuggestionStats resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["AiSuggestionStats.jsonld-ai_suggestion_stats.read"];
+                    "application/json": components["schemas"]["AiSuggestionStats-ai_suggestion_stats.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     api_audit_logs_get_collection: {
         parameters: {
             query?: {
@@ -3196,14 +4110,22 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
             };
             /** @description An error occurred */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
             };
         };
     };
@@ -3394,14 +4316,13 @@ export interface operations {
             };
         };
     };
-    import_contact_xml: {
+    importContactXml: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** @description The new Contact resource */
         requestBody?: {
             content: {
                 "multipart/form-data": {
@@ -3411,48 +4332,19 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Contact resource created */
-            201: {
+            /** @description Contacts imported successfully */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/ld+json": components["schemas"]["Contact.jsonld-contact.read"];
-                    "application/json": components["schemas"]["Contact-contact.read"];
-                };
+                content?: never;
             };
-            /** @description Invalid input */
+            /** @description Bad Request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description An error occurred */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
-                };
+                content?: never;
             };
         };
     };
@@ -5182,7 +6074,14 @@ export interface operations {
     };
     get_contact_graph: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description The ID of the contact to start the graph from. */
+                contactId?: number;
+                /** @description Maximum distance from the root contact. */
+                level?: number;
+                /** @description The ID of the group to filter contacts by. */
+                groupId?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -5508,6 +6407,339 @@ export interface operations {
                 content: {
                     "application/ld+json": components["schemas"]["ContactGroup.jsonld-contact_group.read"];
                     "application/json": components["schemas"]["ContactGroup-contact_group.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_interactions_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactInteraction collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ContactInteraction.jsonld-contact_interaction.read"][];
+                    };
+                    "application/json": components["schemas"]["ContactInteraction-contact_interaction.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_interactions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ContactInteraction resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactInteraction-contact_interaction.create_contact_interaction.update"];
+                "application/json": components["schemas"]["ContactInteraction-contact_interaction.create_contact_interaction.update"];
+            };
+        };
+        responses: {
+            /** @description ContactInteraction resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactInteraction.jsonld-contact_interaction.read"];
+                    "application/json": components["schemas"]["ContactInteraction-contact_interaction.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_interactions_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactInteraction identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactInteraction resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactInteraction.jsonld-contact_interaction.read"];
+                    "application/json": components["schemas"]["ContactInteraction-contact_interaction.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_interactions_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactInteraction identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactInteraction resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ContactInteraction-contact_interaction.create_contact_interaction.update"];
+                "application/json": components["schemas"]["ContactInteraction-contact_interaction.create_contact_interaction.update"];
+            };
+        };
+        responses: {
+            /** @description ContactInteraction resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactInteraction.jsonld-contact_interaction.read"];
+                    "application/json": components["schemas"]["ContactInteraction-contact_interaction.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_contact_interactions_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactInteraction identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactInteraction resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_contact_interactions_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactInteraction identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ContactInteraction resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ContactInteraction-contact_interaction.create_contact_interaction.update.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ContactInteraction resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactInteraction.jsonld-contact_interaction.read"];
+                    "application/json": components["schemas"]["ContactInteraction-contact_interaction.read"];
                 };
             };
             /** @description Invalid input */
@@ -6888,6 +8120,54 @@ export interface operations {
             };
         };
     };
+    get_contact_snapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ContactSnapshot identifier */
+                contactId: string;
+                /** @description ContactSnapshot identifier */
+                logId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactSnapshot resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactSnapshot.jsonld"];
+                    "application/json": components["schemas"]["ContactSnapshot"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     get_contact_timeline: {
         parameters: {
             query?: never;
@@ -7008,6 +8288,210 @@ export interface operations {
                         member: components["schemas"]["EventType.jsonld-event_type.read"][];
                     };
                     "application/json": components["schemas"]["EventType-event_type.read"][];
+                };
+            };
+        };
+    };
+    api_gift_lists_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GiftList collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["GiftList.jsonld"][];
+                    };
+                    "application/json": components["schemas"]["GiftList"][];
+                };
+            };
+        };
+    };
+    api_gift_lists_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new GiftList resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["GiftList"];
+                "application/json": components["schemas"]["GiftList"];
+            };
+        };
+        responses: {
+            /** @description GiftList resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["GiftList.jsonld"];
+                    "application/json": components["schemas"]["GiftList"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_gift_lists_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GiftList identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GiftList resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["GiftList.jsonld"];
+                    "application/json": components["schemas"]["GiftList"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_gift_lists_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GiftList identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GiftList resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_gift_lists_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GiftList identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated GiftList resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["GiftList.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description GiftList resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["GiftList.jsonld"];
+                    "application/json": components["schemas"]["GiftList"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };
@@ -7481,6 +8965,257 @@ export interface operations {
             };
         };
     };
+    get_login_history: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description LoginHistory collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["LoginHistory.jsonld-login_history.read"][];
+                    };
+                    "application/json": components["schemas"]["LoginHistory-login_history.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    marketplace_install: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new Marketplace resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["Marketplace"];
+                "application/json": components["schemas"]["Marketplace"];
+            };
+        };
+        responses: {
+            /** @description Marketplace resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Marketplace.jsonld"];
+                    "application/json": components["schemas"]["Marketplace"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    marketplace_readme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Marketplace identifier */
+                pluginId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Marketplace resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Marketplace.jsonld"];
+                    "application/json": components["schemas"]["Marketplace"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    marketplace_registry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Marketplace resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Marketplace.jsonld"];
+                    "application/json": components["schemas"]["Marketplace"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    marketplace_uninstall: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new Marketplace resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["Marketplace"];
+                "application/json": components["schemas"]["Marketplace"];
+            };
+        };
+        responses: {
+            /** @description Marketplace resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Marketplace.jsonld"];
+                    "application/json": components["schemas"]["Marketplace"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    marketplace_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new Marketplace resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["Marketplace"];
+                "application/json": components["schemas"]["Marketplace"];
+            };
+        };
+        responses: {
+            /** @description Marketplace resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Marketplace.jsonld"];
+                    "application/json": components["schemas"]["Marketplace"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
     api_notification_channels_get_collection: {
         parameters: {
             query?: {
@@ -7792,6 +9527,69 @@ export interface operations {
             };
             /** @description Not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    verify_channel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description NotificationChannel identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The new NotificationChannel resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["NotificationChannel-notification_channel.verify"];
+                "application/json": components["schemas"]["NotificationChannel-notification_channel.verify"];
+            };
+        };
+        responses: {
+            /** @description NotificationChannel resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["NotificationChannel.jsonld-notification_channel.read"];
+                    "application/json": components["schemas"]["NotificationChannel-notification_channel.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8545,6 +10343,49 @@ export interface operations {
             };
         };
     };
+    get_plugin_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PluginList resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["PluginList.jsonld-plugin.read"];
+                    "application/json": components["schemas"]["PluginList-plugin.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     get_stats: {
         parameters: {
             query?: never;
@@ -8584,6 +10425,126 @@ export interface operations {
                     "application/ld+json": components["schemas"]["Error.jsonld"];
                     "application/problem+json": components["schemas"]["Error"];
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_system_settings_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description SystemSetting identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SystemSetting resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["SystemSetting.jsonld"];
+                    "application/json": components["schemas"]["SystemSetting"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_system_settings_id_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description SystemSetting identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated SystemSetting resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["SystemSetting"];
+                "application/json": components["schemas"]["SystemSetting"];
+            };
+        };
+        responses: {
+            /** @description SystemSetting resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["SystemSetting.jsonld"];
+                    "application/json": components["schemas"]["SystemSetting"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };

@@ -94,6 +94,12 @@ Entity: `UserPref`.
 - **Mechanism**: Stores user-specific settings (e.g., language, date format, time format, timezone, sync preferences, dashboard settings).
 - **Validation**: Enforced via `#[Assert\Callback]` in the entity to ensure values matches the preference type.
 - **API**: Exposed via custom `UserPrefStateProvider` and `UserPrefProcessor` to allow access by preference `type` instead of ID.
+  - `contact_table_settings`
+  - `theme`
+  - `show_logo`
+  - `dashboard_settings`
+  - `timezone`
+  - `ai_context_locale`
 - **Dashboard Settings**: The `dashboard_settings` type stores a JSON blob containing the user's dashboard customization (layout preset, widget zone assignments, hidden widgets). Empty JSON `{}` means "use system defaults".
 
 ### 7. Google Contacts Integration
