@@ -4,6 +4,7 @@ export interface UserPrefsContextType {
   language: string
   dateFormat: string
   timeFormat: string
+  timezone: string
   favouriteGroupName: string
   googleSyncOnUpdate: string
   dashboardNotificationPolicy: string
@@ -14,6 +15,7 @@ export interface UserPrefsContextType {
   setLanguage: (lang: string) => Promise<void>
   setDateFormat: (format: string) => Promise<void>
   setTimeFormat: (format: string) => Promise<void>
+  setTimezone: (timezone: string) => Promise<void>
   setFavouriteGroupName: (name: string) => Promise<void>
   setGoogleSyncOnUpdate: (value: string) => Promise<void>
   setDashboardNotificationPolicy: (value: string) => Promise<void>
@@ -30,6 +32,7 @@ export const UserPrefsContext = createContext<UserPrefsContextType>({
   language: 'en',
   dateFormat: 'mm/dd/yyyy',
   timeFormat: '24h',
+  timezone: 'UTC',
   favouriteGroupName: 'favourites',
   googleSyncOnUpdate: '0',
   dashboardNotificationPolicy: '',
@@ -44,6 +47,9 @@ export const UserPrefsContext = createContext<UserPrefsContextType>({
     /* noop */
   },
   setTimeFormat: async () => {
+    /* noop */
+  },
+  setTimezone: async () => {
     /* noop */
   },
   setFavouriteGroupName: async () => {

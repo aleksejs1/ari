@@ -69,6 +69,7 @@ class UserPref implements TenantAwareInterface
     public const TYPE_THEME = 'theme';
     public const TYPE_SHOW_LOGO = 'show_logo';
     public const TYPE_DASHBOARD_SETTINGS = 'dashboard_settings';
+    public const TYPE_TIMEZONE = 'timezone';
 
     public const ALLOWED_TYPES = [
         self::TYPE_LANGUAGE,
@@ -81,6 +82,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_THEME,
         self::TYPE_SHOW_LOGO,
         self::TYPE_DASHBOARD_SETTINGS,
+        self::TYPE_TIMEZONE,
     ];
 
     public const DEFAULTS = [
@@ -94,6 +96,7 @@ class UserPref implements TenantAwareInterface
         self::TYPE_THEME => 'system',
         self::TYPE_SHOW_LOGO => '1',
         self::TYPE_DASHBOARD_SETTINGS => '{}',
+        self::TYPE_TIMEZONE => 'UTC',
     ];
 
     #[ORM\Id]
@@ -157,6 +160,12 @@ class UserPref implements TenantAwareInterface
         } elseif (self::TYPE_TIME_FORMAT === $this->type) {
             if (!in_array($this->value, ['24h', '12h'], true)) {
                 $context->buildViolation('Invalid time format')
+                    ->atPath('value')
+                    ->addViolation();
+            }
+        } elseif (self::TYPE_TIMEZONE === $this->type) {
+            if (!in_array($this->value, \DateTimeZone::listIdentifiers(), true)) {
+                $context->buildViolation('Invalid timezone')
                     ->atPath('value')
                     ->addViolation();
             }

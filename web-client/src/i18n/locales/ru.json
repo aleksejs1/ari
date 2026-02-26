@@ -58,6 +58,8 @@
     "dateFormatDescription": "Выберите формат отображения дат.",
     "timeFormat": "Формат времени",
     "timeFormatDescription": "Выберите, как время будет отображаться в приложении.",
+    "timezone": "Часовой пояс",
+    "timezoneDescription": "Выберите ваш местный часовой пояс.",
     "favouriteGroupName": "Название группы избранного",
     "favouriteGroupNameDescription": "Название группы, используемой для избранных контактов.",
     "groupName": "Название группы",

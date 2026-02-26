@@ -13,6 +13,7 @@ type UserPrefType =
   | 'language'
   | 'dateFormat'
   | 'timeFormat'
+  | 'timezone'
   | 'favourite_group_name'
   | 'googleSyncOnUpdate'
   | 'dashboard_notification_policy'
@@ -154,6 +155,11 @@ const useUserPrefsLogic = () => {
   const language = getPrefValue(prefs, 'language', 'en')
   const dateFormat = getPrefValue(prefs, 'dateFormat', 'mm/dd/yyyy')
   const timeFormat = getPrefValue(prefs, 'timeFormat', '24h')
+  const timezone = getPrefValue(
+    prefs,
+    'timezone',
+    Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+  )
   const favouriteGroupName = getPrefValue(prefs, 'favourite_group_name', 'favourites')
   const googleSyncOnUpdate = getPrefValue(prefs, 'googleSyncOnUpdate', '0')
   const dashboardNotificationPolicy = getPrefValue(prefs, 'dashboard_notification_policy', '')
@@ -233,6 +239,7 @@ const useUserPrefsLogic = () => {
     language,
     dateFormat,
     timeFormat,
+    timezone,
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
@@ -253,6 +260,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
     language,
     dateFormat,
     timeFormat,
+    timezone,
     favouriteGroupName,
     googleSyncOnUpdate,
     dashboardNotificationPolicy,
@@ -285,6 +293,13 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
   const setTimeFormat = useCallback(
     async (format: string) => {
       await savePrefMutation.mutateAsync({ type: 'timeFormat', value: format })
+    },
+    [savePrefMutation],
+  )
+
+  const setTimezone = useCallback(
+    async (tz: string) => {
+      await savePrefMutation.mutateAsync({ type: 'timezone', value: tz })
     },
     [savePrefMutation],
   )
@@ -357,6 +372,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       language,
       dateFormat,
       timeFormat,
+      timezone,
       favouriteGroupName,
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
@@ -367,6 +383,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setLanguage,
       setDateFormat,
       setTimeFormat,
+      setTimezone,
       setFavouriteGroupName,
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,
@@ -382,6 +399,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       language,
       dateFormat,
       timeFormat,
+      timezone,
       favouriteGroupName,
       googleSyncOnUpdate,
       dashboardNotificationPolicy,
@@ -392,6 +410,7 @@ export function UserPrefsProvider({ children }: UserPrefsProviderProps) {
       setLanguage,
       setDateFormat,
       setTimeFormat,
+      setTimezone,
       setFavouriteGroupName,
       setGoogleSyncOnUpdate,
       setDashboardNotificationPolicy,

@@ -58,6 +58,8 @@
     "dateFormatDescription": "Choose how dates are displayed across the application.",
     "timeFormat": "Time Format",
     "timeFormatDescription": "Choose how time is displayed across the application.",
+    "timezone": "Time Zone",
+    "timezoneDescription": "Choose your local time zone.",
     "favouriteGroupName": "Favorite Group Name",
     "favouriteGroupNameDescription": "The name of the group used for favorite contacts.",
     "groupName": "Group Name",
