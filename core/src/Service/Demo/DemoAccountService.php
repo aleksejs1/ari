@@ -202,30 +202,27 @@ class DemoAccountService
             $parent1 = $members[0];
             $parent1['age'] = rand(45, 65);
 
-            // Try to find a spouse (Parent 2)
-            $parent2 = null;
-            if (isset($members[1])) {
-                $parent2 = $members[1];
-                $parent2['age'] = $parent1['age'] + rand(-5, 5);
+            // Parent 2 (spouse) — guaranteed to exist by the count < 2 guard above
+            $parent2 = $members[1];
+            $parent2['age'] = $parent1['age'] + rand(-5, 5);
 
-                // Relation: Spouse
-                $rel = new ContactRelation($parent1['entity']);
-                $rel->setPerson($parent2['entity']);
-                $rel->setType('Spouse');
-                $this->entityManager->persist($rel);
+            // Relation: Spouse
+            $rel = new ContactRelation($parent1['entity']);
+            $rel->setPerson($parent2['entity']);
+            $rel->setType('Spouse');
+            $this->entityManager->persist($rel);
 
-                // Wedding Date
-                $wedding = new ContactDate($parent1['entity']);
-                $wedding->setText('Wedding Anniversary');
-                $wedding->setDate($this->generator->getRandomDate(new \DateTime('-40 years'), new \DateTime('-20 years')));
-                $this->entityManager->persist($wedding);
+            // Wedding Date
+            $wedding = new ContactDate($parent1['entity']);
+            $wedding->setText('Wedding Anniversary');
+            $wedding->setDate($this->generator->getRandomDate(new \DateTime('-40 years'), new \DateTime('-20 years')));
+            $this->entityManager->persist($wedding);
 
-                // Also add wedding to second parent
-                $wedding2 = new ContactDate($parent2['entity']);
-                $wedding2->setText('Wedding Anniversary');
-                $wedding2->setDate($wedding->getDate());
-                $this->entityManager->persist($wedding2);
-            }
+            // Also add wedding to second parent
+            $wedding2 = new ContactDate($parent2['entity']);
+            $wedding2->setText('Wedding Anniversary');
+            $wedding2->setDate($wedding->getDate());
+            $this->entityManager->persist($wedding2);
 
             // Rest are children (if any)
             for ($i = 2; $i < count($members); ++$i) {
@@ -239,12 +236,10 @@ class DemoAccountService
                 $rel->setType('Child');
                 $this->entityManager->persist($rel);
 
-                if (null !== $parent2) {
-                    $rel2 = new ContactRelation($parent2['entity']);
-                    $rel2->setPerson($child['entity']);
-                    $rel2->setType('Child');
-                    $this->entityManager->persist($rel2);
-                }
+                $rel2 = new ContactRelation($parent2['entity']);
+                $rel2->setPerson($child['entity']);
+                $rel2->setType('Child');
+                $this->entityManager->persist($rel2);
 
                 // Relation: Child -> Parent
                 $rel3 = new ContactRelation($child['entity']);
