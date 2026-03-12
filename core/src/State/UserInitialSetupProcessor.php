@@ -8,6 +8,7 @@ use Ari\Entity\NotificationChannel;
 use Ari\Entity\NotificationPolicy;
 use Ari\Entity\NotificationRule;
 use Ari\Entity\User;
+use Ari\Entity\UserPlan;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -40,6 +41,10 @@ final readonly class UserInitialSetupProcessor implements ProcessorInterface
 
         // First, persist the user via the inner processor (hashes password, persists user)
         $user = $this->innerProcessor->process($data, $operation, $uriVariables, $context);
+
+        // Assign default plan (self_hosted for self-hosted instances)
+        $userPlan = new UserPlan($user, 'self_hosted');
+        $this->entityManager->persist($userPlan);
 
         // Now create default notification settings
         $this->createDefaultNotificationSettings($user);

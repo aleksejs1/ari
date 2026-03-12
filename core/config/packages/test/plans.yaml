@@ -1,0 +1,21 @@
+parameters:
+  ari_plans:
+    self_hosted:
+      contacts_limit: 0
+      features:
+        contact_graph: true
+        ai_suggestions: true
+        google_import: true
+        xml_import: true
+        community_plugins: true
+    free:
+      contacts_limit: 3          # small: hit quota after 3 contacts in tests
+      features:
+        contact_graph: false
+        ai_suggestions: false
+        google_import: true
+        xml_import: true
+        community_plugins: false
+      promo_features:
+        - contact_graph
+        - community_plugins

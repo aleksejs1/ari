@@ -1,0 +1,26 @@
+parameters:
+  ari_plans:
+    self_hosted:
+      contacts_limit: 0          # 0 = unlimited
+      features:
+        contact_graph: true
+        ai_suggestions: true
+        google_import: true
+        xml_import: true
+        community_plugins: true
+    free:
+      contacts_limit: 150
+      features:
+        contact_graph: false
+        ai_suggestions: false   # denied (not promo): requires API key set by operator, not upgradeable
+        google_import: true
+        xml_import: true
+        community_plugins: false
+      # Features listed here get 'promo' state instead of 'denied'
+      promo_features:
+        - contact_graph
+        - community_plugins
+    # Future: 'grandfathered' tier for self_hosted users migrating to a hosted offering.
+    # grandfathered:
+    #   contacts_limit: 0
+    #   features: (same as self_hosted)
