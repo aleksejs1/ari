@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
 import { api } from '@/lib/axios'
+import { ENTITLEMENTS_QUERY_KEY } from '@/lib/entitlements/useEntitlements'
 import type { Contact, ContactFormValues } from '@/types/models'
 
 import { getHydraMember, type HydraCollection } from './utils'
@@ -73,6 +74,7 @@ export function useCreateContact() {
     },
     onSuccess: (newContact) => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
       if (newContact.id) {
         queryClient.setQueryData(['contacts', newContact.id.toString()], newContact)
       }
@@ -132,6 +134,7 @@ export function useDeleteContact() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
     },
   })
 }

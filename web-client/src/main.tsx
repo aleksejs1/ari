@@ -21,6 +21,7 @@ window.ReactJSX = ReactJSX
 
 import { AuthProvider } from './contexts/AuthContext'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
+import { UpgradeModalProvider } from './lib/entitlements/UpgradeModalContext'
 import App from './App.tsx'
 
 import './index.css'
@@ -43,7 +44,9 @@ const initApp = async () => {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <UserPrefsProvider>
-              <App />
+              <UpgradeModalProvider>
+                <App />
+              </UpgradeModalProvider>
             </UserPrefsProvider>
           </AuthProvider>
         </QueryClientProvider>
