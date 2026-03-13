@@ -5,6 +5,8 @@ namespace Ari\Tests\Unit\Security\Voter;
 use Ari\Entity\User;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\Voter\ContactVoter;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
+use Ari\Service\Entitlement\EntitlementState;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -17,7 +19,9 @@ class ContactVoterTest extends TestCase
     #[\Override]
     protected function setUp(): void
     {
-        $this->voter = new ContactVoter();
+        $entitlementService = static::createStub(EntitlementServiceInterface::class);
+        $entitlementService->method('checkQuota')->willReturn(EntitlementState::Allowed);
+        $this->voter = new ContactVoter($entitlementService);
     }
 
     #[DataProvider('provideAttributes')]
@@ -112,17 +116,35 @@ class ContactVoterTest extends TestCase
         );
     }
 
-    public function testVoteAccessGrantedForAdd(): void
+    public function testVoteAccessGrantedForAddWhenQuotaAvailable(): void
     {
-        $user = self::createStub(User::class);
-        $subject = self::createStub(TenantAwareInterface::class);
+        $user = static::createStub(User::class);
+        $subject = static::createStub(TenantAwareInterface::class);
 
-        $token = self::createStub(TokenInterface::class);
+        $token = static::createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
 
         self::assertSame(
             Voter::ACCESS_GRANTED,
             $this->voter->vote($token, $subject, [ContactVoter::ADD]),
+        );
+    }
+
+    public function testVoteAccessDeniedForAddWhenQuotaExceeded(): void
+    {
+        $entitlementService = static::createStub(EntitlementServiceInterface::class);
+        $entitlementService->method('checkQuota')->willReturn(EntitlementState::Denied);
+        $voter = new ContactVoter($entitlementService);
+
+        $user = static::createStub(User::class);
+        $subject = static::createStub(TenantAwareInterface::class);
+
+        $token = static::createStub(TokenInterface::class);
+        $token->method('getUser')->willReturn($user);
+
+        self::assertSame(
+            Voter::ACCESS_DENIED,
+            $voter->vote($token, $subject, [ContactVoter::ADD]),
         );
     }
 

@@ -8,6 +8,7 @@ use Ari\Entity\TokenStorage;
 use Ari\Entity\User;
 use Ari\Repository\ImportMappingRepository;
 use Ari\Repository\TokenStorageRepository;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Ari\Service\Google\GoogleContactsService;
 use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[ \PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GoogleContactsGroupImportTest extends TestCase
 {
     private TokenStorageRepository $tokenStorageRepository;
@@ -38,6 +39,8 @@ class GoogleContactsGroupImportTest extends TestCase
         $this->httpClient = new MockHttpClient(); // No requests expected by default
         $this->entityManager = self::createStub(EntityManagerInterface::class);
         $this->bus = self::createStub(MessageBusInterface::class);
+        $entitlementService = static::createStub(EntitlementServiceInterface::class);
+        $entitlementService->method('remainingQuota')->willReturn(PHP_INT_MAX);
 
         $this->service = new GoogleContactsService(
             $this->tokenStorageRepository,
@@ -46,6 +49,7 @@ class GoogleContactsGroupImportTest extends TestCase
             $this->httpClient,
             $this->entityManager,
             $this->bus,
+            $entitlementService,
             70,
             'https://people.googleapis.com/v1/people/me/connections',
             'https://people.googleapis.com/v1/contactGroups',
@@ -114,6 +118,9 @@ class GoogleContactsGroupImportTest extends TestCase
 
     private function recreateService(): void
     {
+        $entitlementService = static::createStub(EntitlementServiceInterface::class);
+        $entitlementService->method('remainingQuota')->willReturn(PHP_INT_MAX);
+
         $this->service = new GoogleContactsService(
             $this->tokenStorageRepository,
             $this->importMappingRepository,
@@ -121,6 +128,7 @@ class GoogleContactsGroupImportTest extends TestCase
             $this->httpClient,
             $this->entityManager,
             $this->bus,
+            $entitlementService,
             70,
             'https://people.googleapis.com/v1/people/me/connections',
             'https://people.googleapis.com/v1/contactGroups',

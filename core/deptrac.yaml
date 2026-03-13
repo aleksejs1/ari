@@ -108,6 +108,7 @@ deptrac:
     Message: []        # Pure value objects — zero dependencies
     Security:
       - Entity
+      - Service   # Voters may call services (e.g. EntitlementService for quota checks)
       - Vendor
 
     # ── Application ─────────────────────────────────────────

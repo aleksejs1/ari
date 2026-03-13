@@ -32,4 +32,48 @@ class ContactRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Given a list of UUID strings, returns those that already exist in DB for the given user.
+     * Used by XmlImportService for quota pre-check (Phase 0).
+     *
+     * @param string[] $uuids RFC4122 UUID strings from the import file
+     *
+     * @return string[] Subset of $uuids that exist in the database (as RFC4122 strings)
+     */
+    public function findExistingUuids(array $uuids, User $user): array
+    {
+        if ([] === $uuids) {
+            return [];
+        }
+
+        // Convert strings to Uuid objects for type-safe Doctrine queries.
+        // Doctrine's UUID type handles object→binary/string conversion; raw strings in
+        // IN clauses may not be converted automatically in all driver configurations.
+        $uuidObjects = [];
+        foreach ($uuids as $uuidStr) {
+            try {
+                $uuidObjects[] = \Symfony\Component\Uid\Uuid::fromString($uuidStr);
+            } catch (\InvalidArgumentException) {
+                // Skip malformed UUIDs from the import file
+            }
+        }
+
+        if ([] === $uuidObjects) {
+            return [];
+        }
+
+        /** @var Contact[] $contacts */
+        $contacts = $this->findBy(['uuid' => $uuidObjects, 'tenant' => $user]);
+
+        $result = [];
+        foreach ($contacts as $contact) {
+            $uuid = $contact->getUuid()?->toRfc4122();
+            if (null !== $uuid) {
+                $result[] = $uuid;
+            }
+        }
+
+        return $result;
+    }
 }

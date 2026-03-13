@@ -19,6 +19,8 @@ use Ari\Repository\ImportMappingRepository;
 use Ari\Repository\TokenStorageRepository;
 use Ari\Repository\UserRepository;
 use Ari\Service\ContactImport\ContactImportService;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
+use Ari\Service\Entitlement\EntitlementState;
 use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -35,6 +37,7 @@ final class ImportGoogleContactHandler
         private readonly GoogleOAuthService $oauthService,
         private readonly HttpClientInterface $httpClient,
         private readonly ContactImportService $contactImportService,
+        private readonly EntitlementServiceInterface $entitlementService,
         private readonly EntityManagerInterface $entityManager,
         #[Autowire('%google_people_api_base_url%')]
         private readonly string $peopleApiBase,
@@ -393,6 +396,13 @@ final class ImportGoogleContactHandler
         }
 
         if (null === $contact) {
+            // Secondary quota guard — covers race conditions with dispatch-time check.
+            // NOTE: check-then-create is not atomic (known limitation, see PLAN_ENTITLEMENTS.md §Phase 2).
+            if (EntitlementState::Allowed !== $this->entitlementService->checkQuota($user, 'contacts')) {
+                // Quota exceeded — ack message silently without creating the contact
+                return;
+            }
+
             $contact = $this->contactImportService->import($dto, $user);
             if (null !== $contact) {
                 if (null === $mapping) {

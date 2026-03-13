@@ -16,6 +16,7 @@ use Ari\Entity\Group;
 use Ari\Entity\User;
 use Ari\Repository\ContactRepository;
 use Ari\Repository\GroupRepository;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Ari\Service\Helper\CollectionSyncTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
@@ -28,16 +29,31 @@ class XmlImportService
         private readonly EntityManagerInterface $entityManager,
         private readonly GroupRepository $groupRepository,
         private readonly ContactRepository $contactRepository,
+        private readonly EntitlementServiceInterface $entitlementService,
         private readonly int $importLimit,
     ) {
     }
 
-    public function import(string $xmlContent, User $user): void
+    public function import(string $xmlContent, User $user): XmlImportResult
     {
         $xml = simplexml_load_string($xmlContent);
         if (false === $xml) {
             throw new \InvalidArgumentException('Invalid XML content');
         }
+
+        // Phase 0: quota pre-check
+        // Determine which contacts in the XML are new (not yet in DB) and apply quota.
+        $existingUuidSet = $this->buildExistingUuidSet($xml, $user);
+        $newCount = $this->countNewContacts($xml, $existingUuidSet);
+        $remaining = $this->entitlementService->remainingQuota($user, 'contacts');
+
+        if ($newCount > 0 && 0 === $remaining) {
+            // Quota fully exhausted — reject the entire import
+            return new XmlImportResult(imported: 0, skipped: $newCount, reason: 'quota_exceeded');
+        }
+
+        // allowedNew = how many new contacts we can create; PHP_INT_MAX means unlimited
+        $allowedNew = PHP_INT_MAX === $remaining ? PHP_INT_MAX : $remaining;
 
         // Phase 1: Import Groups
         foreach ($xml->groups->group as $groupNode) {
@@ -49,17 +65,33 @@ class XmlImportService
         // Phase 2: Import Contacts (Base)
         $contactsMap = []; // Map UUID string -> Contact Entity
         $importedCount = 0;
+        $newImported = 0;
+        $skippedContacts = [];
+
         foreach ($xml->contacts->contact as $contactNode) {
             if ($importedCount >= $this->importLimit) {
                 break;
             }
 
             // @var \SimpleXMLElement $contactNode
+            $uuid = (string) $contactNode->uuid;
+            $isExisting = '' !== $uuid && isset($existingUuidSet[$uuid]);
+
+            if (!$isExisting && $newImported >= $allowedNew) {
+                // This is a new contact but quota is exhausted — collect for the response
+                $skippedContacts[] = $this->extractContactSummary($contactNode);
+                continue;
+            }
+
             $contact = $this->importContactBase($contactNode, $user);
-            $uuid = $contact->getUuid()?->toRfc4122();
-            $uuidStr = (string) $uuid;
-            if ('' !== $uuidStr) {
-                $contactsMap[$uuidStr] = $contact;
+
+            if (!$isExisting) {
+                ++$newImported;
+            }
+
+            $contactUuid = $contact->getUuid()?->toRfc4122();
+            if (null !== $contactUuid) {
+                $contactsMap[$contactUuid] = $contact;
             }
             ++$importedCount;
         }
@@ -74,6 +106,131 @@ class XmlImportService
             }
         }
         $this->entityManager->flush();
+
+        $skipped = count($skippedContacts);
+        if ($skipped > 0) {
+            return new XmlImportResult(
+                imported: $importedCount,
+                skipped: $skipped,
+                reason: 'quota_exceeded',
+                skippedContacts: $skippedContacts,
+            );
+        }
+
+        return new XmlImportResult(imported: $importedCount, skipped: 0);
+    }
+
+    /**
+     * Builds a set (key→true map) of UUIDs that already exist in DB for this user.
+     *
+     * @return array<string, bool>
+     */
+    private function buildExistingUuidSet(\SimpleXMLElement $xml, User $user): array
+    {
+        $xmlUuids = [];
+        foreach ($xml->contacts->contact as $contactNode) {
+            $uuid = (string) $contactNode->uuid;
+            if ('' !== $uuid) {
+                $xmlUuids[] = $uuid;
+            }
+        }
+
+        if ([] === $xmlUuids) {
+            return [];
+        }
+
+        $existingUuids = $this->contactRepository->findExistingUuids($xmlUuids, $user);
+
+        return array_fill_keys($existingUuids, true);
+    }
+
+    /**
+     * Counts contact nodes in XML that would create NEW contacts (UUID absent or not in DB).
+     *
+     * @param array<string, bool> $existingUuidSet
+     */
+    private function countNewContacts(\SimpleXMLElement $xml, array $existingUuidSet): int
+    {
+        $newCount = 0;
+        foreach ($xml->contacts->contact as $contactNode) {
+            $uuid = (string) $contactNode->uuid;
+            if ('' === $uuid || !isset($existingUuidSet[$uuid])) {
+                ++$newCount;
+            }
+        }
+
+        return $newCount;
+    }
+
+    /**
+     * Extracts a human-readable name+email summary from a contact XML node.
+     * Used for the skippedContacts list in 207 responses.
+     *
+     * @return array{name: string, email: string}
+     */
+    private function extractContactSummary(\SimpleXMLElement $contactNode): array
+    {
+        $name = '';
+        $email = '';
+
+        // contactNames structure: <contactNames> contains child elements.
+        // - Flat/Export format: each child IS the record (<contactName><given/><family/></contactName>)
+        // - Standard format: each child is a container with <item> sub-records
+        foreach ($contactNode->contactNames as $container) {
+            if (isset($container->item) && $container->item->count() > 0) {
+                // Standard format: container has <item> children
+                foreach ($container->item as $item) {
+                    $g = (string) ($item->given ?? '');
+                    $f = (string) ($item->family ?? '');
+                    $candidate = trim($g . ' ' . $f);
+                    if ('' !== $candidate) {
+                        $name = $candidate;
+                        break;
+                    }
+                }
+            } elseif ($container->count() > 0) {
+                // Flat format: iterate direct children (each is a name record)
+                /** @psalm-suppress PossiblyNullIterator SimpleXMLElement::children() is never null in practice */
+                foreach ($container->children() as $nameRecord) {
+                    $g = (string) ($nameRecord->given ?? '');
+                    $f = (string) ($nameRecord->family ?? '');
+                    $candidate = trim($g . ' ' . $f);
+                    if ('' !== $candidate) {
+                        $name = $candidate;
+                        break;
+                    }
+                }
+            }
+            if ('' !== $name) {
+                break;
+            }
+        }
+
+        foreach ($contactNode->contactEmailAdresses as $container) {
+            if (isset($container->item) && $container->item->count() > 0) {
+                foreach ($container->item as $item) {
+                    $v = (string) ($item->value ?? '');
+                    if ('' !== $v) {
+                        $email = $v;
+                        break;
+                    }
+                }
+            } elseif ($container->count() > 0) {
+                /** @psalm-suppress PossiblyNullIterator SimpleXMLElement::children() is never null in practice */
+                foreach ($container->children() as $emailRecord) {
+                    $v = (string) ($emailRecord->value ?? '');
+                    if ('' !== $v) {
+                        $email = $v;
+                        break;
+                    }
+                }
+            }
+            if ('' !== $email) {
+                break;
+            }
+        }
+
+        return ['name' => $name, 'email' => $email];
     }
 
     private function importGroup(\SimpleXMLElement $node, User $user): void

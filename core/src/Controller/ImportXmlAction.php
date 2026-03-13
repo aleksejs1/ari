@@ -5,6 +5,7 @@ namespace Ari\Controller;
 use Ari\Service\ContactImport\XmlImportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -44,11 +45,32 @@ class ImportXmlAction extends AbstractController
         }
 
         try {
-            $this->importService->import($xmlContent, $user);
+            $result = $this->importService->import($xmlContent, $user);
         } catch (\Exception $e) {
             throw new BadRequestHttpException('Import failed: ' . $e->getMessage(), $e);
         }
 
-        return new Response(null, 204);
+        // Quota fully exhausted — no new contacts could be added
+        if (0 === $result->imported && $result->skipped > 0 && 'quota_exceeded' === $result->reason) {
+            return new JsonResponse(
+                ['error' => 'quota_exceeded', 'remaining' => 0],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
+        // Partial import — some new contacts were skipped due to quota
+        if ($result->skipped > 0) {
+            return new JsonResponse(
+                [
+                    'imported' => $result->imported,
+                    'skipped' => $result->skipped,
+                    'reason' => $result->reason,
+                    'skippedContacts' => $result->skippedContacts,
+                ],
+                Response::HTTP_MULTI_STATUS,
+            );
+        }
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -8,6 +8,7 @@ use Ari\Entity\User;
 use Ari\Message\ImportGoogleContactMessage;
 use Ari\Repository\ImportMappingRepository;
 use Ari\Repository\TokenStorageRepository;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -22,6 +23,7 @@ class GoogleContactsService
         private readonly HttpClientInterface $httpClient,
         private readonly EntityManagerInterface $entityManager,
         private readonly MessageBusInterface $bus,
+        private readonly EntitlementServiceInterface $entitlementService,
         private readonly int $importLimit,
         #[Autowire('%google_people_api_url%')]
         private readonly string $peopleApiUrl,
@@ -56,6 +58,13 @@ class GoogleContactsService
                 $this->entityManager->flush();
             }
         }
+
+        // Cap dispatch count by both the system safety limit and the user's quota.
+        // PHP_INT_MAX from remainingQuota means the plan is unlimited.
+        $remaining = $this->entitlementService->remainingQuota($user, 'contacts');
+        $effectiveLimit = PHP_INT_MAX === $remaining
+            ? $this->importLimit
+            : min($this->importLimit, $remaining);
 
         $dispatchedCount = 0;
         $pageToken = null;
@@ -98,13 +107,13 @@ class GoogleContactsService
 
                 ++$dispatchedCount;
 
-                if ($dispatchedCount >= $this->importLimit) {
+                if ($dispatchedCount >= $effectiveLimit) {
                     break;
                 }
             }
 
             $pageToken = $data['nextPageToken'] ?? null;
-        } while ($pageToken && $dispatchedCount < $this->importLimit);
+        } while ($pageToken && $dispatchedCount < $effectiveLimit);
 
         return $dispatchedCount;
     }

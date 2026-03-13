@@ -7,6 +7,7 @@ use Ari\Entity\User;
 use Ari\Message\ImportGoogleContactMessage;
 use Ari\Repository\ImportMappingRepository;
 use Ari\Repository\TokenStorageRepository;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Ari\Service\Google\GoogleContactsService;
 use Ari\Service\Google\GoogleOAuthService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[ \PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GoogleContactsServiceTest extends TestCase
 {
     /** @var TokenStorageRepository&\PHPUnit\Framework\MockObject\Stub */
@@ -31,6 +32,8 @@ class GoogleContactsServiceTest extends TestCase
     private EntityManagerInterface $entityManager;
     /** @var MessageBusInterface&\PHPUnit\Framework\MockObject\MockObject */
     private MessageBusInterface $bus;
+    /** @var EntitlementServiceInterface&\PHPUnit\Framework\MockObject\Stub */
+    private EntitlementServiceInterface $entitlementService;
     private GoogleContactsService $service;
 
     #[\Override]
@@ -42,6 +45,8 @@ class GoogleContactsServiceTest extends TestCase
         $this->httpClient = new MockHttpClient();
         $this->entityManager = self::createStub(EntityManagerInterface::class);
         $this->bus = $this->createMock(MessageBusInterface::class);
+        $this->entitlementService = static::createStub(EntitlementServiceInterface::class);
+        $this->entitlementService->method('remainingQuota')->willReturn(PHP_INT_MAX);
 
         $this->service = new GoogleContactsService(
             $this->tokenStorageRepository,
@@ -50,6 +55,7 @@ class GoogleContactsServiceTest extends TestCase
             $this->httpClient,
             $this->entityManager,
             $this->bus,
+            $this->entitlementService,
             70,
             'https://people.googleapis.com/v1/people/me/connections',
             'https://people.googleapis.com/v1/contactGroups',
@@ -153,6 +159,7 @@ class GoogleContactsServiceTest extends TestCase
             $this->httpClient,
             $this->entityManager,
             $this->bus,
+            $this->entitlementService,
             70,
             'https://people.googleapis.com/v1/people/me/connections',
             'https://people.googleapis.com/v1/contactGroups',
