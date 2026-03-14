@@ -4,6 +4,7 @@ namespace Ari\Tests\Unit\Service\Entitlement;
 
 use Ari\Entity\User;
 use Ari\Entity\UserPlan;
+use Ari\Repository\ApiKeyRepository;
 use Ari\Repository\ContactRepository;
 use Ari\Repository\UserPlanRepository;
 use Ari\Service\Entitlement\EntitlementService;
@@ -54,7 +55,10 @@ class EntitlementServiceTest extends TestCase
         $planRepo = static::createStub(UserPlanRepository::class);
         $planRepo->method('findOneBy')->willReturn($userPlan);
 
-        return new EntitlementService($this->plans, $contactRepo, $planRepo);
+        $apiKeyRepo = static::createStub(ApiKeyRepository::class);
+        $apiKeyRepo->method('countByTenant')->willReturn(0);
+
+        return new EntitlementService($this->plans, $contactRepo, $planRepo, $apiKeyRepo);
     }
 
     // ── ROLE_ADMIN short-circuit ───────────────────────────────────────────

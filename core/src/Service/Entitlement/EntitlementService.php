@@ -3,6 +3,7 @@
 namespace Ari\Service\Entitlement;
 
 use Ari\Entity\User;
+use Ari\Repository\ApiKeyRepository;
 use Ari\Repository\ContactRepository;
 use Ari\Repository\UserPlanRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -21,6 +22,7 @@ final class EntitlementService implements EntitlementServiceInterface
         private readonly array $plans,
         private readonly ContactRepository $contactRepository,
         private readonly UserPlanRepository $userPlanRepository,
+        private readonly ApiKeyRepository $apiKeyRepository,
     ) {}
 
     #[\Override]
@@ -77,6 +79,16 @@ final class EntitlementService implements EntitlementServiceInterface
             return max(0, $limit - $used);
         }
 
+        if ('api_keys' === $quota) {
+            $limit = $this->resolveApiKeysLimit($user);
+            if (0 === $limit) {
+                return PHP_INT_MAX; // unlimited
+            }
+            $used = $this->apiKeyRepository->countByTenant($user);
+
+            return max(0, $limit - $used);
+        }
+
         return PHP_INT_MAX; // unknown quotas are treated as unlimited
     }
 
@@ -92,12 +104,21 @@ final class EntitlementService implements EntitlementServiceInterface
         $isUnlimited = $isAdmin || $contactsLimit === 0;
         $used = $this->contactRepository->countByTenant($user);
 
+        $apiKeysLimit = $this->resolveApiKeysLimit($user);
+        $apiKeysUsed = $this->apiKeyRepository->countByTenant($user);
+
         $quotas = [
             'contacts' => new QuotaInfo(
                 limit: $isUnlimited ? null : $contactsLimit,
                 used: $used,
                 remaining: $isUnlimited ? null : max(0, $contactsLimit - $used),
                 isUnlimited: $isUnlimited,
+            ),
+            'api_keys' => new QuotaInfo(
+                limit: ($isAdmin || $apiKeysLimit === 0) ? null : $apiKeysLimit,
+                used: $apiKeysUsed,
+                remaining: ($isAdmin || $apiKeysLimit === 0) ? null : max(0, $apiKeysLimit - $apiKeysUsed),
+                isUnlimited: $isAdmin || $apiKeysLimit === 0,
             ),
         ];
 
@@ -145,6 +166,21 @@ final class EntitlementService implements EntitlementServiceInterface
         $this->planIdCache[$cacheKey] = $planId;
 
         return $planId;
+    }
+
+    private function resolveApiKeysLimit(User $user): int
+    {
+        $planId = $this->resolvePlanId($user);
+        $planConfig = $this->plans[$planId] ?? $this->plans['self_hosted'];
+        $configured = (int) ($planConfig['api_keys_limit'] ?? 0);
+
+        $envKey = 'APP_API_KEYS_LIMIT_' . strtoupper($planId);
+        $envVal = getenv($envKey);
+        if (false !== $envVal && '' !== $envVal) {
+            return (int) $envVal;
+        }
+
+        return $configured;
     }
 
     /**

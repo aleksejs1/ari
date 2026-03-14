@@ -40,6 +40,10 @@ class AuditLog implements TenantAwareInterface
     private ?User $user = null;
 
     #[Groups(['audit:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $actorLabel = null;
+
+    #[Groups(['audit:read'])]
     #[ORM\Column(length: 255)]
     private ?string $entityType = null;
 
@@ -228,6 +232,18 @@ class AuditLog implements TenantAwareInterface
     public function setOwnerEntityId(?string $ownerEntityId): static
     {
         $this->ownerEntityId = $ownerEntityId;
+
+        return $this;
+    }
+
+    public function getActorLabel(): ?string
+    {
+        return $this->actorLabel;
+    }
+
+    public function setActorLabel(?string $actorLabel): static
+    {
+        $this->actorLabel = $actorLabel;
 
         return $this;
     }

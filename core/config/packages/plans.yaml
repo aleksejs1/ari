@@ -2,20 +2,24 @@ parameters:
   ari_plans:
     self_hosted:
       contacts_limit: 0          # 0 = unlimited
+      api_keys_limit: 0          # 0 = unlimited
       features:
         contact_graph: true
         ai_suggestions: true
         google_import: true
         xml_import: true
         community_plugins: true
+        api_keys: true
     free:
       contacts_limit: 150
+      api_keys_limit: 5
       features:
         contact_graph: false
         ai_suggestions: false   # denied (not promo): requires API key set by operator, not upgradeable
         google_import: true
         xml_import: true
         community_plugins: false
+        api_keys: true
       # Features listed here get 'promo' state instead of 'denied'
       promo_features:
         - contact_graph

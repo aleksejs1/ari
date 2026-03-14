@@ -5,6 +5,7 @@ namespace Ari\Security\Voter;
 use Ari\Security\TenantAwareInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Ari\Security\ApiKeyToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -31,6 +32,18 @@ final class GroupVoter extends Voter
 
         if (!$user instanceof UserInterface) {
             return false;
+        }
+
+        // Scope gate for API key authentication
+        if ($token instanceof ApiKeyToken) {
+            $required = match ($attribute) {
+                self::VIEW => 'groups:read',
+                self::EDIT, self::ADD, self::DELETE => 'groups:write',
+                default => null,
+            };
+            if (null !== $required && !$token->hasScope($required)) {
+                return false;
+            }
         }
 
         switch ($attribute) {

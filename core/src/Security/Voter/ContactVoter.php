@@ -8,6 +8,7 @@ use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Ari\Service\Entitlement\EntitlementState;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Ari\Security\ApiKeyToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -38,6 +39,18 @@ final class ContactVoter extends Voter
 
         if (!$user instanceof UserInterface) {
             return false;
+        }
+
+        // Scope gate for API key authentication
+        if ($token instanceof ApiKeyToken) {
+            $required = match ($attribute) {
+                self::VIEW => 'contacts:read',
+                self::EDIT, self::ADD => 'contacts:write',
+                default => null,
+            };
+            if (null !== $required && !$token->hasScope($required)) {
+                return false;
+            }
         }
 
         switch ($attribute) {

@@ -108,6 +108,7 @@ deptrac:
     Message: []        # Pure value objects — zero dependencies
     Security:
       - Entity
+      - Repository # Authenticators may query repositories (e.g. ApiKeyAuthenticator)
       - Service   # Voters may call services (e.g. EntitlementService for quota checks)
       - Vendor
 
@@ -156,6 +157,7 @@ deptrac:
       - Dto
       - Entity
       - Kernel         # getProjectDir(), ARI_VERSION constant
+      - Repository     # State providers may access repositories directly (e.g. ApiKeyProvider)
       - Security
       - Service
       - Vendor

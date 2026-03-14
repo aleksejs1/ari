@@ -40,6 +40,8 @@ security:
             pattern:   ^/api
             stateless: true
             jwt: ~
+            custom_authenticators:
+                - Ari\Security\ApiKeyAuthenticator
 
         main:
             lazy: true

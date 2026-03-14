@@ -11,6 +11,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Ari\Security\ApiKeyToken;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class AuditLogSubscriber
@@ -159,7 +160,7 @@ class AuditLogSubscriber
         return $entity instanceof TenantAwareInterface;
     }
 
-    private const SENSITIVE_FIELDS = ['refreshToken', 'password', 'token', 'thumbnailData'];
+    private const SENSITIVE_FIELDS = ['refreshToken', 'password', 'token', 'thumbnailData', 'secretHash'];
 
     /**
      * @param array<string, mixed>|null $changes
@@ -233,6 +234,11 @@ class AuditLogSubscriber
         } elseif (null !== $entity->getTenant()) {
             // Fallback to tenant if no user in security context (e.g. CLI or background task)
             $auditLog->setUser($entity->getTenant());
+        }
+
+        $securityToken = $this->security->getToken();
+        if ($securityToken instanceof ApiKeyToken) {
+            $auditLog->setActorLabel($securityToken->getActorLabel());
         }
 
         return $auditLog;
