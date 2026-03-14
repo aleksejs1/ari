@@ -111,6 +111,13 @@
     "noPluginsInstalled": "No community plugins installed yet.",
     "browseMarketplaceHint": "Visit the marketplace to find new plugins.",
     "pluginsInstalled": "plugins installed",
+    "plan": {
+      "title": "Your Plan",
+      "adminOverride": "Admin Override"
+    },
+    "importPartial": "Imported {{imported}} contacts. {{skipped}} contacts were skipped due to your plan limit.",
+    "importQuotaExceeded": "Contact limit reached. Delete some contacts or upgrade your plan to import more.",
+    "importSkippedContacts": "Skipped contacts:",
     "ai": {
       "gdprTitle": "Data Privacy Notice",
       "gdprDescription": "When AI suggestions are enabled, contact names are sent to a third-party provider for processing. Ensure this complies with your organization's privacy policy and GDPR requirements. For full privacy, use a local provider (Ollama).",
@@ -388,9 +395,17 @@
       "title": "Dashboard Widgets",
       "description": "Choose which widgets to show on your dashboard"
     },
+    "quota": {
+      "contacts": "Contact Usage",
+      "used": "{{used}} of {{limit}} contacts used",
+      "clickToUpgrade": "Click to learn about upgrading your plan."
+    },
     "widget": {
       "stats": {
         "description": "Key statistics overview"
+      },
+      "contactsQuota": {
+        "description": "Contact quota usage"
       },
       "recentLogins": {
         "description": "Your recent login activity"
@@ -442,7 +457,12 @@
     "empty": "No notifications"
   },
   "contactGraph": {
-    "title": "Contact Graph"
+    "title": "Contact Graph",
+    "lockedHint": "Available on higher-tier plans"
+  },
+  "entitlements": {
+    "aiSuggestionsUnavailable": "AI Suggestions Unavailable",
+    "aiSuggestionsUnavailableDesc": "AI suggestions are not available. Contact your instance administrator to configure an AI provider."
   },
   "sessions": {
     "title": "Sessions",

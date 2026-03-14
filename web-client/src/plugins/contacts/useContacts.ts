@@ -240,6 +240,7 @@ export function useImportContacts() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
     },
   })
 }

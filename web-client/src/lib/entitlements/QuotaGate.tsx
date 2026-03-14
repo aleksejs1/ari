@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
+import { type JSX, type ReactNode } from 'react'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-import { useUpgradeModal } from './UpgradeModalContext'
 import { useQuota } from './useQuota'
+import { useUpgradeModal } from './useUpgradeModal'
 
 interface QuotaGateProps {
   resource: string

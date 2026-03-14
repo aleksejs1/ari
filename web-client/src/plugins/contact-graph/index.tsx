@@ -1,11 +1,12 @@
 import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Network } from 'lucide-react'
+import { Lock, Network } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { FeatureGate, useUpgradeModal } from '@/lib/entitlements'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
@@ -37,14 +38,41 @@ export class ContactGraphPlugin extends BasePlugin {
       component: ({ onNavigate, collapsed }) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const { t } = useTranslation()
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const { openUpgradeModal } = useUpgradeModal()
+        const label = t('contactGraph.title', 'Contact Graph')
         return (
-          <SidebarNavItem
-            to="/contact-graph"
-            icon={Network}
-            label={t('contactGraph.title', 'Contact Graph')}
-            onClick={onNavigate}
-            collapsed={collapsed}
-          />
+          <FeatureGate
+            feature="contact_graph"
+            promo={
+              <button
+                type="button"
+                onClick={() => openUpgradeModal('contact_graph')}
+                className={
+                  collapsed
+                    ? 'flex w-full justify-center rounded-lg px-2 py-2 text-gray-400 transition-colors hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-gray-700'
+                    : 'flex w-full items-center gap-2 rounded-lg px-4 py-2 text-gray-400 transition-colors hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-gray-700'
+                }
+                title={t('contactGraph.lockedHint', 'Available on higher-tier plans')}
+              >
+                <Network className="h-5 w-5 shrink-0" />
+                {!collapsed && (
+                  <>
+                    <span className="flex-1 text-left">{label}</span>
+                    <Lock className="h-3.5 w-3.5 shrink-0" />
+                  </>
+                )}
+              </button>
+            }
+          >
+            <SidebarNavItem
+              to="/contact-graph"
+              icon={Network}
+              label={label}
+              onClick={onNavigate}
+              collapsed={collapsed}
+            />
+          </FeatureGate>
         )
       },
       order: 30,

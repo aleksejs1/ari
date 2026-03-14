@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useIsAdmin } from '@/hooks/useAuth'
 import { useSystemSetting, useUpdateSystemSetting } from '@/hooks/useSystemSettings'
+import { FeatureGate } from '@/lib/entitlements'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
@@ -218,5 +219,9 @@ export function CommunityPlugins() {
     )
   }
 
-  return <UserCommunityPlugins isEnabled={isEnabled} />
+  return (
+    <FeatureGate feature="community_plugins" denied={null}>
+      <UserCommunityPlugins isEnabled={isEnabled} />
+    </FeatureGate>
+  )
 }

@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+vi.mock('@/lib/entitlements', () => ({
+  QuotaGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+
 import { ContactsHeader } from './ContactsHeader'
 
 describe('ContactsHeader', () => {

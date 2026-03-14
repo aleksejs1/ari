@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -11,17 +11,12 @@ import {
 } from '@/components/ui/dialog'
 
 import { getFeatureContent } from './featureContent'
+import { UpgradeModalContext } from './upgradeModalContext'
 
 interface UpgradeModalState {
   open: boolean
   feature: string | null
 }
-
-interface UpgradeModalContextValue {
-  openUpgradeModal: (feature: string) => void
-}
-
-const UpgradeModalContext = createContext<UpgradeModalContextValue | null>(null)
 
 export function UpgradeModalProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<UpgradeModalState>({ open: false, feature: null })
@@ -53,12 +48,4 @@ export function UpgradeModalProvider({ children }: { children: ReactNode }) {
       </Dialog>
     </UpgradeModalContext.Provider>
   )
-}
-
-export function useUpgradeModal(): UpgradeModalContextValue {
-  const ctx = useContext(UpgradeModalContext)
-  if (!ctx) {
-    throw new Error('useUpgradeModal must be used within UpgradeModalProvider')
-  }
-  return ctx
 }

@@ -1,17 +1,31 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import axios from 'axios'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
 
 import { useExportContacts, useImportContacts } from '@/plugins/contacts/useContacts'
 
+interface SkippedContact {
+  name: string
+  email: string
+}
+
+type ImportResult =
+  | { status: 'success' }
+  | { status: 'partial'; imported: number; skipped: number; skippedContacts: SkippedContact[] }
+  | { status: 'quota_exceeded' }
+  | { status: 'error' }
+
 export function DataSettings() {
   const { t } = useTranslation()
   const { mutate: exportContacts, isPending: isExporting } = useExportContacts()
   const { mutate: importContacts, isPending: isImporting } = useImportContacts()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [importResult, setImportResult] = useState<ImportResult | null>(null)
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -19,24 +33,41 @@ export function DataSettings() {
       return
     }
 
+    setImportResult(null)
+
     importContacts(file, {
-      onSuccess: () => {
-        // Reset file input
+      onSuccess: (data) => {
         if (fileInputRef.current) {
           fileInputRef.current.value = ''
         }
-        alert(t('settings.importSuccess'))
+        const result = data as
+          | { imported: number; skipped: number; skippedContacts: SkippedContact[] }
+          | null
+          | undefined
+        if (result && typeof result === 'object' && result.skipped > 0) {
+          setImportResult({
+            status: 'partial',
+            imported: result.imported,
+            skipped: result.skipped,
+            skippedContacts: result.skippedContacts ?? [],
+          })
+        } else {
+          setImportResult({ status: 'success' })
+        }
       },
-      onError: () => {
-        alert(t('settings.importError'))
+      onError: (error) => {
         if (fileInputRef.current) {
           fileInputRef.current.value = ''
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 422) {
+          setImportResult({ status: 'quota_exceeded' })
+        } else {
+          setImportResult({ status: 'error' })
         }
       },
     })
   }
 
-  // Import Data Click Handler
   const handleImportClick = useCallback(() => {
     fileInputRef.current?.click()
   }, [])
@@ -60,7 +91,6 @@ export function DataSettings() {
     new Setting(settingsContainer)
       .setName(t('settings.importData'))
       .setDesc(t('settings.importDataDescription'))
-
       .addButton((btn) =>
         btn
           .setButtonText(isImporting ? t('common.loading') : t('settings.importData'))
@@ -80,6 +110,48 @@ export function DataSettings() {
           <SettingItem key={idx} setting={setting} />
         ))}
       </div>
+
+      {importResult?.status === 'success' ? (
+        <Alert>
+          <AlertDescription>{t('settings.importSuccess')}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {importResult?.status === 'quota_exceeded' ? (
+        <Alert variant="destructive">
+          <AlertTitle>{t('settings.importQuotaExceeded')}</AlertTitle>
+        </Alert>
+      ) : null}
+
+      {importResult?.status === 'error' ? (
+        <Alert variant="destructive">
+          <AlertDescription>{t('settings.importError')}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {importResult?.status === 'partial' ? (
+        <Alert>
+          <AlertTitle>
+            {t('settings.importPartial', {
+              imported: importResult.imported,
+              skipped: importResult.skipped,
+            })}
+          </AlertTitle>
+          {importResult.skippedContacts.length > 0 ? (
+            <AlertDescription>
+              <p className="mb-1 mt-2 font-medium">{t('settings.importSkippedContacts')}</p>
+              <ul className="space-y-0.5 text-xs">
+                {importResult.skippedContacts.map((c, i) => (
+                  <li key={i}>
+                    {c.name}
+                    {c.email ? ` — ${c.email}` : ''}
+                  </li>
+                ))}
+              </ul>
+            </AlertDescription>
+          ) : null}
+        </Alert>
+      ) : null}
 
       <input
         type="file"

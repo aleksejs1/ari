@@ -12,8 +12,6 @@ const config: KnipConfig = {
     'src/components/ui/sheet.tsx',
     'src/components/ui/dropdown-menu.tsx',
     'src/components/ui/popover.tsx',
-    // Entitlement infrastructure — consumed by Phase 4 UI wiring
-    'src/lib/entitlements/**',
   ],
   ignoreBinaries: ['dot'],
   ignoreExportsUsedInFile: true,

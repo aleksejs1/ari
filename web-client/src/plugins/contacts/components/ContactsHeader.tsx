@@ -4,6 +4,7 @@ import { Plus, Search } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { QuotaGate } from '@/lib/entitlements'
 
 interface ContactsHeaderProps {
   onCreate: () => void
@@ -60,10 +61,12 @@ export function ContactsHeader({ onCreate, search, onSearchChange }: ContactsHea
             data-testid="contacts-search-input"
           />
         </div>
-        <Button onClick={onCreate} data-testid="contacts-create-button">
-          <Plus className="mr-2 h-4 w-4" />
-          {t('create')}
-        </Button>
+        <QuotaGate resource="contacts" tooltipText={t('quotaExceeded')}>
+          <Button onClick={onCreate} data-testid="contacts-create-button">
+            <Plus className="mr-2 h-4 w-4" />
+            {t('create')}
+          </Button>
+        </QuotaGate>
       </div>
     </div>
   )

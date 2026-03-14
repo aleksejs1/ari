@@ -1,10 +1,18 @@
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
+import ContactsQuotaWidget from '../widgets/ContactsQuotaWidget'
 import GroupsWidget from '../widgets/GroupsWidget'
 import StatsWidget from '../widgets/StatsWidget'
 import UpcomingAnniversariesWidget from '../widgets/UpcomingAnniversariesWidget'
 
 export function registerDashboardWidgets() {
+  widgetRegistry.register({
+    id: 'contacts-quota',
+    title: 'Contact Usage',
+    description: 'dashboard.widget.contactsQuota.description',
+    component: ContactsQuotaWidget,
+    defaultDimensions: { w: 6, h: 2 },
+  })
   widgetRegistry.register({
     id: 'stats',
     title: 'Stats',

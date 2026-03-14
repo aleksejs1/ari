@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Badge } from '@/components/ui/badge'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useEntitlements } from '@/lib/entitlements'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
@@ -10,6 +12,7 @@ import { useNotificationPolicies } from '@/plugins/notifications/hooks/useNotifi
 
 export function GeneralSettings() {
   const { t } = useTranslation()
+  const { data: entitlements } = useEntitlements()
   const {
     language,
     favouriteGroupName,
@@ -133,6 +136,17 @@ export function GeneralSettings() {
 
   return (
     <div className="space-y-6">
+      {entitlements ? (
+        <div className="flex items-center gap-2 rounded-lg border bg-muted/40 px-4 py-3 text-sm">
+          <span className="text-muted-foreground">{t('settings.plan.title')}:</span>
+          <span className="font-medium capitalize">{entitlements.planId.replace('_', ' ')}</span>
+          {entitlements.isAdminOverride ? (
+            <Badge variant="secondary" className="text-xs">
+              {t('settings.plan.adminOverride')}
+            </Badge>
+          ) : null}
+        </div>
+      ) : null}
       <div className="grid gap-6">
         {settings.map((setting, idx) => (
           <SettingItem key={idx} setting={setting} />

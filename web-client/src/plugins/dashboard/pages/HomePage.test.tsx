@@ -9,6 +9,10 @@ import { registerDashboardWidgets } from '../hooks/registerWidgets'
 
 import HomePage from './HomePage'
 
+vi.mock('../widgets/ContactsQuotaWidget', () => ({
+  default: () => null,
+}))
+
 vi.mock('../widgets/GroupsWidget', () => ({
   default: () => <div data-testid="groups-widget">GroupsWidget</div>,
 }))

@@ -16,6 +16,10 @@ vi.mock('@/plugins/notifications/hooks/useNotificationPolicies', () => ({
   useNotificationPolicies: vi.fn(),
 }))
 
+vi.mock('@/lib/entitlements', () => ({
+  useEntitlements: () => ({ data: undefined }),
+}))
+
 describe('GeneralSettings', () => {
   const mockSetLanguage = vi.fn()
   const mockSetTheme = vi.fn()
