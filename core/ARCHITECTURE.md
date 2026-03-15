@@ -53,6 +53,87 @@ Security is handled at the object level using Symfony Voters.
 - **Brute Force Protection**: Implemented via Symfony's `login_throttling` on the `/api/login` firewall. Limits login attempts to 5 per minute per IP/Username to prevent password guessing attacks. Requires `symfony/rate-limiter` and `symfony/lock`.
 - **Account Deletion**: `DELETE /api/profile` allows users to delete their entire account and all associated data. Handled by `CurrentUserProvider`, `UserDeleteProcessor`, and database-level cascades.
 
+### 2a. API Key Authentication
+
+In addition to JWT, the API supports scoped, revocable **API keys** that allow AI agents and scripts to access the same `/api/*` endpoints with restricted permissions.
+
+#### Token format
+
+```
+Authorization: Bearer ari_<64-hex-chars>
+```
+
+The raw secret is `ari_` + `bin2hex(random_bytes(32))`. Only a SHA-256 hash of the secret is stored (`secretHash`). The last four characters of the raw secret (`secretLastFour`) are stored in plaintext for display in the UI (`ari_...ab3f`).
+
+#### Why SHA-256 and not Argon2id
+
+API secrets are 256-bit cryptographically random strings, not user-chosen passwords. Argon2id's deliberate slowness (100–300 ms, high memory) is designed to resist dictionary attacks on weak passwords. Applied to random secrets it provides zero additional security while consuming significant CPU on every API request. SHA-256 + `hash_equals()` takes microseconds and is safe because a 32-byte random value cannot be brute-forced (2²⁵⁶ search space).
+
+#### Authenticator chain
+
+`ApiKeyAuthenticator` is registered on the `api` firewall **before** `jwt`. If the `Authorization` header starts with `Bearer ari_`, `ApiKeyAuthenticator` handles the request; otherwise it falls through to JWT (existing behaviour unchanged).
+
+```
+Bearer ari_<token>  →  ApiKeyAuthenticator  →  ApiKeyToken  →  scope-gated voters
+Bearer <jwt>        →  JWT authenticator    →  PostAuthenticationToken  →  normal voters
+```
+
+Because Symfony's JWT bundle intercepts any `Bearer` token before custom authenticators can run, an `ApiKeyJwtBypassSubscriber` (priority 500) moves `ari_*` tokens from `Authorization` to a private header before the security firewall fires, ensuring clean separation.
+
+#### ApiKeyToken and scope enforcement
+
+On successful authentication, `ApiKeyAuthenticator::createToken()` returns an `ApiKeyToken extends AbstractToken` that carries the user's roles, the key's UUID, name, last-four suffix, and scopes array.
+
+Voters check `$token instanceof ApiKeyToken` at the top of `voteOnAttribute` and deny access if the required scope is missing:
+
+```php
+if ($token instanceof ApiKeyToken) {
+    $required = match ($attribute) {
+        self::VIEW => 'contacts:read',
+        self::EDIT => 'contacts:write',
+        // ...
+    };
+    if ($required !== null && !$token->hasScope($required)) {
+        return false;
+    }
+}
+```
+
+Scope wildcards are supported: `*` grants everything; `contacts:*` grants all `contacts:` scopes.
+
+#### Rate limiting
+
+API key requests are rate-limited via `symfony/rate-limiter` (sliding window, 1 000 req/hour per key by default). Configurable via the `API_KEY_RATE_LIMIT` env var. Every response from an API key session includes:
+
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 743
+X-RateLimit-Reset: 1718123456
+```
+
+Headers are present even on 401/403 responses. When the limit is exceeded the response is `429 Too Many Requests`.
+
+#### Audit logging
+
+`AuditLogSubscriber` sets `AuditLog.actorLabel` to `"api_key:{uuid} ({name}, ...{lastFour})"` for API key sessions. This label is a plain-text snapshot — the audit trail remains intact even after a key is revoked (hard deleted).
+
+#### `lastUsedAt` / `lastUsedIp`
+
+Updated asynchronously via a `KernelEvents::TERMINATE` subscriber (fires after the response is sent). The update uses a raw SQL statement to avoid EntityManager state issues and lost-update contention on concurrent requests.
+
+#### IP address resolution
+
+`$request->getClientIp()` respects Symfony's `trusted_proxies` configuration. Set the `TRUSTED_PROXIES` env var (e.g. `127.0.0.1,10.0.0.0/8`) when running behind Nginx, Caddy, or Cloudflare to record the real client IP instead of the proxy address.
+
+#### Key management API
+
+```
+GET    /api/api_keys          paginated list of the user's keys (metadata only)
+POST   /api/api_keys          create a key → returns token ONCE in response
+PATCH  /api/api_keys/{id}     rename or update scopes (no secret rotation)
+DELETE /api/api_keys/{id}     revoke (hard delete)
+```
+
 ### 3. API Design
 - **Resources**: Primarily entity-based, exposed via `#[ApiResource]`.
 - **Serialization**: Controlled via `#[Groups]`.
