@@ -97,8 +97,14 @@ class AuditLogSubscriber
                     $auditLog->setSnapshotAfter($snapshotAfter);
                 }
 
-                // If the AuditLog was already persisted (inserted in DB),
-                // we need to update it manually as it's too late for the unit of work to pick it up for a new insert.
+                // Doctrine's topological sort can occasionally insert the AuditLog row
+                // before the original entity (they share the same FK-dependency level
+                // relative to User). When that happens the AuditLog already has a DB-
+                // assigned auto-increment id by the time postPersist fires for the
+                // original entity, so we can no longer rely on the Unit of Work to
+                // carry the updated entityId — a direct UPDATE is required instead.
+                // In the common case (entity inserted first) $auditLog->getId() is null
+                // here and the in-memory setEntityId() above is sufficient.
                 if (null !== $auditLog->getId()) {
                     $em = $args->getObjectManager();
 

@@ -2,6 +2,8 @@
 
 namespace Ari\Tests\Functional;
 
+use Ari\Entity\AuditLog;
+use Ari\Entity\Contact;
 use Ari\Entity\User;
 use Ari\Entity\UserPlan;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +23,48 @@ class XmlImportQuotaTest extends AbstractApiTestCase
     {
         parent::setUp();
         $this->entityManager = $this->getEntityManager();
+    }
+
+    public function testBatchFlushImportsAllContactsCorrectly(): void
+    {
+        // Import 60 contacts — more than FLUSH_BATCH_SIZE (50) so at least one
+        // intermediate batch flush fires during Phase 2. This verifies that batch
+        // flushing does not lose contacts or corrupt audit_log entries.
+        $names = array_map(fn (int $i) => "Contact{$i} BatchTest", range(1, 60));
+        $xml = $this->buildXml($names);
+
+        $client = static::createClient();
+        $client->request('POST', '/api/contacts/import-xml', [
+            'auth_bearer' => $this->token,
+            'headers' => ['Content-Type' => 'text/xml'],
+            'body' => $xml,
+        ]);
+
+        self::assertResponseStatusCodeSame(204);
+
+        $this->entityManager->clear();
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['uuid' => $this->userUuid]);
+        self::assertNotNull($user);
+
+        // All 60 contacts must have been persisted
+        $contacts = $this->entityManager->getRepository(Contact::class)->findBy(['user' => $user]);
+        self::assertCount(60, $contacts, 'All 60 contacts must be imported across batch flush boundaries');
+
+        // Each contact must have at least one audit_log INSERT entry
+        // (verifies that the AuditLogSubscriber fired correctly for every batch)
+        $auditLogs = $this->entityManager->getRepository(AuditLog::class)->findBy([
+            'action' => 'INSERT',
+        ]);
+        $contactAuditLogs = array_filter(
+            $auditLogs,
+            fn (AuditLog $log) => $log->getEntityType() === Contact::class,
+        );
+        self::assertGreaterThanOrEqual(
+            60,
+            count($contactAuditLogs),
+            'Every imported contact must have a corresponding INSERT audit log entry',
+        );
     }
 
     public function testImportAllContactsWhenQuotaNotExceeded(): void

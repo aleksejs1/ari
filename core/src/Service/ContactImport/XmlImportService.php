@@ -25,6 +25,17 @@ class XmlImportService
 {
     use CollectionSyncTrait;
 
+    /**
+     * Maximum number of contacts to accumulate in the Doctrine Unit of Work before
+     * issuing an intermediate flush. Keeping this low limits the number of SQL
+     * INSERTs (and corresponding audit_log INSERTs) per transaction, which prevents
+     * memory spikes and database lock contention on large imports.
+     *
+     * A value of 50 means each intermediate flush writes at most
+     * 50 contacts × ~8 child entity types × 2 (entity + audit_log) ≈ 800 INSERTs.
+     */
+    private const FLUSH_BATCH_SIZE = 50;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly GroupRepository $groupRepository,
@@ -67,6 +78,7 @@ class XmlImportService
         $importedCount = 0;
         $newImported = 0;
         $skippedContacts = [];
+        $batchCount = 0;
 
         foreach ($xml->contacts->contact as $contactNode) {
             if ($importedCount >= $this->importLimit) {
@@ -94,8 +106,16 @@ class XmlImportService
                 $contactsMap[$contactUuid] = $contact;
             }
             ++$importedCount;
+            ++$batchCount;
+
+            // Flush every FLUSH_BATCH_SIZE contacts to limit the number of INSERTs (and
+            // corresponding audit_log INSERTs) per transaction. Entities are NOT cleared
+            // from the EM session so that $contactsMap remains usable in Phase 3.
+            if (0 === $batchCount % self::FLUSH_BATCH_SIZE) {
+                $this->entityManager->flush();
+            }
         }
-        $this->entityManager->flush();
+        $this->entityManager->flush(); // flush remaining contacts in the last partial batch
 
         // Phase 3: Import Contact Relations
         foreach ($xml->contacts->contact as $contactNode) {
