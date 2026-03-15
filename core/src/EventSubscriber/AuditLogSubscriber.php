@@ -153,6 +153,13 @@ class AuditLogSubscriber
 
     private function shouldLog(object $entity): bool
     {
+        // AuditLog implements TenantAwareInterface so that the TenantFilter restricts
+        // GET /api/audit_logs to the current user's own records. However, AuditLog must
+        // NOT be audited itself — logging its creation would trigger another onFlush,
+        // which would schedule another AuditLog INSERT, causing infinite recursion.
+        //
+        // ContactAvatar is excluded because it stores large binary thumbnail data that
+        // changes frequently and has no meaningful audit history value.
         if ($entity instanceof AuditLog || $entity instanceof \Ari\Entity\ContactAvatar) {
             return false;
         }

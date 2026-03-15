@@ -277,6 +277,33 @@ class AuditLogTest extends ApiTestCase
         self::assertEquals('After', $changes['family'][1]);
     }
 
+    public function testAuditLogCreationDoesNotProduceRecursiveAuditLogs(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        self::assertResponseStatusCodeSame(201);
+
+        $this->em->clear();
+
+        // AuditLogSubscriber must skip AuditLog entities in shouldLog().
+        // If the guard were ever removed, each AuditLog INSERT would trigger
+        // another AuditLog INSERT — infinite recursion / stack overflow.
+        // This assertion catches that regression: there must be zero audit log
+        // entries whose entityType is AuditLog itself.
+        $recursiveLogs = $this->em->getRepository(AuditLog::class)->findBy([
+            'entityType' => AuditLog::class,
+        ]);
+
+        self::assertEmpty(
+            $recursiveLogs,
+            'AuditLogSubscriber must not audit AuditLog entities — removing the shouldLog() guard would cause infinite recursion.',
+        );
+    }
+
     public function testFilterAuditLogs(): void
     {
         $client = static::createClient();
