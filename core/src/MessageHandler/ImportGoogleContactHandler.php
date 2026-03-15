@@ -44,12 +44,29 @@ final class ImportGoogleContactHandler
     ) {
     }
 
+    /**
+     * Imports a single Google contact for the given user.
+     *
+     * This handler is idempotent via ImportMapping: if a contact with the same
+     * Google resourceName has already been imported, the existing contact is
+     * updated rather than duplicated. Message retries are therefore safe.
+     */
     public function __invoke(ImportGoogleContactMessage $message): void
     {
         $user = $this->userRepository->find($message->userId);
         if (null === $user) {
             return;
         }
+
+        // Idempotency guard: load the existing mapping up-front so it is visible
+        // here rather than buried in saveContact(). If this message is re-delivered
+        // (retry or duplicate dispatch), saveContact() will update the existing
+        // contact instead of creating a second one.
+        $existingMapping = $this->importMappingRepository->findOneBy([
+            'type' => 'google',
+            'externalId' => $message->resourceName,
+            'user' => $user,
+        ]);
 
         $tokenStorage = $this->tokenStorageRepository->findOneBy(['user' => $user, 'type' => 'google']);
         if (null === $tokenStorage) {
@@ -72,7 +89,7 @@ final class ImportGoogleContactHandler
         }
 
         $contactDto = $this->mapToDto($data, $user, $message->addGoogleGroup, $accessToken);
-        $this->saveContact($contactDto, $message->resourceName, $user);
+        $this->saveContact($contactDto, $message->resourceName, $user, $existingMapping);
     }
 
     private function getValidAccessToken(TokenStorage $tokenStorage): string
@@ -372,14 +389,8 @@ final class ImportGoogleContactHandler
         }
     }
 
-    private function saveContact(ContactImportDto $dto, string $resourceName, User $user): void
+    private function saveContact(ContactImportDto $dto, string $resourceName, User $user, ?ImportMapping $mapping): void
     {
-        $mapping = $this->importMappingRepository->findOneBy([
-            'type' => 'google',
-            'externalId' => $resourceName,
-            'user' => $user,
-        ]);
-
         $contact = null;
         if (null !== $mapping) {
             $contact = $mapping->getContact();
