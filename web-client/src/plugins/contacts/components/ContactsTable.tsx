@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -70,59 +70,93 @@ interface TableSettings {
 
 type FormatDate = (date: Date | string | null | undefined) => string
 
+function getPhoneValue(contact: Contact, spec: TypedColumnSpec): string {
+  return contact.phoneNumbers?.find((p) => p.type === spec.qualifier)?.value ?? '—'
+}
+
+function getEmailValue(contact: Contact, spec: TypedColumnSpec): string {
+  return contact.contactEmailAdresses?.find((e) => e.type === spec.qualifier)?.value ?? '—'
+}
+
+function getNameValue(contact: Contact, spec: TypedColumnSpec): string {
+  const name = contact.contactNames?.find((n) => n.locale === spec.qualifier)
+  if (!name) {
+    return '—'
+  }
+  return [name.given, name.family].filter(Boolean).join(' ') || '—'
+}
+
+function getDateValue(contact: Contact, spec: TypedColumnSpec, formatDate: FormatDate): string {
+  const raw = contact.contactDates?.find((d) => d.text === spec.qualifier)?.date
+  return raw ? formatDate(raw) : '—'
+}
+
 function renderTypedCell(contact: Contact, spec: TypedColumnSpec, formatDate: FormatDate): string {
   switch (spec.baseField) {
-    case 'phoneNumbers': {
-      return contact.phoneNumbers?.find((p) => p.type === spec.qualifier)?.value ?? '—'
-    }
-    case 'contactEmailAdresses': {
-      return contact.contactEmailAdresses?.find((e) => e.type === spec.qualifier)?.value ?? '—'
-    }
-    case 'contactNames': {
-      const name = contact.contactNames?.find((n) => n.locale === spec.qualifier)
-      if (!name) {
-        return '—'
-      }
-      return [name.given, name.family].filter(Boolean).join(' ') || '—'
-    }
-    case 'contactDates': {
-      const raw = contact.contactDates?.find((d) => d.text === spec.qualifier)?.date
-      return raw ? formatDate(raw) : '—'
-    }
-    default: {
+    case 'phoneNumbers':
+      return getPhoneValue(contact, spec)
+    case 'contactEmailAdresses':
+      return getEmailValue(contact, spec)
+    case 'contactNames':
+      return getNameValue(contact, spec)
+    case 'contactDates':
+      return getDateValue(contact, spec, formatDate)
+    default:
       return '—'
-    }
   }
+}
+
+function parseTableSettings(raw: string): TableSettings {
+  try {
+    const parsed = JSON.parse(raw)
+    if (parsed && typeof parsed === 'object' && !('visibility' in parsed)) {
+      return {
+        visibility: parsed as VisibilityState,
+        order: [],
+        typedColumns: [],
+        viewMode: 'table',
+      }
+    }
+    return {
+      visibility: {},
+      order: [],
+      typedColumns: [],
+      viewMode: 'table',
+      ...(parsed as Partial<TableSettings>),
+    }
+  } catch {
+    return { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
+  }
+}
+
+function getViewModeTitle(viewMode: TableSettings['viewMode'], t: (key: string) => string): string {
+  return viewMode === 'table' ? t('viewMode.cards') : t('viewMode.table')
+}
+
+function getViewModeIcon(viewMode: TableSettings['viewMode']) {
+  if (viewMode === 'table') {
+    return <LayoutGrid className="h-4 w-4" />
+  }
+  return <Table2 className="h-4 w-4" />
+}
+
+function getTableWrapperClass(viewMode: TableSettings['viewMode']): string {
+  return viewMode === 'cards' ? 'hidden' : 'hidden md:block'
+}
+
+function getCardsWrapperClass(viewMode: TableSettings['viewMode']): string {
+  return cn('space-y-4', viewMode === 'cards' ? 'block' : 'md:hidden')
 }
 
 export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
   'use no memo'
   const { t } = useTranslation('contacts')
   const navigate = useNavigate()
-  const { contactTableSettings, setContactTableSettings, formatDate } = useUserPrefs()
+  const { contactTableSettings, setContactTableSettings, formatDate, isLoading } = useUserPrefs()
 
-  const [settings, setSettings] = useState<TableSettings>(() => {
-    try {
-      const parsed = JSON.parse(contactTableSettings)
-      if (parsed && typeof parsed === 'object' && !('visibility' in parsed)) {
-        return {
-          visibility: parsed as VisibilityState,
-          order: [],
-          typedColumns: [],
-          viewMode: 'table',
-        }
-      }
-      return {
-        visibility: {},
-        order: [],
-        typedColumns: [],
-        viewMode: 'table',
-        ...(parsed as Partial<TableSettings>),
-      }
-    } catch {
-      return { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
-    }
-  })
+  const [settings, setSettings] = useState<TableSettings>(() =>
+    parseTableSettings(contactTableSettings),
+  )
 
   const viewMode = settings.viewMode ?? 'table'
 
@@ -130,6 +164,22 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(settings.visibility)
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(settings.order)
+
+  // C1 fix: the useState initializer runs once on mount before prefs are fetched from the
+  // server. When prefs arrive (isLoading → false), we need to sync local state with the
+  // server data. We do this exactly once — after that, local state is the source of truth
+  // so that subsequent user interactions are not overwritten by stale server responses.
+  const hasInitializedFromServer = useRef(false)
+  useEffect(() => {
+    if (isLoading || hasInitializedFromServer.current) {
+      return
+    }
+    hasInitializedFromServer.current = true
+    const serverSettings = parseTableSettings(contactTableSettings)
+    setSettings(serverSettings)
+    setColumnVisibility(serverSettings.visibility)
+    setColumnOrder(serverSettings.order)
+  }, [isLoading, contactTableSettings])
 
   const sortingState: SortingState = useMemo(() => {
     return sorting ? [{ id: sorting.id, desc: sorting.desc }] : []
@@ -249,14 +299,10 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
             setSettings(newSettings)
             void setContactTableSettings(JSON.stringify(newSettings))
           }}
-          title={viewMode === 'table' ? t('viewMode.cards') : t('viewMode.table')}
+          title={getViewModeTitle(viewMode, t)}
           data-testid="view-mode-toggle"
         >
-          {viewMode === 'table' ? (
-            <LayoutGrid className="h-4 w-4" />
-          ) : (
-            <Table2 className="h-4 w-4" />
-          )}
+          {getViewModeIcon(viewMode)}
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -391,7 +437,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className={viewMode === 'cards' ? 'hidden' : 'hidden md:block'}>
+      <div className={getTableWrapperClass(viewMode)}>
         <div className="overflow-x-auto rounded-md border">
           <Table className="[&_td:first-child]:pl-6 [&_th:first-child]:pl-6">
             <TableHeader>
@@ -454,7 +500,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
         </div>
       </div>
 
-      <div className={cn('space-y-4', viewMode === 'cards' ? 'block' : 'md:hidden')}>
+      <div className={getCardsWrapperClass(viewMode)}>
         {table.getRowModel().rows?.length ? (
           table
             .getRowModel()
