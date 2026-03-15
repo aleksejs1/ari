@@ -76,3 +76,7 @@ parameters:
     ai_max_tokens: '%env(int:default:default_ai_max_tokens:AI_MAX_TOKENS)%'
     ai_context_locales: '%env(default:default_ai_context_locales:AI_CONTEXT_LOCALES)%'
     messenger_transport_ai_dsn: '%env(default:default_messenger_transport_ai_dsn:MESSENGER_TRANSPORT_AI_DSN)%'
+
+    # Observability
+    app_version: '%env(default:default_app_version:APP_VERSION)%'
+    log_tenant_hash_key: '%env(default:empty_string:LOG_TENANT_HASH_KEY)%'

@@ -58,6 +58,13 @@ services:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postUpdate }
             - { name: doctrine.event_listener, event: postRemove }
+
+    # Also registered as a Monolog processor: adds request_id, ip_truncated,
+    # and tenant_id_hash to every log record. Autoconfigure handles the
+    # EventSubscriberInterface; the monolog.processor tag is explicit.
+    Ari\EventSubscriber\RequestContextSubscriber:
+        tags:
+            - { name: monolog.processor }
     Ari\Doctrine\DBAL\SqliteForeignKeyMiddleware:
         tags:
             - { name: 'doctrine.middleware', connection: 'default', priority: 1000 }

@@ -56,3 +56,6 @@ parameters:
     default_ai_max_tokens: 200
     default_ai_context_locales: 'ru,lv,en'
     default_messenger_transport_ai_dsn: 'doctrine://default?queue_name=ai_async'
+
+    # Observability
+    default_app_version: 'dev'

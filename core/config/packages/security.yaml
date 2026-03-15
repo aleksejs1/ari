@@ -56,6 +56,7 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
+        - { path: ^/api/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/logout, roles: PUBLIC_ACCESS }

@@ -25,6 +25,12 @@ services:
       JWT_PUBLIC_KEY: /app/core/config/jwt/public.pem
       MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
       DEFAULT_URI: "http://localhost:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     volumes:
       - ./core/public/uploads:/app/core/public/uploads
       - app_data:/app/core/var
