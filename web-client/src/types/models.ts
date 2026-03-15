@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
+import type { HydraCollection } from '@/lib/api/hydra'
 import { formatApiDate } from '@/lib/utils'
-
-import type { HydraCollection } from '@/plugins/contacts/utils'
 
 import type { components } from './schema'
 

@@ -1,3 +1,8 @@
+export type { HydraCollection } from '@/lib/api/hydra'
+export { getHydraMember, getHydraPagination } from '@/lib/api/hydra'
+
+import type { Contact } from '@/types/models'
+
 export interface TypedColumnSpec {
   baseField: 'contactNames' | 'phoneNumbers' | 'contactEmailAdresses' | 'contactDates'
   qualifier: string // locale for names, type string for phones/emails, text for dates
@@ -5,47 +10,44 @@ export interface TypedColumnSpec {
   label: string // human-readable label e.g. "Mobile phone"
 }
 
-export interface HydraCollection<T> {
-  member: T[]
-  totalItems?: number
-  view?: {
-    '@id': string
-    '@type': string
-    first: string
-    last: string
-    next?: string
-    previous?: string
-  }
-  [key: string]: unknown
+export type FormatDate = (date: Date | string | null | undefined) => string
+
+function getPhoneValue(contact: Contact, spec: TypedColumnSpec): string {
+  return contact.phoneNumbers?.find((p) => p.type === spec.qualifier)?.value ?? '—'
 }
 
-export function getHydraMember<T>(data?: HydraCollection<T> | T[]): T[] {
-  if (!data) {
-    return []
-  }
-  if (Array.isArray(data)) {
-    return data
-  }
-  return data.member || data['hydra:member'] || []
+function getEmailValue(contact: Contact, spec: TypedColumnSpec): string {
+  return contact.contactEmailAdresses?.find((e) => e.type === spec.qualifier)?.value ?? '—'
 }
 
-export function getHydraPagination<T>(data?: HydraCollection<T>, page = 1) {
-  const totalItems = data?.totalItems ?? 0
-  const totalPages = Math.ceil(totalItems / 30)
-  const view = data?.view
-
-  return {
-    totalItems,
-    totalPages,
-    hasNext: hasNextPage(view, totalPages, page),
-    hasPrevious: hasPreviousPage(view, page),
+function getNameValue(contact: Contact, spec: TypedColumnSpec): string {
+  const name = contact.contactNames?.find((n) => n.locale === spec.qualifier)
+  if (!name) {
+    return '—'
   }
+  return [name.given, name.family].filter(Boolean).join(' ') || '—'
 }
 
-function hasNextPage(view: HydraCollection<unknown>['view'], totalPages: number, page: number) {
-  return !!view?.['next'] || totalPages > page
+function getDateValue(contact: Contact, spec: TypedColumnSpec, formatDate: FormatDate): string {
+  const raw = contact.contactDates?.find((d) => d.text === spec.qualifier)?.date
+  return raw ? formatDate(raw) : '—'
 }
 
-function hasPreviousPage(view: HydraCollection<unknown>['view'], page: number) {
-  return !!view?.['previous'] || page > 1
+export function renderTypedCell(
+  contact: Contact,
+  spec: TypedColumnSpec,
+  formatDate: FormatDate,
+): string {
+  switch (spec.baseField) {
+    case 'phoneNumbers':
+      return getPhoneValue(contact, spec)
+    case 'contactEmailAdresses':
+      return getEmailValue(contact, spec)
+    case 'contactNames':
+      return getNameValue(contact, spec)
+    case 'contactDates':
+      return getDateValue(contact, spec, formatDate)
+    default:
+      return '—'
+  }
 }

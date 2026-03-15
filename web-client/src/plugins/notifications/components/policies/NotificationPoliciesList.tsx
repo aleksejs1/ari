@@ -15,9 +15,10 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { getHydraMember } from '@/lib/api/hydra'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
 
-import { getHydraMember, useContacts } from '@/plugins/contacts/useContacts'
+import { useContacts } from '@/plugins/contacts/useContacts'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 
 import {

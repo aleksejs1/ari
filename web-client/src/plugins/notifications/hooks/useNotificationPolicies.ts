@@ -1,9 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
 import type { NotificationPolicy, NotificationPolicyFormValues } from '@/types/models'
-
-import { getHydraMember, type HydraCollection } from '@/plugins/contacts/useContacts'
 
 export const useNotificationPolicies = () => {
   return useQuery({

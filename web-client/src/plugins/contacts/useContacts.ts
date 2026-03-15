@@ -3,6 +3,7 @@ import axios from 'axios'
 
 import { api } from '@/lib/axios'
 import { ENTITLEMENTS_QUERY_KEY } from '@/lib/entitlements/useEntitlements'
+import { storage, STORAGE_KEYS } from '@/lib/storage'
 import type { Contact, ContactFormValues } from '@/types/models'
 
 import { getHydraMember, type HydraCollection } from './utils'
@@ -254,7 +255,7 @@ export function useUploadContactAvatar() {
       formData.append('file', file)
 
       // Use a clean axios instance to bypass default headers from the global 'api' instance
-      const token = localStorage.getItem('token')
+      const token = storage.get(STORAGE_KEYS.TOKEN)
       const normalizedUrl = url.startsWith('/') ? url : `/${url}`
 
       const res = await axios.post(`${api.defaults.baseURL}${normalizedUrl}/avatar`, formData, {

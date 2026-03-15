@@ -3,14 +3,15 @@ import { jwtDecode } from 'jwt-decode'
 
 import { api } from '@/lib/axios'
 import { PluginLoader } from '@/lib/core/PluginLoader'
+import { storage, STORAGE_KEYS } from '@/lib/storage'
 import type { AuthState, User } from '@/types/auth'
 
 import { AuthContext } from './AuthContextInstance'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(() => {
-    const token = localStorage.getItem('token')
-    const refreshToken = localStorage.getItem('refresh_token')
+    const token = storage.get(STORAGE_KEYS.TOKEN)
+    const refreshToken = storage.get(STORAGE_KEYS.REFRESH_TOKEN)
     if (token) {
       try {
         const decoded = jwtDecode<{ username: string; roles: string[] }>(token)
@@ -28,8 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           pluginLoadError: null,
         }
       } catch {
-        localStorage.removeItem('token')
-        localStorage.removeItem('refresh_token')
+        storage.remove(STORAGE_KEYS.TOKEN)
+        storage.remove(STORAGE_KEYS.REFRESH_TOKEN)
       }
     }
     return {
@@ -44,8 +45,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   })
 
   const login = (token: string, refreshToken: string) => {
-    localStorage.setItem('token', token)
-    localStorage.setItem('refresh_token', refreshToken)
+    storage.set(STORAGE_KEYS.TOKEN, token)
+    storage.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken)
     try {
       const decoded = jwtDecode<{ username: string; roles: string[] }>(token)
       const user: User = {
@@ -67,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = async () => {
-    const refreshToken = localStorage.getItem('refresh_token')
+    const refreshToken = storage.get(STORAGE_KEYS.REFRESH_TOKEN)
 
     if (refreshToken) {
       try {
@@ -79,8 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    localStorage.removeItem('token')
-    localStorage.removeItem('refresh_token')
+    storage.remove(STORAGE_KEYS.TOKEN)
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN)
     setState({
       user: null,
       token: null,

@@ -1,9 +1,8 @@
 import { lazy, Suspense } from 'react'
 
+import { PageLoader } from '@/components/PageLoader'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
-
-import { PageLoader } from '@/plugins/settings/components/PageLoader'
 
 import { DashboardSidebarSection } from './extensions/DashboardSidebarSection'
 import { registerDashboardWidgets } from './hooks/registerWidgets'

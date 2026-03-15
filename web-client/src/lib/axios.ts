@@ -1,6 +1,8 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
+import { storage, STORAGE_KEYS } from './storage'
+
 export const API_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:8000'
 
 export const api = axios.create({
@@ -62,7 +64,7 @@ const refreshToken = async (): Promise<string> => {
   // Cross-tab mitigation: re-read from localStorage first. If another tab
   // already refreshed and stored a valid token, use it without hitting the
   // network. This closes the most common multi-tab race window.
-  const storedToken = localStorage.getItem('token')
+  const storedToken = storage.get(STORAGE_KEYS.TOKEN)
   if (storedToken && isTokenStillFresh(storedToken)) {
     api.defaults.headers.common.Authorization = `Bearer ${storedToken}`
     return storedToken
@@ -86,14 +88,14 @@ const refreshToken = async (): Promise<string> => {
     refreshTimeoutId = null
   }, REFRESH_TIMEOUT_MS)
 
-  const currentRefreshToken = localStorage.getItem('refresh_token')
+  const currentRefreshToken = storage.get(STORAGE_KEYS.REFRESH_TOKEN)
 
   if (!currentRefreshToken) {
     clearTimeout(refreshTimeoutId)
     refreshTimeoutId = null
     isRefreshing = false
-    localStorage.removeItem('token')
-    localStorage.removeItem('refresh_token')
+    storage.remove(STORAGE_KEYS.TOKEN)
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN)
     window.location.href = '/login'
     throw new Error('No refresh token')
   }
@@ -113,8 +115,8 @@ const refreshToken = async (): Promise<string> => {
 
     const { token, refresh_token: newRefreshToken } = data
 
-    localStorage.setItem('token', token)
-    localStorage.setItem('refresh_token', newRefreshToken)
+    storage.set(STORAGE_KEYS.TOKEN, token)
+    storage.set(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken)
 
     api.defaults.headers.common.Authorization = `Bearer ${token}`
 
@@ -122,8 +124,8 @@ const refreshToken = async (): Promise<string> => {
     return token
   } catch (err) {
     processQueue(err as Error, null)
-    localStorage.removeItem('token')
-    localStorage.removeItem('refresh_token')
+    storage.remove(STORAGE_KEYS.TOKEN)
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN)
     window.location.href = '/login'
     throw err
   } finally {
@@ -135,7 +137,7 @@ const refreshToken = async (): Promise<string> => {
 }
 
 api.interceptors.request.use(async (config) => {
-  let token = localStorage.getItem('token')
+  let token = storage.get(STORAGE_KEYS.TOKEN)
 
   if (token) {
     const { exp } = jwtDecode<{ exp: number }>(token)

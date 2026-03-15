@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
   type ColumnDef,
-  type ColumnOrderState,
   flexRender,
   getCoreRowModel,
   type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
 import {
   ArrowDown,
@@ -37,20 +35,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { cn } from '@/lib/utils'
 import { type Contact } from '@/types/models'
 
-import { ContactActionsCell } from '../cells/ContactActionsCell'
-import { ContactAvatarCell } from '../cells/ContactAvatarCell'
-import { ContactDatesCell } from '../cells/ContactDatesCell'
-import { ContactEmailsCell } from '../cells/ContactEmailsCell'
-import { ContactFavoriteCell } from '../cells/ContactFavoriteCell'
-import { ContactGroupsCell } from '../cells/ContactGroupsCell'
-import { ContactNameCell } from '../cells/ContactNameCell'
-import { ContactPhonesCell } from '../cells/ContactPhonesCell'
-import { type TypedColumnSpec } from '../utils'
+import { useTableSettings } from '../hooks/useTableSettings'
+import { renderTypedCell, type TypedColumnSpec } from '../utils'
 
+import { ContactMobileCard } from './ContactMobileCard'
 import { DisplaySettingsModal } from './DisplaySettingsModal'
 
 interface ContactsTableProps {
@@ -61,124 +52,33 @@ interface ContactsTableProps {
   sorting?: { id: string; desc: boolean }
 }
 
-interface TableSettings {
-  visibility: VisibilityState
-  order: ColumnOrderState
-  typedColumns: TypedColumnSpec[]
-  viewMode: 'table' | 'cards'
-}
-
-type FormatDate = (date: Date | string | null | undefined) => string
-
-function getPhoneValue(contact: Contact, spec: TypedColumnSpec): string {
-  return contact.phoneNumbers?.find((p) => p.type === spec.qualifier)?.value ?? '—'
-}
-
-function getEmailValue(contact: Contact, spec: TypedColumnSpec): string {
-  return contact.contactEmailAdresses?.find((e) => e.type === spec.qualifier)?.value ?? '—'
-}
-
-function getNameValue(contact: Contact, spec: TypedColumnSpec): string {
-  const name = contact.contactNames?.find((n) => n.locale === spec.qualifier)
-  if (!name) {
-    return '—'
-  }
-  return [name.given, name.family].filter(Boolean).join(' ') || '—'
-}
-
-function getDateValue(contact: Contact, spec: TypedColumnSpec, formatDate: FormatDate): string {
-  const raw = contact.contactDates?.find((d) => d.text === spec.qualifier)?.date
-  return raw ? formatDate(raw) : '—'
-}
-
-function renderTypedCell(contact: Contact, spec: TypedColumnSpec, formatDate: FormatDate): string {
-  switch (spec.baseField) {
-    case 'phoneNumbers':
-      return getPhoneValue(contact, spec)
-    case 'contactEmailAdresses':
-      return getEmailValue(contact, spec)
-    case 'contactNames':
-      return getNameValue(contact, spec)
-    case 'contactDates':
-      return getDateValue(contact, spec, formatDate)
-    default:
-      return '—'
-  }
-}
-
-function parseTableSettings(raw: string): TableSettings {
-  try {
-    const parsed = JSON.parse(raw)
-    if (parsed && typeof parsed === 'object' && !('visibility' in parsed)) {
-      return {
-        visibility: parsed as VisibilityState,
-        order: [],
-        typedColumns: [],
-        viewMode: 'table',
-      }
-    }
-    return {
-      visibility: {},
-      order: [],
-      typedColumns: [],
-      viewMode: 'table',
-      ...(parsed as Partial<TableSettings>),
-    }
-  } catch {
-    return { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
-  }
-}
-
-function getViewModeTitle(viewMode: TableSettings['viewMode'], t: (key: string) => string): string {
+function getViewModeTitle(viewMode: 'table' | 'cards', t: (key: string) => string): string {
   return viewMode === 'table' ? t('viewMode.cards') : t('viewMode.table')
 }
 
-function getViewModeIcon(viewMode: TableSettings['viewMode']) {
+function getViewModeIcon(viewMode: 'table' | 'cards') {
   if (viewMode === 'table') {
     return <LayoutGrid className="h-4 w-4" />
   }
   return <Table2 className="h-4 w-4" />
 }
 
-function getTableWrapperClass(viewMode: TableSettings['viewMode']): string {
+function getTableWrapperClass(viewMode: 'table' | 'cards'): string {
   return viewMode === 'cards' ? 'hidden' : 'hidden md:block'
 }
 
-function getCardsWrapperClass(viewMode: TableSettings['viewMode']): string {
+function getCardsWrapperClass(viewMode: 'table' | 'cards'): string {
   return cn('space-y-4', viewMode === 'cards' ? 'block' : 'md:hidden')
 }
 
 export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
   const { t } = useTranslation('contacts')
   const navigate = useNavigate()
-  const { contactTableSettings, setContactTableSettings, formatDate, isLoading } = useUserPrefs()
-
-  const [settings, setSettings] = useState<TableSettings>(() =>
-    parseTableSettings(contactTableSettings),
-  )
+  const { settings, formatDate, updateSettings } = useTableSettings()
 
   const viewMode = settings.viewMode ?? 'table'
 
   const [displayModalOpen, setDisplayModalOpen] = useState(false)
-
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(settings.visibility)
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(settings.order)
-
-  // C1 fix: the useState initializer runs once on mount before prefs are fetched from the
-  // server. When prefs arrive (isLoading → false), we need to sync local state with the
-  // server data. We do this exactly once — after that, local state is the source of truth
-  // so that subsequent user interactions are not overwritten by stale server responses.
-  const hasInitializedFromServer = useRef(false)
-  useEffect(() => {
-    if (isLoading || hasInitializedFromServer.current) {
-      return
-    }
-    hasInitializedFromServer.current = true
-    const serverSettings = parseTableSettings(contactTableSettings)
-    setSettings(serverSettings)
-    setColumnVisibility(serverSettings.visibility)
-    setColumnOrder(serverSettings.order)
-  }, [isLoading, contactTableSettings])
 
   const sortingState: SortingState = useMemo(() => {
     return sorting ? [{ id: sorting.id, desc: sorting.desc }] : []
@@ -218,16 +118,13 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     return result
   }, [columns, typedColumnDefs, settings.typedColumns])
 
-  // We need to pass onEdit to the table meta so that cells can access it if needed
-  // (e.g. ActionCell)
-
   const table = useReactTable({
     data,
     columns: mergedColumns,
     state: {
       sorting: sortingState,
-      columnVisibility,
-      columnOrder,
+      columnVisibility: settings.visibility,
+      columnOrder: settings.order,
     },
     manualSorting: true,
     meta: {
@@ -248,34 +145,22 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     },
     onColumnVisibilityChange: (updaterOrValue) => {
       const next =
-        typeof updaterOrValue === 'function' ? updaterOrValue(columnVisibility) : updaterOrValue
-      setColumnVisibility(next)
-      const newSettings = { ...settings, visibility: next }
-      setSettings(newSettings)
-      void setContactTableSettings(JSON.stringify(newSettings))
+        typeof updaterOrValue === 'function' ? updaterOrValue(settings.visibility) : updaterOrValue
+      updateSettings({ visibility: next })
     },
     onColumnOrderChange: (updaterOrValue) => {
       const next =
-        typeof updaterOrValue === 'function' ? updaterOrValue(columnOrder) : updaterOrValue
-      setColumnOrder(next)
-      const newSettings = { ...settings, order: next }
-      setSettings(newSettings)
-      void setContactTableSettings(JSON.stringify(newSettings))
+        typeof updaterOrValue === 'function' ? updaterOrValue(settings.order) : updaterOrValue
+      updateSettings({ order: next })
     },
     getCoreRowModel: getCoreRowModel(),
   })
-
-  function handleDisplaySettingsSave(newTypedColumns: TypedColumnSpec[]) {
-    const newSettings = { ...settings, typedColumns: newTypedColumns }
-    setSettings(newSettings)
-    void setContactTableSettings(JSON.stringify(newSettings))
-  }
 
   // C4 fix: useMemo extracted from JSX to a top-level variable so the component
   // can benefit from React Compiler optimizations (removes the need for 'use no memo').
   const columnMenuItems = useMemo(() => {
     const allColumns = table.getAllColumns()
-    const currentOrder = columnOrder
+    const currentOrder = settings.order
     const leafColumnIds = table.getAllLeafColumns().map((c) => c.id)
 
     // If order is empty, use definition order
@@ -314,7 +199,6 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     return sortedColumns
       .filter((column) => column.getCanHide() && column.id !== 'actions')
       .map((column) => {
-        // @ts-expect-error meta is user-defined
         const titleKey = column.columnDef.meta?.titleKey
         let label: string = column.id
 
@@ -386,7 +270,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           </div>
         )
       })
-  }, [table, t, columnOrder])
+  }, [table, t, settings.order])
 
   return (
     <div className="space-y-4">
@@ -394,7 +278,9 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
         open={displayModalOpen}
         onOpenChange={setDisplayModalOpen}
         typedColumns={settings.typedColumns ?? []}
-        onSave={handleDisplaySettingsSave}
+        onSave={(newTypedColumns: TypedColumnSpec[]) =>
+          updateSettings({ typedColumns: newTypedColumns })
+        }
       />
       <div className="flex items-center justify-end gap-2">
         <Button
@@ -410,10 +296,8 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           variant="outline"
           size="icon"
           onClick={() => {
-            const next: TableSettings['viewMode'] = viewMode === 'table' ? 'cards' : 'table'
-            const newSettings = { ...settings, viewMode: next }
-            setSettings(newSettings)
-            void setContactTableSettings(JSON.stringify(newSettings))
+            const next: 'table' | 'cards' = viewMode === 'table' ? 'cards' : 'table'
+            updateSettings({ viewMode: next })
           }}
           title={getViewModeTitle(viewMode, t)}
           data-testid="view-mode-toggle"
@@ -521,136 +405,4 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
       </div>
     </div>
   )
-}
-
-function ContactMobileCard({
-  row,
-  table,
-  navigate,
-  onEdit,
-  typedColumns,
-  formatDate,
-}: {
-  row: any
-  table: any
-  navigate: ReturnType<typeof useNavigate>
-  onEdit: (contact: Contact) => void
-  typedColumns: TypedColumnSpec[]
-  formatDate: FormatDate
-}) {
-  return (
-    <div
-      className="flex cursor-pointer items-center gap-4 rounded-lg border bg-card p-4 shadow-sm transition-colors active:bg-muted/50"
-      onClick={() => navigate(`/contacts/${row.original.id}`)}
-      role="button"
-      tabIndex={0}
-      data-testid="contact-card"
-      onKeyDown={async (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          await navigate(`/contacts/${row.original.id}`)
-        }
-      }}
-    >
-      <div className="flex-shrink-0">
-        {table.getColumn('avatar')?.getIsVisible() ? (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-            role="presentation"
-          >
-            <ContactAvatarCell contact={row.original} />
-          </div>
-        ) : null}
-      </div>
-      <div className="grid min-w-0 flex-1 gap-1">
-        <div className="flex items-center gap-2">
-          <div className="truncate text-base font-medium">
-            {table.getColumn('contactNames.given')?.getIsVisible() ? (
-              <ContactNameCell contact={row.original} />
-            ) : null}
-          </div>
-          {table.getColumn('favorite')?.getIsVisible() ? (
-            <ContactFavoriteCell contact={row.original} />
-          ) : null}
-        </div>
-        <ContactMobileCardBody
-          row={row}
-          table={table}
-          typedColumns={typedColumns}
-          formatDate={formatDate}
-        />
-      </div>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-        role="presentation"
-      >
-        <ContactActionsCell contact={row.original} onEdit={onEdit} />
-      </div>
-    </div>
-  )
-}
-
-function ContactMobileCardBody({
-  row,
-  table,
-  typedColumns,
-  formatDate,
-}: {
-  row: any
-  table: any
-  typedColumns: TypedColumnSpec[]
-  formatDate: FormatDate
-}) {
-  const contact = row.original
-  return (
-    <div className="flex flex-col gap-1 text-sm text-muted-foreground">
-      <MobileCardSection table={table} columnId="phoneNumbers" data={contact.phoneNumbers}>
-        <ContactPhonesCell contact={contact} />
-      </MobileCardSection>
-      <MobileCardSection
-        table={table}
-        columnId="contactEmailAdresses"
-        data={contact.contactEmailAdresses}
-      >
-        <ContactEmailsCell contact={contact} />
-      </MobileCardSection>
-      <MobileCardSection table={table} columnId="contactGroups" data={contact.contactGroups}>
-        <ContactGroupsCell contact={contact} />
-      </MobileCardSection>
-      <MobileCardSection table={table} columnId="contactDates" data={contact.contactDates}>
-        <ContactDatesCell contact={contact} />
-      </MobileCardSection>
-      {typedColumns.map((spec) => {
-        const value = renderTypedCell(contact, spec, formatDate)
-        if (value === '—') {
-          return null
-        }
-        return (
-          <div key={spec.id} className="flex flex-wrap gap-1">
-            <span className="text-muted-foreground/60">{spec.label}:</span>
-            <span>{value}</span>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-function MobileCardSection({
-  table,
-  columnId,
-  data,
-  children,
-}: {
-  table: any
-  columnId: string
-  data: any[] | undefined
-  children: React.ReactNode
-}) {
-  if (!table.getColumn(columnId)?.getIsVisible() || !data || data.length === 0) {
-    return null
-  }
-
-  return <div className="flex flex-wrap gap-2 empty:hidden">{children}</div>
 }

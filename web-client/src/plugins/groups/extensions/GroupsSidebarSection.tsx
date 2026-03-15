@@ -4,18 +4,13 @@ import { Link } from 'react-router-dom'
 import { ChevronDown, ChevronRight, FolderOpen, Settings2 } from 'lucide-react'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { storage, STORAGE_KEYS } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 import { useGroups } from '../hooks/useGroups'
 
-const STORAGE_KEY = 'sidebar-groups-expanded'
-
 function getGroupsExpanded(): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEY) !== '0'
-  } catch {
-    return true
-  }
+  return storage.get(STORAGE_KEYS.SIDEBAR_GROUPS_EXPANDED) !== '0'
 }
 
 export function GroupsSidebarSection({
@@ -33,11 +28,7 @@ export function GroupsSidebarSection({
   const toggleExpanded = () => {
     setExpanded((prev) => {
       const next = !prev
-      try {
-        localStorage.setItem(STORAGE_KEY, next ? '1' : '0')
-      } catch {
-        // ignore
-      }
+      storage.set(STORAGE_KEYS.SIDEBAR_GROUPS_EXPANDED, next ? '1' : '0')
       return next
     })
   }

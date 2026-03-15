@@ -6,11 +6,11 @@ import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDebounce } from '@/hooks/useDebounce'
+import { getHydraMember } from '@/lib/api/hydra'
 import { cn } from '@/lib/utils'
 import { type Contact } from '@/types/models'
 
 import { useContacts } from '@/plugins/contacts/useContacts'
-import { getHydraMember } from '@/plugins/contacts/utils'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 
 interface SearchResult {

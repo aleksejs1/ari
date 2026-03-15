@@ -15,10 +15,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
 import type { ActiveSession } from '@/types/auth'
-
-import { getHydraMember, type HydraCollection } from '@/plugins/contacts/utils'
 
 export default function SessionsPage() {
   const { t } = useTranslation()

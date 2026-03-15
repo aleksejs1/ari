@@ -7,6 +7,7 @@ import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
 import { layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
+import type { PluginContext } from './PluginContext'
 import { loadRemotePlugin } from './RemoteLoader'
 
 import { PLUGIN_MAP } from '@/pluginMap'
@@ -87,7 +88,7 @@ export class PluginLoader {
     }
   }
 
-  private async loadPlugin(item: PluginConfig, context: any) {
+  private async loadPlugin(item: PluginConfig, context: PluginContext) {
     try {
       let PluginClass
 

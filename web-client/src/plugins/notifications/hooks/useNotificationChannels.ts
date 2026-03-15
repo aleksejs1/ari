@@ -1,9 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+import { type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
 import { type NotificationChannel, type NotificationChannelFormValues } from '@/types/models'
-
-import { type HydraCollection } from '@/plugins/contacts/useContacts'
 
 export function useNotificationChannels(page = 1) {
   return useQuery({

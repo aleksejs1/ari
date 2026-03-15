@@ -1,14 +1,9 @@
 import { useCallback, useState } from 'react'
 
-const STORAGE_KEY = 'sidebar-collapsed'
+import { storage, STORAGE_KEYS } from '@/lib/storage'
 
 function getInitialState(): boolean {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored === '1'
-  } catch {
-    return false
-  }
+  return storage.get(STORAGE_KEYS.SIDEBAR_COLLAPSED) === '1'
 }
 
 export function useSidebarCollapsed() {
@@ -17,11 +12,7 @@ export function useSidebarCollapsed() {
   const toggle = useCallback(() => {
     setCollapsed((prev) => {
       const next = !prev
-      try {
-        localStorage.setItem(STORAGE_KEY, next ? '1' : '0')
-      } catch {
-        // ignore
-      }
+      storage.set(STORAGE_KEYS.SIDEBAR_COLLAPSED, next ? '1' : '0')
       return next
     })
   }, [])

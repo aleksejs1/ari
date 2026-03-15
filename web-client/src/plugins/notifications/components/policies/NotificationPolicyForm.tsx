@@ -15,13 +15,14 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { getHydraMember } from '@/lib/api/hydra'
 import {
   type Contact,
   type NotificationPolicyFormValues,
   notificationPolicySchema,
 } from '@/types/models'
 
-import { getHydraMember, useContacts } from '@/plugins/contacts/useContacts'
+import { useContacts } from '@/plugins/contacts/useContacts'
 import { useGroups } from '@/plugins/groups/hooks/useGroups'
 
 import { useNotificationChannels } from '../../hooks/useNotificationChannels'

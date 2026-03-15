@@ -6,6 +6,7 @@ import { parseISO } from 'date-fns'
 import { useAuth } from '@/hooks/useAuth'
 import { UserPrefsContext, type UserPrefsContextType } from '@/hooks/useUserPrefsContext'
 import { api } from '@/lib/axios'
+import { storage, STORAGE_KEYS } from '@/lib/storage'
 import type { components } from '@/types/schema'
 
 type UserPref = components['schemas']['UserPref.jsonld-user_pref.read']
@@ -171,7 +172,7 @@ const useUserPrefsLogic = () => {
   const themeFromPrefs = getPrefValue(prefs, 'theme', '') as Theme | ''
 
   const [theme, setThemeState] = useState<Theme>(() => {
-    const local = localStorage.getItem('theme') as Theme | null
+    const local = storage.get(STORAGE_KEYS.THEME) as Theme | null
     if (local) {
       return local
     }
@@ -186,7 +187,7 @@ const useUserPrefsLogic = () => {
   useEffect(() => {
     if (themeFromPrefs && themeFromPrefs !== theme) {
       setThemeState(themeFromPrefs)
-      localStorage.setItem('theme', themeFromPrefs)
+      storage.set(STORAGE_KEYS.THEME, themeFromPrefs)
     }
   }, [themeFromPrefs]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -218,7 +219,7 @@ const useUserPrefsLogic = () => {
   const setTheme = useCallback(
     async (newTheme: Theme) => {
       setThemeState(newTheme)
-      localStorage.setItem('theme', newTheme)
+      storage.set(STORAGE_KEYS.THEME, newTheme)
       if (isAuthenticated) {
         await savePrefMutation.mutateAsync({ type: 'theme', value: newTheme })
       }
