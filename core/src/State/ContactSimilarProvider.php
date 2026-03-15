@@ -82,6 +82,7 @@ class ContactSimilarProvider implements ProviderInterface
 
         $qb = $this->entityManager->createQueryBuilder()
             ->select('c')
+            ->addSelect('cn, co')   // M1: eager-load to avoid N+1 lazy queries per result
             ->from(Contact::class, 'c')
             ->leftJoin('c.contactNames', 'cn')
             ->leftJoin('c.contactOrganizations', 'co')

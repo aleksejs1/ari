@@ -74,9 +74,10 @@ class AiSuggestion implements TenantAwareInterface
     private string $suggestionType;
 
     /**
-     * Hash of the source value: md5(trim(given) . '|' . trim(family)).
+     * Hash of the source value: xxh128(lowercase(trim(given)) . '|' . lowercase(trim(family))).
      * Ties the suggestion to a specific state of the entity, not just its ID.
      * If the name changes, the hash changes and a new suggestion will be generated.
+     * Uses xxh128 (32 hex chars, collision-resistant, no security-scanner flags).
      */
     #[Groups(['ai_suggestion:read'])]
     #[ORM\Column(length: 32)]

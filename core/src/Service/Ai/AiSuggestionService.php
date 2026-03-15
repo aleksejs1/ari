@@ -144,10 +144,13 @@ final class AiSuggestionService
      * Compute a stable hash for the name values.
      * Case-insensitive and whitespace-trimmed so that minor formatting changes
      * do not invalidate the deduplication record.
+     *
+     * Uses xxh128 (128-bit, 32 hex chars) instead of md5 — same output length,
+     * no known collisions, not flagged by security scanners (M6).
      */
     public function computeSourceHash(?string $given, ?string $family): string
     {
-        return md5(mb_strtolower(trim((string) $given)) . '|' . mb_strtolower(trim((string) $family)));
+        return hash('xxh128', mb_strtolower(trim((string) $given)) . '|' . mb_strtolower(trim((string) $family)));
     }
 
     /**

@@ -59,9 +59,14 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
         // Attach the matched key to the request for later use (rate limiter, usage subscriber)
         $request->attributes->set('_api_key', $apiKey);
 
+        // Store the resolved ApiKey on the badge so createToken() does not need
+        // to recompute the hash and re-query the database (M5 fix).
+        $badge = new ApiKeyBadge($rawToken);
+        $badge->setApiKey($apiKey);
+
         return new SelfValidatingPassport(
             new UserBadge($user->getUserIdentifier(), fn () => $user),
-            [new ApiKeyBadge($rawToken)],
+            [$badge],
         );
     }
 
@@ -70,18 +75,11 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
     {
         $user = $passport->getUser();
 
-        // Retrieve the ApiKey stored during authenticate()
-        // We need it here to build the ApiKeyToken with scopes.
-        // We use a thread-local static cache keyed by user identifier + firewall.
-        // Simpler: inject request stack and get from attributes.
-        // Actually we stored it on request attributes - but we don't have Request here.
-        // Solution: store on the badge itself.
         /** @var ApiKeyBadge $badge */
         $badge = $passport->getBadge(ApiKeyBadge::class);
-        $rawToken = $badge->getRawToken();
-        $hash = hash('sha256', $rawToken);
-        $apiKey = $this->apiKeyRepository->findBySecretHash($hash);
 
+        // Retrieve the ApiKey attached during authenticate() — no second hash or DB query needed.
+        $apiKey = $badge->getApiKey();
         if (null === $apiKey) {
             throw new CustomUserMessageAuthenticationException('Invalid API key.');
         }

@@ -65,6 +65,21 @@ Security is handled at the object level using Symfony Voters.
 - **Brute Force Protection**: Implemented via Symfony's `login_throttling` on the `/api/login` firewall. Limits login attempts to 5 per minute per IP/Username to prevent password guessing attacks. Requires `symfony/rate-limiter` and `symfony/lock`.
 - **Account Deletion**: `DELETE /api/profile` allows users to delete their entire account and all associated data. Handled by `CurrentUserProvider`, `UserDeleteProcessor`, and database-level cascades.
 
+#### Security attribute convention for API Platform resources
+
+Two patterns are used — choosing the wrong one for an operation can create a security hole:
+
+| Operation | Pattern | Rationale |
+|-----------|---------|-----------|
+| **List** (`GetCollection`) | `security: "is_granted('ROLE_USER')"` | TenantFilter isolates results to the current user. No object is available at this point. |
+| **Detail / Mutate** (`Get`, `Patch`, `Put`, `Delete`, `Post` on sub-resources) | `security: "is_granted('CONTACT_VIEW', object)"` | Voter receives the concrete entity and performs owner check. Without this, a crafted IRI lets a user access another tenant's record. |
+
+**Rule:** Every operation that exposes or mutates a single entity **must** use a Voter-based security attribute. Using `ROLE_USER`-only on a detail endpoint bypasses the voter check and leaves tenant isolation solely to the (SQL-level) `TenantFilter`, which is not applied on direct `find()` / `findOneBy()` calls made without a QueryBuilder.
+
+PR checklist:
+- [ ] New `Get`, `Patch`, `Put`, `Delete` operations use `security: "is_granted('<PERMISSION>', object)"` or `securityPostDenormalize`
+- [ ] New `GetCollection` operations rely on TenantFilter (no object available) — `ROLE_USER` is correct there
+
 ### 2a. API Key Authentication
 
 In addition to JWT, the API supports scoped, revocable **API keys** that allow AI agents and scripts to access the same `/api/*` endpoints with restricted permissions.

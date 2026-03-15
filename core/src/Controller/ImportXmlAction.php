@@ -3,6 +3,7 @@
 namespace Ari\Controller;
 
 use Ari\Service\ContactImport\XmlImportService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 #[AsController]
 class ImportXmlAction extends AbstractController
@@ -17,6 +19,7 @@ class ImportXmlAction extends AbstractController
     public function __construct(
         private readonly XmlImportService $importService,
         private readonly Security $security,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -46,8 +49,23 @@ class ImportXmlAction extends AbstractController
 
         try {
             $result = $this->importService->import($xmlContent, $user);
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException('Import failed: ' . $e->getMessage(), $e);
+        } catch (\InvalidArgumentException $e) {
+            // Invalid XML format or structure — client error
+            throw new BadRequestHttpException($e->getMessage(), $e);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            // Database-level error — not the client's fault
+            $this->logger->error('XML import failed due to database error', [
+                'exception' => $e,
+                'user' => $user->getUserIdentifier(),
+            ]);
+            throw new ServiceUnavailableHttpException(null, 'Import failed due to a temporary database error.', $e);
+        } catch (\Throwable $e) {
+            // Unexpected error — log full details, return a generic message (do not leak internals)
+            $this->logger->error('XML import failed unexpectedly', [
+                'exception' => $e,
+                'user' => $user->getUserIdentifier(),
+            ]);
+            throw new BadRequestHttpException('Import failed. Please check your file and try again.', $e);
         }
 
         // Quota fully exhausted — no new contacts could be added

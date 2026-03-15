@@ -15,6 +15,12 @@ use Ari\Security\TenantAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+/**
+ * @see \Ari\EventListener\AiSuggestionCleanupListener — deletes related AiSuggestion records
+ *      via a DQL DELETE on preRemove. This side effect is intentional and runs automatically
+ *      whenever a ContactName is deleted. AiSuggestion uses a generic entityType/entityId
+ *      pattern (not a real FK), so DB-level cascade is not available.
+ */
 #[ORM\Entity(repositoryClass: ContactNameRepository::class)]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
