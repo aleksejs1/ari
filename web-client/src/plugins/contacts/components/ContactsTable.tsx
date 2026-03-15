@@ -149,7 +149,6 @@ function getCardsWrapperClass(viewMode: TableSettings['viewMode']): string {
 }
 
 export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
-  'use no memo'
   const { t } = useTranslation('contacts')
   const navigate = useNavigate()
   const { contactTableSettings, setContactTableSettings, formatDate, isLoading } = useUserPrefs()
@@ -272,6 +271,123 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     void setContactTableSettings(JSON.stringify(newSettings))
   }
 
+  // C4 fix: useMemo extracted from JSX to a top-level variable so the component
+  // can benefit from React Compiler optimizations (removes the need for 'use no memo').
+  const columnMenuItems = useMemo(() => {
+    const allColumns = table.getAllColumns()
+    const currentOrder = columnOrder
+    const leafColumnIds = table.getAllLeafColumns().map((c) => c.id)
+
+    // If order is empty, use definition order
+    let effectiveOrder = currentOrder.length > 0 ? currentOrder : leafColumnIds
+
+    // Ensure all columns are in effectiveOrder (handle additions)
+    const missingInOrder = leafColumnIds.filter((id) => !effectiveOrder.includes(id))
+    if (missingInOrder.length > 0) {
+      // Determine indices from registry order (leafColumnIds)
+      const newOrder = [...effectiveOrder]
+      missingInOrder.forEach((id) => {
+        const originalIdx = leafColumnIds.indexOf(id)
+        // Insert at its "natural" position if possible, otherwise at the end
+        if (originalIdx < newOrder.length) {
+          newOrder.splice(originalIdx, 0, id)
+        } else {
+          newOrder.push(id)
+        }
+      })
+      effectiveOrder = newOrder
+    }
+
+    // Ensure 'actions' is ALWAYS last if it exists
+    if (effectiveOrder.includes('actions')) {
+      effectiveOrder = effectiveOrder.filter((id) => id !== 'actions')
+      effectiveOrder.push('actions')
+    }
+
+    // Sort columns based on effectiveOrder
+    const sortedColumns = [...allColumns].sort((a, b) => {
+      const aIndex = effectiveOrder.indexOf(a.id)
+      const bIndex = effectiveOrder.indexOf(b.id)
+      return aIndex - bIndex
+    })
+
+    return sortedColumns
+      .filter((column) => column.getCanHide() && column.id !== 'actions')
+      .map((column) => {
+        // @ts-expect-error meta is user-defined
+        const titleKey = column.columnDef.meta?.titleKey
+        let label: string = column.id
+
+        if (titleKey) {
+          label = t(titleKey)
+        } else if (typeof column.columnDef.header === 'string') {
+          label = column.columnDef.header
+        }
+
+        const visibleColumnsInOrder = sortedColumns.filter(
+          (c) => c.getIsVisible() || c.id === column.id,
+        )
+        const indexInVisible = visibleColumnsInOrder.findIndex((c) => c.id === column.id)
+
+        return (
+          <div key={column.id} className="flex items-center justify-between pr-2">
+            <DropdownMenuCheckboxItem
+              className="flex-1 capitalize"
+              checked={column.getIsVisible()}
+              onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              onSelect={(e) => e.preventDefault()}
+            >
+              {label}
+            </DropdownMenuCheckboxItem>
+            <div className="flex items-center space-x-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                disabled={indexInVisible === 0}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  const order = [...effectiveOrder]
+                  const idx = order.indexOf(column.id)
+                  const prevIdx = order.indexOf(visibleColumnsInOrder[indexInVisible - 1].id)
+                  if (idx !== -1 && prevIdx !== -1) {
+                    const temp = order[idx]
+                    order[idx] = order[prevIdx]
+                    order[prevIdx] = temp
+                    table.setColumnOrder(order)
+                  }
+                }}
+              >
+                <ArrowUp className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                disabled={indexInVisible === visibleColumnsInOrder.length - 1}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  const order = [...effectiveOrder]
+                  const idx = order.indexOf(column.id)
+                  const nextIdx = order.indexOf(visibleColumnsInOrder[indexInVisible + 1].id)
+                  if (idx !== -1 && nextIdx !== -1) {
+                    const temp = order[idx]
+                    order[idx] = order[nextIdx]
+                    order[nextIdx] = temp
+                    table.setColumnOrder(order)
+                  }
+                }}
+              >
+                <ArrowDown className="h-3 w-3" />
+              </Button>
+            </div>
+          </div>
+        )
+      })
+  }, [table, t, columnOrder])
+
   return (
     <div className="space-y-4">
       <DisplaySettingsModal
@@ -315,125 +431,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>{t('common.toggleColumns') || 'Toggle Columns'}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {useMemo(() => {
-              const allColumns = table.getAllColumns()
-              const currentOrder = columnOrder
-              const leafColumnIds = table.getAllLeafColumns().map((c) => c.id)
-
-              // If order is empty, use definition order
-              let effectiveOrder = currentOrder.length > 0 ? currentOrder : leafColumnIds
-
-              // Ensure all columns are in effectiveOrder (handle additions)
-              const missingInOrder = leafColumnIds.filter((id) => !effectiveOrder.includes(id))
-              if (missingInOrder.length > 0) {
-                // Determine indices from registry order (leafColumnIds)
-                const newOrder = [...effectiveOrder]
-                missingInOrder.forEach((id) => {
-                  const originalIdx = leafColumnIds.indexOf(id)
-                  // Insert at its "natural" position if possible, otherwise at the end
-                  if (originalIdx < newOrder.length) {
-                    newOrder.splice(originalIdx, 0, id)
-                  } else {
-                    newOrder.push(id)
-                  }
-                })
-                effectiveOrder = newOrder
-              }
-
-              // Ensure 'actions' is ALWAYS last if it exists
-              if (effectiveOrder.includes('actions')) {
-                effectiveOrder = effectiveOrder.filter((id) => id !== 'actions')
-                effectiveOrder.push('actions')
-              }
-
-              // Sort columns based on effectiveOrder
-              const sortedColumns = [...allColumns].sort((a, b) => {
-                const aIndex = effectiveOrder.indexOf(a.id)
-                const bIndex = effectiveOrder.indexOf(b.id)
-                return aIndex - bIndex
-              })
-
-              return sortedColumns
-                .filter((column) => column.getCanHide() && column.id !== 'actions')
-                .map((column) => {
-                  // @ts-expect-error meta is user-defined
-                  const titleKey = column.columnDef.meta?.titleKey
-                  let label: string = column.id
-
-                  if (titleKey) {
-                    label = t(titleKey)
-                  } else if (typeof column.columnDef.header === 'string') {
-                    label = column.columnDef.header
-                  }
-
-                  const visibleColumnsInOrder = sortedColumns.filter(
-                    (c) => c.getIsVisible() || c.id === column.id,
-                  )
-                  const indexInVisible = visibleColumnsInOrder.findIndex((c) => c.id === column.id)
-
-                  return (
-                    <div key={column.id} className="flex items-center justify-between pr-2">
-                      <DropdownMenuCheckboxItem
-                        className="flex-1 capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        {label}
-                      </DropdownMenuCheckboxItem>
-                      <div className="flex items-center space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          disabled={indexInVisible === 0}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            const order = [...effectiveOrder]
-                            const idx = order.indexOf(column.id)
-                            const prevIdx = order.indexOf(
-                              visibleColumnsInOrder[indexInVisible - 1].id,
-                            )
-                            if (idx !== -1 && prevIdx !== -1) {
-                              const temp = order[idx]
-                              order[idx] = order[prevIdx]
-                              order[prevIdx] = temp
-                              table.setColumnOrder(order)
-                            }
-                          }}
-                        >
-                          <ArrowUp className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          disabled={indexInVisible === visibleColumnsInOrder.length - 1}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            const order = [...effectiveOrder]
-                            const idx = order.indexOf(column.id)
-                            const nextIdx = order.indexOf(
-                              visibleColumnsInOrder[indexInVisible + 1].id,
-                            )
-                            if (idx !== -1 && nextIdx !== -1) {
-                              const temp = order[idx]
-                              order[idx] = order[nextIdx]
-                              order[nextIdx] = temp
-                              table.setColumnOrder(order)
-                            }
-                          }}
-                        >
-                          <ArrowDown className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  )
-                })
-              // eslint-disable-next-line react-hooks/exhaustive-deps
-            }, [table, t, columnVisibility, columnOrder])}
+            {columnMenuItems}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
