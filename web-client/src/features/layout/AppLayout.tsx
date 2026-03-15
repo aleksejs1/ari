@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router-dom'
-import { Menu } from 'lucide-react'
+import { AlertTriangle, Menu, RefreshCw, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { useAuth } from '@/hooks/useAuth'
 import { useSidebarCollapsed } from '@/hooks/useSidebarCollapsed'
 
 import { NotificationBell } from '@/features/activity-feed/components/NotificationBell'
@@ -22,6 +23,8 @@ export default function AppLayout() {
   const { t } = useTranslation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const { collapsed, toggle } = useSidebarCollapsed()
+  const { pluginLoadError } = useAuth()
+  const [errorDismissed, setErrorDismissed] = useState(false)
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -58,6 +61,38 @@ export default function AppLayout() {
             <UserMenu />
           </div>
         </header>
+        {!!pluginLoadError && !errorDismissed && (
+          <div
+            role="alert"
+            className="flex items-center gap-3 border-b border-yellow-300 bg-yellow-50 px-6 py-3 text-sm text-yellow-900 dark:border-yellow-700 dark:bg-yellow-950 dark:text-yellow-200"
+          >
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <span className="flex-1">
+              {t(
+                'app.pluginLoadError',
+                'Some features failed to load. Reload the page to try again.',
+              )}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-yellow-900 hover:bg-yellow-100 dark:text-yellow-200 dark:hover:bg-yellow-900"
+              onClick={() => window.location.reload()}
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              {t('app.reload', 'Reload')}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 text-yellow-900 hover:bg-yellow-100 dark:text-yellow-200 dark:hover:bg-yellow-900"
+              onClick={() => setErrorDismissed(true)}
+              aria-label={t('common.dismiss', 'Dismiss')}
+            >
+              <X className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )}
         <div className="flex-1 p-8">
           <Outlet />
         </div>

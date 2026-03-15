@@ -25,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           isAuthenticated: true,
           isLoading: false,
           arePluginsLoaded: false,
+          pluginLoadError: null,
         }
       } catch {
         localStorage.removeItem('token')
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: false,
       isLoading: false,
       arePluginsLoaded: false,
+      pluginLoadError: null,
     }
   })
 
@@ -57,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: true,
         isLoading: false,
         arePluginsLoaded: false,
+        pluginLoadError: null,
       })
     } catch (e) {
       console.error('Login failed to decode token', e)
@@ -83,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: false,
       isLoading: false,
       arePluginsLoaded: false,
+      pluginLoadError: null,
     })
   }
 
@@ -91,12 +95,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       PluginLoader.getInstance()
         .init()
         .then(() => {
-          setState((prev) => ({ ...prev, arePluginsLoaded: true }))
+          setState((prev) => ({ ...prev, arePluginsLoaded: true, pluginLoadError: null }))
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           console.error('Failed to load plugins:', error)
-          // Even if plugins fail, we should probably let the user in, or handle error state
-          setState((prev) => ({ ...prev, arePluginsLoaded: true }))
+          const message = error instanceof Error ? error.message : 'Unknown error'
+          // Keep the user logged in (arePluginsLoaded: true so the app renders),
+          // but surface the error so the UI can show a recovery banner.
+          setState((prev) => ({ ...prev, arePluginsLoaded: true, pluginLoadError: message }))
         })
     }
   }, [state.isAuthenticated, state.arePluginsLoaded])

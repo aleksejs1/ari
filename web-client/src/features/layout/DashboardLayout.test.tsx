@@ -78,6 +78,7 @@ describe('AppLayout', () => {
       isAuthenticated: true,
       isLoading: false,
       arePluginsLoaded: true,
+      pluginLoadError: null,
     })
 
     vi.mocked(useGroups).mockReturnValue({
@@ -110,6 +111,7 @@ describe('AppLayout', () => {
       isAuthenticated: true,
       isLoading: false,
       arePluginsLoaded: true,
+      pluginLoadError: null,
     })
 
     vi.mocked(useGroups).mockReturnValue({
@@ -141,6 +143,7 @@ describe('AppLayout', () => {
       isAuthenticated: true,
       isLoading: false,
       arePluginsLoaded: true,
+      pluginLoadError: null,
     })
 
     vi.mocked(useGroups).mockReturnValue({

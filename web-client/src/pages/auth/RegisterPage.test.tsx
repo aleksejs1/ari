@@ -54,6 +54,7 @@ describe('RegisterPage', () => {
       logout: vi.fn(),
       refreshToken: null,
       arePluginsLoaded: true,
+      pluginLoadError: null,
     })
     vi.clearAllMocks()
   })

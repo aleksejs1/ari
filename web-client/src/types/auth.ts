@@ -11,6 +11,8 @@ export interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   arePluginsLoaded: boolean
+  /** Non-null when plugin initialisation failed. App is still usable but some features may be missing. */
+  pluginLoadError: string | null
 }
 
 export interface LoginResponse {
