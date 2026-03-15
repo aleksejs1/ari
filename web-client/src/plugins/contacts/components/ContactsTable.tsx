@@ -393,13 +393,20 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
       </div>
       <div className={viewMode === 'cards' ? 'hidden' : 'hidden md:block'}>
         <div className="overflow-x-auto rounded-md border">
-          <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
+          <Table className="[&_td:first-child]:pl-6 [&_th:first-child]:pl-6">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
+                    const isPinned = header.column.id === 'actions'
                     return (
-                      <TableHead key={header.id}>
+                      <TableHead
+                        key={header.id}
+                        className={cn(
+                          isPinned &&
+                            'sticky right-0 bg-background pr-6 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.08)]',
+                        )}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
@@ -419,11 +426,20 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                     data-testid="contact-row"
                     onClick={() => navigate(`/contacts/${row.original.id}`)}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      const isPinned = cell.column.id === 'actions'
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            isPinned &&
+                              'sticky right-0 bg-background pr-6 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.08)]',
+                          )}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      )
+                    })}
                   </TableRow>
                 ))
               ) : (
