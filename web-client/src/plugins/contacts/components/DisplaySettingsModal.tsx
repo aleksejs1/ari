@@ -141,7 +141,11 @@ export function DisplaySettingsModal({
           const spec = buildSpec(activeSection, qualifier)
           const checked = localColumns.some((c) => c.id === spec.id)
           return (
-            <label key={spec.id} className="flex cursor-pointer items-center gap-3">
+            <label
+              key={spec.id}
+              className="flex cursor-pointer items-center gap-3"
+              data-testid={`display-settings-option-${spec.id}`}
+            >
               <Checkbox checked={checked} onCheckedChange={() => toggleSpec(spec)} id={spec.id} />
               <span className="text-sm">{spec.label}</span>
             </label>
@@ -153,7 +157,11 @@ export function DisplaySettingsModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl p-0" aria-describedby={undefined}>
+      <DialogContent
+        className="max-w-2xl p-0"
+        aria-describedby={undefined}
+        data-testid="display-settings-modal"
+      >
         <DialogHeader className="px-6 pt-6">
           <DialogTitle>{t('displaySettings.title')}</DialogTitle>
         </DialogHeader>
@@ -165,6 +173,7 @@ export function DisplaySettingsModal({
               <button
                 key={s.id}
                 type="button"
+                data-testid={`display-settings-section-${s.id}`}
                 className={cn(
                   'px-4 py-2 text-left text-sm transition-colors hover:bg-muted',
                   activeSection === s.id && 'bg-muted font-medium',
@@ -185,14 +194,19 @@ export function DisplaySettingsModal({
         </div>
 
         <div className="flex items-center justify-between border-t px-6 py-4">
-          <Button variant="ghost" size="sm" onClick={() => setLocalColumns([])}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocalColumns([])}
+            data-testid="display-settings-reset"
+          >
             {t('displaySettings.resetToDefaults')}
           </Button>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
               {t('common.cancel')}
             </Button>
-            <Button size="sm" onClick={handleSave}>
+            <Button size="sm" onClick={handleSave} data-testid="display-settings-save">
               {t('displaySettings.save')}
             </Button>
           </div>

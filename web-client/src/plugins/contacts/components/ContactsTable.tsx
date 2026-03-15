@@ -236,6 +236,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           size="icon"
           onClick={() => setDisplayModalOpen(true)}
           title={t('displaySettings.title')}
+          data-testid="display-settings-button"
         >
           <Columns3 className="h-4 w-4" />
         </Button>
@@ -249,6 +250,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
             void setContactTableSettings(JSON.stringify(newSettings))
           }}
           title={viewMode === 'table' ? t('viewMode.cards') : t('viewMode.table')}
+          data-testid="view-mode-toggle"
         >
           {viewMode === 'table' ? (
             <LayoutGrid className="h-4 w-4" />
@@ -482,6 +484,7 @@ function ContactMobileCard({
       onClick={() => navigate(`/contacts/${row.original.id}`)}
       role="button"
       tabIndex={0}
+      data-testid="contact-card"
       onKeyDown={async (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           await navigate(`/contacts/${row.original.id}`)
