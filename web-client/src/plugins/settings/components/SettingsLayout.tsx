@@ -8,6 +8,7 @@ import {
   Globe,
   History,
   Key,
+  Link2,
   LogIn,
   Menu,
   Monitor,
@@ -49,6 +50,7 @@ const settingsNavGroups: SettingsNavGroup[] = [
       { path: '/settings/data', label: 'settings.tabs.data', icon: Database },
       { path: '/settings/ai', label: 'settings.tabs.ai', icon: Sparkles },
       { path: '/settings/plugins', label: 'settings.communityPlugins', icon: Plug },
+      { path: '/settings/integrations', label: 'settings.tabs.integrations', icon: Link2 },
     ],
   },
   {

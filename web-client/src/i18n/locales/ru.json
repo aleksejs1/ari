@@ -44,7 +44,8 @@
       "general": "Общие",
       "regional": "Региональные",
       "data": "Данные",
-      "ai": "AI-настройки"
+      "ai": "AI-настройки",
+      "integrations": "Интеграции"
     },
     "nav": {
       "preferences": "Предпочтения",
@@ -501,5 +502,54 @@
     "uninstallSuccess": "Плагин успешно удален.",
     "uninstallError": "Не удалось удалить плагин.",
     "back": "Назад к плагинам"
+  },
+  "integrations": {
+    "title": "Интеграции",
+    "description": "Подключите ИИ-агентов, скрипты и сторонние приложения к вашим контактам через API-ключи.",
+    "connect": "Подключить",
+    "empty": "Интеграции ещё не подключены.",
+    "emptyDescription": "Подключите ИИ-агента или скрипт к вашим контактам.",
+    "tokenWarning": "Этот секретный ключ больше не будет показан. Сохраните его в надёжном месте.",
+    "tokenCopied": "Скопировано!",
+    "tokenCopy": "Копировать",
+    "tokenDone": "Готово",
+    "lastUsed": "Последнее использование {{time}} назад",
+    "neverUsed": "Не использовался",
+    "revokeTitle": "Отозвать интеграцию?",
+    "revokeDescription": "Все скрипты и приложения, использующие «{{name}}», немедленно перестанут работать и будут получать ошибку 401 Unauthorized.",
+    "revoke": "Отозвать",
+    "editTitle": "Редактировать интеграцию",
+    "editScopeBanner": "Изменение прав вступает в силу немедленно. Строка токена не меняется. Для смены секрета удалите интеграцию и создайте новую.",
+    "save": "Сохранить",
+    "createTitle": "Подключить интеграцию",
+    "createStepConfigure": "Настройка",
+    "nameLabel": "Название интеграции",
+    "namePlaceholder": "например, Claude Desktop",
+    "scopesLabel": "Что может делать эта интеграция?",
+    "fullAccess": "Полный доступ (всё)",
+    "createButton": "Создать интеграцию",
+    "createdTitle": "Интеграция создана",
+    "createdSubtitle": "Сохраните токен сейчас — он больше не будет показан.",
+    "howToConnect": "Как подключить Claude Desktop",
+    "howToConnectDesc": "Добавьте это в ваш claude_desktop_config.json:",
+    "deniedMessage": "Управление API-ключами недоступно в вашем текущем тарифе.",
+    "scope": {
+      "contactsRead": "Чтение контактов",
+      "contactsWrite": "Добавление и редактирование контактов",
+      "contactsDelete": "Удаление контактов",
+      "groupsRead": "Чтение групп",
+      "groupsWrite": "Добавление и редактирование групп",
+      "groupsDelete": "Удаление групп",
+      "auditLogsRead": "Чтение журнала аудита",
+      "aiSuggestionsRead": "Чтение AI-подсказок",
+      "aiSuggestionsWrite": "Управление AI-подсказками"
+    },
+    "appType": {
+      "claude": "Claude (Anthropic)",
+      "zapier": "Zapier",
+      "n8n": "n8n",
+      "make": "Make",
+      "custom": "Пользовательский"
+    }
   }
 }

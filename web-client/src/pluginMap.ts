@@ -17,4 +17,6 @@ export const PLUGIN_MAP: Record<string, () => Promise<{ default: PluginConstruct
   settings: () => import('./plugins/settings').then((m) => ({ default: m.SettingsPlugin })),
   'user-security': () =>
     import('./plugins/user-security').then((m) => ({ default: m.UserSecurityPlugin })),
+  integrations: () =>
+    import('./plugins/integrations').then((m) => ({ default: m.IntegrationsPlugin })),
 }

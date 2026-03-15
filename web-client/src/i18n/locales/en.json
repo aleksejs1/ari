@@ -44,7 +44,8 @@
       "general": "General",
       "regional": "Regional",
       "data": "Data",
-      "ai": "AI Settings"
+      "ai": "AI Settings",
+      "integrations": "Integrations"
     },
     "nav": {
       "preferences": "Preferences",
@@ -499,6 +500,55 @@
     "uninstallSuccess": "Plugin uninstalled successfully.",
     "uninstallError": "Failed to uninstall plugin.",
     "back": "Back to plugins"
+  },
+  "integrations": {
+    "title": "Integrations",
+    "description": "Connect AI agents, scripts, and third-party apps to your contacts via API keys.",
+    "connect": "Connect",
+    "empty": "No integrations connected yet.",
+    "emptyDescription": "Connect an AI agent or script to your contacts.",
+    "tokenWarning": "This secret will not be shown again. Store it somewhere safe.",
+    "tokenCopied": "Copied!",
+    "tokenCopy": "Copy",
+    "tokenDone": "Done",
+    "lastUsed": "Last used {{time}} ago",
+    "neverUsed": "Never used",
+    "revokeTitle": "Revoke Integration?",
+    "revokeDescription": "Any scripts or apps using \"{{name}}\" will immediately stop working and receive 401 Unauthorized errors.",
+    "revoke": "Revoke",
+    "editTitle": "Edit Integration",
+    "editScopeBanner": "Changing scopes takes effect immediately. The token string does not change. To rotate the secret, delete this integration and create a new one.",
+    "save": "Save",
+    "createTitle": "Connect an Integration",
+    "createStepConfigure": "Configure",
+    "nameLabel": "Integration Name",
+    "namePlaceholder": "e.g. Claude Desktop",
+    "scopesLabel": "What can this integration do?",
+    "fullAccess": "Full access (everything)",
+    "createButton": "Create Integration",
+    "createdTitle": "Integration Created",
+    "createdSubtitle": "Save your token now — it will not be shown again.",
+    "howToConnect": "How to connect Claude Desktop",
+    "howToConnectDesc": "Add this to your claude_desktop_config.json:",
+    "deniedMessage": "API key management is not available on your current plan.",
+    "scope": {
+      "contactsRead": "Read contacts",
+      "contactsWrite": "Add and edit contacts",
+      "contactsDelete": "Delete contacts",
+      "groupsRead": "Read groups",
+      "groupsWrite": "Add and edit groups",
+      "groupsDelete": "Delete groups",
+      "auditLogsRead": "Read audit logs",
+      "aiSuggestionsRead": "Read AI suggestions",
+      "aiSuggestionsWrite": "Manage AI suggestions"
+    },
+    "appType": {
+      "claude": "Claude (Anthropic)",
+      "zapier": "Zapier",
+      "n8n": "n8n",
+      "make": "Make",
+      "custom": "Custom"
+    }
   },
   "plugins": {
     "available": "Available Plugins",
