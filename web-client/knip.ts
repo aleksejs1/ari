@@ -8,11 +8,9 @@ const config: KnipConfig = {
   },
   ignore: [
     'src/types/schema.d.ts',
-    'src/components/ui/dialog.tsx',
     'src/components/ui/sheet.tsx',
     'src/components/ui/dropdown-menu.tsx',
     'src/components/ui/popover.tsx',
-    'src/plugins/contacts/hooks/useContactDisplayOptions.ts',
   ],
   ignoreBinaries: ['dot'],
   ignoreExportsUsedInFile: true,

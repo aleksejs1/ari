@@ -1,3 +1,10 @@
+export interface TypedColumnSpec {
+  baseField: 'contactNames' | 'phoneNumbers' | 'contactEmailAdresses' | 'contactDates'
+  qualifier: string // locale for names, type string for phones/emails, text for dates
+  id: string // `${baseField}:${qualifier}`
+  label: string // human-readable label e.g. "Mobile phone"
+}
+
 export interface HydraCollection<T> {
   member: T[]
   totalItems?: number

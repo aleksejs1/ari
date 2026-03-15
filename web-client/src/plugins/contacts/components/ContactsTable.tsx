@@ -10,7 +10,15 @@ import {
   useReactTable,
   type VisibilityState,
 } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, ChevronDown, LayoutGrid, Settings2, Table2 } from 'lucide-react'
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronDown,
+  Columns3,
+  LayoutGrid,
+  Settings2,
+  Table2,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -41,6 +49,9 @@ import { ContactFavoriteCell } from '../cells/ContactFavoriteCell'
 import { ContactGroupsCell } from '../cells/ContactGroupsCell'
 import { ContactNameCell } from '../cells/ContactNameCell'
 import { ContactPhonesCell } from '../cells/ContactPhonesCell'
+import { type TypedColumnSpec } from '../utils'
+
+import { DisplaySettingsModal } from './DisplaySettingsModal'
 
 interface ContactsTableProps {
   data: Contact[]
@@ -50,13 +61,6 @@ interface ContactsTableProps {
   sorting?: { id: string; desc: boolean }
 }
 
-export interface TypedColumnSpec {
-  baseField: 'contactNames' | 'phoneNumbers' | 'contactEmailAdresses' | 'contactDates'
-  qualifier: string // locale for names, type string for phones/emails, text for dates
-  id: string // `${baseField}:${qualifier}`
-  label: string // human-readable label e.g. "Mobile phone"
-}
-
 interface TableSettings {
   visibility: VisibilityState
   order: ColumnOrderState
@@ -64,7 +68,9 @@ interface TableSettings {
   viewMode: 'table' | 'cards'
 }
 
-function renderTypedCell(contact: Contact, spec: TypedColumnSpec): string {
+type FormatDate = (date: Date | string | null | undefined) => string
+
+function renderTypedCell(contact: Contact, spec: TypedColumnSpec, formatDate: FormatDate): string {
   switch (spec.baseField) {
     case 'phoneNumbers': {
       return contact.phoneNumbers?.find((p) => p.type === spec.qualifier)?.value ?? '—'
@@ -80,7 +86,8 @@ function renderTypedCell(contact: Contact, spec: TypedColumnSpec): string {
       return [name.given, name.family].filter(Boolean).join(' ') || '—'
     }
     case 'contactDates': {
-      return contact.contactDates?.find((d) => d.text === spec.qualifier)?.date ?? '—'
+      const raw = contact.contactDates?.find((d) => d.text === spec.qualifier)?.date
+      return raw ? formatDate(raw) : '—'
     }
     default: {
       return '—'
@@ -92,7 +99,7 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
   'use no memo'
   const { t } = useTranslation('contacts')
   const navigate = useNavigate()
-  const { contactTableSettings, setContactTableSettings } = useUserPrefs()
+  const { contactTableSettings, setContactTableSettings, formatDate } = useUserPrefs()
 
   const [settings, setSettings] = useState<TableSettings>(() => {
     try {
@@ -119,6 +126,8 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
 
   const viewMode = settings.viewMode ?? 'table'
 
+  const [displayModalOpen, setDisplayModalOpen] = useState(false)
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(settings.visibility)
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(settings.order)
 
@@ -131,10 +140,10 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
       id: spec.id,
       header: spec.label,
       enableSorting: false,
-      cell: ({ row }) => renderTypedCell(row.original, spec),
+      cell: ({ row }) => renderTypedCell(row.original, spec, formatDate),
       meta: { titleKey: undefined, isTypedColumn: true },
     }))
-  }, [settings.typedColumns])
+  }, [settings.typedColumns, formatDate])
 
   const mergedColumns = useMemo((): ColumnDef<Contact>[] => {
     if (typedColumnDefs.length === 0) {
@@ -144,10 +153,12 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     const result: ColumnDef<Contact>[] = []
     for (const col of columns) {
       result.push(col)
-      // Insert typed columns that belong after this base column
+      // Insert typed columns that belong after this base column.
+      // Prefer accessorKey over id: the contactNames column has id='contactNames.given'
+      // but accessorKey='contactNames', and TypedColumnSpec.baseField matches accessorKey.
       const baseId =
-        (col as { id?: string; accessorKey?: string }).id ??
         (col as { id?: string; accessorKey?: string }).accessorKey ??
+        (col as { id?: string; accessorKey?: string }).id ??
         ''
       const children = typedColumnDefs.filter((tc) => {
         const spec = settings.typedColumns?.find((s) => s.id === (tc as { id?: string }).id)
@@ -205,9 +216,29 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     getCoreRowModel: getCoreRowModel(),
   })
 
+  function handleDisplaySettingsSave(newTypedColumns: TypedColumnSpec[]) {
+    const newSettings = { ...settings, typedColumns: newTypedColumns }
+    setSettings(newSettings)
+    void setContactTableSettings(JSON.stringify(newSettings))
+  }
+
   return (
     <div className="space-y-4">
+      <DisplaySettingsModal
+        open={displayModalOpen}
+        onOpenChange={setDisplayModalOpen}
+        typedColumns={settings.typedColumns ?? []}
+        onSave={handleDisplaySettingsSave}
+      />
       <div className="flex items-center justify-end gap-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setDisplayModalOpen(true)}
+          title={t('displaySettings.title')}
+        >
+          <Columns3 className="h-4 w-4" />
+        </Button>
         <Button
           variant="outline"
           size="icon"
@@ -416,6 +447,8 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
                 table={table}
                 navigate={navigate}
                 onEdit={onEdit}
+                typedColumns={settings.typedColumns ?? []}
+                formatDate={formatDate}
               />
             ))
         ) : (
@@ -433,11 +466,15 @@ function ContactMobileCard({
   table,
   navigate,
   onEdit,
+  typedColumns,
+  formatDate,
 }: {
   row: any
   table: any
   navigate: ReturnType<typeof useNavigate>
   onEdit: (contact: Contact) => void
+  typedColumns: TypedColumnSpec[]
+  formatDate: FormatDate
 }) {
   return (
     <div
@@ -473,7 +510,12 @@ function ContactMobileCard({
             <ContactFavoriteCell contact={row.original} />
           ) : null}
         </div>
-        <ContactMobileCardBody row={row} table={table} />
+        <ContactMobileCardBody
+          row={row}
+          table={table}
+          typedColumns={typedColumns}
+          formatDate={formatDate}
+        />
       </div>
       <div
         onClick={(e) => e.stopPropagation()}
@@ -486,7 +528,17 @@ function ContactMobileCard({
   )
 }
 
-function ContactMobileCardBody({ row, table }: { row: any; table: any }) {
+function ContactMobileCardBody({
+  row,
+  table,
+  typedColumns,
+  formatDate,
+}: {
+  row: any
+  table: any
+  typedColumns: TypedColumnSpec[]
+  formatDate: FormatDate
+}) {
   const contact = row.original
   return (
     <div className="flex flex-col gap-1 text-sm text-muted-foreground">
@@ -506,6 +558,18 @@ function ContactMobileCardBody({ row, table }: { row: any; table: any }) {
       <MobileCardSection table={table} columnId="contactDates" data={contact.contactDates}>
         <ContactDatesCell contact={contact} />
       </MobileCardSection>
+      {typedColumns.map((spec) => {
+        const value = renderTypedCell(contact, spec, formatDate)
+        if (value === '—') {
+          return null
+        }
+        return (
+          <div key={spec.id} className="flex flex-wrap gap-1">
+            <span className="text-muted-foreground/60">{spec.label}:</span>
+            <span>{value}</span>
+          </div>
+        )
+      })}
     </div>
   )
 }
