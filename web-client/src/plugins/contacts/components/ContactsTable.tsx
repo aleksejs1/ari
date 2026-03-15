@@ -10,7 +10,7 @@ import {
   useReactTable,
   type VisibilityState,
 } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, ChevronDown, Settings2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronDown, LayoutGrid, Settings2, Table2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -30,6 +30,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { cn } from '@/lib/utils'
 import { type Contact } from '@/types/models'
 
 import { ContactActionsCell } from '../cells/ContactActionsCell'
@@ -49,9 +50,42 @@ interface ContactsTableProps {
   sorting?: { id: string; desc: boolean }
 }
 
+export interface TypedColumnSpec {
+  baseField: 'contactNames' | 'phoneNumbers' | 'contactEmailAdresses' | 'contactDates'
+  qualifier: string // locale for names, type string for phones/emails, text for dates
+  id: string // `${baseField}:${qualifier}`
+  label: string // human-readable label e.g. "Mobile phone"
+}
+
 interface TableSettings {
   visibility: VisibilityState
   order: ColumnOrderState
+  typedColumns: TypedColumnSpec[]
+  viewMode: 'table' | 'cards'
+}
+
+function renderTypedCell(contact: Contact, spec: TypedColumnSpec): string {
+  switch (spec.baseField) {
+    case 'phoneNumbers': {
+      return contact.phoneNumbers?.find((p) => p.type === spec.qualifier)?.value ?? '—'
+    }
+    case 'contactEmailAdresses': {
+      return contact.contactEmailAdresses?.find((e) => e.type === spec.qualifier)?.value ?? '—'
+    }
+    case 'contactNames': {
+      const name = contact.contactNames?.find((n) => n.locale === spec.qualifier)
+      if (!name) {
+        return '—'
+      }
+      return [name.given, name.family].filter(Boolean).join(' ') || '—'
+    }
+    case 'contactDates': {
+      return contact.contactDates?.find((d) => d.text === spec.qualifier)?.date ?? '—'
+    }
+    default: {
+      return '—'
+    }
+  }
 }
 
 export function ContactsTable({ data, columns, onEdit, onSort, sorting }: ContactsTableProps) {
@@ -63,15 +97,27 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
   const [settings, setSettings] = useState<TableSettings>(() => {
     try {
       const parsed = JSON.parse(contactTableSettings)
-      // Migration: if it's just a flat object, assume it's the old visibility state
       if (parsed && typeof parsed === 'object' && !('visibility' in parsed)) {
-        return { visibility: parsed as VisibilityState, order: [] }
+        return {
+          visibility: parsed as VisibilityState,
+          order: [],
+          typedColumns: [],
+          viewMode: 'table',
+        }
       }
-      return (parsed as TableSettings) || { visibility: {}, order: [] }
+      return {
+        visibility: {},
+        order: [],
+        typedColumns: [],
+        viewMode: 'table',
+        ...(parsed as Partial<TableSettings>),
+      }
     } catch {
-      return { visibility: {}, order: [] }
+      return { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
     }
   })
+
+  const viewMode = settings.viewMode ?? 'table'
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(settings.visibility)
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(settings.order)
@@ -80,12 +126,44 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
     return sorting ? [{ id: sorting.id, desc: sorting.desc }] : []
   }, [sorting])
 
+  const typedColumnDefs = useMemo((): ColumnDef<Contact>[] => {
+    return (settings.typedColumns ?? []).map((spec) => ({
+      id: spec.id,
+      header: spec.label,
+      enableSorting: false,
+      cell: ({ row }) => renderTypedCell(row.original, spec),
+      meta: { titleKey: undefined, isTypedColumn: true },
+    }))
+  }, [settings.typedColumns])
+
+  const mergedColumns = useMemo((): ColumnDef<Contact>[] => {
+    if (typedColumnDefs.length === 0) {
+      return columns
+    }
+
+    const result: ColumnDef<Contact>[] = []
+    for (const col of columns) {
+      result.push(col)
+      // Insert typed columns that belong after this base column
+      const baseId =
+        (col as { id?: string; accessorKey?: string }).id ??
+        (col as { id?: string; accessorKey?: string }).accessorKey ??
+        ''
+      const children = typedColumnDefs.filter((tc) => {
+        const spec = settings.typedColumns?.find((s) => s.id === (tc as { id?: string }).id)
+        return spec?.baseField === baseId
+      })
+      result.push(...children)
+    }
+    return result
+  }, [columns, typedColumnDefs, settings.typedColumns])
+
   // We need to pass onEdit to the table meta so that cells can access it if needed
   // (e.g. ActionCell)
 
   const table = useReactTable({
     data,
-    columns,
+    columns: mergedColumns,
     state: {
       sorting: sortingState,
       columnVisibility,
@@ -129,7 +207,24 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            const next: TableSettings['viewMode'] = viewMode === 'table' ? 'cards' : 'table'
+            const newSettings = { ...settings, viewMode: next }
+            setSettings(newSettings)
+            void setContactTableSettings(JSON.stringify(newSettings))
+          }}
+          title={viewMode === 'table' ? t('viewMode.cards') : t('viewMode.table')}
+        >
+          {viewMode === 'table' ? (
+            <LayoutGrid className="h-4 w-4" />
+          ) : (
+            <Table2 className="h-4 w-4" />
+          )}
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -263,52 +358,54 @@ export function ContactsTable({ data, columns, onEdit, onSort, sorting }: Contac
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="hidden rounded-md border md:block">
-        <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className="group/row cursor-pointer"
-                  data-testid="contact-row"
-                  onClick={() => navigate(`/contacts/${row.original.id}`)}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+      <div className={viewMode === 'cards' ? 'hidden' : 'hidden md:block'}>
+        <div className="overflow-x-auto rounded-md border">
+          <Table className="[&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow data-testid="contacts-empty">
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {t('noContacts')}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className="group/row cursor-pointer"
+                    data-testid="contact-row"
+                    onClick={() => navigate(`/contacts/${row.original.id}`)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow data-testid="contacts-empty">
+                  <TableCell colSpan={mergedColumns.length} className="h-24 text-center">
+                    {t('noContacts')}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
-      <div className="space-y-4 md:hidden">
+      <div className={cn('space-y-4', viewMode === 'cards' ? 'block' : 'md:hidden')}>
         {table.getRowModel().rows?.length ? (
           table
             .getRowModel()

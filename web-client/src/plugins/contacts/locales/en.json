@@ -190,5 +190,21 @@
     "description": "This name appears to be in {{detected}} script. Suggested alternative in {{suggested}}:",
     "apply": "Apply",
     "dismiss": "Dismiss"
+  },
+  "viewMode": {
+    "table": "Switch to card view",
+    "cards": "Switch to table view"
+  },
+  "displaySettings": {
+    "title": "Display Settings",
+    "fieldNames": "Names",
+    "fieldPhones": "Phone numbers",
+    "fieldEmails": "Email addresses",
+    "fieldDates": "Dates",
+    "noVariants": "No variants available. Add data to your contacts to enable column variants.",
+    "resetToDefaults": "Reset to defaults",
+    "save": "Save",
+    "localeLabel": "Name in {{locale}}",
+    "typeLabel": "{{type}}"
   }
 }

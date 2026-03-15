@@ -184,6 +184,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/api_keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves the collection of ApiKey resources.
+         * @description Retrieves the collection of ApiKey resources.
+         */
+        get: operations["api_api_keys_get_collection"];
+        put?: never;
+        /**
+         * Creates a ApiKey resource.
+         * @description Creates a ApiKey resource.
+         */
+        post: operations["api_api_keys_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/api_keys/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ApiKey resource.
+         * @description Retrieves a ApiKey resource.
+         */
+        get: operations["api_api_keys_id_get"];
+        put?: never;
+        post?: never;
+        /**
+         * Removes the ApiKey resource.
+         * @description Removes the ApiKey resource.
+         */
+        delete: operations["api_api_keys_id_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Updates the ApiKey resource.
+         * @description Updates the ApiKey resource.
+         */
+        patch: operations["api_api_keys_id_patch"];
+        trace?: never;
+    };
     "/api/audit_logs": {
         parameters: {
             query?: never;
@@ -566,6 +618,26 @@ export interface paths {
          * @description Updates the ContactDate resource.
          */
         patch: operations["api_contact_dates_id_patch"];
+        trace?: never;
+    };
+    "/api/contacts/display-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a ContactDisplayOptions resource.
+         * @description Retrieves a ContactDisplayOptions resource.
+         */
+        get: operations["get_contact_display_options"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/contact_email_adresses": {
@@ -1034,6 +1106,26 @@ export interface paths {
          * @description Creates a new user with password "demo" and 70 pre-populated contacts.
          */
         post: operations["generate_demo_account"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/entitlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieves a Entitlements resource.
+         * @description Retrieves a Entitlements resource.
+         */
+        get: operations["get_entitlements"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1951,6 +2043,102 @@ export interface components {
             tokensPrompt?: number;
             tokensCompletion?: number;
         };
+        "ApiKey-api_key.read": {
+            readonly id?: string;
+            name: string;
+            /**
+             * @default [
+             *       "*"
+             *     ]
+             */
+            scopes: string[];
+            /** @default  */
+            secretLastFour: string;
+            /** Format: date-time */
+            lastUsedAt?: string | null;
+            lastUsedIp?: string | null;
+            appType?: string | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+        };
+        "ApiKey-api_key.read_api_key.create": {
+            readonly id?: string;
+            name: string;
+            /**
+             * @default [
+             *       "*"
+             *     ]
+             */
+            scopes: string[];
+            /** @default  */
+            secretLastFour: string;
+            /** Format: date-time */
+            lastUsedAt?: string | null;
+            lastUsedIp?: string | null;
+            appType?: string | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** @description Transient — populated once on creation, never persisted. */
+            token?: string | null;
+        };
+        "ApiKey-api_key.write": {
+            name: string;
+            /**
+             * @default [
+             *       "*"
+             *     ]
+             */
+            scopes: string[];
+            appType?: string | null;
+        };
+        "ApiKey-api_key.write.jsonMergePatch": {
+            name?: string;
+            /**
+             * @default [
+             *       "*"
+             *     ]
+             */
+            scopes: string[];
+            appType?: string | null;
+        };
+        "ApiKey.jsonld-api_key.read": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: string;
+            name: string;
+            /**
+             * @default [
+             *       "*"
+             *     ]
+             */
+            scopes: string[];
+            /** @default  */
+            secretLastFour: string;
+            /** Format: date-time */
+            lastUsedAt?: string | null;
+            lastUsedIp?: string | null;
+            appType?: string | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+        };
+        "ApiKey.jsonld-api_key.read_api_key.create": components["schemas"]["HydraItemBaseSchema"] & {
+            readonly id?: string;
+            name: string;
+            /**
+             * @default [
+             *       "*"
+             *     ]
+             */
+            scopes: string[];
+            /** @default  */
+            secretLastFour: string;
+            /** Format: date-time */
+            lastUsedAt?: string | null;
+            lastUsedIp?: string | null;
+            appType?: string | null;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** @description Transient — populated once on creation, never persisted. */
+            token?: string | null;
+        };
         AuditLog: {
             readonly id?: number;
             /**
@@ -1958,6 +2146,7 @@ export interface components {
              * @example https://example.com/
              */
             user?: string;
+            actorLabel?: string | null;
             entityType?: string;
             entityId?: string | null;
             ownerEntityType?: string | null;
@@ -1987,6 +2176,7 @@ export interface components {
              * @example https://example.com/
              */
             user?: string;
+            actorLabel?: string | null;
             entityType?: string;
             entityId?: string | null;
             ownerEntityType?: string | null;
@@ -2011,6 +2201,7 @@ export interface components {
              * @example https://example.com/
              */
             user?: string;
+            actorLabel?: string | null;
             entityType?: string;
             entityId?: string | null;
             ownerEntityType?: string | null;
@@ -2040,6 +2231,7 @@ export interface components {
              * @example https://example.com/
              */
             user?: string;
+            actorLabel?: string | null;
             entityType?: string;
             entityId?: string | null;
             ownerEntityType?: string | null;
@@ -2527,6 +2719,18 @@ export interface components {
             date?: string | null;
             text?: string | null;
         };
+        "ContactDisplayOptions-contact_display_options.read": {
+            nameLocales?: string[];
+            phoneTypes?: string[];
+            emailTypes?: string[];
+            dateTexts?: string[];
+        };
+        "ContactDisplayOptions.jsonld-contact_display_options.read": components["schemas"]["HydraItemBaseSchema"] & {
+            nameLocales?: string[];
+            phoneTypes?: string[];
+            emailTypes?: string[];
+            dateTexts?: string[];
+        };
         "ContactEmailAdress-contact.create": {
             value?: string | null;
             type?: string | null;
@@ -2732,6 +2936,7 @@ export interface components {
             readonly id?: number;
             family?: string | null;
             given?: string | null;
+            locale?: string | null;
         };
         "ContactName-contact_name.create_contact_name.update": {
             family?: string | null;
@@ -2771,6 +2976,7 @@ export interface components {
             readonly id?: number;
             family?: string | null;
             given?: string | null;
+            locale?: string | null;
         };
         "ContactName.jsonld-contact_name.read": components["schemas"]["HydraItemBaseSchema"] & {
             readonly id?: number;
@@ -3072,6 +3278,46 @@ export interface components {
         "DemoAccount.jsonld-demo.read": components["schemas"]["HydraItemBaseSchema"] & {
             username?: string;
         };
+        "Entitlements-entitlements.read": {
+            /**
+             * @description The plan ID assigned to the user in the database.
+             * @default self_hosted
+             */
+            planId: string;
+            /**
+             * @description True when ROLE_ADMIN overrides the plan's restrictions.
+             * @default false
+             */
+            isAdminOverride: boolean;
+            /** @description Quota usage per resource type. */
+            quotas?: {
+                [key: string]: components["schemas"]["QuotaInfo-entitlements.read"];
+            };
+            /** @description Feature availability per feature key. */
+            features?: {
+                [key: string]: string;
+            };
+        };
+        "Entitlements.jsonld-entitlements.read": components["schemas"]["HydraItemBaseSchema"] & {
+            /**
+             * @description The plan ID assigned to the user in the database.
+             * @default self_hosted
+             */
+            planId: string;
+            /**
+             * @description True when ROLE_ADMIN overrides the plan's restrictions.
+             * @default false
+             */
+            isAdminOverride: boolean;
+            /** @description Quota usage per resource type. */
+            quotas?: {
+                [key: string]: components["schemas"]["QuotaInfo.jsonld-entitlements.read"];
+            };
+            /** @description Feature availability per feature key. */
+            features?: {
+                [key: string]: string;
+            };
+        };
         /** @description A representation of common errors. */
         Error: {
             /** @description A short, human-readable summary of the problem. */
@@ -3213,7 +3459,7 @@ export interface components {
             /**
              * @example {
              *       "@id": "string",
-             *       "type": "string",
+             *       "@type": "string",
              *       "first": "string",
              *       "last": "string",
              *       "previous": "string",
@@ -3528,6 +3774,18 @@ export interface components {
                 [key: string]: boolean | string;
             }[];
         };
+        "QuotaInfo-entitlements.read": {
+            limit?: number | null;
+            used?: number;
+            remaining?: number | null;
+            isUnlimited?: boolean;
+        };
+        "QuotaInfo.jsonld-entitlements.read": {
+            limit?: number | null;
+            used?: number;
+            remaining?: number | null;
+            isUnlimited?: boolean;
+        };
         "Stats-stats.read": {
             totalContacts?: number;
             totalAuditLogs?: number;
@@ -3568,22 +3826,22 @@ export interface components {
         };
         "UserPref-user_pref.create_user_pref.update": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone" | "ai_context_locale";
             value?: string | null;
         };
         "UserPref-user_pref.create_user_pref.update.jsonMergePatch": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone" | "ai_context_locale";
             value?: string | null;
         };
         "UserPref-user_pref.read": {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone" | "ai_context_locale";
             value?: string | null;
         };
         "UserPref.jsonld-user_pref.read": components["schemas"]["HydraItemBaseSchema"] & {
             /** @enum {string} */
-            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone";
+            type?: "language" | "dateFormat" | "timeFormat" | "favourite_group_name" | "googleSyncOnUpdate" | "dashboard_notification_policy" | "contact_table_settings" | "theme" | "show_logo" | "dashboard_settings" | "timezone" | "ai_context_locale";
             value?: string | null;
         };
         Token: {
@@ -4037,6 +4295,265 @@ export interface operations {
                     "application/ld+json": components["schemas"]["Error.jsonld"];
                     "application/problem+json": components["schemas"]["Error"];
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_api_keys_get_collection: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ApiKey collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
+                        member: components["schemas"]["ApiKey.jsonld-api_key.read"][];
+                    };
+                    "application/json": components["schemas"]["ApiKey-api_key.read"][];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_api_keys_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new ApiKey resource */
+        requestBody: {
+            content: {
+                "application/ld+json": components["schemas"]["ApiKey-api_key.write"];
+                "application/json": components["schemas"]["ApiKey-api_key.write"];
+            };
+        };
+        responses: {
+            /** @description ApiKey resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ApiKey.jsonld-api_key.read_api_key.create"];
+                    "application/json": components["schemas"]["ApiKey-api_key.read_api_key.create"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    api_api_keys_id_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ApiKey identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ApiKey resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ApiKey.jsonld-api_key.read"];
+                    "application/json": components["schemas"]["ApiKey-api_key.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_api_keys_id_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ApiKey identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ApiKey resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    api_api_keys_id_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ApiKey identifier */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated ApiKey resource */
+        requestBody: {
+            content: {
+                "application/merge-patch+json": components["schemas"]["ApiKey-api_key.write.jsonMergePatch"];
+            };
+        };
+        responses: {
+            /** @description ApiKey resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ApiKey.jsonld-api_key.read"];
+                    "application/json": components["schemas"]["ApiKey-api_key.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description An error occurred */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
+                    "application/problem+json": components["schemas"]["ConstraintViolation"];
+                    "application/json": components["schemas"]["ConstraintViolation"];
                 };
             };
         };
@@ -5735,6 +6252,49 @@ export interface operations {
                     "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
                     "application/problem+json": components["schemas"]["ConstraintViolation"];
                     "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    get_contact_display_options: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ContactDisplayOptions resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["ContactDisplayOptions.jsonld-contact_display_options.read"];
+                    "application/json": components["schemas"]["ContactDisplayOptions-contact_display_options.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
@@ -8260,6 +8820,49 @@ export interface operations {
                     "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
                     "application/problem+json": components["schemas"]["ConstraintViolation"];
                     "application/json": components["schemas"]["ConstraintViolation"];
+                };
+            };
+        };
+    };
+    get_entitlements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Entitlements resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Entitlements.jsonld-entitlements.read"];
+                    "application/json": components["schemas"]["Entitlements-entitlements.read"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/ld+json": components["schemas"]["Error.jsonld"];
+                    "application/problem+json": components["schemas"]["Error"];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };

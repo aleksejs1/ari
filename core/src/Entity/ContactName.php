@@ -59,7 +59,7 @@ class ContactName implements TenantAwareInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $given = null;
 
-    #[Groups(['contact_name:read', 'contact_name:create', 'contact_name:update'])]
+    #[Groups(['contact:read', 'contact_name:read', 'contact_name:create', 'contact_name:update'])]
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $locale = null;
 

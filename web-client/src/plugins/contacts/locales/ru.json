@@ -190,5 +190,21 @@
     "description": "Это имя похоже на {{detected}} написание. Предлагаемый вариант на {{suggested}}:",
     "apply": "Применить",
     "dismiss": "Отменить"
+  },
+  "viewMode": {
+    "table": "Переключить на карточки",
+    "cards": "Переключить на таблицу"
+  },
+  "displaySettings": {
+    "title": "Настройки отображения",
+    "fieldNames": "Имена",
+    "fieldPhones": "Телефоны",
+    "fieldEmails": "Email-адреса",
+    "fieldDates": "Даты",
+    "noVariants": "Нет доступных вариантов. Добавьте данные в контакты, чтобы включить варианты колонок.",
+    "resetToDefaults": "Сбросить по умолчанию",
+    "save": "Сохранить",
+    "localeLabel": "Имя на {{locale}}",
+    "typeLabel": "{{type}}"
   }
 }
