@@ -118,10 +118,11 @@ describe('RegisterPage', () => {
         uuid: 'testuser',
         plainPassword: TEST_PASSWORD,
       })
-      expect(api.post).toHaveBeenCalledWith('/login_check', {
-        username: 'testuser',
-        password: TEST_PASSWORD,
-      })
+      expect(api.post).toHaveBeenCalledWith(
+        '/login_check',
+        { username: 'testuser', password: TEST_PASSWORD },
+        { _skipAuthRefresh: true },
+      )
       expect(login).toHaveBeenCalledWith('fake-token', 'fake-refresh-token')
       expect(navigate).toHaveBeenCalledWith('/')
     })

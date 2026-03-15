@@ -71,7 +71,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (refreshToken) {
       try {
-        await api.post('/logout', { refresh_token: refreshToken })
+        await api.post('/logout', { refresh_token: refreshToken }, {
+          _skipAuthRefresh: true,
+        } as object)
       } catch (error) {
         console.error('Logout failed:', error)
       }

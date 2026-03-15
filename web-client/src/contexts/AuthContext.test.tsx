@@ -115,8 +115,10 @@ describe('AuthProvider', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith('refresh_token')
     expect(screen.getByTestId('auth')).toHaveTextContent('false')
 
-    expect(api.post).toHaveBeenCalledWith('/logout', {
-      refresh_token: 'refresh-token',
-    })
+    expect(api.post).toHaveBeenCalledWith(
+      '/logout',
+      { refresh_token: 'refresh-token' },
+      { _skipAuthRefresh: true },
+    )
   })
 })

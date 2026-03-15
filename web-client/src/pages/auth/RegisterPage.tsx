@@ -64,10 +64,11 @@ export default function RegisterPage() {
 
       // 2. Login (get token)
       // Login check uses 'username', which maps to our 'uuid'
-      const response = await api.post<LoginResponse>('/login_check', {
-        username: values.uuid,
-        password: values.password,
-      })
+      const response = await api.post<LoginResponse>(
+        '/login_check',
+        { username: values.uuid, password: values.password },
+        { _skipAuthRefresh: true } as object,
+      )
       login(response.data.token, response.data.refresh_token)
       await navigate('/')
     } catch (err: unknown) {

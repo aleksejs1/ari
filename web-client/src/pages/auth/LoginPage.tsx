@@ -50,10 +50,11 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await api.post<LoginResponse>('/login_check', {
-        username: values.username,
-        password: values.password,
-      })
+      const response = await api.post<LoginResponse>(
+        '/login_check',
+        { username: values.username, password: values.password },
+        { _skipAuthRefresh: true } as object,
+      )
       login(response.data.token, response.data.refresh_token)
       await navigate('/')
     } catch (err: unknown) {
@@ -69,11 +70,15 @@ export default function LoginPage() {
       const response = await api.post<{ username: string }>('/demo-account', {})
       const { username } = response.data
 
-      const loginResponse = await api.post<LoginResponse>('/login_check', {
-        username,
-        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
-        password: 'demo',
-      })
+      const loginResponse = await api.post<LoginResponse>(
+        '/login_check',
+        {
+          username,
+          // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+          password: 'demo',
+        },
+        { _skipAuthRefresh: true } as object,
+      )
       login(loginResponse.data.token, loginResponse.data.refresh_token)
       await navigate('/')
     } catch (err: unknown) {

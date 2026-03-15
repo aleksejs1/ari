@@ -74,11 +74,11 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'auth.signIn' }))
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/login_check', {
-        username: 'testuser',
-        // eslint-disable-next-line
-        password: 'password',
-      })
+      expect(api.post).toHaveBeenCalledWith(
+        '/login_check',
+        { username: 'testuser', password: 'password' }, // eslint-disable-line
+        { _skipAuthRefresh: true },
+      )
     })
 
     await waitFor(() => {
@@ -149,11 +149,11 @@ describe('LoginPage', () => {
     })
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/login_check', {
-        username: 'demo-user-123',
-        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
-        password: 'demo',
-      })
+      expect(api.post).toHaveBeenCalledWith(
+        '/login_check',
+        { username: 'demo-user-123', password: 'demo' }, // eslint-disable-line sonarjs/no-hardcoded-passwords
+        { _skipAuthRefresh: true },
+      )
     })
 
     await waitFor(() => {
