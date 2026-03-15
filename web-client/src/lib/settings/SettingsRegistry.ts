@@ -26,6 +26,12 @@ class SettingsRegistry {
     }
   }
 
+  reset(): void {
+    this.tabs.clear()
+    this.updateCache()
+    this.notify()
+  }
+
   getTabs(): SettingTab[] {
     return this.cachedTabs
   }

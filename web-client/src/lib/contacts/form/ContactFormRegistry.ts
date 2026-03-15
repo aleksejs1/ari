@@ -32,4 +32,12 @@ export class ContactFormRegistry {
   public getAll(): ContactFormSectionDef[] {
     return this.sections
   }
+
+  public unregister(id: string): void {
+    this.sections = this.sections.filter((s) => s.id !== id)
+  }
+
+  public reset(): void {
+    this.sections = []
+  }
 }

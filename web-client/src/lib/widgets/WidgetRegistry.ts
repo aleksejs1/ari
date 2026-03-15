@@ -26,6 +26,14 @@ class WidgetRegistry {
   getAll(): WidgetDefinition[] {
     return Array.from(this.widgets.values())
   }
+
+  unregister(id: string): void {
+    this.widgets.delete(id)
+  }
+
+  reset(): void {
+    this.widgets.clear()
+  }
 }
 
 export const widgetRegistry = new WidgetRegistry()

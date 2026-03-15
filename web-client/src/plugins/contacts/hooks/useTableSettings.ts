@@ -12,26 +12,34 @@ export interface TableSettings {
   viewMode: 'table' | 'cards'
 }
 
+const DEFAULTS: TableSettings = { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
+
+function isPlainObject(v: unknown): v is Record<string, unknown> {
+  return !!v && typeof v === 'object' && !Array.isArray(v)
+}
+
+function parseNewFormat(p: Record<string, unknown>): TableSettings {
+  return {
+    visibility: isPlainObject(p['visibility']) ? (p['visibility'] as VisibilityState) : {},
+    order: Array.isArray(p['order']) ? (p['order'] as ColumnOrderState) : [],
+    typedColumns: Array.isArray(p['typedColumns']) ? (p['typedColumns'] as TypedColumnSpec[]) : [],
+    viewMode: p['viewMode'] === 'cards' ? 'cards' : 'table',
+  }
+}
+
 export function parseTableSettings(raw: string): TableSettings {
   try {
-    const parsed = JSON.parse(raw)
-    if (parsed && typeof parsed === 'object' && !('visibility' in parsed)) {
-      return {
-        visibility: parsed as VisibilityState,
-        order: [],
-        typedColumns: [],
-        viewMode: 'table',
-      }
+    const parsed: unknown = JSON.parse(raw)
+    if (!isPlainObject(parsed)) {
+      return DEFAULTS
     }
-    return {
-      visibility: {},
-      order: [],
-      typedColumns: [],
-      viewMode: 'table',
-      ...(parsed as Partial<TableSettings>),
+    // Legacy format: top-level object was the visibility map (no 'visibility' key)
+    if (!('visibility' in parsed)) {
+      return { ...DEFAULTS, visibility: parsed as VisibilityState }
     }
+    return parseNewFormat(parsed)
   } catch {
-    return { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
+    return DEFAULTS
   }
 }
 

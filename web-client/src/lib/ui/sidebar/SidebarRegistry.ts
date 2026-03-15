@@ -42,6 +42,19 @@ export class SidebarRegistry {
     }
   }
 
+  public unregister(id: string): void {
+    const prev = this.sections.length
+    this.sections = this.sections.filter((s) => s.id !== id)
+    if (this.sections.length !== prev) {
+      this.notify()
+    }
+  }
+
+  public reset(): void {
+    this.sections = []
+    this.notify()
+  }
+
   private notify(): void {
     this.listeners.forEach((listener) => listener())
   }

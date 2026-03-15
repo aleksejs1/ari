@@ -52,6 +52,16 @@ export class ContactColumnRegistry {
       .map((id) => this.columns.get(id))
       .filter((col): col is ContactColumnDef => !!col)
   }
+
+  unregister(id: string): void {
+    this.columns.delete(id)
+    this.order = this.order.filter((o) => o !== id)
+  }
+
+  reset(): void {
+    this.columns.clear()
+    this.order = []
+  }
 }
 
 export const contactColumnRegistry = new ContactColumnRegistry()
