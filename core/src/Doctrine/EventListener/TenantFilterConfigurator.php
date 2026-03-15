@@ -9,6 +9,15 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Enables and configures the Doctrine TenantFilter on every HTTP request.
+ *
+ * CRITICAL: TenantFilter is the ONLY tenant isolation guard on list endpoints
+ * (e.g. GET /api/contacts). Detail endpoints also use Symfony Voters, but list
+ * endpoints have no second line of defence. Disabling this filter inside a
+ * request context exposes all list endpoints to cross-tenant data leakage.
+ * See ARCHITECTURE.md §1 Multi-Tenancy for the full invariant.
+ */
 #[AsEventListener(event: KernelEvents::REQUEST, priority: 1)]
 class TenantFilterConfigurator
 {

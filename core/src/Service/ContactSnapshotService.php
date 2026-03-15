@@ -42,6 +42,20 @@ class ContactSnapshotService
     /**
      * Reconstruct the full contact state at a specific audit log entry.
      *
+     * This is an O(n) forward-replay: all audit log entries from the very first
+     * INSERT up to targetLogId are loaded and applied in sequence. For contacts
+     * with a long edit history (hundreds of entries), this can be slow.
+     *
+     * Performance path (not yet implemented): store a materialized snapshot
+     * checkpoint every N entries (e.g. every 100) and replay only from the
+     * nearest checkpoint. This would require a new `AuditLog.checkpoint` column
+     * or a dedicated checkpoint table.
+     *
+     * Snapshot format versions written by AuditLogSubscriber::getEntitySnapshot():
+     *   - Version 1 (no _schema_version key): UPDATE logs store only a changes delta.
+     *   - Version 2 (_schema_version: 2): UPDATE logs store the full snapshotAfter.
+     *     The replayLogs() method handles both formats transparently.
+     *
      * @return array<string, mixed>|null null if targetLogId doesn't belong to this contact
      */
     public function getSnapshotAtLog(int|string $contactId, int $targetLogId): ?array
@@ -153,7 +167,7 @@ class ContactSnapshotService
     }
 
     /** @var list<string> */
-    private const SYSTEM_FIELDS = ['user', 'tenant'];
+    private const SYSTEM_FIELDS = ['user', 'tenant', '_schema_version'];
 
     /**
      * @param array<string, mixed>|null                              $contact

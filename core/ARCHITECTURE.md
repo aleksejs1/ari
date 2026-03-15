@@ -45,6 +45,18 @@ The application is designed to be multi-tenant, where data is isolated per "Tena
 - **Enforcement**: `Ari\Doctrine\Filter\TenantFilter` is a Doctrine SQLFilter that automatically appends `AND tenant_id = <current_user_id>` to SQL queries. This ensures users cannot accidentally access other users' data.
 - **Bypass**: The filter can be disabled for administrative tasks or internal commands.
 
+> **⚠ Critical invariant — TenantFilter is the only tenant guard on list endpoints.**
+>
+> Detail endpoints (`GET /api/contacts/{id}`) use `ContactVoter` for defense-in-depth.
+> List endpoints (`GET /api/contacts`, etc.) rely **solely** on `TenantFilter`.
+> `TenantFilterConfigurator` (priority 1 on `KernelEvents::REQUEST`) enables the filter
+> on every HTTP request. **Never disable the filter inside a request context** — doing so
+> exposes every list endpoint to cross-tenant data leakage with no other safeguard.
+>
+> Acceptable disable sites: console commands, internal services called only from CLI
+> (e.g. `E2eSeedService`), test fixtures. Always re-enable immediately after the
+> query that requires it.
+
 ### 2. Security & ACL
 Security is handled at the object level using Symfony Voters.
 - **Voters**: Located in `src/Security/Voter`, e.g., `ContactVoter`.

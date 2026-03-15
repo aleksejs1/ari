@@ -39,4 +39,20 @@ class RefreshTokenRepository extends ServiceEntityRepository implements RefreshT
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Delete all tokens whose validity date is before the given datetime.
+     * Uses a bulk DQL DELETE to avoid loading entities into memory.
+     *
+     * @return int number of deleted tokens
+     */
+    public function deleteExpiredBefore(\DateTimeInterface $before): int
+    {
+        return (int) $this->createQueryBuilder('rt')
+            ->delete()
+            ->where('rt.valid < :before')
+            ->setParameter('before', $before)
+            ->getQuery()
+            ->execute();
+    }
 }

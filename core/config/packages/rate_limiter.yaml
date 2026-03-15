@@ -8,6 +8,15 @@ framework:
             policy: sliding_window
             limit: 1000
             interval: '1 hour'
+        # Telegram Bot API enforces ~30 messages/second per bot globally.
+        # This token-bucket limiter caps outbound sends at 25/second to stay safely
+        # below that threshold and avoid 429 errors that block the bot for all users.
+        telegram_outbound:
+            policy: token_bucket
+            limit: 25
+            rate:
+                interval: '1 second'
+                amount: 25
 
 when@test:
     framework:
@@ -15,4 +24,6 @@ when@test:
             ai_requests:
                 policy: no_limit
             api_key_requests:
+                policy: no_limit
+            telegram_outbound:
                 policy: no_limit

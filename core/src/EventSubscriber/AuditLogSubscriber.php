@@ -263,7 +263,12 @@ class AuditLogSubscriber
     private function getEntitySnapshot(EntityManagerInterface $em, object $entity): array
     {
         $metadata = $em->getClassMetadata($entity::class);
-        $snapshot = [];
+
+        // _schema_version marks the format of this snapshot payload.
+        // Version 2 is the current format (full field + association snapshot).
+        // ContactSnapshotService uses this marker to detect the format when
+        // replaying logs; version 1 (no marker) used a changes-delta-only UPDATE format.
+        $snapshot = ['_schema_version' => 2];
 
         foreach ($metadata->getFieldNames() as $fieldName) {
             $value = $metadata->getFieldValue($entity, $fieldName);
