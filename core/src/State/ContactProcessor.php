@@ -5,9 +5,11 @@ namespace Ari\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Ari\Entity\Contact;
+use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * Processor for Contact entities that handles nested ContactName and ContactDate creation/updates.
@@ -24,6 +26,7 @@ class ContactProcessor implements ProcessorInterface
         private ProcessorInterface $userOwnerProcessor,
         private EntityManagerInterface $entityManager,
         private Security $security,
+        private EntitlementServiceInterface $entitlementService,
     ) {
     }
 
@@ -194,7 +197,28 @@ class ContactProcessor implements ProcessorInterface
         }
 
         // Let the UserOwnerProcessor handle user assignment and main persistence
-        return $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
+        $result = $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
+
+        // Post-insert compensating quota check (narrows the race window for concurrent requests).
+        //
+        // ContactVoter::CONTACT_ADD runs SELECT COUNT(*) before the INSERT. Under concurrency,
+        // two requests can both pass the check and INSERT simultaneously, overshooting the quota.
+        // By re-reading the count immediately after the committed INSERT we can detect the
+        // overshoot, roll back this contact, and return 422 — reducing the race window from
+        // the full request duration to milliseconds.
+        //
+        // isOverQuota() checks used > limit (strict), so a user inserting their Nth contact
+        // when quota is exactly N is NOT rolled back: used == limit is a valid state.
+        if ($operation instanceof \ApiPlatform\Metadata\Post) {
+            $user = $this->security->getUser();
+            if ($user instanceof \Ari\Entity\User && $this->entitlementService->isOverQuota($user, 'contacts')) {
+                $this->entityManager->remove($data);
+                $this->entityManager->flush();
+                throw new UnprocessableEntityHttpException('quota_exceeded');
+            }
+        }
+
+        return $result;
     }
 
     /**

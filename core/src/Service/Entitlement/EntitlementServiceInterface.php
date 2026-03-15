@@ -30,4 +30,16 @@ interface EntitlementServiceInterface
      * Full snapshot of the user's entitlements, ready for API serialization.
      */
     public function getSnapshot(User $user): EntitlementSnapshot;
+
+    /**
+     * Returns true if the user's current usage EXCEEDS (strictly greater than) the plan
+     * limit for $quota. Unlike checkQuota(), which checks whether a new item can be added,
+     * this method is used after an INSERT to detect a concurrency overshoot:
+     *
+     *   - checkQuota() before INSERT: "can we add one more?" (passes if remaining >= 1)
+     *   - isOverQuota() after INSERT:  "did we exceed the cap?"  (true only if used > limit)
+     *
+     * Returns false for unlimited plans (limit = 0) and for ROLE_ADMIN.
+     */
+    public function isOverQuota(User $user, string $quota): bool;
 }

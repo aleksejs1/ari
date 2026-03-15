@@ -146,6 +146,26 @@ final class EntitlementService implements EntitlementServiceInterface
         );
     }
 
+    #[\Override]
+    public function isOverQuota(User $user, string $quota): bool
+    {
+        if ($this->isAdmin($user)) {
+            return false;
+        }
+
+        if ('contacts' === $quota) {
+            $limit = $this->resolveContactsLimit($user);
+            if (0 === $limit) {
+                return false; // unlimited plan
+            }
+            $used = $this->contactRepository->countByTenant($user);
+
+            return $used > $limit;
+        }
+
+        return false;
+    }
+
     private function isAdmin(User $user): bool
     {
         return \in_array('ROLE_ADMIN', $user->getRoles(), true);
