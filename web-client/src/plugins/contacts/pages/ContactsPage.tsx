@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
 import { type Contact } from '@/types/models'
 
@@ -56,13 +57,15 @@ export default function ContactsPage() {
 
       <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
         <div className="flex-1">
-          <ContactsTable
-            data={contacts}
-            columns={columns}
-            onEdit={handleEdit}
-            onSort={handleSort}
-            {...(sorting ? { sorting } : {})}
-          />
+          <ErrorBoundary>
+            <ContactsTable
+              data={contacts}
+              columns={columns}
+              onEdit={handleEdit}
+              onSort={handleSort}
+              {...(sorting ? { sorting } : {})}
+            />
+          </ErrorBoundary>
         </div>
 
         {totalPages > 1 && (

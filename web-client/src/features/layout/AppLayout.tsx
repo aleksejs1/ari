@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router-dom'
 import { AlertTriangle, Menu, RefreshCw, X } from 'lucide-react'
 
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -94,7 +95,9 @@ export default function AppLayout() {
           </div>
         )}
         <div className="flex-1 p-8">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </div>
       </main>
     </div>
