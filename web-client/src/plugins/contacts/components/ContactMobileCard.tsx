@@ -99,9 +99,9 @@ export function ContactMobileCard({
       role="button"
       tabIndex={0}
       data-testid="contact-card"
-      onKeyDown={async (e) => {
+      onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          await navigate(`/contacts/${row.original.id}`)
+          void navigate(`/contacts/${row.original.id}`)
         }
       }}
     >

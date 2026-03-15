@@ -5,11 +5,7 @@ import { ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { SidebarRegistry, type SidebarSectionDef } from '@/lib/ui/sidebar/SidebarRegistry'
 
-import { registerDefaultSidebarSections } from '../ui/defaults_sidebar'
 import { SidebarHeader } from '../ui/sidebar/SidebarHeader'
-
-// Register sections immediately
-registerDefaultSidebarSections()
 
 interface SidebarContentProps {
   onNavigate?: () => void
