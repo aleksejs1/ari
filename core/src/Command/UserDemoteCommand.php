@@ -11,6 +11,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Demotes a ROLE_ADMIN user back to a regular user by UUID.
+ *
+ * Intentionally uses EntityManager directly (no service layer) — this is a CLI-only
+ * admin utility that is never invoked as an HTTP request. Voter checks are not
+ * applicable here. AuditLogSubscriber will still record the change via Doctrine events.
+ *
+ * @see ARCHITECTURE.md §10 "Console Command Pattern"
+ */
 #[AsCommand(
     name: 'ari:user:demote',
     description: 'Demotes an ADMIN user to regular user',

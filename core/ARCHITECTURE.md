@@ -233,11 +233,27 @@ The project enforces strict code quality:
   - **Services**: Can access **Repositories**, **Entities**, and other services.
   - **State Providers/Processors**: Can access **Services** and **Entities**.
   - **Entities**: Isolated (no dependencies on other layers).
+  - Run `make deptrac` in CI; run `make deptrac-strict` periodically to catch uncovered files.
 - **PHPStan/Psalm**: High strictness levels to prevent type errors.
 - **CS-Fixer**: Enforces PSR-12 and Symfony coding standards.
 
 - **composer.json**: Describes dependencies and QA scripts.
 - **[QA and Testing](docs/qa_and_testing.md)**: Details on the test environment and Makefile commands.
+
+### 10. Console Command Pattern
+
+Console commands (`src/Command/`) are **permitted to use `EntityManagerInterface` directly** rather than going through a service. This is intentional:
+
+- Commands run from the CLI only — they are never invoked as HTTP requests, so Symfony Voters and security firewalls do not apply.
+- Audit logging via `AuditLogSubscriber` still fires (it listens to Doctrine events, not HTTP requests), so CLI changes ARE recorded in the audit trail.
+- Commands that need to bypass the `TenantFilter` (e.g., admin utilities) may call `$em->getFilters()->disable('tenant')` explicitly, and must document that they do so.
+
+**When to use a service instead:** If the same logic will be triggered both from the CLI *and* from an HTTP request (e.g., a cron job exposed via an API endpoint), extract the logic into a service and call it from both the command and the controller. This ensures Voter checks apply in the HTTP path.
+
+**Current commands that use EntityManager directly (accepted):**
+- `UserPromoteCommand` / `UserDemoteCommand` — admin-only, no Voter needed (already requires server access to run)
+- `CleanupExpiredTokensCommand` — bulk DELETE, no tenant filter needed (targets expired rows globally)
+- `E2eSeedCommand` / `GenerateDemoAccountCommand` — test/demo seeding, intentionally bypasses normal flows
 
 ## Development & QA Workflow
 

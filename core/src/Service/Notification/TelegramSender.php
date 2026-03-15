@@ -3,6 +3,7 @@
 namespace Ari\Service\Notification;
 
 use Ari\Entity\NotificationQueue;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
@@ -15,6 +16,7 @@ class TelegramSender implements NotificationSenderInterface
         private readonly string $telegramBotSecret,
         #[Autowire(service: 'limiter.telegram_outbound')]
         private readonly RateLimiterFactory $telegramOutboundLimiter,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -61,6 +63,18 @@ class TelegramSender implements NotificationSenderInterface
             }
         }
 
-        $this->telegramService->sendMessage($this->telegramBotSecret, $chatId, $fullMessage);
+        try {
+            $this->telegramService->sendMessage($this->telegramBotSecret, $chatId, $fullMessage);
+        } catch (\Throwable $e) {
+            $this->logger->error('Telegram notification delivery failed', [
+                'channel_id' => $channel->getId(),
+                'notification_queue_id' => $task->getId(),
+                'chat_id' => $chatId,
+                'error_code' => $e->getCode(),
+                'error_message' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 }

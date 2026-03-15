@@ -1,6 +1,6 @@
 DOCKER_COMPOSE = docker compose -f compose.test.yaml
 
-.PHONY: build test coverage sh down
+.PHONY: build test coverage sh down deptrac deptrac-strict
 
 build:
 	$(DOCKER_COMPOSE) build
@@ -19,6 +19,13 @@ psalm:
 
 deptrac:
 	$(DOCKER_COMPOSE) run --rm --entrypoint vendor/bin/deptrac test-runner analyse
+
+# Like 'deptrac' but also fails if any source file is not assigned to a layer.
+# Run periodically to catch files that drift outside the defined architecture.
+# Not part of 'make qa' because it requires all new namespaces to be registered
+# in deptrac.yaml before they are introduced.
+deptrac-strict:
+	$(DOCKER_COMPOSE) run --rm --entrypoint vendor/bin/deptrac test-runner analyse --fail-on-uncovered
 
 cs-fix:
 	$(DOCKER_COMPOSE) run --rm --entrypoint vendor/bin/php-cs-fixer test-runner fix

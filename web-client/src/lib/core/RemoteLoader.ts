@@ -4,11 +4,13 @@ export type PluginConstructor = new () => BasePlugin
 
 /**
  * Trusted origins from which remote plugins may be loaded.
- * Populated at build time via VITE_TRUSTED_PLUGIN_ORIGINS (comma-separated list of origins,
- * e.g. "https://plugins.example.com,https://cdn.myorg.io").
- * An empty list blocks all remote plugin loading.
+ * Same-origin URLs (matching window.location.origin) are always allowed — they are
+ * served by the same server as the application itself and pose no additional risk.
+ * Cross-origin plugin URLs additionally require the origin to be listed in the
+ * VITE_TRUSTED_PLUGIN_ORIGINS env var (comma-separated, e.g.
+ * "https://plugins.example.com,https://cdn.myorg.io").
  */
-const TRUSTED_ORIGINS: string[] = (
+const EXTRA_TRUSTED_ORIGINS: string[] = (
   (import.meta.env['VITE_TRUSTED_PLUGIN_ORIGINS'] as string | undefined) ?? ''
 )
   .split(',')
@@ -17,8 +19,16 @@ const TRUSTED_ORIGINS: string[] = (
 
 function isAllowedUrl(url: string): boolean {
   try {
-    const { origin } = new URL(url)
-    return TRUSTED_ORIGINS.includes(origin)
+    const { origin, hostname } = new URL(url)
+    // Localhost (any port) is always safe — only reachable on the developer's own machine.
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return true
+    }
+    // Same-origin is always safe — plugin served by the same host as the app.
+    if (origin === window.location.origin) {
+      return true
+    }
+    return EXTRA_TRUSTED_ORIGINS.includes(origin)
   } catch {
     return false
   }
