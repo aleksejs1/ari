@@ -1,0 +1,157 @@
+# Monitoring stack for Ari — opt-in, layered on top of compose.prod.yaml.
+#
+# Usage:
+#   docker compose -f compose.prod.yaml -f compose.monitoring.yaml up -d
+#
+# Required env vars (add to your .env.prod alongside the existing ones):
+#   GRAFANA_ADMIN_PASSWORD             — must not be "admin" (container exits)
+#   ALERTMANAGER_TELEGRAM_BOT_TOKEN    — bot token for alert delivery
+#   ALERTMANAGER_TELEGRAM_CHAT_ID      — numeric chat ID to receive alerts
+#
+# The METRICS_SECRET variable must already be set in .env.prod (Phase 2).
+
+services:
+
+  # ── App override ──────────────────────────────────────────────────────────
+  # Add the app container to the monitoring network so Prometheus can scrape
+  # /metrics, and replace the Caddyfile with a version that restricts /metrics
+  # to private (Docker-internal) IP ranges only.
+  app:
+    networks:
+      default: {}      # keep existing connectivity (database, etc.)
+      monitoring: {}   # allow Prometheus to reach /metrics
+    volumes:
+      - ./monitoring/caddy/metrics-block.Caddyfile:/etc/caddy/Caddyfile:ro
+
+  # ── Prometheus ────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    restart: unless-stopped
+    networks:
+      - monitoring
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        sed "s|__METRICS_SECRET__|$$METRICS_SECRET|g" \
+          /etc/prometheus/prometheus.yml.tpl \
+          > /tmp/prometheus.yml
+        exec /bin/prometheus \
+          --config.file=/tmp/prometheus.yml \
+          --storage.tsdb.path=/prometheus \
+          --web.console.libraries=/etc/prometheus/console_libraries \
+          --web.console.templates=/etc/prometheus/consoles \
+          --storage.tsdb.retention.time=15d \
+          --web.enable-lifecycle
+    environment:
+      METRICS_SECRET: ${METRICS_SECRET:-}
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus:ro
+      - prometheus_data:/prometheus
+
+  # ── Grafana ───────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:11.4.0
+    restart: unless-stopped
+    networks:
+      - monitoring
+    # Guard: refuse to start if the admin password is still the default.
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        if [ "$$GF_SECURITY_ADMIN_PASSWORD" = "admin" ]; then
+          echo "ERROR: GRAFANA_ADMIN_PASSWORD must not be 'admin'. Set it in .env.prod." >&2
+          exit 1
+        fi
+        exec /run.sh
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+
+  # ── Loki ──────────────────────────────────────────────────────────────────
+  loki:
+    image: grafana/loki:3.4.0
+    restart: unless-stopped
+    networks:
+      - monitoring
+    command: -config.file=/etc/loki/loki.yml
+    volumes:
+      - ./monitoring/loki:/etc/loki:ro
+      - loki_data:/loki
+
+  # ── Alloy (Docker log collection → Loki) ─────────────────────────────────
+  alloy:
+    image: grafana/alloy:v1.6.1
+    restart: unless-stopped
+    networks:
+      - monitoring
+    command: run /etc/alloy/config.alloy
+    volumes:
+      - ./monitoring/alloy:/etc/alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # ── AlertManager ──────────────────────────────────────────────────────────
+  # Needs two networks: monitoring (to receive alerts from Prometheus) and
+  # alertmanager_egress (non-internal, to reach the Telegram Bot API).
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    restart: unless-stopped
+    networks:
+      - monitoring
+      - alertmanager_egress
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        sed \
+          -e "s|__TELEGRAM_BOT_TOKEN__|$$ALERTMANAGER_TELEGRAM_BOT_TOKEN|g" \
+          -e "s|__TELEGRAM_CHAT_ID__|$$ALERTMANAGER_TELEGRAM_CHAT_ID|g" \
+          /etc/alertmanager/alertmanager.yml.tpl \
+          > /tmp/alertmanager.yml
+        exec /bin/alertmanager \
+          --config.file=/tmp/alertmanager.yml \
+          --storage.path=/alertmanager
+    environment:
+      ALERTMANAGER_TELEGRAM_BOT_TOKEN: ${ALERTMANAGER_TELEGRAM_BOT_TOKEN}
+      ALERTMANAGER_TELEGRAM_CHAT_ID: ${ALERTMANAGER_TELEGRAM_CHAT_ID}
+    volumes:
+      - ./monitoring/alertmanager:/etc/alertmanager:ro
+      - alertmanager_data:/alertmanager
+
+  # ── Node Exporter ─────────────────────────────────────────────────────────
+  node_exporter:
+    image: prom/node-exporter:v1.8.2
+    restart: unless-stopped
+    networks:
+      - monitoring
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/rootfs
+      - --collector.textfile.directory=/var/node_exporter_textfiles
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - node_exporter_textfiles:/var/node_exporter_textfiles:ro
+
+networks:
+  monitoring:
+    internal: true   # No outbound internet; Prometheus/Grafana/Loki don't need it.
+  alertmanager_egress:
+    # Non-internal: lets AlertManager reach api.telegram.org for alert delivery.
+    internal: false
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+  alertmanager_data:
+  node_exporter_textfiles:

@@ -1,0 +1,70 @@
+// ─── Docker log collection ──────────────────────────────────────────────────
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "docker_meta" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "project"
+  }
+}
+
+loki.source.docker "default" {
+  host             = "unix:///var/run/docker.sock"
+  targets          = discovery.relabel.docker_meta.output
+  forward_to       = [loki.process.pipeline.receiver]
+  relabeling_rules = discovery.relabel.docker_meta.rules
+}
+
+// ─── Log processing pipeline ────────────────────────────────────────────────
+
+loki.process "pipeline" {
+  forward_to = [loki.write.default.receiver]
+
+  // Add app=ari label to all containers in this compose project
+  stage.static_labels {
+    values = { app = "ari" }
+  }
+
+  // Parse structured JSON logs from the Symfony app container
+  stage.match {
+    selector = "{service=\"app\"}"
+
+    stage.json {
+      expressions = {
+        level   = "level_name",
+        channel = "channel",
+      }
+    }
+
+    stage.labels {
+      values = {
+        level   = "",
+        channel = "",
+      }
+    }
+  }
+}
+
+// ─── Loki write ─────────────────────────────────────────────────────────────
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

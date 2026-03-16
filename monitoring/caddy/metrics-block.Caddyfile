@@ -21,10 +21,10 @@
 		php_server
 	}
 
-	# Handle Prometheus metrics endpoint (Symfony — not a static file)
-	# Must be listed before the catch-all handle block so Caddy routes it to PHP
-	# instead of falling back to the frontend file_server.
+	# Handle Prometheus metrics endpoint — restricted to internal Docker networks only
 	handle /metrics {
+		@external not remote_ip 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+		respond @external "Access restricted to internal network" 403
 		root * /app/core/public
 		php_server
 	}

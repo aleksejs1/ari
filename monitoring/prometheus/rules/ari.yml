@@ -1,0 +1,92 @@
+groups:
+  - name: ari.rules
+    rules:
+      - alert: AriDown
+        expr: up{job="ari"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ari is down"
+          description: "The /metrics endpoint has been unreachable for > 2 minutes."
+
+      - alert: AsyncQueueDepth
+        expr: ari_messenger_queue_depth{transport="async"} > 500
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Async queue backlog"
+          description: "{{ $value }} messages pending in async queue for > 10 min."
+
+      - alert: AiAsyncQueueDepth
+        expr: ari_messenger_queue_depth{transport="ai_async"} > 500
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI async queue backlog"
+          description: "{{ $value }} messages pending in ai_async queue for > 10 min."
+
+      - alert: DeadLetterMessages
+        expr: ari_messenger_failed_messages{transport="failed"} > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Dead-letter messages present"
+          description: "{{ $value }} messages stuck in failed queue for > 5 min."
+
+      - alert: DiskSpaceLow
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space low"
+          description: "Less than 20% disk space remaining on /."
+
+      - alert: DiskSpaceCritical
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space critical"
+          description: "Less than 10% disk space remaining on /."
+
+      - alert: MemoryHigh
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.15
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memory usage high"
+          description: "Available memory below 15% for > 15 min."
+
+      - alert: BackupMissed
+        expr: time() - ari_backup_last_success_timestamp_seconds > 93600
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backup missed"
+          description: "Last successful backup was more than 26 hours ago."
+
+      - alert: HighFailedLogins
+        expr: increase(ari_failed_logins_total[5m]) > 50
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High failed login rate"
+          description: "More than 50 failed login attempts in the last 5 minutes."
+
+      - alert: AIProviderErrors
+        expr: rate(ari_ai_suggestions_total{status="error"}[5m]) * 60 > 0.5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI provider error rate high"
+          description: "AI suggestion error rate exceeds 0.5/min for > 10 min."
