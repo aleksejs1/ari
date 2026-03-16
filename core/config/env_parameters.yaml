@@ -80,3 +80,4 @@ parameters:
     # Observability
     app_version: '%env(default:default_app_version:APP_VERSION)%'
     log_tenant_hash_key: '%env(default:empty_string:LOG_TENANT_HASH_KEY)%'
+    metrics_secret: '%env(default:default_metrics_secret:METRICS_SECRET)%'

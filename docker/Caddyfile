@@ -21,6 +21,14 @@
 		php_server
 	}
 
+	# Handle Prometheus metrics endpoint (Symfony — not a static file)
+	# Must be listed before the catch-all handle block so Caddy routes it to PHP
+	# instead of falling back to the frontend file_server.
+	handle /metrics {
+		root * /app/core/public
+		php_server
+	}
+
 	# Handle everything else (Frontend)
 	handle {
 		# Try to serve file, then directory, then fall back to index.html

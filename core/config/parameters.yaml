@@ -59,3 +59,4 @@ parameters:
 
     # Observability
     default_app_version: 'dev'
+    default_metrics_secret: ''
