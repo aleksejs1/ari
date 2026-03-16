@@ -357,3 +357,39 @@ The AI suggestions subsystem analyzes `ContactName` entries and proposes locale-
 
 #### Architecture Note
 The `entityType` + `entityId` pattern (instead of FK) allows the suggestion table to reference future entity types (phone numbers, emails) without schema changes.
+
+### 14. Observability
+
+#### Health endpoint (`GET /api/health`)
+- Public endpoint — no authentication required.
+- `HealthService` aggregates check results from pluggable `HealthCheckInterface` implementations.
+- HTTP 200 when all checks are `ok` or `warn`; HTTP 503 when any check is `error`.
+- `APP_VERSION` env var is returned in the response body; allows uptime monitors to detect version mismatches after deploys.
+- Route is at `/api/health` — safe to add new checks without firewall conflicts (see "Symfony Firewall Pattern Gotcha" in CLAUDE.md).
+
+#### Metrics endpoint (`GET /metrics`)
+- Protected by `X-Metrics-Token` header; value must match the `metrics_secret` kernel parameter (populated from `METRICS_SECRET` env var).
+- Returns 404 when `METRICS_SECRET` is empty (feature disabled by default).
+- Returns Prometheus text format (`text/plain; version=0.0.4`).
+- Route is at `/metrics` — **outside the `/api` prefix** and therefore unaffected by the `^/api/login` firewall rule that would cause 401 errors with a valid JWT token.
+
+#### `MetricsService`
+- Single point of access for all business metrics queries.
+- Uses DBAL directly (not ORM) to bypass `TenantFilter` — metrics are admin-scope aggregates across all tenants.
+- All query methods are wrapped in `try/catch` and return 0 on error, so a failing metric does not break the entire scrape.
+- Injected as a service into `MetricsController`; no direct DB access in the controller.
+
+#### Structured logging
+- `RequestContextSubscriber` (Kernel event subscriber) injects `tenant_id` (anonymised) and `request_id` into the Monolog context on every request.
+- `LOG_TENANT_HASH_KEY` env var: when set, `tenant_id` is hashed with HMAC-SHA256 before logging; when empty, `tenant_id` is omitted entirely and a WARNING is logged at startup.
+- Caddy access logs are emitted as JSON (`format json`) — Grafana Alloy collects them via Docker log socket and forwards to Loki.
+
+#### Backup sentinel (textfile collector pattern)
+- `backup.sh db` writes `ari_backup_last_success_timestamp_seconds` to `/var/node_exporter_textfiles/ari_backup.prom` after every successful backup.
+- Node Exporter's `--collector.textfile.directory` flag exposes the file as a Prometheus metric.
+- `BackupMissed` alert fires when `time() - ari_backup_last_success_timestamp_seconds > 93600` (26 hours).
+- The sentinel file is written atomically: `printf ... > file.tmp && mv file.tmp file` — no partial reads by Node Exporter.
+
+#### Caddy `/metrics` access restriction
+- Default `docker/Caddyfile` routes `/metrics` to PHP — accessible from any IP (safe for development).
+- When `compose.monitoring.yaml` is active, `monitoring/caddy/metrics-block.Caddyfile` replaces the image-baked Caddyfile and restricts `/metrics` to RFC-1918 IP ranges (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) — Prometheus reaches the app over Docker's internal `172.x.x.x` network, external requests get 403.
