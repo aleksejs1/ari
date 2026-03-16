@@ -1,0 +1,81 @@
+# Dev overlay for compose.monitoring.yaml.
+#
+# Usage (from ari/ directory):
+#   docker compose \
+#     -f compose.yaml \
+#     -f compose.monitoring.yaml \
+#     -f compose.monitoring.dev.yaml \
+#     up -d
+#
+# With MySQL:
+#   DB_CONNECTION=mysql docker compose --profile mysql \
+#     -f compose.yaml \
+#     -f compose.monitoring.yaml \
+#     -f compose.monitoring.dev.yaml \
+#     up -d
+#
+# Differences from compose.monitoring.yaml:
+#   - Grafana and Prometheus are added to the default network so their ports
+#     are published to the host (internal-only networks don't expose ports)
+#   - app service Caddyfile override is removed — /metrics stays open to all IPs
+#   - AlertManager uses a null receiver (no real Telegram token needed)
+#   - backup service uses ./core/var bind mount instead of the external volume
+#   - app_data is a regular local volume (no external: true)
+
+services:
+  # Override: remove the metrics-block.Caddyfile mount so /metrics is
+  # reachable from the host browser for manual testing.
+  app:
+    volumes:
+      - ./:/app
+
+  # Override: add default network so Grafana's port 3000 is published to host.
+  # Docker does not publish ports for containers that are exclusively on
+  # internal networks.
+  grafana:
+    networks:
+      monitoring: {}
+      default: {}
+
+  # Override: add default network so Prometheus UI (:9090) is reachable.
+  # Also use the dev prometheus config that targets app:8000 (dev server port).
+  prometheus:
+    networks:
+      - monitoring
+      - default
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        sed "s|__METRICS_SECRET__|$$METRICS_SECRET|g" \
+          /etc/prometheus/prometheus.dev.yml.tpl \
+          > /tmp/prometheus.yml
+        exec /bin/prometheus \
+          --config.file=/tmp/prometheus.yml \
+          --storage.tsdb.path=/prometheus \
+          --web.console.libraries=/etc/prometheus/console_libraries \
+          --web.console.templates=/etc/prometheus/consoles \
+          --storage.tsdb.retention.time=3d \
+          --web.enable-lifecycle
+
+  # Override: use null-receiver config — no real Telegram bot needed in dev.
+  alertmanager:
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - exec /bin/alertmanager --config.file=/etc/alertmanager/alertmanager.dev.yml --storage.path=/alertmanager
+    volumes:
+      - ./monitoring/alertmanager:/etc/alertmanager:ro
+      - alertmanager_data:/alertmanager
+
+  # Override: point backup at the dev bind-mount path instead of app_data volume.
+  backup:
+    volumes:
+      - ./core/var:/app/core/var:ro
+      - node_exporter_textfiles:/var/node_exporter_textfiles
+
+volumes:
+  # Shadow the external: true declaration so Docker creates the volume locally
+  # instead of requiring a pre-existing external volume.
+  app_data:
+    external: false

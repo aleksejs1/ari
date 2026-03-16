@@ -25,10 +25,9 @@ discovery.relabel "docker_meta" {
 }
 
 loki.source.docker "default" {
-  host             = "unix:///var/run/docker.sock"
-  targets          = discovery.relabel.docker_meta.output
-  forward_to       = [loki.process.pipeline.receiver]
-  relabeling_rules = discovery.relabel.docker_meta.rules
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.docker_meta.output
+  forward_to = [loki.process.pipeline.receiver]
 }
 
 // ─── Log processing pipeline ────────────────────────────────────────────────

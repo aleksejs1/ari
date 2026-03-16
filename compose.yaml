@@ -17,6 +17,7 @@ services:
       DB_NAME: "${MARIADB_DB:-app}"
       DB_VERSION: "11.4.9-MariaDB"
       MAILER_DSN: "smtp://mailpit:1025"
+      METRICS_SECRET: "${METRICS_SECRET:-}"
     depends_on:
       database:
         condition: service_healthy

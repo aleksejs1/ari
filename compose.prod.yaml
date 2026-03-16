@@ -25,6 +25,9 @@ services:
       JWT_PUBLIC_KEY: /app/core/config/jwt/public.pem
       MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
       DEFAULT_URI: "http://localhost:8080"
+      APP_VERSION: "${APP_VERSION:-dev}"
+      LOG_TENANT_HASH_KEY: "${LOG_TENANT_HASH_KEY:-}"
+      METRICS_SECRET: "${METRICS_SECRET:-}"
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/health || exit 1"]
       interval: 30s

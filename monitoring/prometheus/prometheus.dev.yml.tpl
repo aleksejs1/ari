@@ -1,6 +1,6 @@
 global:
-  scrape_interval: 30s
-  evaluation_interval: 30s
+  scrape_interval: 15s      # faster in dev for quicker feedback
+  evaluation_interval: 15s
   external_labels:
     app: ari
 
@@ -15,7 +15,7 @@ rule_files:
 scrape_configs:
   - job_name: 'ari'
     static_configs:
-      - targets: ['app:8080']
+      - targets: ['app:8000']   # dev server listens on 8000, not 8080
     metrics_path: '/metrics'
     authorization:
       credentials: __METRICS_SECRET__
@@ -27,7 +27,3 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['prometheus:9090']
-
-  - job_name: 'alloy'
-    static_configs:
-      - targets: ['alloy:12345']

@@ -31,8 +31,10 @@ class MetricsController extends AbstractController
             throw $this->createNotFoundException('Metrics endpoint is disabled. Set METRICS_SECRET to enable it.');
         }
 
-        $token = $request->headers->get('X-Metrics-Token', '');
-        if (!hash_equals($this->metricsSecret, $token)) {
+        // Accept token via X-Metrics-Token (curl/manual) or Authorization: Bearer (Prometheus).
+        $token = $request->headers->get('X-Metrics-Token')
+            ?? $this->parseBearerToken($request->headers->get('Authorization', ''));
+        if (!hash_equals($this->metricsSecret, $token ?? '')) {
             return new Response('Forbidden', Response::HTTP_FORBIDDEN);
         }
 
@@ -41,6 +43,15 @@ class MetricsController extends AbstractController
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain; version=0.0.4; charset=utf-8'],
         );
+    }
+
+    private function parseBearerToken(string $header): ?string
+    {
+        if (str_starts_with($header, 'Bearer ')) {
+            return substr($header, 7);
+        }
+
+        return null;
     }
 
     private function buildPrometheusOutput(): string

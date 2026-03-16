@@ -1,0 +1,10 @@
+# Dev-only AlertManager config — routes all alerts to the null receiver
+# so no real Telegram bot token or chat ID is needed.
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'null'
+
+receivers:
+  - name: 'null'
