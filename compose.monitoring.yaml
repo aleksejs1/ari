@@ -142,11 +142,38 @@ services:
       - /:/rootfs:ro
       - node_exporter_textfiles:/var/node_exporter_textfiles:ro
 
+  # ── Backup ────────────────────────────────────────────────────────────────
+  # Runs Restic backups on a cron schedule (see monitoring/backup/crontab).
+  # Needs backup_egress to reach remote Restic repositories (S3, SFTP, etc.).
+  # Reads app data read-only; writes sentinel to node_exporter_textfiles.
+  backup:
+    build: ./monitoring/backup
+    restart: unless-stopped
+    networks:
+      - backup_egress
+    environment:
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      DB_CONNECTION: ${DB_CONNECTION:-sqlite}
+      # MariaDB vars — only needed when DB_CONNECTION=mysql
+      BACKUP_MARIADB_HOST: ${BACKUP_MARIADB_HOST:-database}
+      BACKUP_MARIADB_USER: ${BACKUP_MARIADB_USER:-}
+      BACKUP_MARIADB_PASSWORD: ${BACKUP_MARIADB_PASSWORD:-}
+      BACKUP_MARIADB_DB: ${BACKUP_MARIADB_DB:-}
+    volumes:
+      # App data — read-only; backup.sh reads data.db and storage/
+      - app_data:/app/core/var:ro
+      # Shared with node_exporter — backup.sh writes the sentinel .prom file here
+      - node_exporter_textfiles:/var/node_exporter_textfiles
+
 networks:
   monitoring:
     internal: true   # No outbound internet; Prometheus/Grafana/Loki don't need it.
   alertmanager_egress:
     # Non-internal: lets AlertManager reach api.telegram.org for alert delivery.
+    internal: false
+  backup_egress:
+    # Non-internal: lets the backup container reach remote Restic repositories.
     internal: false
 
 volumes:
@@ -155,3 +182,6 @@ volumes:
   loki_data:
   alertmanager_data:
   node_exporter_textfiles:
+  # app_data must be declared as external — it is created by compose.prod.yaml.
+  app_data:
+    external: true
