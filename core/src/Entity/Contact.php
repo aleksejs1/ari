@@ -33,6 +33,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ORM\UniqueConstraint(name: 'unique_contact_uuid_per_user', columns: ['uuid', 'user_id'])]
@@ -120,6 +121,12 @@ class Contact implements TenantAwareInterface
     #[Groups(['contact:read', 'export'])]
     #[ORM\Column(type: 'uuid')]
     private ?Uuid $uuid = null;
+
+    /** "Keep in touch every N days" cadence. Null means no cadence configured. */
+    #[Groups(['contact:read', 'contact:create', 'contact:update', 'export'])]
+    #[Assert\Positive]
+    #[ORM\Column(nullable: true)]
+    private ?int $cadenceDays = null;
 
     #[ORM\ManyToOne(inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: false)]
@@ -250,5 +257,17 @@ class Contact implements TenantAwareInterface
         }
 
         return 'Unknown Contact';
+    }
+
+    public function getCadenceDays(): ?int
+    {
+        return $this->cadenceDays;
+    }
+
+    public function setCadenceDays(?int $cadenceDays): static
+    {
+        $this->cadenceDays = $cadenceDays;
+
+        return $this;
     }
 }
