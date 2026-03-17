@@ -20,6 +20,7 @@ export * from './hooks/useContactNames'
 export * from './hooks/useContactOrganizations'
 export * from './hooks/useContactPhones'
 export * from './hooks/useContactRelations'
+export * from './hooks/useInteractions'
 export * from './utils'
 
 export function useContacts(

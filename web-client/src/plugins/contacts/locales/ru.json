@@ -206,5 +206,42 @@
     "save": "Сохранить",
     "localeLabel": "Имя на {{locale}}",
     "typeLabel": "{{type}}"
+  },
+  "interactions": {
+    "sectionTitle": "Поддержание связи",
+    "log": "Записать взаимодействие",
+    "addTitle": "Записать взаимодействие",
+    "editTitle": "Редактировать взаимодействие",
+    "noInteractions": "Взаимодействий ещё не было.",
+    "type": "Тип",
+    "date": "Дата",
+    "description": "Описание",
+    "descriptionPlaceholder": "Заметки о взаимодействии...",
+    "initiator": "Инициатор",
+    "initiatorNone": "Не указан",
+    "tags": "Теги",
+    "tagsPlaceholder": "бизнес, фандрайзинг (через запятую)",
+    "setCadence": "Задать периодичность...",
+    "everyNDays_one": "Каждый {{count}} день",
+    "everyNDays_few": "Каждые {{count}} дня",
+    "everyNDays_many": "Каждые {{count}} дней",
+    "everyNDays_other": "Каждые {{count}} дней",
+    "days": "дней",
+    "cadencePlaceholder": "Дней",
+    "deleteConfirm": "Удалить это взаимодействие?",
+    "overdueByDays_one": "Просрочено на {{count}} день",
+    "overdueByDays_few": "Просрочено на {{count}} дня",
+    "overdueByDays_many": "Просрочено на {{count}} дней",
+    "overdueByDays_other": "Просрочено на {{count}} дней",
+    "types": {
+      "call": "Звонок",
+      "email": "Email",
+      "meeting": "Встреча",
+      "other": "Другое"
+    },
+    "initiators": {
+      "me": "Я написал первым",
+      "them": "Они написали первыми"
+    }
   }
 }

@@ -206,5 +206,37 @@
     "save": "Save",
     "localeLabel": "Name in {{locale}}",
     "typeLabel": "{{type}}"
+  },
+  "interactions": {
+    "sectionTitle": "Keep in Touch",
+    "log": "Log Interaction",
+    "addTitle": "Log Interaction",
+    "editTitle": "Edit Interaction",
+    "noInteractions": "No interactions yet.",
+    "type": "Type",
+    "date": "Date",
+    "description": "Description",
+    "descriptionPlaceholder": "Notes about the interaction...",
+    "initiator": "Initiator",
+    "initiatorNone": "Not specified",
+    "tags": "Tags",
+    "tagsPlaceholder": "business, fundraising (comma-separated)",
+    "setCadence": "Set cadence...",
+    "everyNDays": "Every {{count}} days",
+    "days": "days",
+    "cadencePlaceholder": "Days",
+    "overdueByDays_one": "{{count}} day overdue",
+    "overdueByDays_other": "{{count}} days overdue",
+    "deleteConfirm": "Delete this interaction?",
+    "types": {
+      "call": "Call",
+      "email": "Email",
+      "meeting": "Meeting",
+      "other": "Other"
+    },
+    "initiators": {
+      "me": "I reached out",
+      "them": "They reached out"
+    }
   }
 }

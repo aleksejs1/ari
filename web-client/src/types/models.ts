@@ -7,10 +7,24 @@ import type { components } from './schema'
 
 export type { HydraCollection }
 
+export type ContactInteraction = {
+  '@id'?: string
+  '@type'?: string
+  contact?: string
+  type: string
+  description?: string | null
+  timestamp: string
+  initiator?: string | null
+  tags?: string[] | null
+  createdAt?: string
+}
+
 export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
   displayName?: string
   contactRelations?: ContactRelation[]
   avatar?: ContactAvatar | null
+  cadenceDays?: number | null
+  contactInteractions?: ContactInteraction[]
 }
 
 export type ContactAvatar = components['schemas']['ContactAvatar.jsonld-contact_avatar.read']

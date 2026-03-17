@@ -5,6 +5,7 @@ import { ContactInfoSection } from './sections/ContactInfoSection'
 import { ContactNamesSection } from './sections/ContactNamesSection'
 import { DatesSection } from './sections/DatesSection'
 import { GeneralInfoSection } from './sections/GeneralInfoSection'
+import { KeepInTouchSection } from './sections/KeepInTouchSection'
 import { ProfessionalSection } from './sections/ProfessionalSection'
 import { RelationsSection } from './sections/RelationsSection'
 import { UpcomingDatesSection } from './sections/UpcomingDatesSection'
@@ -65,6 +66,13 @@ export function registerDefaultContactDetailsSections() {
     id: 'biography',
     component: BiographySection,
     order: 70,
+    layout: 'full',
+  })
+
+  registry.register({
+    id: 'keep_in_touch',
+    component: KeepInTouchSection,
+    order: 80,
     layout: 'full',
   })
 }

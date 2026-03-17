@@ -45,7 +45,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl space-y-6 py-6">
+    <div className="container mx-auto max-w-5xl space-y-6 py-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="flex w-full items-center gap-2">
           <Button
@@ -89,13 +89,13 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {sections.map((section) => {
           const Component = section.component
           return (
             <div
               key={section.id}
-              className={section.layout === 'full' ? 'md:col-span-2' : 'md:col-span-1'}
+              className={section.layout === 'full' ? 'lg:col-span-2' : 'lg:col-span-1'}
             >
               <Component contact={contact} />
             </div>
