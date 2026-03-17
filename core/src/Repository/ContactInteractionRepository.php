@@ -34,33 +34,4 @@ class ContactInteractionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Returns the most recent interaction timestamp per contact for all contacts
-     * belonging to the given tenant (user ID).
-     *
-     * Used by NeedsAttentionProvider to compute overdue contacts at query time
-     * without a pre-computed column.
-     *
-     * @return array<int, \DateTimeImmutable|null> contactId → last interaction timestamp (or null if none)
-     */
-    public function findLastInteractionDatesByTenant(int $tenantId): array
-    {
-        $rows = $this->createQueryBuilder('ci')
-            ->select('IDENTITY(ci.contact) AS contactId, MAX(ci.timestamp) AS lastAt')
-            ->join('ci.contact', 'c')
-            ->where('c.user = :tenantId')
-            ->setParameter('tenantId', $tenantId)
-            ->groupBy('ci.contact')
-            ->getQuery()
-            ->getResult();
-
-        $map = [];
-        foreach ($rows as $row) {
-            $map[(int) $row['contactId']] = $row['lastAt'] !== null
-                ? new \DateTimeImmutable($row['lastAt'])
-                : null;
-        }
-
-        return $map;
-    }
 }

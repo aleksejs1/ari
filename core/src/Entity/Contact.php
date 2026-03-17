@@ -67,6 +67,15 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: "is_granted('ROLE_USER')",
     paginationEnabled: false,
 )]
+#[GetCollection(
+    uriTemplate: '/contacts/needs-attention',
+    name: 'contact_needs_attention',
+    normalizationContext: ['groups' => ['needs_attention:read', 'contact:read']],
+    provider: 'Ari\State\NeedsAttentionProvider',
+    security: "is_granted('ROLE_USER')",
+    paginationEnabled: true,
+    paginationItemsPerPage: 20,
+)]
 #[GetCollection]
 #[Put(
     security: "is_granted('CONTACT_EDIT', object)",
