@@ -284,6 +284,46 @@ class ContactApiTest extends ApiTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    public function testCadenceDaysPatch(): void
+    {
+        $client = static::createClient();
+
+        // 1. Create Contact
+        $response = $client->request('POST', '/api/contacts', [
+            'auth_bearer' => $this->token,
+            'json' => [],
+        ]);
+        $contactIri = $response->toArray()['@id'];
+
+        // 2. Set cadenceDays=90
+        $client->request('PATCH', $contactIri, [
+            'auth_bearer' => $this->token,
+            'json' => ['cadenceDays' => 90],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(200);
+        self::assertJsonContains(['cadenceDays' => 90]);
+
+        // 3. Clear cadenceDays (set to null)
+        $client->request('PATCH', $contactIri, [
+            'auth_bearer' => $this->token,
+            'json' => ['cadenceDays' => null],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(200);
+        // API Platform omits null fields; absent key confirms the value was cleared
+        $fetched = $client->request('GET', $contactIri, ['auth_bearer' => $this->token])->toArray();
+        self::assertArrayNotHasKey('cadenceDays', $fetched);
+
+        // 4. Negative cadence is invalid
+        $client->request('PATCH', $contactIri, [
+            'auth_bearer' => $this->token,
+            'json' => ['cadenceDays' => -1],
+            'headers' => ['Content-Type' => 'application/merge-patch+json'],
+        ]);
+        self::assertResponseStatusCodeSame(422);
+    }
+
     public function testSortContactsByFirstName(): void
     {
         $client = static::createClient();
