@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ari\Repository;
 
+use Ari\Entity\ContactPlaybook;
 use Ari\Entity\ContactTask;
 use Ari\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -56,5 +59,51 @@ class ContactTaskRepository extends ServiceEntityRepository
             ->getArrayResult();
 
         return array_map(static fn (array $row): int => $row['contactId'], $rows);
+    }
+
+    /**
+     * Returns the first active (pending, snoozed, awaiting_reflection) task for a given playbook series.
+     */
+    public function findActiveTaskForSeries(ContactPlaybook $playbook, string $seriesKey): ?ContactTask
+    {
+        return $this->findOneBy([
+            'playbook' => $playbook,
+            'seriesKey' => $seriesKey,
+            'status' => [ContactTask::STATUS_PENDING, ContactTask::STATUS_SNOOZED, ContactTask::STATUS_AWAITING_REFLECTION],
+        ]);
+    }
+
+    /**
+     * Returns the most recently created task for a given playbook series (any status).
+     */
+    public function findLastTaskForSeries(ContactPlaybook $playbook, string $seriesKey): ?ContactTask
+    {
+        /** @var ContactTask|null */
+        return $this->createQueryBuilder('ct')
+            ->where('ct.playbook = :playbook')
+            ->andWhere('ct.seriesKey = :seriesKey')
+            ->setParameter('playbook', $playbook)
+            ->setParameter('seriesKey', $seriesKey)
+            ->orderBy('ct.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Counts completed tasks for a given playbook series.
+     */
+    public function countCompletedForSeries(ContactPlaybook $playbook, string $seriesKey): int
+    {
+        return (int) $this->createQueryBuilder('ct')
+            ->select('COUNT(ct.id)')
+            ->where('ct.playbook = :playbook')
+            ->andWhere('ct.seriesKey = :seriesKey')
+            ->andWhere('ct.status = :status')
+            ->setParameter('playbook', $playbook)
+            ->setParameter('seriesKey', $seriesKey)
+            ->setParameter('status', ContactTask::STATUS_COMPLETED)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

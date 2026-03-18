@@ -76,3 +76,8 @@ services:
     # Ensure UserOwnerProcessor is available for plugins (loaded dynamically)
     Ari\State\UserOwnerProcessor:
         public: true
+
+    Ari\Service\PlaybookTemplateRegistry:
+        factory: ['Ari\Service\PlaybookTemplateRegistry', 'fromFile']
+        arguments:
+            $path: '%kernel.project_dir%/config/playbook_templates.php'

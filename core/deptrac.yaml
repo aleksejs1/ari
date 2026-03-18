@@ -82,13 +82,23 @@ deptrac:
         - type: classNameRegex
           value: '#^Ari\\Kernel$#'
 
+    # ── Domain helpers ──────────────────────────────────────
+    - name: Exception
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Exception\\.*#'
+    - name: ValueObject
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\ValueObject\\.*#'
+
     # ── External ────────────────────────────────────────────
     - name: Vendor
       collectors:
         - type: bool
           must:
             - type: classNameRegex
-              value: '#^(Symfony|Doctrine|ApiPlatform|Gesdinet|Intervention|League|Psr|Composer|Sabre)\\.*#'
+              value: '#^(Symfony|Doctrine|ApiPlatform|Gesdinet|Intervention|League|Psr|Composer|Sabre|Monolog|Lexik)\\.*#'
 
   ruleset:
     # ── Domain ──────────────────────────────────────────────
@@ -116,10 +126,12 @@ deptrac:
     Service:
       - Dto
       - Entity
+      - Exception
       - Kernel         # getProjectDir(), ARI_VERSION constant
       - Message        # Dispatching Messenger messages
       - Repository
       - Security
+      - ValueObject
       - Vendor
       - Doctrine
     MessageHandler:
@@ -135,6 +147,7 @@ deptrac:
       - Vendor
     EventSubscriber:
       - Entity
+      - Exception
       - Security
       - Service
       - Vendor
@@ -142,6 +155,7 @@ deptrac:
     # ── Presentation / API ──────────────────────────────────
     Controller:
       - Entity
+      - Exception
       - Form
       - Security
       - Service
@@ -149,6 +163,7 @@ deptrac:
       - ApiResource
     Command:
       - Entity
+      - Exception
       - Service
       - Vendor
       - ApiResource

@@ -1,5 +1,7 @@
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 
+import { PlaybookSection } from '../components/PlaybookSection'
+
 import { BiographySection } from './sections/BiographySection'
 import { ContactInfoSection } from './sections/ContactInfoSection'
 import { ContactNamesSection } from './sections/ContactNamesSection'
@@ -73,6 +75,13 @@ export function registerDefaultContactDetailsSections() {
     id: 'keep_in_touch',
     component: KeepInTouchSection,
     order: 80,
+    layout: 'full',
+  })
+
+  registry.register({
+    id: 'playbook',
+    component: PlaybookSection,
+    order: 85,
     layout: 'full',
   })
 }

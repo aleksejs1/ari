@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Ari\Entity\ContactTask;
+use Ari\Service\ContactTaskGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -15,10 +18,8 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  * Responsibilities:
  * - Validates status transitions against the allowed state machine.
  * - Applies side-effects: completedAt, reflectionDueAt, snoozedUntil validation.
- * - For offline tasks completing → transitions to awaiting_reflection.
- *
- * Note: Next-task generation (ContactTaskGeneratorService) is Phase 2.
- * This processor only handles the status transition and its direct side-effects.
+ * - For offline tasks completing from pending → transitions to awaiting_reflection.
+ * - For awaiting_reflection → completed, marks completed and schedules the next task.
  *
  * @implements ProcessorInterface<ContactTask, ContactTask>
  */
@@ -27,6 +28,7 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
     public function __construct(
         private EntityManagerInterface $em,
         private RequestStack $requestStack,
+        private ContactTaskGeneratorService $generator,
     ) {
     }
 
@@ -70,7 +72,7 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
         // PHPStan narrows $to to the union of all values in ALLOWED_TRANSITIONS at this point,
         // so no default arm is needed (and adding one would cause a match.alwaysTrue notice).
         match ($to) {
-            ContactTask::STATUS_COMPLETED => $this->handleComplete($task),
+            ContactTask::STATUS_COMPLETED => $this->handleComplete($task, $from),
             ContactTask::STATUS_SNOOZED => $this->handleSnooze($task),
             ContactTask::STATUS_ARCHIVED, ContactTask::STATUS_PENDING => $task->setStatus($to),
         };
@@ -83,16 +85,20 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
         }
     }
 
-    private function handleComplete(ContactTask $task): void
+    private function handleComplete(ContactTask $task, string $from): void
     {
-        if ($task->isOffline()) {
-            // Offline tasks wait for morning reflection instead of completing immediately.
+        if (ContactTask::STATUS_PENDING === $from && $task->isOffline()) {
+            // Offline tasks coming from pending wait for morning reflection.
             $task->setStatus(ContactTask::STATUS_AWAITING_REFLECTION);
             $task->setReflectionDueAt($this->computeReflectionDueAt());
-        } else {
-            $task->setStatus(ContactTask::STATUS_COMPLETED);
-            $task->setCompletedAt(new \DateTimeImmutable());
+
+            return;
         }
+
+        // pending→completed (online task) or awaiting_reflection→completed
+        $task->setStatus(ContactTask::STATUS_COMPLETED);
+        $task->setCompletedAt(new \DateTimeImmutable());
+        $this->generator->generateNextTask($task);
     }
 
     private function handleSnooze(ContactTask $task): void

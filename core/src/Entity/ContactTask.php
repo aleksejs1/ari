@@ -12,6 +12,7 @@ use Ari\Repository\ContactTaskRepository;
 use Ari\State\ContactTaskProcessor;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
+use Ari\Entity\ContactPlaybook;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -21,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ['tenant_id', 'status', 'due_date'], name: 'idx_contact_task_tenant_status_due')]
 #[ORM\Index(columns: ['contact_id'], name: 'idx_contact_task_contact')]
+#[ORM\Index(columns: ['playbook_id'], name: 'idx_contact_task_playbook')]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['contact_task:read']],
@@ -104,6 +106,10 @@ class ContactTask implements TenantAwareInterface
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Contact $contact = null;
+
+    #[ORM\ManyToOne(targetEntity: ContactPlaybook::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?ContactPlaybook $playbook = null;
 
     #[Groups(['contact_task:read'])]
     #[Assert\NotBlank]
@@ -302,5 +308,17 @@ class ContactTask implements TenantAwareInterface
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function getPlaybook(): ?ContactPlaybook
+    {
+        return $this->playbook;
+    }
+
+    public function setPlaybook(?ContactPlaybook $playbook): static
+    {
+        $this->playbook = $playbook;
+
+        return $this;
     }
 }

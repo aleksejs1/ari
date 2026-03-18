@@ -251,5 +251,68 @@
       "me": "I reached out",
       "them": "They reached out"
     }
+  },
+  "playbook": {
+    "addPlaybook": "Add Playbook",
+    "noPlaybook": "No playbook active",
+    "noPlaybookCta": "Start a playbook to stay intentional with this person.",
+    "removeConfirm": "This will archive all pending tasks. Continue?",
+    "pause": "Pause playbook",
+    "resume": "Resume playbook",
+    "remove": "Remove playbook",
+    "change": "Change playbook",
+    "paused": "Paused",
+    "error": "Something went wrong",
+    "goal": {
+      "maintain": "Maintain",
+      "deepen": "Deepen",
+      "reignite": "Reignite",
+      "rekindle": "Rekindle",
+      "appreciate": "Appreciate"
+    },
+    "wizard": {
+      "goalTitle": "What's your goal for this relationship?",
+      "presetTitle": "Choose a playbook",
+      "back": "Back",
+      "submit": "Start Playbook",
+      "submitting": "Starting...",
+      "taskTypes": "Tasks: {{types}}"
+    },
+    "why": {
+      "title": "Why does this relationship matter to you?",
+      "freeTextPlaceholder": "Say more (optional)...",
+      "tags": {
+        "inspires_me": "They inspire me",
+        "we_have_history": "We have history",
+        "want_to_be_closer": "I want to be closer",
+        "dont_want_to_lose_touch": "I don't want to lose touch",
+        "want_to_give_back": "I want to give back"
+      }
+    },
+    "tasks": {
+      "title": "Playbook",
+      "empty": "You're all caught up. Your next task will appear soon.",
+      "complete": "Mark done",
+      "snooze": "Snooze",
+      "skip": "Skip task",
+      "reflect": "Reflect",
+      "snoozeConfirm": "Snooze",
+      "snoozedUntil": "Snoozed until {{date}}",
+      "dueDate": "Due {{date}}",
+      "awaitingReflection": "Awaiting reflection",
+      "error": "Action failed",
+      "type": {
+        "call": "Phone Call",
+        "video_call": "Video Call",
+        "visit": "Visit in Person",
+        "text_message": "Send a Text",
+        "date_night": "Date Night",
+        "surprise": "Do a Surprise",
+        "shared_activity": "Shared Activity",
+        "share_insight": "Share an Insight",
+        "checkin_question": "Check-in Question",
+        "restart_message": "Restart Message"
+      }
+    }
   }
 }
