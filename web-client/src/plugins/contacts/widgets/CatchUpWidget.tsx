@@ -17,13 +17,14 @@ function ContactRow({ contact }: { contact: NeedsAttentionContact }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const createMutation = useCreateInteraction()
 
-  const contactId = contact['@id']?.split('/').pop() ?? contact.id?.toString()
+  // The needs-attention DTO returns a blank-node @id, so build the real IRI from the numeric id.
+  const contactIri = contact.id ? `/api/contacts/${contact.id}` : null
 
   return (
     <li className="flex items-center gap-3">
       <div className="min-w-0 flex-1">
         <Link
-          to={`/contacts/${contactId}`}
+          to={`/contacts/${contact.id}`}
           className="truncate text-sm font-medium hover:underline"
         >
           {contact.displayName ?? '—'}
@@ -43,11 +44,11 @@ function ContactRow({ contact }: { contact: NeedsAttentionContact }) {
       >
         {t('interactions.log')}
       </button>
-      {contact['@id'] ? (
+      {contactIri ? (
         <InteractionEditDrawer
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
-          contactIri={contact['@id']}
+          contactIri={contactIri}
           interaction={null}
           onSave={async (data) => {
             await createMutation.mutateAsync(data)
