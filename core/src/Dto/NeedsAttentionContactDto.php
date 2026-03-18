@@ -8,9 +8,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
 /**
  * DTO returned by GET /api/contacts/needs-attention.
  *
- * Wraps a Contact entity and adds two computed fields:
+ * Wraps a Contact entity and adds three computed fields:
  * - lastInteractionAt — timestamp of the most recent interaction, or null if none
  * - overdueDays       — how many days past the cadence the contact is
+ * - hasOverdueTask    — true when the contact has ≥1 overdue pending ContactTask
  *
  * The normalization groups ['needs_attention:read', 'contact:read'] on the
  * endpoint cause API Platform to serialize both this DTO's own properties
@@ -26,6 +27,9 @@ final class NeedsAttentionContactDto
         public readonly ?\DateTimeImmutable $lastInteractionAt,
         #[Groups(['needs_attention:read'])]
         public readonly int $overdueDays,
+        /** True when the contact has at least one overdue pending ContactTask. */
+        #[Groups(['needs_attention:read'])]
+        public readonly bool $hasOverdueTask = false,
     ) {
     }
 
