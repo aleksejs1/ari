@@ -38,5 +38,6 @@ framework:
 
             # Route your messages to the transports
             'Ari\Message\ImportGoogleContactMessage': async
+            'Ari\Message\ImportSmsBackupMessage': async
             'Ari\Message\GenerateAiSuggestionMessage': ai_async
             'Ari\Message\TriggerBatchAiAnalysisMessage': ai_async
