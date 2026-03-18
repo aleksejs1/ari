@@ -188,6 +188,27 @@ The system can reconstruct the complete state of a contact at any point in its h
 - **Backward Compatibility**: Supports both old-format UPDATE logs (with `changes` only) and new-format logs (with full `snapshotAfter`).
 - **Collections**: The snapshot includes the contact itself and all child entity collections: `contactNames`, `contactPhoneNumbers`, `contactDates`, `contactEmailAddresses`, `contactAddresses`, `contactOrganizations`, `contactBiographies`, `contactInteractions`, `contactRelations`.
 
+#### Interactions & Cadence
+The `ContactInteraction` entity tracks individual communication events between the user and a contact. Each interaction has a user-supplied `timestamp` ("when did this happen?") and a system-generated `createdAt` ("when was this record created?") — both fields are always present.
+
+Extended fields added in the Interactions & Cadence phase:
+- `initiator` (`string|null`, enum: `me` / `them`) — who reached out first.
+- `tags` (`string[]|null`, JSON column) — free-form labels (max 20 items, each ≤ 64 chars).
+
+`contactInteractions` is included in the `contact:read` serialization group and therefore appears in Point-in-Time Snapshots. The collection is capped at 200 items per contact in the `contact:read` response to bound response size; the full history is always available via `GET /api/contact_interactions?contact={iri}`.
+
+The `Contact` entity carries a `cadenceDays` field (`int|null`) — the user's target interval in days between interactions. `cadenceDays` is patched via `PATCH /api/contacts/{id}` (merge-patch) with validation `Assert\Positive` (must be ≥ 1 or null).
+
+#### NeedsAttentionProvider
+`GET /api/contacts/needs-attention` returns contacts whose last interaction is overdue relative to their cadence. The endpoint is implemented as a custom API Platform State Provider (`NeedsAttentionProvider`) backed by `NeedsAttentionRepository`.
+
+Key design decisions:
+- **No pre-computed field**: Overdue status is calculated at query time using `MAX(timestamp)` per contact in a sub-query. A covering index `(contact_id, timestamp DESC)` on `contact_interaction` keeps the aggregation efficient even with thousands of interactions per tenant.
+- **Route priority**: The literal path segment `needs-attention` takes precedence over the `{id: \d+}` pattern — no route conflict with `GET /api/contacts/{id}`.
+- **Response shape**: Returns `NeedsAttentionContactDto` objects that extend the standard `Contact` serialization with two extra fields: `lastInteractionAt` (nullable ISO 8601 string) and `overdueDays` (integer). When `lastInteractionAt` is null (contact was never interacted with), `overdueDays` equals `cadenceDays` — a documented sentinel meaning "maximally overdue regardless of when the contact was added".
+- **Sorting**: Results are ordered by `overdueDays DESC` so the most neglected contacts appear first. Contacts never interacted with sort at the top within the same cadence bucket.
+- **Tenant isolation**: Relies solely on `TenantFilter` (standard for list endpoints — see §1 critical invariant). No Voter is required because no single entity object is loaded.
+
 ### 5. Notification System
 Entities: `NotificationRule`, `NotificationQueue`, `NotificationPolicy`, `NotificationChannel`.
 - **Logic**: Rules define when notifications are sent.
