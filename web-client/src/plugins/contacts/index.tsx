@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
@@ -13,14 +14,14 @@ import { PageLoader } from '../settings/components/PageLoader'
 
 import { ContactTimeline } from './components/ContactTimeline'
 import { registerDefaultContactDetailsSections } from './details/defaults_details'
+import en from './locales/en.json'
+import ru from './locales/ru.json'
 import { registerDefaultContactFormSections } from './defaults_form'
 
+const CatchUpWidget = lazy(() => import('./widgets/CatchUpWidget'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'))
 const ContactTimelinePage = lazy(() => import('./pages/ContactTimelinePage'))
-
-import en from './locales/en.json'
-import ru from './locales/ru.json'
 
 export class ContactsPlugin extends BasePlugin {
   name = 'contacts'
@@ -105,5 +106,17 @@ export class ContactsPlugin extends BasePlugin {
     // 4. Register Registry Sections
     registerDefaultContactFormSections()
     registerDefaultContactDetailsSections()
+
+    // 5. Register Dashboard Widget
+    widgetRegistry.register({
+      id: 'catchUp',
+      title: 'Catch Up',
+      component: () => (
+        <Suspense fallback={null}>
+          <CatchUpWidget />
+        </Suspense>
+      ),
+      defaultDimensions: { w: 4, h: 6 },
+    })
   }
 }

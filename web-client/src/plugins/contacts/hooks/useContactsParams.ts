@@ -6,6 +6,7 @@ export function useContactsParams() {
   const page = Number(searchParams.get('page')) || 1
   const group = searchParams.get('group') ?? undefined
   const search = searchParams.get('search') ?? undefined
+  const needsAttention = searchParams.get('needsAttention') === 'true'
 
   const [sorting, setSorting] = useState<{ id: string; desc: boolean } | undefined>(undefined)
 
@@ -36,6 +37,7 @@ export function useContactsParams() {
     page,
     group,
     search,
+    needsAttention,
     sorting,
     handleSearch,
     handleSort,

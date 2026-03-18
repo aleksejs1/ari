@@ -1,3 +1,5 @@
+import { formatDistanceToNow, parseISO } from 'date-fns'
+
 import { contactColumnRegistry } from '@/lib/contacts/ContactColumnRegistry'
 
 import { ContactActionsCell } from './cells/ContactActionsCell'
@@ -104,6 +106,61 @@ export function registerDefaultColumns() {
         return <ContactActionsCell contact={row.original} onEdit={onEdit} />
       },
       meta: { titleKey: 'common.actions' },
+    }),
+  })
+
+  contactColumnRegistry.register({
+    id: 'lastInteraction',
+    label: 'Last Interaction',
+    definition: () => ({
+      id: 'lastInteraction',
+      header: () => <LocalizedHeader name="columns.lastInteraction" />,
+      cell: ({ row }) => {
+        const interactions = row.original.contactInteractions
+        if (!interactions || interactions.length === 0) {
+          return <span className="text-sm text-muted-foreground">—</span>
+        }
+        const sorted = [...interactions].sort(
+          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+        )
+        const lastTs = sorted[0].timestamp
+        const cadence = row.original.cadenceDays
+        let colorClass = ''
+        if (cadence !== null && cadence !== undefined) {
+          const daysSince = (Date.now() - parseISO(lastTs).getTime()) / 86_400_000
+          const ratio = daysSince / cadence
+          if (ratio >= 1) {
+            colorClass = 'text-destructive'
+          } else if (ratio >= 0.7) {
+            colorClass = 'text-yellow-600 dark:text-yellow-400'
+          } else {
+            colorClass = 'text-green-600 dark:text-green-400'
+          }
+        }
+        return (
+          <span className={`text-sm ${colorClass || 'text-muted-foreground'}`}>
+            {formatDistanceToNow(parseISO(lastTs), { addSuffix: true })}
+          </span>
+        )
+      },
+      meta: { titleKey: 'contacts.columns.lastInteraction' },
+    }),
+  })
+
+  contactColumnRegistry.register({
+    id: 'cadence',
+    label: 'Cadence',
+    definition: () => ({
+      id: 'cadence',
+      header: () => <LocalizedHeader name="columns.cadence" />,
+      cell: ({ row }) => {
+        const cadence = row.original.cadenceDays
+        if (cadence === null || cadence === undefined) {
+          return <span className="text-sm text-muted-foreground">—</span>
+        }
+        return <span className="text-sm text-muted-foreground">{cadence}d</span>
+      },
+      meta: { titleKey: 'contacts.columns.cadence' },
     }),
   })
 }

@@ -207,6 +207,18 @@
     "localeLabel": "Имя на {{locale}}",
     "typeLabel": "{{type}}"
   },
+  "columns": {
+    "lastInteraction": "Последнее взаимодействие",
+    "cadence": "Периодичность"
+  },
+  "widgets": {
+    "catchUp": {
+      "title": "Поддержание связи",
+      "never": "Никогда",
+      "allCaughtUp": "Все контакты в порядке!",
+      "viewAll": "Все просроченные контакты"
+    }
+  },
   "interactions": {
     "sectionTitle": "Поддержание связи",
     "log": "Записать взаимодействие",

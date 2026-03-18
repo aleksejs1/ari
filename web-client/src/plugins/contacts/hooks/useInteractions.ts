@@ -1,7 +1,37 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
-import type { ContactInteraction } from '@/types/models'
+import type { ContactInteraction, NeedsAttentionContact } from '@/types/models'
+
+import type { HydraCollection } from '../utils'
+
+export function useNeedsAttention(limit = 7) {
+  return useQuery({
+    queryKey: ['contacts', 'needsAttention', limit],
+    queryFn: async () => {
+      const response = await api.get<HydraCollection<NeedsAttentionContact>>(
+        `/contacts/needs-attention?limit=${limit}`,
+      )
+      return response.data['member'] ?? []
+    },
+    staleTime: 60_000,
+  })
+}
+
+export function useNeedsAttentionPaged(page = 1, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['contacts', 'needsAttention', 'paged', page],
+    queryFn: async () => {
+      const response = await api.get<HydraCollection<NeedsAttentionContact>>(
+        `/contacts/needs-attention?page=${page}`,
+      )
+      return response.data
+    },
+    placeholderData: (previousData) => previousData,
+    staleTime: 60_000,
+    ...(options?.enabled !== undefined ? { enabled: options.enabled } : {}),
+  })
+}
 
 export function useCreateInteraction() {
   const queryClient = useQueryClient()

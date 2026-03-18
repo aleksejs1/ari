@@ -27,6 +27,11 @@ export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
   contactInteractions?: ContactInteraction[]
 }
 
+export type NeedsAttentionContact = Contact & {
+  lastInteractionAt: string | null
+  overdueDays: number
+}
+
 export type ContactAvatar = components['schemas']['ContactAvatar.jsonld-contact_avatar.read']
 export type ContactName = components['schemas']['ContactName.jsonld-contact.read']
 export type ContactDate = components['schemas']['ContactDate.jsonld-contact.read'] & {

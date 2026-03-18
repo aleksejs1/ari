@@ -5,12 +5,22 @@ import { parseTableSettings } from './useTableSettings'
 describe('parseTableSettings', () => {
   it('returns defaults for empty string', () => {
     const result = parseTableSettings('')
-    expect(result).toEqual({ visibility: {}, order: [], typedColumns: [], viewMode: 'table' })
+    expect(result).toEqual({
+      visibility: { lastInteraction: false, cadence: false },
+      order: [],
+      typedColumns: [],
+      viewMode: 'table',
+    })
   })
 
   it('returns defaults for invalid JSON', () => {
     const result = parseTableSettings('not-json')
-    expect(result).toEqual({ visibility: {}, order: [], typedColumns: [], viewMode: 'table' })
+    expect(result).toEqual({
+      visibility: { lastInteraction: false, cadence: false },
+      order: [],
+      typedColumns: [],
+      viewMode: 'table',
+    })
   })
 
   it('parses a full settings object', () => {

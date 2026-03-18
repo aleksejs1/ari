@@ -24,6 +24,15 @@ vi.mock('../hooks/useContactsParams', () => ({
   useContactsParams: vi.fn(),
 }))
 
+vi.mock('../hooks/useInteractions', () => ({
+  useNeedsAttentionPaged: vi.fn().mockReturnValue({
+    data: undefined,
+    isLoading: false,
+    isPlaceholderData: false,
+    isError: false,
+  }),
+}))
+
 // Mock components
 vi.mock('../components/ContactsHeader', () => ({
   ContactsHeader: ({ onSearchChange, onCreate }: any) => (
@@ -65,6 +74,7 @@ describe('ContactsPage', () => {
     page: 1,
     group: undefined,
     search: undefined,
+    needsAttention: false,
     sorting: undefined,
     handleSearch: vi.fn(),
     handleSort: vi.fn(),

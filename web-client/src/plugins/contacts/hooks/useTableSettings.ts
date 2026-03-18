@@ -12,7 +12,12 @@ export interface TableSettings {
   viewMode: 'table' | 'cards'
 }
 
-const DEFAULTS: TableSettings = { visibility: {}, order: [], typedColumns: [], viewMode: 'table' }
+const DEFAULTS: TableSettings = {
+  visibility: { lastInteraction: false, cadence: false },
+  order: [],
+  typedColumns: [],
+  viewMode: 'table',
+}
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return !!v && typeof v === 'object' && !Array.isArray(v)

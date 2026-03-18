@@ -207,6 +207,18 @@
     "localeLabel": "Name in {{locale}}",
     "typeLabel": "{{type}}"
   },
+  "columns": {
+    "lastInteraction": "Last Interaction",
+    "cadence": "Cadence"
+  },
+  "widgets": {
+    "catchUp": {
+      "title": "Catch Up",
+      "never": "Never",
+      "allCaughtUp": "You're all caught up!",
+      "viewAll": "View all overdue contacts"
+    }
+  },
   "interactions": {
     "sectionTitle": "Keep in Touch",
     "log": "Log Interaction",

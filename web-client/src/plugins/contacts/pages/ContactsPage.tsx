@@ -11,20 +11,49 @@ import { ContactsHeader } from '../components/ContactsHeader'
 import { ContactsPagination } from '../components/ContactsPagination'
 import { ContactsTable } from '../components/ContactsTable'
 import { useContactsParams } from '../hooks/useContactsParams'
+import { useNeedsAttentionPaged } from '../hooks/useInteractions'
 import { getHydraMember, getHydraPagination, useContacts } from '../useContacts'
 
 // Ensure default columns are registered
 registerDefaultColumns()
 
+interface PageDataParams {
+  page: number
+  needsAttention: boolean
+  group?: string
+  search?: string
+  sorting?: { id: string; desc: boolean }
+}
+
+function usePageData({ page, needsAttention, group, search, sorting }: PageDataParams) {
+  const filters = useMemo(() => {
+    const f: { group?: string; search?: string } = {}
+    if (group) {
+      f.group = group
+    }
+    if (search) {
+      f.search = search
+    }
+    return f
+  }, [group, search])
+
+  const regularQuery = useContacts(page, filters, sorting, { enabled: !needsAttention })
+  const needsAttentionQuery = useNeedsAttentionPaged(page, { enabled: needsAttention })
+  return needsAttention ? needsAttentionQuery : regularQuery
+}
+
 export default function ContactsPage() {
-  const { page, group, search, sorting, handleSearch, handleSort, setPage } = useContactsParams()
+  const { page, group, search, needsAttention, sorting, handleSearch, handleSort, setPage } =
+    useContactsParams()
   const { t } = useTranslation('contacts')
 
-  const { data, isLoading, isPlaceholderData, isError } = useContacts(
+  const { data, isLoading, isPlaceholderData, isError } = usePageData({
     page,
-    { ...(group ? { group } : {}), ...(search ? { search } : {}) },
+    needsAttention,
+    group,
+    search,
     sorting,
-  )
+  })
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
@@ -63,7 +92,7 @@ export default function ContactsPage() {
               columns={columns}
               onEdit={handleEdit}
               onSort={handleSort}
-              {...(sorting ? { sorting } : {})}
+              sorting={sorting}
             />
           </ErrorBoundary>
         </div>
