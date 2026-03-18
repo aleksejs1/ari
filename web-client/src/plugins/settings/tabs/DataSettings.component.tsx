@@ -9,6 +9,8 @@ import type { SettingConfig } from '@/lib/settings/types'
 
 import { useExportContacts, useImportContacts } from '@/plugins/contacts/useContacts'
 
+import { PhoneBackupImportSection } from '../components/PhoneBackupImportSection'
+
 interface SkippedContact {
   name: string
   email: string
@@ -160,6 +162,10 @@ export function DataSettings() {
         ref={fileInputRef}
         onChange={handleImport}
       />
+
+      <hr className="border-border" />
+
+      <PhoneBackupImportSection />
     </div>
   )
 }

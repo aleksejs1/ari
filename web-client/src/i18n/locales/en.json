@@ -119,6 +119,30 @@
     "importPartial": "Imported {{imported}} contacts. {{skipped}} contacts were skipped due to your plan limit.",
     "importQuotaExceeded": "Contact limit reached. Delete some contacts or upgrade your plan to import more.",
     "importSkippedContacts": "Skipped contacts:",
+    "phoneBackup": {
+      "title": "Phone Backup Import",
+      "description": "Import calls and SMS history from SMS Backup & Restore for Android.",
+      "dropzone": "Drop XML files here or click to browse",
+      "dropzoneHint": "Accepts sms-*.xml and calls-*.xml files",
+      "dropzoneHelper": "Export your call and SMS history from SMS Backup & Restore on Android and upload the XML files here.",
+      "options": {
+        "unknownNumbers": "Unknown contacts",
+        "unknownNumbers.skip": "Skip",
+        "unknownNumbers.create": "Create new contact",
+        "nameConflict": "Name conflict",
+        "nameConflict.keep": "Keep existing name",
+        "nameConflict.add": "Add as alternative name",
+        "nameConflict.replace": "Replace with backup name",
+        "skipAlphanumeric": "Skip service senders (Google, Tele2, etc.)",
+        "duplicateStrategy": "Duplicate handling",
+        "duplicateStrategy.skip": "Skip duplicates",
+        "duplicateStrategy.create": "Allow duplicates"
+      },
+      "submit": "Import",
+      "processing": "Processing…",
+      "queued": "Import queued. You'll receive a notification when complete.",
+      "error": "Import failed"
+    },
     "ai": {
       "gdprTitle": "Data Privacy Notice",
       "gdprDescription": "When AI suggestions are enabled, contact names are sent to a third-party provider for processing. Ensure this complies with your organization's privacy policy and GDPR requirements. For full privacy, use a local provider (Ollama).",

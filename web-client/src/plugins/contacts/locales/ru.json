@@ -249,6 +249,7 @@
       "call": "Звонок",
       "email": "Email",
       "meeting": "Встреча",
+      "message": "Сообщение",
       "other": "Другое"
     },
     "initiators": {

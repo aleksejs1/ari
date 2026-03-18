@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/com
 import { Textarea } from '@/components/ui/textarea'
 import type { ContactInteraction } from '@/types/models'
 
-const INTERACTION_TYPES = ['call', 'email', 'meeting', 'other'] as const
+const INTERACTION_TYPES = ['call', 'email', 'meeting', 'message', 'other'] as const
 const INITIATORS = ['me', 'them'] as const
 
 function toDateInputValue(isoString: string): string {

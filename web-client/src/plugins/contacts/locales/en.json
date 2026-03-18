@@ -244,6 +244,7 @@
       "call": "Call",
       "email": "Email",
       "meeting": "Meeting",
+      "message": "Message",
       "other": "Other"
     },
     "initiators": {
