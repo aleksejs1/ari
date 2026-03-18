@@ -188,4 +188,20 @@ final class SmsBackupImportControllerTest extends AbstractApiTestCase
 
         self::assertResponseStatusCodeSame(422);
     }
+
+    public function testOversizedFileReturns422(): void
+    {
+        $client = static::createClient();
+        // Just over the 10 MB limit (10 * 1024 * 1024 + 1 bytes).
+        $content = str_repeat('a', 10 * 1024 * 1024 + 1);
+        $file = $this->makeUploadedFile($content, 'huge.xml');
+
+        $client->request('POST', '/api/sms_backup/import', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->token],
+            'extra' => ['files' => ['files' => [$file]]],
+        ]);
+
+        self::assertResponseStatusCodeSame(422);
+        self::assertJsonContains(['detail' => 'File "huge.xml" exceeds the 10 MB size limit.']);
+    }
 }

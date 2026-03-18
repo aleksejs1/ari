@@ -64,6 +64,19 @@ describe('PhoneBackupImportSection', () => {
     expect(screen.getByText('settings.phoneBackup.options.duplicateStrategy')).toBeInTheDocument()
   })
 
+  it('renders option controls after file selection', async () => {
+    renderComponent()
+
+    const input = screen.getByTestId('phone-backup-file-input')
+    await act(async () => {
+      fireEvent.change(input, { target: { files: [makeXmlFile()] } })
+    })
+
+    expect(screen.getByText('settings.phoneBackup.options.unknownNumbers')).toBeInTheDocument()
+    expect(screen.getByText('settings.phoneBackup.options.nameConflict')).toBeInTheDocument()
+    expect(screen.getByText('settings.phoneBackup.options.duplicateStrategy')).toBeInTheDocument()
+  })
+
   it('disables the submit button before a file is selected', () => {
     renderComponent()
 
@@ -118,6 +131,37 @@ describe('PhoneBackupImportSection', () => {
     })
 
     expect(screen.getByText('settings.phoneBackup.queued')).toBeInTheDocument()
+  })
+
+  it('hides the success banner automatically after 10 seconds', async () => {
+    vi.useFakeTimers()
+    try {
+      vi.mocked(useSmsBackupImportModule.useSmsBackupImport).mockReturnValue({
+        mutate: vi.fn((_vars, opts) => opts?.onSuccess?.({ status: 'queued', message: 'ok' })),
+        isPending: false,
+      } as any)
+
+      renderComponent()
+
+      await act(async () => {
+        fireEvent.change(screen.getByTestId('phone-backup-file-input'), {
+          target: { files: [makeXmlFile()] },
+        })
+      })
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('phone-backup-import-button'))
+      })
+
+      expect(screen.getByTestId('phone-backup-import-success')).toBeInTheDocument()
+
+      act(() => {
+        vi.advanceTimersByTime(10_000)
+      })
+
+      expect(screen.queryByTestId('phone-backup-import-success')).not.toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('clears the file selection and resets options after success', async () => {

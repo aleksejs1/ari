@@ -4,6 +4,7 @@ namespace Ari\Tests\Unit\Service;
 
 use Ari\Dto\SmsBackupImportOptions;
 use Ari\Entity\Contact;
+use Ari\Entity\ContactName;
 use Ari\Entity\User;
 use Ari\Repository\ContactInteractionRepository;
 use Ari\Service\Entitlement\EntitlementServiceInterface;
@@ -12,6 +13,7 @@ use Ari\Service\SmsBackupImportService;
 use Ari\ValueObject\ParsedRecord;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -290,6 +292,121 @@ final class SmsBackupImportServiceTest extends TestCase
 
         self::assertSame(0, $result->smsThreadsImported);
         self::assertSame(1, $result->recordsSkipped);
+    }
+
+    // ── Name conflict handling ────────────────────────────────────────────────
+
+    /**
+     * Builds a tracking EM mock that records every entity passed to persist().
+     *
+     * @param array<array-key, int> $phoneMap
+     * @param list<ContactName>     $queryResult  entities returned by the DQL query (nameConflict=replace)
+     * @return array{0: EntityManagerInterface, 1: \ArrayObject<int, object>}
+     */
+    private function buildEmWithTracking(array $phoneMap, array $queryResult = []): array
+    {
+        $rows = [];
+        foreach ($phoneMap as $normalized => $id) {
+            $rows[] = ['value' => (string) $normalized, 'id' => $id];
+        }
+
+        $conn = self::createStub(Connection::class);
+        $conn->method('fetchAllAssociative')->willReturn($rows);
+
+        /** @var \ArrayObject<int, object> $persisted */
+        $persisted = new \ArrayObject();
+
+        $em = self::createStub(EntityManagerInterface::class);
+        $em->method('getConnection')->willReturn($conn);
+        $em->method('getReference')->willReturnCallback(
+            static function (string $class, mixed $id): Contact {
+                $contact = new Contact();
+                $ref = new \ReflectionProperty(Contact::class, 'id');
+                $ref->setValue($contact, $id);
+
+                return $contact;
+            }
+        );
+        $em->method('persist')->willReturnCallback(
+            static function (object $entity) use ($persisted): void {
+                $persisted->append($entity);
+            }
+        );
+
+        $queryStub = self::createStub(Query::class);
+        $queryStub->method('setParameter')->willReturnSelf();
+        $queryStub->method('getResult')->willReturn($queryResult);
+        $em->method('createQuery')->willReturn($queryStub);
+
+        return [$em, $persisted];
+    }
+
+    private function buildServiceFromEm(EntityManagerInterface $em): SmsBackupImportService
+    {
+        $interactionRepo = self::createStub(ContactInteractionRepository::class);
+        $interactionRepo->method('findDeduplicationKeysByContactIds')->willReturn([]);
+
+        $entitlements = self::createStub(EntitlementServiceInterface::class);
+        $entitlements->method('checkQuota')->willReturn(EntitlementState::Allowed);
+
+        return new SmsBackupImportService($em, $interactionRepo, $entitlements, new NullLogger());
+    }
+
+    public function testNameConflictKeepDoesNotPersistContactName(): void
+    {
+        [$em, $persisted] = $this->buildEmWithTracking($this->phoneMap);
+        $service = $this->buildServiceFromEm($em);
+        $options = new SmsBackupImportOptions(nameConflict: 'keep');
+        $records = [$this->makeSmsRecord()]; // contactName='Alice'
+
+        $result = $service->import($records, $options, $this->user);
+
+        self::assertSame(1, $result->smsThreadsImported);
+        $contactNames = array_filter($persisted->getArrayCopy(), static fn(object $e): bool => $e instanceof ContactName);
+        self::assertCount(0, $contactNames, 'nameConflict=keep must not persist any ContactName');
+    }
+
+    public function testNameConflictAddPersistsNewContactName(): void
+    {
+        [$em, $persisted] = $this->buildEmWithTracking($this->phoneMap);
+        $service = $this->buildServiceFromEm($em);
+        $options = new SmsBackupImportOptions(nameConflict: 'add');
+        $records = [$this->makeSmsRecord()]; // contactName='Alice'
+
+        $result = $service->import($records, $options, $this->user);
+
+        self::assertSame(1, $result->smsThreadsImported);
+        $contactNames = array_filter($persisted->getArrayCopy(), static fn(object $e): bool => $e instanceof ContactName);
+        self::assertCount(1, $contactNames, 'nameConflict=add must persist exactly one new ContactName');
+        $name = array_values($contactNames)[0];
+        self::assertInstanceOf(ContactName::class, $name);
+        self::assertSame('Alice', $name->getGiven());
+    }
+
+    public function testNameConflictReplaceUpdatesExistingContactName(): void
+    {
+        // Build an existing ContactName whose contact.id matches CONTACT_ID.
+        $existingContact = new Contact();
+        $contactIdProp = new \ReflectionProperty(Contact::class, 'id');
+        $contactIdProp->setValue($existingContact, self::CONTACT_ID);
+        $existingName = new ContactName($existingContact);
+
+        [$em, $persisted] = $this->buildEmWithTracking($this->phoneMap, [$existingName]);
+        $service = $this->buildServiceFromEm($em);
+        $options = new SmsBackupImportOptions(nameConflict: 'replace');
+
+        $record = $this->makeSmsRecord();
+        $record['contactName'] = 'Alice Smith'; // given='Alice', family='Smith'
+        $records = [$record];
+
+        $result = $service->import($records, $options, $this->user);
+
+        self::assertSame(1, $result->smsThreadsImported);
+        // replace updates the existing ContactName in-place; no new ContactName is persisted.
+        $contactNames = array_filter($persisted->getArrayCopy(), static fn(object $e): bool => $e instanceof ContactName);
+        self::assertCount(0, $contactNames, 'nameConflict=replace must not persist a new ContactName when one already exists');
+        self::assertSame('Alice', $existingName->getGiven());
+        self::assertSame('Smith', $existingName->getFamily());
     }
 
     // ── Quota limit during contact creation ──────────────────────────────────
