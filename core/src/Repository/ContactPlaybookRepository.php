@@ -24,6 +24,11 @@ class ContactPlaybookRepository extends ServiceEntityRepository
         return $this->findOneBy(['contact' => $contact, 'status' => ContactPlaybook::STATUS_ACTIVE]);
     }
 
+    public function findActiveOrPausedForContact(Contact $contact): ?ContactPlaybook
+    {
+        return $this->findOneBy(['contact' => $contact, 'status' => [ContactPlaybook::STATUS_ACTIVE, ContactPlaybook::STATUS_PAUSED]]);
+    }
+
     /**
      * Returns IDs of users who have at least one active playbook.
      * Used by SeasonalCheckinCommand (Phase 3b).
