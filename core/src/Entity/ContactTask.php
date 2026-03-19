@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ari\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -13,6 +15,7 @@ use Ari\State\ContactTaskProcessor;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
 use Ari\Entity\ContactPlaybook;
+use Ari\Entity\TaskReflection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -44,7 +47,7 @@ class ContactTask implements TenantAwareInterface
     public const string STATUS_SNOOZED = 'snoozed';
     public const string STATUS_ARCHIVED = 'archived';
     public const string STATUS_AWAITING_REFLECTION = 'awaiting_reflection';
-    /** Reserved for Phase 3 (playbook-level pause); no API transition exists yet. */
+    /** Used for playbook-level pause (ContactPlaybookService::pause/resume). No direct API task transition. */
     public const string STATUS_PAUSED = 'paused';
 
     /** @var list<string> */
@@ -158,6 +161,9 @@ class ContactTask implements TenantAwareInterface
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist'], orphanRemoval: true, fetch: 'EAGER')]
+    private ?TaskReflection $reflection = null;
 
     #[ORM\PrePersist]
     public function initTimestamps(): void
@@ -308,6 +314,20 @@ class ContactTask implements TenantAwareInterface
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /** Embedded in contact_task:read for the ReflectionModal. */
+    #[Groups(['contact_task:read'])]
+    public function getReflection(): ?TaskReflection
+    {
+        return $this->reflection;
+    }
+
+    public function setReflection(?TaskReflection $reflection): static
+    {
+        $this->reflection = $reflection;
+
+        return $this;
     }
 
     public function getPlaybook(): ?ContactPlaybook

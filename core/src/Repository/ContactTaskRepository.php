@@ -106,4 +106,24 @@ class ContactTaskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Returns all tasks in awaiting_reflection status whose reflection window has expired.
+     * Used by ReflectionFinalisationCommand to auto-complete stale reflections.
+     *
+     * @return list<ContactTask>
+     */
+    public function findOverdueReflections(): array
+    {
+        /** @var list<ContactTask> */
+        return $this->createQueryBuilder('ct')
+            ->where('ct.status = :status')
+            ->andWhere('ct.reflectionDueAt IS NOT NULL')
+            ->andWhere('ct.reflectionDueAt <= :now')
+            ->setParameter('status', ContactTask::STATUS_AWAITING_REFLECTION)
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('ct.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

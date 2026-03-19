@@ -7,7 +7,10 @@ namespace Ari\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Ari\Entity\ContactTask;
+use Ari\Entity\TaskReflection;
+use Ari\Service\ContactPlaybookService;
 use Ari\Service\ContactTaskGeneratorService;
+use Ari\Service\PlaybookTemplateRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -18,8 +21,9 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  * Responsibilities:
  * - Validates status transitions against the allowed state machine.
  * - Applies side-effects: completedAt, reflectionDueAt, snoozedUntil validation.
- * - For offline tasks completing from pending → transitions to awaiting_reflection.
+ * - For offline tasks completing from pending → transitions to awaiting_reflection and creates TaskReflection.
  * - For awaiting_reflection → completed, marks completed and schedules the next task.
+ * - Checks and sets celebrationPending milestone after task completion.
  *
  * @implements ProcessorInterface<ContactTask, ContactTask>
  */
@@ -29,6 +33,8 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
         private EntityManagerInterface $em,
         private RequestStack $requestStack,
         private ContactTaskGeneratorService $generator,
+        private PlaybookTemplateRegistry $registry,
+        private ContactPlaybookService $playbookService,
     ) {
     }
 
@@ -91,6 +97,7 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
             // Offline tasks coming from pending wait for morning reflection.
             $task->setStatus(ContactTask::STATUS_AWAITING_REFLECTION);
             $task->setReflectionDueAt($this->computeReflectionDueAt());
+            $this->createReflection($task);
 
             return;
         }
@@ -99,6 +106,7 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
         $task->setStatus(ContactTask::STATUS_COMPLETED);
         $task->setCompletedAt(new \DateTimeImmutable());
         $this->generator->generateNextTask($task);
+        $this->playbookService->checkAndSetCelebration($task);
     }
 
     private function handleSnooze(ContactTask $task): void
@@ -115,6 +123,47 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
             );
         }
         $task->setStatus(ContactTask::STATUS_SNOOZED);
+    }
+
+    /**
+     * Creates a TaskReflection record when an offline task transitions to awaiting_reflection.
+     * The question is looked up from the playbook template config for the task's series.
+     */
+    private function createReflection(ContactTask $task): void
+    {
+        // Guard against duplicate creation (e.g., repeated PATCH due to client retry).
+        // The DB unique constraint would catch it anyway, but this avoids an exception mid-flush.
+        if (null !== $task->getReflection()) {
+            return;
+        }
+
+        $playbook = $task->getPlaybook();
+        $question = null;
+
+        if (null !== $playbook) {
+            try {
+                $config = $this->registry->findByPreset($playbook->getPreset());
+                foreach ($config->tasks as $taskConfig) {
+                    if ($taskConfig->type === $task->getSeriesKey()) {
+                        $question = $taskConfig->question;
+                        break;
+                    }
+                }
+            } catch (\InvalidArgumentException) {
+                // Preset changed after task was created — use fallback (empty string → frontend uses i18n fallback)
+            }
+        }
+
+        $tenant = $task->getTenant();
+        if (null === $tenant) {
+            throw new \LogicException('Task must have a tenant.');
+        }
+
+        $reflection = new TaskReflection();
+        $reflection->setTask($task);
+        $reflection->setQuestion($question ?? '');
+        $reflection->setTenant($tenant);
+        $this->em->persist($reflection);
     }
 
     /**

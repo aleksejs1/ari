@@ -98,6 +98,27 @@ export function useUpdatePlaybook(contactId: string | number) {
   })
 }
 
+export function useSaveReflection(contactId: string | number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ reflectionId, answer }: { reflectionId: number; answer: string }) => {
+      const response = await api.patch<{
+        id: number
+        answer: string | null
+        answeredAt: string | null
+      }>(
+        `/task_reflections/${reflectionId}`,
+        { answer },
+        { headers: { 'Content-Type': 'application/merge-patch+json' } },
+      )
+      return response.data
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
+    },
+  })
+}
+
 export function useDeletePlaybook(contactId: string | number) {
   const queryClient = useQueryClient()
   return useMutation({

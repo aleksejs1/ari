@@ -3,6 +3,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
 
+export interface TaskReflection {
+  id: number
+  question: string
+  answer: string | null
+  answeredAt: string | null
+}
+
 export interface ContactTask {
   id: number
   contactId: number
@@ -16,13 +23,18 @@ export interface ContactTask {
   reflectionDueAt: string | null
   completedAt: string | null
   createdAt: string
+  reflection: TaskReflection | null
 }
 
-export function useContactTasks(contactId: string | number, options?: { status?: string }) {
+export function useContactTasks(
+  contactId: string | number,
+  options?: { status?: string | string[] },
+) {
   const params = new URLSearchParams()
   params.set('contact', String(contactId))
   if (options?.status) {
-    params.set('status', options.status)
+    const statuses = Array.isArray(options.status) ? options.status : [options.status]
+    statuses.forEach((s) => params.append('status[]', s))
   }
 
   return useQuery<ContactTask[]>({

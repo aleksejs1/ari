@@ -301,6 +301,7 @@
       "dueDate": "Due {{date}}",
       "awaitingReflection": "Awaiting reflection",
       "error": "Action failed",
+      "taskTypes": "Tasks: {{types}}",
       "type": {
         "call": "Phone Call",
         "video_call": "Video Call",
@@ -313,6 +314,20 @@
         "checkin_question": "Check-in Question",
         "restart_message": "Restart Message"
       }
+    },
+    "reflection": {
+      "title": "Reflect on this",
+      "answerPlaceholder": "How did it go?",
+      "question": {
+        "fallback": "How did it go?"
+      },
+      "submit": "Save reflection",
+      "skip": "Skip for now"
+    },
+    "celebration": {
+      "headline": "Well done!",
+      "body": "You've completed 4 tasks in this series. Keep nurturing this relationship.",
+      "dismiss": "Continue"
     }
   }
 }

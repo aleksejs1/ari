@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check, Clock, SkipForward } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 import type { ContactTask } from '../hooks/useContactTasks'
 import { useUpdateTask } from '../hooks/useContactTasks'
+
+import { ReflectionModal } from './ReflectionModal'
 
 interface Props {
   task: ContactTask
@@ -19,6 +20,7 @@ export function TaskCard({ task, contactId }: Props) {
   const [snoozing, setSnoozing] = useState(false)
   const [snoozeDate, setSnoozeDate] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [reflecting, setReflecting] = useState(false)
 
   const updateTask = useUpdateTask(contactId)
 
@@ -85,9 +87,23 @@ export function TaskCard({ task, contactId }: Props) {
 
       <div className="flex shrink-0 items-center gap-1">
         {isAwaitingReflection ? (
-          <Badge variant="secondary" data-testid={`task-reflect-${task.id}`}>
-            {t('playbook.tasks.reflect')}
-          </Badge>
+          <>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-7 px-2 text-xs"
+              data-testid={`task-reflect-${task.id}`}
+              onClick={() => setReflecting(true)}
+            >
+              {t('playbook.tasks.reflect')}
+            </Button>
+            <ReflectionModal
+              open={reflecting}
+              onOpenChange={setReflecting}
+              task={task}
+              contactId={contactId}
+            />
+          </>
         ) : (
           <>
             {snoozing ? (

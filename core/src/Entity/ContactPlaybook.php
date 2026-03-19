@@ -75,6 +75,9 @@ class ContactPlaybook implements TenantAwareInterface
 
     public const array GOALS = ['maintain', 'deepen', 'reignite', 'rekindle', 'appreciate'];
 
+    /** Every N-th completed task per series triggers a celebration screen. */
+    public const int CELEBRATION_MILESTONE = 4;
+
     #[Groups(['contact_playbook:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]

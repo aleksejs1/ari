@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BookOpen, Pause, Play, Plus, Trash2 } from 'lucide-react'
 
@@ -16,6 +16,7 @@ import {
 import type { ContactTask } from '../hooks/useContactTasks'
 import { useContactTasks } from '../hooks/useContactTasks'
 
+import { CelebrationScreen } from './CelebrationScreen'
 import { PlaybookWizard } from './PlaybookWizard'
 import { TaskCard } from './TaskCard'
 
@@ -117,6 +118,17 @@ function ActivePlaybookCard({
   )
 }
 
+function useCelebration(celebrationPending: boolean | undefined, acknowledge: () => void) {
+  const [showCelebration, setShowCelebration] = useState(false)
+  useEffect(() => {
+    if (celebrationPending === true && !showCelebration) {
+      setShowCelebration(true)
+      acknowledge()
+    }
+  }, [celebrationPending, showCelebration, acknowledge])
+  return { showCelebration, dismissCelebration: () => setShowCelebration(false) }
+}
+
 export function PlaybookSection({ contact }: { contact: Contact }) {
   const { t } = useTranslation('contacts')
   const [wizardOpen, setWizardOpen] = useState(false)
@@ -124,9 +136,19 @@ export function PlaybookSection({ contact }: { contact: Contact }) {
   const contactId = contact.id
 
   const { data: playbook, isLoading: playbookLoading } = useContactPlaybook(contactId ?? 0)
-  const { data: tasks = [] } = useContactTasks(contactId ?? 0, { status: 'pending' })
+  const { data: tasks = [] } = useContactTasks(contactId ?? 0, { status: [...ACTIVE_STATUSES] })
   const deletePlaybook = useDeletePlaybook(contactId ?? 0)
   const updatePlaybook = useUpdatePlaybook(contactId ?? 0)
+
+  const { mutate: acknowledgeCelebration } = updatePlaybook
+  const acknowledge = useCallback(
+    () => acknowledgeCelebration({ celebrationPending: false }),
+    [acknowledgeCelebration],
+  )
+  const { showCelebration, dismissCelebration } = useCelebration(
+    playbook?.celebrationPending,
+    acknowledge,
+  )
 
   if (!contactId) {
     return null
@@ -176,6 +198,7 @@ export function PlaybookSection({ contact }: { contact: Contact }) {
 
   return (
     <>
+      {showCelebration ? <CelebrationScreen onDismiss={dismissCelebration} /> : null}
       <ActivePlaybookCard
         playbook={playbook}
         tasks={tasks}

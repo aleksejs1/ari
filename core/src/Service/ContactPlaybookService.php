@@ -76,8 +76,11 @@ final class ContactPlaybookService
     {
         $playbook->setStatus(ContactPlaybook::STATUS_ARCHIVED);
 
-        // Archive all pending tasks
-        $this->archiveTasksForPlaybook($playbook, [ContactTask::STATUS_PENDING]);
+        // Archive pending and awaiting_reflection tasks (both are still "open" tasks).
+        // awaiting_reflection tasks must be archived too — otherwise they outlive the
+        // playbook and ReflectionFinalisationCommand would later complete them "into
+        // a deleted playbook", generating orphan next-tasks.
+        $this->archiveTasksForPlaybook($playbook, [ContactTask::STATUS_PENDING, ContactTask::STATUS_AWAITING_REFLECTION]);
 
         $this->logger->info('playbook_archived', [
             'tenant_id' => $playbook->getTenant()?->getId(),
@@ -142,6 +145,72 @@ final class ContactPlaybookService
     {
         $playbook->setWhyTags($whyTags);
         $playbook->setWhyText($whyText);
+    }
+
+    /**
+     * Checks if the completed task hits a celebration milestone (every 4th completion per series)
+     * and sets celebrationPending=true on the playbook if so.
+     *
+     * The task has been marked COMPLETED in memory but not yet flushed, so we add 1 to the DB count.
+     */
+    public function checkAndSetCelebration(ContactTask $task): void
+    {
+        $playbook = $task->getPlaybook();
+        if (null === $playbook || $playbook->isCelebrationPending()) {
+            return;
+        }
+
+        $seriesKey = $task->getSeriesKey();
+        if (null === $seriesKey) {
+            return;
+        }
+
+        // +1 because the current task is not yet flushed to the DB
+        $completed = $this->taskRepository->countCompletedForSeries($playbook, $seriesKey) + 1;
+        if ($completed > 0 && 0 === $completed % ContactPlaybook::CELEBRATION_MILESTONE) {
+            $playbook->setCelebrationPending(true);
+        }
+    }
+
+    /**
+     * Finalises all tasks in awaiting_reflection status whose reflection window has expired.
+     * Called by ReflectionFinalisationCommand (runs hourly).
+     *
+     * Each task is flushed individually so that a failure on one task does not
+     * prevent the remaining tasks from being finalised.
+     *
+     * @return int number of tasks successfully finalised
+     */
+    public function finaliseOverdueReflections(): int
+    {
+        $tasks = $this->taskRepository->findOverdueReflections();
+        $count = 0;
+
+        foreach ($tasks as $task) {
+            try {
+                $task->setStatus(ContactTask::STATUS_COMPLETED);
+                $task->setCompletedAt(new \DateTimeImmutable());
+                $this->generator->generateNextTask($task);
+                $this->checkAndSetCelebration($task);
+                $this->em->flush();
+                ++$count;
+                $this->logger->info('reflection_finalised', [
+                    'tenant_id' => $task->getTenant()?->getId(),
+                    'task_id' => $task->getId(),
+                    'task_type' => $task->getType(),
+                ]);
+            } catch (\Throwable $e) {
+                $this->logger->error('reflection_finalisation_failed', [
+                    'task_id' => $task->getId(),
+                    'error' => $e->getMessage(),
+                ]);
+                // Detach the failed entity so subsequent flushes are not poisoned
+                // by its inconsistent state.
+                $this->em->detach($task);
+            }
+        }
+
+        return $count;
     }
 
     /**

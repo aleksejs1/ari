@@ -6,6 +6,7 @@ namespace Ari\Security\Voter;
 
 use Ari\Entity\ContactPlaybook;
 use Ari\Entity\ContactTask;
+use Ari\Entity\TaskReflection;
 use Ari\Security\ApiKeyToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -15,13 +16,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * Voter for Relationship Playbooks feature.
  *
  * Phase 1: TASK_VIEW, TASK_EDIT (ContactTask — view and mutate)
- * Phase 2 adds: PLAYBOOK_VIEW, PLAYBOOK_EDIT (ContactPlaybook)
- * Phase 3 adds: REFLECTION_EDIT (TaskReflection)
+ * Phase 2: PLAYBOOK_VIEW, PLAYBOOK_EDIT (ContactPlaybook)
+ * Phase 3: REFLECTION_EDIT (TaskReflection)
  *
  * Tenant check: $subject->getTenant() === $user (object-level ownership).
- * API key scopes: contacts:read for TASK_VIEW/PLAYBOOK_VIEW, contacts:write for TASK_EDIT/PLAYBOOK_EDIT.
+ * API key scopes: contacts:read for TASK_VIEW/PLAYBOOK_VIEW, contacts:write for TASK_EDIT/PLAYBOOK_EDIT/REFLECTION_EDIT.
  *
- * @extends Voter<string, ContactTask|ContactPlaybook>
+ * @extends Voter<string, ContactTask|ContactPlaybook|TaskReflection>
  */
 final class PlaybookVoter extends Voter
 {
@@ -29,12 +30,14 @@ final class PlaybookVoter extends Voter
     public const string TASK_EDIT = 'TASK_EDIT';
     public const string PLAYBOOK_VIEW = 'PLAYBOOK_VIEW';
     public const string PLAYBOOK_EDIT = 'PLAYBOOK_EDIT';
+    public const string REFLECTION_EDIT = 'REFLECTION_EDIT';
 
     private const array SUPPORTED_ATTRIBUTES = [
         self::TASK_VIEW,
         self::TASK_EDIT,
         self::PLAYBOOK_VIEW,
         self::PLAYBOOK_EDIT,
+        self::REFLECTION_EDIT,
     ];
 
     #[\Override]
@@ -48,7 +51,11 @@ final class PlaybookVoter extends Voter
             return $subject instanceof ContactTask;
         }
 
-        return $subject instanceof ContactPlaybook;
+        if (\in_array($attribute, [self::PLAYBOOK_VIEW, self::PLAYBOOK_EDIT], true)) {
+            return $subject instanceof ContactPlaybook;
+        }
+
+        return $subject instanceof TaskReflection;
     }
 
     #[\Override]
@@ -64,7 +71,7 @@ final class PlaybookVoter extends Voter
         if ($token instanceof ApiKeyToken) {
             $required = match ($attribute) {
                 self::TASK_VIEW, self::PLAYBOOK_VIEW => 'contacts:read',
-                self::TASK_EDIT, self::PLAYBOOK_EDIT => 'contacts:write',
+                self::TASK_EDIT, self::PLAYBOOK_EDIT, self::REFLECTION_EDIT => 'contacts:write',
                 default => null,
             };
             if (null !== $required && !$token->hasScope($required)) {
@@ -73,7 +80,7 @@ final class PlaybookVoter extends Voter
         }
 
         // Object-level tenant ownership check.
-        if ($subject instanceof ContactTask || $subject instanceof ContactPlaybook) {
+        if ($subject instanceof ContactTask || $subject instanceof ContactPlaybook || $subject instanceof TaskReflection) {
             return $subject->getTenant() === $user;
         }
 
