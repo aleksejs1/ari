@@ -18,6 +18,7 @@ import { useContactTasks } from '../hooks/useContactTasks'
 
 import { CelebrationScreen } from './CelebrationScreen'
 import { PlaybookWizard } from './PlaybookWizard'
+import { ReciprocityIndicator } from './ReciprocityIndicator'
 import { TaskCard } from './TaskCard'
 
 const ACTIVE_STATUSES = ['pending', 'snoozed', 'awaiting_reflection'] as const
@@ -44,9 +45,7 @@ function ActivePlaybookCard({
   deletePending,
 }: ActivePlaybookCardProps) {
   const { t } = useTranslation('contacts')
-  const pendingTasks = tasks
-    .filter((task) => (ACTIVE_STATUSES as readonly string[]).includes(task.status))
-    .slice(0, 5)
+  const pendingTasks = tasks.slice(0, 5)
 
   return (
     <Card data-testid="playbook-section">
@@ -112,6 +111,9 @@ function ActivePlaybookCard({
           ) : (
             pendingTasks.map((task) => <TaskCard key={task.id} task={task} contactId={contactId} />)
           )}
+        </div>
+        <div className="mt-3">
+          <ReciprocityIndicator contactId={contactId} />
         </div>
       </CardContent>
     </Card>

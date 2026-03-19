@@ -2,6 +2,8 @@
 
 namespace Ari\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -16,6 +18,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ORM\Entity(repositoryClass: ActivityFeedRepository::class)]
 #[ORM\Index(columns: ['user_id', 'is_read'], name: 'idx_activity_feed_user_unread')]
 #[ORM\Index(columns: ['user_id', 'created_at'], name: 'idx_activity_feed_user_created')]
+#[ApiFilter(SearchFilter::class, properties: ['eventType' => 'exact'])]
 #[ApiResource(
     operations: [
         new GetCollection(

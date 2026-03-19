@@ -22,6 +22,19 @@ export function useNotifications(page = 1) {
   })
 }
 
+export function usePendingSeasonalCheckin() {
+  return useQuery({
+    queryKey: ['notifications', 'seasonal-checkin'],
+    queryFn: async () => {
+      const response = await api.get<HydraCollection<ActivityFeed>>(
+        '/activity-feed?eventType=seasonal_checkin&isRead=false&itemsPerPage=1',
+      )
+      return getHydraMember(response.data)[0] ?? null
+    },
+    refetchInterval: 60000,
+  })
+}
+
 export function useUnreadCount() {
   return useQuery({
     queryKey: ['notifications', 'unread-count'],

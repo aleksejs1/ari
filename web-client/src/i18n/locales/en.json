@@ -460,6 +460,11 @@
       "main": "Main",
       "sidebar": "Sidebar"
     },
+    "seasonalCheckin": {
+      "title": "Time for a seasonal check-in!",
+      "body": "A new season is here. Reflect on your relationships and set intentions.",
+      "dismiss": "Dismiss"
+    },
     "layout": {
       "title": "Choose Layout",
       "description": "Select a layout for your dashboard",

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ari\Repository;
 
 use Ari\Entity\Contact;
@@ -72,6 +74,24 @@ class ContactInteractionRepository extends ServiceEntityRepository
             ->setParameter('contactIds', $contactIds)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Counts interactions for a contact filtered by initiator ('me' or 'them') within a time window.
+     * Used by ReciprocityService to compute the reciprocity ratio.
+     */
+    public function countByInitiator(Contact $contact, string $initiator, \DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('ci')
+            ->select('COUNT(ci.id)')
+            ->where('ci.contact = :contact')
+            ->andWhere('ci.initiator = :initiator')
+            ->andWhere('ci.timestamp >= :since')
+            ->setParameter('contact', $contact)
+            ->setParameter('initiator', $initiator)
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

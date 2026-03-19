@@ -8,6 +8,7 @@ import DashboardEditToolbar from '../components/DashboardEditToolbar'
 import DynamicDashboard from '../components/DynamicDashboard'
 import LayoutPicker from '../components/LayoutPicker'
 import WidgetTogglePanel from '../components/WidgetTogglePanel'
+import SeasonalCheckinWidget from '../widgets/SeasonalCheckinWidget'
 
 export default function HomePage() {
   const { t } = useTranslation()
@@ -59,6 +60,8 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      <SeasonalCheckinWidget />
 
       <DynamicDashboard
         zones={visibleLayout}

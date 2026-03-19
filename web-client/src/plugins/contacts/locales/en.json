@@ -324,6 +324,9 @@
       "submit": "Save reflection",
       "skip": "Skip for now"
     },
+    "reciprocity": {
+      "label": "Over the last {{days}} days: you reached out {{me}} times, they reached out {{them}} times."
+    },
     "celebration": {
       "headline": "Well done!",
       "body": "You've completed 4 tasks in this series. Keep nurturing this relationship.",
