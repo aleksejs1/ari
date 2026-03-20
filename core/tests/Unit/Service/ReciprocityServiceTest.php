@@ -14,7 +14,7 @@ final class ReciprocityServiceTest extends TestCase
     public function testReturnsCorrectCountsForBothSides(): void
     {
         $contact = new Contact();
-        $repo = $this->createMock(ContactInteractionRepository::class);
+        $repo = self::createStub(ContactInteractionRepository::class);
 
         $repo->method('countByInitiator')
             ->willReturnCallback(
@@ -33,7 +33,7 @@ final class ReciprocityServiceTest extends TestCase
     public function testReturnsZerosWhenNoInteractions(): void
     {
         $contact = new Contact();
-        $repo = $this->createMock(ContactInteractionRepository::class);
+        $repo = self::createStub(ContactInteractionRepository::class);
         $repo->method('countByInitiator')->willReturn(0);
 
         $result = (new ReciprocityService($repo))->getReciprocity($contact);
@@ -46,7 +46,7 @@ final class ReciprocityServiceTest extends TestCase
         $contact = new Contact();
         $capturedSince = null;
 
-        $repo = $this->createMock(ContactInteractionRepository::class);
+        $repo = self::createStub(ContactInteractionRepository::class);
         $repo->method('countByInitiator')
             ->willReturnCallback(
                 static function (Contact $c, string $initiator, \DateTimeImmutable $since) use (&$capturedSince): int {
@@ -70,7 +70,7 @@ final class ReciprocityServiceTest extends TestCase
         $contact = new Contact();
         $capturedSince = null;
 
-        $repo = $this->createMock(ContactInteractionRepository::class);
+        $repo = self::createStub(ContactInteractionRepository::class);
         $repo->method('countByInitiator')
             ->willReturnCallback(
                 static function (Contact $c, string $initiator, \DateTimeImmutable $since) use (&$capturedSince): int {
