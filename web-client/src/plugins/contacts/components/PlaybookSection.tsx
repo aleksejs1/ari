@@ -14,7 +14,7 @@ import {
   useUpdatePlaybook,
 } from '../hooks/useContactPlaybook'
 import type { ContactTask } from '../hooks/useContactTasks'
-import { useContactTasks } from '../hooks/useContactTasks'
+import { todayIso, useContactTasks } from '../hooks/useContactTasks'
 
 import { CelebrationScreen } from './CelebrationScreen'
 import { PlaybookWizard } from './PlaybookWizard'
@@ -138,7 +138,10 @@ export function PlaybookSection({ contact }: { contact: Contact }) {
   const contactId = contact.id
 
   const { data: playbook, isLoading: playbookLoading } = useContactPlaybook(contactId ?? 0)
-  const { data: tasks = [] } = useContactTasks(contactId ?? 0, { status: [...ACTIVE_STATUSES] })
+  const { data: tasks = [] } = useContactTasks(contactId ?? 0, {
+    status: [...ACTIVE_STATUSES],
+    dueBefore: todayIso(),
+  })
   const deletePlaybook = useDeletePlaybook(contactId ?? 0)
   const updatePlaybook = useUpdatePlaybook(contactId ?? 0)
 

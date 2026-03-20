@@ -26,15 +26,22 @@ export interface ContactTask {
   reflection: TaskReflection | null
 }
 
+export function todayIso(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
 export function useContactTasks(
   contactId: string | number,
-  options?: { status?: string | string[] },
+  options?: { status?: string | string[]; dueBefore?: string },
 ) {
   const params = new URLSearchParams()
   params.set('contact', String(contactId))
   if (options?.status) {
     const statuses = Array.isArray(options.status) ? options.status : [options.status]
     statuses.forEach((s) => params.append('status[]', s))
+  }
+  if (options?.dueBefore) {
+    params.set('dueDate[before]', options.dueBefore)
   }
 
   return useQuery<ContactTask[]>({
@@ -66,6 +73,8 @@ export function useUpdateTask(contactId: string | number) {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
+      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
+      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId)] })
     },
   })
 }

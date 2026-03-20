@@ -103,12 +103,7 @@ final readonly class ContactPlaybookProcessor implements ProcessorInterface
             throw new \InvalidArgumentException(sprintf('Expected %s, got %s.', ContactPlaybook::class, get_debug_type($data)));
         }
 
-        $playbook = $this->playbookRepository->findActiveForContact($contact);
-
-        if (null === $playbook) {
-            // Check for paused playbook too (can resume from paused state)
-            $playbook = $this->playbookRepository->findOneBy(['contact' => $contact, 'status' => ContactPlaybook::STATUS_PAUSED]);
-        }
+        $playbook = $this->playbookRepository->findActiveOrPausedForContact($contact);
 
         if (null === $playbook) {
             throw new NotFoundHttpException('No active or paused playbook found for this contact.');
@@ -150,9 +145,9 @@ final readonly class ContactPlaybookProcessor implements ProcessorInterface
 
     private function handleDelete(Contact $contact): null
     {
-        $playbook = $this->playbookRepository->findActiveForContact($contact);
+        $playbook = $this->playbookRepository->findActiveOrPausedForContact($contact);
         if (null === $playbook) {
-            throw new NotFoundHttpException('No active playbook found for this contact.');
+            throw new NotFoundHttpException('No active or paused playbook found for this contact.');
         }
 
         $this->playbookService->archive($playbook, 'user_delete');

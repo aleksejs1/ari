@@ -4,6 +4,7 @@ import { Check, Clock, SkipForward } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 
 import type { ContactTask } from '../hooks/useContactTasks'
 import { useUpdateTask } from '../hooks/useContactTasks'
@@ -23,6 +24,7 @@ export function TaskCard({ task, contactId }: Props) {
   const [reflecting, setReflecting] = useState(false)
 
   const updateTask = useUpdateTask(contactId)
+  const { formatDate } = useUserPrefs()
 
   const handleComplete = async () => {
     setError(null)
@@ -74,12 +76,12 @@ export function TaskCard({ task, contactId }: Props) {
           <span className="text-xs text-muted-foreground">
             {isAwaitingReflection
               ? t('playbook.tasks.awaitingReflection')
-              : t('playbook.tasks.dueDate', { date: task.dueDate })}
+              : t('playbook.tasks.dueDate', { date: formatDate(task.dueDate) })}
           </span>
         ) : null}
         {task.status === 'snoozed' && task.snoozedUntil !== null ? (
           <span className="text-xs text-muted-foreground">
-            {t('playbook.tasks.snoozedUntil', { date: task.snoozedUntil })}
+            {t('playbook.tasks.snoozedUntil', { date: formatDate(task.snoozedUntil) })}
           </span>
         ) : null}
         {error !== null ? <span className="text-xs text-destructive">{error}</span> : null}

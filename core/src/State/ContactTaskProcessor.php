@@ -6,6 +6,7 @@ namespace Ari\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use Ari\Entity\ContactInteraction;
 use Ari\Entity\ContactTask;
 use Ari\Entity\TaskReflection;
 use Ari\Service\ContactPlaybookService;
@@ -107,6 +108,37 @@ final readonly class ContactTaskProcessor implements ProcessorInterface
         $task->setCompletedAt(new \DateTimeImmutable());
         $this->generator->generateNextTask($task);
         $this->playbookService->checkAndSetCelebration($task);
+        $this->logInteraction($task);
+    }
+
+    /**
+     * Maps task type to ContactInteraction type and logs an interaction so that
+     * playbook completions appear in the Keep in Touch timeline.
+     */
+    private function logInteraction(ContactTask $task): void
+    {
+        $contact = $task->getContact();
+        $tenant = $task->getTenant();
+
+        if (null === $contact || null === $tenant) {
+            return;
+        }
+
+        $interactionType = match ($task->getType()) {
+            ContactTask::TYPE_CALL, ContactTask::TYPE_VIDEO_CALL => 'call',
+            ContactTask::TYPE_VISIT, ContactTask::TYPE_DATE_NIGHT,
+            ContactTask::TYPE_SHARED_ACTIVITY, ContactTask::TYPE_SURPRISE => 'meeting',
+            default => 'message',
+        };
+
+        $interaction = new ContactInteraction($contact);
+        $interaction->setType($interactionType);
+        $interaction->setDescription('');
+        $interaction->setTimestamp($task->getCompletedAt() ?? new \DateTimeImmutable());
+        $interaction->setInitiator('me');
+        $interaction->setTenant($tenant);
+
+        $this->em->persist($interaction);
     }
 
     private function handleSnooze(ContactTask $task): void

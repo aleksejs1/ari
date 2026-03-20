@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 
 import { useSaveReflection } from '../hooks/useContactPlaybook'
 import type { ContactTask } from '../hooks/useContactTasks'
+import { useUpdateTask } from '../hooks/useContactTasks'
 
 interface Props {
   open: boolean
@@ -20,6 +21,7 @@ export function ReflectionModal({ open, onOpenChange, task, contactId }: Props) 
   const [answer, setAnswer] = useState('')
   const [error, setError] = useState<string | null>(null)
   const saveReflection = useSaveReflection(contactId)
+  const updateTask = useUpdateTask(contactId)
 
   const question = task.reflection?.question || t('playbook.reflection.question.fallback')
 
@@ -30,6 +32,7 @@ export function ReflectionModal({ open, onOpenChange, task, contactId }: Props) 
     setError(null)
     try {
       await saveReflection.mutateAsync({ reflectionId: task.reflection.id, answer: value })
+      await updateTask.mutateAsync({ taskId: task.id, data: { status: 'completed' } })
       onOpenChange(false)
       setAnswer('')
     } catch (err: unknown) {

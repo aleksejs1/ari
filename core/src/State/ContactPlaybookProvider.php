@@ -40,7 +40,7 @@ final readonly class ContactPlaybookProvider implements ProviderInterface
 
         $playbook = $this->playbookRepository->findActiveOrPausedForContact($contact);
         if (null === $playbook) {
-            throw new NotFoundHttpException('No active playbook found for this contact.');
+            throw new NotFoundHttpException('No active or paused playbook found for this contact.');
         }
 
         return $playbook;

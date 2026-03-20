@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ari\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -38,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     processor: ContactTaskProcessor::class,
 )]
 #[ApiFilter(SearchFilter::class, properties: ['contact' => 'exact', 'status' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['dueDate'])]
 class ContactTask implements TenantAwareInterface
 {
     use TenantAwareTrait;
