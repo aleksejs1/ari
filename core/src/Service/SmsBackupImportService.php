@@ -333,9 +333,16 @@ class SmsBackupImportService
         string $nameConflict,
         User $user,
     ): void {
+        $contactIds = array_keys($contactXmlNames);
+
         // For 'replace': pre-load all first ContactNames in one query instead of N separate queries.
         $existingNames = 'replace' === $nameConflict
-            ? $this->loadFirstContactNamesMap(array_keys($contactXmlNames))
+            ? $this->loadFirstContactNamesMap($contactIds)
+            : [];
+
+        // For 'add': build a fingerprint set to prevent creating duplicate names.
+        $existingNameKeys = 'add' === $nameConflict
+            ? $this->buildExistingNameKeySet($contactIds)
             : [];
 
         foreach ($contactXmlNames as $contactId => $xmlContactName) {
@@ -346,6 +353,11 @@ class SmsBackupImportService
             [$given, $family] = $this->parseNameParts($xmlContactName);
 
             if ('add' === $nameConflict) {
+                $key = $contactId . '|' . ($given ?? '') . '|' . ($family ?? '');
+                if (isset($existingNameKeys[$key])) {
+                    continue; // exact name already exists — skip to prevent duplicates
+                }
+
                 $contactRef = $this->entityManager->getReference(Contact::class, $contactId);
                 /** @var Contact $contactRef */
                 $name = new ContactName();
@@ -407,6 +419,40 @@ class SmsBackupImportService
         }
 
         return $map;
+    }
+
+    /**
+     * Build a set of name fingerprint strings "{contactId}|{given}|{family}"
+     * for all existing ContactNames of the given contacts.
+     * Used by handleNameConflicts to prevent duplicate names when strategy is 'add'.
+     *
+     * @param list<int> $contactIds
+     *
+     * @return array<string, true>
+     */
+    private function buildExistingNameKeySet(array $contactIds): array
+    {
+        if ([] === $contactIds) {
+            return [];
+        }
+
+        /** @var ContactName[] $names */
+        $names = $this->entityManager->createQuery(
+            'SELECT cn FROM ' . ContactName::class . ' cn WHERE cn.contact IN (:ids)'
+        )
+            ->setParameter('ids', $contactIds)
+            ->getResult();
+
+        $keys = [];
+        foreach ($names as $name) {
+            $contactId = $name->getContact()?->getId();
+            if (null !== $contactId) {
+                $key = $contactId . '|' . ($name->getGiven() ?? '') . '|' . ($name->getFamily() ?? '');
+                $keys[$key] = true;
+            }
+        }
+
+        return $keys;
     }
 
     /**
