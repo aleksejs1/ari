@@ -15,6 +15,10 @@ deptrac:
       collectors:
         - type: classNameRegex
           value: '#^Ari\\Message\\.*#'
+    - name: Event
+      collectors:
+        - type: classNameRegex
+          value: '#^Ari\\Event\\.*#'
     - name: Security
       collectors:
         - type: classNameRegex
@@ -124,6 +128,8 @@ deptrac:
       - State          # API Platform provider metadata in #[ApiResource] (EventTypeDto)
       - Vendor         # Symfony Validator constraints
     Message: []        # Pure value objects — zero dependencies
+    Event:
+      - Entity
     Security:
       - Entity
       - Repository # Authenticators may query repositories (e.g. ApiKeyAuthenticator)
@@ -134,6 +140,7 @@ deptrac:
     Service:
       - Dto
       - Entity
+      - Event
       - Exception
       - Kernel         # getProjectDir(), ARI_VERSION constant
       - Message        # Dispatching Messenger messages
@@ -155,6 +162,7 @@ deptrac:
       - Vendor
     EventSubscriber:
       - Entity
+      - Event
       - Exception
       - Security
       - Service
@@ -179,6 +187,7 @@ deptrac:
       - ApiResource
       - Dto
       - Entity
+      - Event
       - Kernel         # getProjectDir(), ARI_VERSION constant
       - Repository     # State providers may access repositories directly (e.g. ApiKeyProvider)
       - Security

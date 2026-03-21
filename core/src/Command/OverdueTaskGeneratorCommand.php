@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ari\Command;
 
-use Ari\Service\ContactPlaybookService;
+use Ari\Service\ContactPlaybookLifecycleService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class OverdueTaskGeneratorCommand extends Command
 {
     public function __construct(
-        private readonly ContactPlaybookService $playbookService,
+        private readonly ContactPlaybookLifecycleService $playbookService,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct();

@@ -14,6 +14,7 @@ use Ari\Entity\Trait\TimestampableTrait;
 use Ari\Repository\ContactPlaybookRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
+use Ari\Dto\PlaybookActivationInput;
 use Ari\State\ContactPlaybookProcessor;
 use Ari\State\ContactPlaybookProvider;
 use Doctrine\DBAL\Types\Types;
@@ -43,6 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     uriVariables: [
         'contactId' => new Link(fromClass: Contact::class, toProperty: 'contact'),
     ],
+    input: PlaybookActivationInput::class,
     processor: ContactPlaybookProcessor::class,
     name: 'contact_playbook_post',
 )]
@@ -74,6 +76,17 @@ class ContactPlaybook implements TenantAwareInterface
     public const string STATUS_ACTIVE = 'active';
     public const string STATUS_PAUSED = 'paused';
     public const string STATUS_ARCHIVED = 'archived';
+
+    /**
+     * Allowed API-initiated status transitions: from → list of allowed targets.
+     * Transitions not in this map are rejected with HTTP 422.
+     *
+     * @var array<string, list<string>>
+     */
+    public const array ALLOWED_TRANSITIONS = [
+        self::STATUS_ACTIVE => [self::STATUS_PAUSED],
+        self::STATUS_PAUSED => [self::STATUS_ACTIVE],
+    ];
 
     public const array GOALS = ['maintain', 'deepen', 'reignite', 'rekindle', 'appreciate'];
 

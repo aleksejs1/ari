@@ -11,6 +11,7 @@ use Ari\Entity\Trait\TimestampableTrait;
 use Ari\Repository\TaskReflectionRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
+use Ari\Dto\TaskReflectionUpdateInput;
 use Ari\State\TaskReflectionProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Get(security: "is_granted('REFLECTION_EDIT', object)")]
 #[Patch(
     security: "is_granted('REFLECTION_EDIT', object)",
+    input: TaskReflectionUpdateInput::class,
     processor: TaskReflectionProcessor::class,
 )]
 class TaskReflection implements TenantAwareInterface

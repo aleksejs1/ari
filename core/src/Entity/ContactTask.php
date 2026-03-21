@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use Ari\Entity\Trait\TimestampableTrait;
 use Ari\Repository\ContactTaskRepository;
+use Ari\Dto\ContactTaskUpdateInput;
 use Ari\State\ContactTaskProcessor;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
@@ -36,10 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection]
 #[Get(security: "is_granted('TASK_VIEW', object)")]
-#[Patch(
-    security: "is_granted('TASK_EDIT', object)",
-    processor: ContactTaskProcessor::class,
-)]
+#[Patch(input: ContactTaskUpdateInput::class, security: "is_granted('TASK_EDIT', object)", processor: ContactTaskProcessor::class)]
 #[ApiFilter(SearchFilter::class, properties: ['contact' => 'exact', 'status' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['dueDate'])]
 class ContactTask implements TenantAwareInterface
@@ -55,7 +53,14 @@ class ContactTask implements TenantAwareInterface
     /** Used for playbook-level pause (ContactPlaybookService::pause/resume). No direct API task transition. */
     public const string STATUS_PAUSED = 'paused';
 
-    /** @var list<string> */
+    /**
+     * STATUS_PAUSED is intentionally excluded from STATUSES: tasks enter the paused state
+     * only via ContactPlaybookLifecycleService::pause() (when the playbook is paused),
+     * never by direct client API request. Excluding it prevents clients from sending
+     * status=paused via PATCH /api/contact_tasks/{id}.
+     *
+     * @var list<string>
+     */
     public const array STATUSES = [
         self::STATUS_PENDING,
         self::STATUS_COMPLETED,

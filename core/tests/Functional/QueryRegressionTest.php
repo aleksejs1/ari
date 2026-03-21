@@ -7,7 +7,7 @@ namespace Ari\Tests\Functional;
 use Ari\Entity\Contact;
 use Ari\Entity\ContactPlaybook;
 use Ari\Entity\User;
-use Ari\Service\ContactPlaybookService;
+use Ari\Service\ContactPlaybookLifecycleService;
 use Symfony\Bridge\Doctrine\Middleware\Debug\DebugDataHolder;
 
 /**
@@ -107,7 +107,7 @@ class QueryRegressionTest extends AbstractApiTestCase
         }
         $em->flush();
 
-        $playbookService = self::getContainer()->get(ContactPlaybookService::class);
+        $playbookService = self::getContainer()->get(ContactPlaybookLifecycleService::class);
 
         $this->resetQueryLog();
         $playbookService->generateMissingTasksForAllActive();

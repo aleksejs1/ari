@@ -81,3 +81,11 @@ services:
         factory: ['Ari\Service\PlaybookTemplateRegistry', 'fromFile']
         arguments:
             $path: '%kernel.project_dir%/config/playbook_templates.php'
+
+    Ari\State\ContactTaskProcessor:
+        bind:
+            Ari\Service\StateMachineInterface $stateMachine: '@Ari\Service\ContactTaskStateMachine'
+
+    Ari\State\ContactPlaybookProcessor:
+        bind:
+            Ari\Service\StateMachineInterface $stateMachine: '@Ari\Service\ContactPlaybookStateMachine'

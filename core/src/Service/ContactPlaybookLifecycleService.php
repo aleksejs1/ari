@@ -8,12 +8,22 @@ use Ari\Entity\Contact;
 use Ari\Entity\ContactPlaybook;
 use Ari\Entity\ContactTask;
 use Ari\Entity\User;
+use Ari\Event\TaskCompletedEvent;
 use Ari\Repository\ContactPlaybookRepository;
 use Ari\Repository\ContactTaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-final class ContactPlaybookService
+/**
+ * Manages the lifecycle of ContactPlaybook: activate, pause, resume, archive,
+ * why-fields update, celebration milestone, reflection finalisation.
+ *
+ * Also contains generateMissingTasksForAllActive() — a batch gap-fill for the
+ * cron path — because it coordinates playbook state with task generation and
+ * belongs alongside the other playbook-level orchestration methods.
+ */
+final class ContactPlaybookLifecycleService
 {
     public function __construct(
         private readonly ContactPlaybookRepository $playbookRepository,
@@ -22,6 +32,7 @@ final class ContactPlaybookService
         private readonly ContactTaskGeneratorService $generator,
         private readonly EntityManagerInterface $em,
         private readonly LoggerInterface $logger,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -162,6 +173,15 @@ final class ContactPlaybookService
     }
 
     /**
+     * Clears the celebrationPending flag after the client acknowledges the celebration.
+     * Only the server can set this flag to true (via checkAndSetCelebration).
+     */
+    public function acknowledgeCelebration(ContactPlaybook $playbook): void
+    {
+        $playbook->setCelebrationPending(false);
+    }
+
+    /**
      * Checks if the completed task hits a celebration milestone (every 4th completion per series)
      * and sets celebrationPending=true on the playbook if so.
      *
@@ -190,6 +210,9 @@ final class ContactPlaybookService
      * Finalises all tasks in awaiting_reflection status whose reflection window has expired.
      * Called by ReflectionFinalisationCommand (runs hourly).
      *
+     * Dispatches TaskCompletedEvent so that interaction logging and celebration checks
+     * run through the same path as manual task completion.
+     *
      * Each task is flushed individually so that a failure on one task does not
      * prevent the remaining tasks from being finalised.
      *
@@ -205,7 +228,7 @@ final class ContactPlaybookService
                 $task->setStatus(ContactTask::STATUS_COMPLETED);
                 $task->setCompletedAt(new \DateTimeImmutable());
                 $this->generator->generateNextTask($task);
-                $this->checkAndSetCelebration($task);
+                $this->eventDispatcher->dispatch(new TaskCompletedEvent($task));
                 $this->em->flush();
                 ++$count;
                 $this->logger->info('reflection_finalised', [
