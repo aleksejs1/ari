@@ -81,13 +81,18 @@ final readonly class ContactPlaybookProcessor implements ProcessorInterface
             throw new \InvalidArgumentException(sprintf('Expected %s, got %s.', PlaybookActivationInput::class, get_debug_type($data)));
         }
 
-        return $this->playbookService->activate(
-            $contact,
-            $data->preset,
-            $data->whyTags,
-            $data->whyText,
-            $user,
-        );
+        try {
+            return $this->playbookService->activate(
+                $contact,
+                $data->preset,
+                $data->whyTags,
+                $data->whyText,
+                $user,
+            );
+        } catch (\InvalidArgumentException $e) {
+            // Unknown preset supplied by the client → 422 Unprocessable Entity.
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
+        }
     }
 
     /**
@@ -133,7 +138,13 @@ final readonly class ContactPlaybookProcessor implements ProcessorInterface
         $this->playbookService->updateWhy($playbook, $data->getWhyTags(), $data->getWhyText());
 
         $requestedCelebration = $data->isCelebrationPending();
-        if (true === $requestedCelebration && !$playbook->isCelebrationPending()) {
+        // Use previous_data to check the DB state before the PATCH merge was applied.
+        // $data and $playbook share the same Doctrine identity-map object, so
+        // $playbook->isCelebrationPending() already reflects the new value here.
+        $previousCelebrationPending = ($previousPlaybook instanceof ContactPlaybook)
+            ? $previousPlaybook->isCelebrationPending()
+            : false;
+        if (true === $requestedCelebration && !$previousCelebrationPending) {
             throw new UnprocessableEntityHttpException('celebrationPending cannot be set to true by clients.');
         }
         if (false === $requestedCelebration) {
