@@ -52,6 +52,11 @@ services:
         Ari\Service\ContactImport\ContactDuplicateCheckerInterface:
             tags: ['app.contact_duplicate_checker']
 
+    Ari\EventListener\ContactInteractionListener:
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: postFlush }
+
     Ari\EventSubscriber\AuditLogSubscriber:
         tags:
             - { name: doctrine.event_listener, event: onFlush }

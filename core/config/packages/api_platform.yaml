@@ -15,3 +15,4 @@ api_platform:
         'Doctrine\ORM\OptimisticLockException': 409
         # Project-specific
         'Ari\Exception\InvalidStateTransitionException': 422
+        'Ari\Exception\QuotaExceededException': 422

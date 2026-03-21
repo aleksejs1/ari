@@ -35,6 +35,10 @@ class ContactDateRepository extends ServiceEntityRepository
      */
     public function getDistinctValues(string $field): array
     {
+        if (1 !== preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+            throw new \InvalidArgumentException("Invalid field name for getDistinctValues: '$field'");
+        }
+
         return array_column(
             $this->createQueryBuilder('e')
                 ->select("DISTINCT(e.$field)")

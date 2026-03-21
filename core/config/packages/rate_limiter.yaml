@@ -18,6 +18,28 @@ framework:
                 interval: '1 second'
                 amount: 25
 
+        # Playbook activation: prevent brute-force playbook spam per user.
+        playbook_activation:
+            policy: token_bucket
+            limit: 20
+            rate:
+                interval: '1 hour'
+                amount: 20
+        # Task completion: protect task completion endpoint from abuse.
+        task_completion:
+            policy: token_bucket
+            limit: 200
+            rate:
+                interval: '1 hour'
+                amount: 200
+        # SMS import: file upload is CPU/IO intensive; cap at 5 uploads per day per user.
+        sms_import:
+            policy: token_bucket
+            limit: 5
+            rate:
+                interval: '1 day'
+                amount: 5
+
 when@test:
     framework:
         rate_limiter:
@@ -26,4 +48,10 @@ when@test:
             api_key_requests:
                 policy: no_limit
             telegram_outbound:
+                policy: no_limit
+            playbook_activation:
+                policy: no_limit
+            task_completion:
+                policy: no_limit
+            sms_import:
                 policy: no_limit

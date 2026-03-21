@@ -5,11 +5,14 @@ namespace Ari\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Ari\Entity\Contact;
+use Ari\Entity\User;
+use Ari\Exception\QuotaExceededException;
+use Ari\Repository\ContactRepository;
 use Ari\Service\Entitlement\EntitlementServiceInterface;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * Processor for Contact entities that handles nested ContactName and ContactDate creation/updates.
@@ -27,6 +30,7 @@ class ContactProcessor implements ProcessorInterface
         private EntityManagerInterface $entityManager,
         private Security $security,
         private EntitlementServiceInterface $entitlementService,
+        private ContactRepository $contactRepository,
     ) {
     }
 
@@ -201,29 +205,15 @@ class ContactProcessor implements ProcessorInterface
             $this->handleSimpleAdd($data, $data->getContactInteractions(), null);
         }
 
-        // Let the UserOwnerProcessor handle user assignment and main persistence
-        $result = $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
-
-        // Post-insert compensating quota check (narrows the race window for concurrent requests).
-        //
-        // ContactVoter::CONTACT_ADD runs SELECT COUNT(*) before the INSERT. Under concurrency,
-        // two requests can both pass the check and INSERT simultaneously, overshooting the quota.
-        // By re-reading the count immediately after the committed INSERT we can detect the
-        // overshoot, roll back this contact, and return 422 — reducing the race window from
-        // the full request duration to milliseconds.
-        //
-        // isOverQuota() checks used > limit (strict), so a user inserting their Nth contact
-        // when quota is exactly N is NOT rolled back: used == limit is a valid state.
         if ($operation instanceof \ApiPlatform\Metadata\Post) {
             $user = $this->security->getUser();
-            if ($user instanceof \Ari\Entity\User && $this->entitlementService->isOverQuota($user, 'contacts')) {
-                $this->entityManager->remove($data);
-                $this->entityManager->flush();
-                throw new UnprocessableEntityHttpException('quota_exceeded');
+            if ($user instanceof User) {
+                return $this->persistWithQuotaGuard($data, $operation, $uriVariables, $context, $user);
             }
         }
 
-        return $result;
+        // For PUT/PATCH and unauthenticated edge cases, fall through to plain persist.
+        return $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
     }
 
     /**
@@ -424,7 +414,8 @@ class ContactProcessor implements ProcessorInterface
         $sourceReflection = new \ReflectionClass($source);
 
         foreach ($reflection->getProperties() as $property) {
-            if ('id' === $property->getName()) {
+            // Never copy ownership/identity fields — prepareItem always re-sets these from $owner.
+            if (\in_array($property->getName(), ['id', 'tenant', 'contact', 'user'], true)) {
                 continue;
             }
             if (!$sourceReflection->hasProperty($property->getName())) {
@@ -488,6 +479,81 @@ class ContactProcessor implements ProcessorInterface
             if (null !== $extraLogic) {
                 $extraLogic($item, $owner);
             }
+        }
+    }
+
+    /**
+     * Persist a new Contact with quota enforcement.
+     *
+     * On platforms that support SELECT … FOR UPDATE (MySQL/MariaDB), wraps the count
+     * check and insert in a single transaction so concurrent requests cannot both
+     * pass the quota check and exceed the limit.
+     *
+     * On SQLite (test environment), SELECT FOR UPDATE is not supported; falls back to
+     * a compensating check after the insert (same as the former behaviour), which has
+     * a small race window but is acceptable in a single-tenant test context.
+     *
+     * @param Contact              $data
+     * @param array<string, mixed> $uriVariables
+     * @param array<string, mixed> $context
+     */
+    private function persistWithQuotaGuard(
+        Contact $data,
+        Operation $operation,
+        array $uriVariables,
+        array $context,
+        User $user,
+    ): mixed {
+        $connection = $this->entityManager->getConnection();
+        $isSqlite = $connection->getDatabasePlatform() instanceof SqlitePlatform;
+
+        if ($isSqlite) {
+            // SQLite does not support SELECT FOR UPDATE, but does support transactions.
+            // Wrapping in a transaction makes the compensating rollback atomic — no need
+            // for a second flush/delete if quota is exceeded.
+            $transactionStarted = false;
+            try {
+                $connection->beginTransaction();
+                $transactionStarted = true;
+                $result = $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
+                if ($this->entitlementService->isOverQuota($user, 'contacts')) {
+                    $connection->rollBack();
+                    // $transactionStarted remains true, but isTransactionActive() will now be false,
+                    // so the catch block's guard prevents a double-rollback attempt.
+                    throw new QuotaExceededException('quota_exceeded');
+                }
+                $connection->commit();
+
+                return $result;
+            } catch (\Throwable $e) {
+                if ($transactionStarted && $connection->isTransactionActive()) {
+                    $connection->rollBack();
+                }
+                throw $e;
+            }
+        }
+
+        // MySQL/MariaDB: pessimistic write lock prevents concurrent over-quota inserts.
+        $transactionStarted = false;
+        try {
+            $connection->beginTransaction();
+            $transactionStarted = true;
+            $limit = $this->entitlementService->getContactsLimit($user);
+            if (0 !== $limit) {
+                $count = $this->contactRepository->countByTenantWithLock($user);
+                if ($count >= $limit) {
+                    throw new QuotaExceededException('quota_exceeded');
+                }
+            }
+            $result = $this->userOwnerProcessor->process($data, $operation, $uriVariables, $context);
+            $connection->commit();
+
+            return $result;
+        } catch (\Throwable $e) {
+            if ($transactionStarted && $connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
+            throw $e;
         }
     }
 }

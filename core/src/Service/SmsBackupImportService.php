@@ -10,6 +10,7 @@ use Ari\Entity\ContactName;
 use Ari\Entity\ContactPhoneNumber;
 use Ari\Entity\User;
 use Ari\Repository\ContactInteractionRepository;
+use Ari\Repository\ContactPhoneNumberRepository;
 use Ari\Service\Entitlement\EntitlementServiceInterface;
 use Ari\Service\Entitlement\EntitlementState;
 use Ari\ValueObject\ParsedRecord;
@@ -29,6 +30,7 @@ class SmsBackupImportService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ContactInteractionRepository $interactionRepository,
+        private readonly ContactPhoneNumberRepository $phoneNumberRepository,
         private readonly EntitlementServiceInterface $entitlementService,
         private readonly LoggerInterface $logger,
     ) {
@@ -39,11 +41,8 @@ class SmsBackupImportService
      */
     public function import(array $records, SmsBackupImportOptions $options, User $user): SmsBackupImportResult
     {
-        $tenantId = (int) $user->getId();
-
-        // Step 1: Build normalizedPhone -> contactId map via DBAL (bypasses ORM filter;
-        // we filter by tenant_id explicitly).
-        $phoneMap = $this->buildPhoneMap($tenantId);
+        // Step 1: Build normalizedPhone -> contactId map via DQL (TenantFilter applies).
+        $phoneMap = $this->phoneNumberRepository->buildPhoneMapForTenant($user);
 
         // Step 2: Create contacts for unknown phone numbers if requested.
         $contactsCreated = 0;
@@ -199,38 +198,6 @@ class SmsBackupImportService
             contactsCreated: $contactsCreated,
             recordsSkipped: $recordsSkipped,
         );
-    }
-
-    /**
-     * Build a map of normalizedPhone -> contactId for the given tenant.
-     * Uses DBAL directly to bypass the ORM layer (the TenantFilter is applied
-     * via explicit tenant_id parameter, not the Doctrine filter).
-     *
-     * @return array<string, int>
-     */
-    private function buildPhoneMap(int $tenantId): array
-    {
-        $rows = $this->entityManager->getConnection()->fetchAllAssociative(
-            'SELECT cpn.value, c.id FROM contact_phone_number cpn
-             JOIN contact c ON cpn.contact_id = c.id
-             WHERE c.tenant_id = :tenantId',
-            ['tenantId' => $tenantId],
-        );
-
-        $map = [];
-        foreach ($rows as $row) {
-            /** @var array{value: string|null, id: int|string} $row */
-            $rawValue = $row['value'] ?? '';
-            if ('' === $rawValue) {
-                continue;
-            }
-            $normalized = preg_replace('/\D/', '', $rawValue) ?? '';
-            if ('' !== $normalized) {
-                $map[$normalized] = (int) $row['id'];
-            }
-        }
-
-        return $map;
     }
 
     /**

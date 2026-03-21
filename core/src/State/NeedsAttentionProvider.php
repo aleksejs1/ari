@@ -60,17 +60,14 @@ final class NeedsAttentionProvider implements ProviderInterface
         $today = new \DateTimeImmutable('today');
 
         // ── Step 1: Cadence-overdue contacts (full scan, no DB pagination) ────────
-        // cadenceDays is included in SELECT + GROUP BY to avoid ONLY_FULL_GROUP_BY
-        // violations on MySQL: referencing a non-aggregated column via an alias inside
-        // HAVING is rejected. The overdue filter and ordering are applied in PHP.
-        /** @var list<array{contactId: int|string, cadenceDays: int|string, lastAt: string|null}> $cadenceRows */
+        // Uses the denormalized Contact::$lastInteractionAt field (maintained by
+        // ContactInteractionListener) to avoid a GROUP BY + JOIN on contact_interaction.
+        /** @var list<array{contactId: int|string, cadenceDays: int|string, lastAt: \DateTimeImmutable|null}> $cadenceRows */
         $cadenceRows = $this->em->createQueryBuilder()
-            ->select('c.id AS contactId, c.cadenceDays AS cadenceDays, MAX(ci.timestamp) AS lastAt')
+            ->select('c.id AS contactId, c.cadenceDays AS cadenceDays, c.lastInteractionAt AS lastAt')
             ->from(Contact::class, 'c')
-            ->leftJoin('c.contactInteractions', 'ci')
             ->where('c.user = :user')
             ->andWhere('c.cadenceDays IS NOT NULL')
-            ->groupBy('c.id, c.cadenceDays')
             ->setParameter('user', $user)
             ->getQuery()
             ->getArrayResult();
@@ -78,13 +75,13 @@ final class NeedsAttentionProvider implements ProviderInterface
         // Filter and sort in PHP: keep only overdue rows, order by due date ASC
         // (null lastAt = never interacted → always overdue, sorted first).
         $cadenceContactIds = [];
-        /** @var array<int, string|null> $lastAtMap */
+        /** @var array<int, \DateTimeImmutable|null> $lastAtMap */
         $lastAtMap = [];
 
-        /** @var list<array{id: int, lastAt: string|null, dueDate: \DateTimeImmutable|null}> $overdueRows */
+        /** @var list<array{id: int, lastAt: \DateTimeImmutable|null, dueDate: \DateTimeImmutable|null}> $overdueRows */
         $overdueRows = [];
         foreach ($cadenceRows as $row) {
-            $lastAt = null !== $row['lastAt'] ? new \DateTimeImmutable($row['lastAt']) : null;
+            $lastAt = $row['lastAt']; // DateTimeImmutable|null — already hydrated by Doctrine
             $cadenceDays = (int) $row['cadenceDays'];
 
             if (null === $lastAt) {
@@ -115,7 +112,7 @@ final class NeedsAttentionProvider implements ProviderInterface
 
         foreach ($overdueRows as $row) {
             $cadenceContactIds[] = $row['id'];
-            $lastAtMap[$row['id']] = $row['lastAt'];
+            $lastAtMap[$row['id']] = $row['lastAt']; // DateTimeImmutable|null
         }
 
         // ── Step 2: Task-overdue contact IDs ──────────────────────────────────────
@@ -133,6 +130,10 @@ final class NeedsAttentionProvider implements ProviderInterface
         }
 
         // ── Step 4: PHP-level pagination ──────────────────────────────────────────
+        // Note: $totalItems is computed before pagination. If a contact is deleted
+        // concurrently between Step 1 and Step 5, the paginator may report a count
+        // of N while returning N-1 items on the last page. This is acceptable for a
+        // read-heavy, non-critical listing endpoint at typical scale.
         $offset = ($page - 1) * $itemsPerPage;
         $pageIds = \array_slice($allIds, $offset, $itemsPerPage);
 
@@ -146,7 +147,9 @@ final class NeedsAttentionProvider implements ProviderInterface
             ->select('c')
             ->from(Contact::class, 'c')
             ->where('c.id IN (:ids)')
+            ->andWhere('c.user = :user')
             ->setParameter('ids', $pageIds)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
 
@@ -164,8 +167,7 @@ final class NeedsAttentionProvider implements ProviderInterface
             if (!isset($contactMap[$contactId])) {
                 continue;
             }
-            $rawLastAt = $lastAtMap[$contactId] ?? null;
-            $lastAt = null !== $rawLastAt ? new \DateTimeImmutable($rawLastAt) : null;
+            $lastAt = $lastAtMap[$contactId] ?? null; // DateTimeImmutable|null
             $results[] = $this->toDto(
                 $contactMap[$contactId],
                 $lastAt,
@@ -173,6 +175,11 @@ final class NeedsAttentionProvider implements ProviderInterface
                 isset($taskOverdueSet[$contactId]),
             );
         }
+
+        // Cap $totalItems to the number of contacts that actually loaded. If contacts were
+        // deleted concurrently between Step 1 and Step 5, the original count is stale.
+        // Using min() prevents the paginator from reporting a total that exceeds reality.
+        $totalItems = min($totalItems, $totalItems - (\count($pageIds) - \count($results)));
 
         return new TraversablePaginator(
             new \ArrayIterator($results),

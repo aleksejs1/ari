@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection]
 #[Get(security: "is_granted('TASK_VIEW', object)")]
-#[Patch(input: ContactTaskUpdateInput::class, security: "is_granted('TASK_EDIT', object)", processor: ContactTaskProcessor::class)]
+#[Patch(input: ContactTaskUpdateInput::class, security: "is_granted('TASK_EDIT', object)", processor: ContactTaskProcessor::class, name: 'contact_task_patch')]
 #[ApiFilter(SearchFilter::class, properties: ['contact' => 'exact', 'status' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['dueDate'])]
 class ContactTask implements TenantAwareInterface

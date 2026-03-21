@@ -30,6 +30,7 @@ use Ari\Repository\ContactRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -137,6 +138,15 @@ class Contact implements TenantAwareInterface
     #[ORM\Column(nullable: true)]
     private ?int $cadenceDays = null;
 
+    /**
+     * Denormalized timestamp of the most recent ContactInteraction for this contact.
+     * Updated by ContactInteractionListener after every flush.
+     * Used by NeedsAttentionProvider to avoid a GROUP BY query on contact_interaction.
+     * Not exposed in API responses — internal performance field.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastInteractionAt = null;
+
     #[ORM\ManyToOne(inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -176,7 +186,6 @@ class Contact implements TenantAwareInterface
         $this->contactAddresses = new ArrayCollection();
         $this->contactGroups = new ArrayCollection();
         $this->contactOrganizations = new ArrayCollection();
-        $this->contactBiographies = new ArrayCollection();
         $this->contactBiographies = new ArrayCollection();
         $this->contactInteractions = new ArrayCollection();
         $this->contactRelations = new ArrayCollection();
@@ -276,6 +285,18 @@ class Contact implements TenantAwareInterface
     public function setCadenceDays(?int $cadenceDays): static
     {
         $this->cadenceDays = $cadenceDays;
+
+        return $this;
+    }
+
+    public function getLastInteractionAt(): ?\DateTimeImmutable
+    {
+        return $this->lastInteractionAt;
+    }
+
+    public function setLastInteractionAt(?\DateTimeImmutable $lastInteractionAt): static
+    {
+        $this->lastInteractionAt = $lastInteractionAt;
 
         return $this;
     }

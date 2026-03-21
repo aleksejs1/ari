@@ -4,6 +4,7 @@ namespace Ari\Repository;
 
 use Ari\Entity\Contact;
 use Ari\Entity\User;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -30,6 +31,24 @@ class ContactRepository extends ServiceEntityRepository
             ->andWhere('c.tenant = :tenant')
             ->setParameter('tenant', $user)
             ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Returns the number of contacts owned by the given user, holding a pessimistic write lock
+     * (SELECT … FOR UPDATE) to prevent concurrent requests from over-shooting the quota.
+     *
+     * Must be called inside an active transaction; otherwise the lock has no effect.
+     * Not supported on SQLite — callers must guard with a platform check before calling this method.
+     */
+    public function countByTenantWithLock(User $user): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.tenant = :tenant')
+            ->setParameter('tenant', $user)
+            ->getQuery()
+            ->setLockMode(LockMode::PESSIMISTIC_WRITE)
             ->getSingleScalarResult();
     }
 

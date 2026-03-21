@@ -32,6 +32,13 @@ interface EntitlementServiceInterface
     public function getSnapshot(User $user): EntitlementSnapshot;
 
     /**
+     * Returns the contacts limit for the user's plan.
+     * Returns 0 for unlimited plans (contacts_limit = 0).
+     * Returns 0 for ROLE_ADMIN (treated as unlimited).
+     */
+    public function getContactsLimit(User $user): int;
+
+    /**
      * Returns true if the user's current usage EXCEEDS (strictly greater than) the plan
      * limit for $quota. Unlike checkQuota(), which checks whether a new item can be added,
      * this method is used after an INSERT to detect a concurrency overshoot:

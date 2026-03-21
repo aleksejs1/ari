@@ -188,6 +188,7 @@ deptrac:
       - Dto
       - Entity
       - Event
+      - Exception      # State processors may throw domain exceptions (e.g. QuotaExceededException)
       - Kernel         # getProjectDir(), ARI_VERSION constant
       - Repository     # State providers may access repositories directly (e.g. ApiKeyProvider)
       - Security

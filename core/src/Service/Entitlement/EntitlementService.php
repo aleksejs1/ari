@@ -147,6 +147,16 @@ final class EntitlementService implements EntitlementServiceInterface
     }
 
     #[\Override]
+    public function getContactsLimit(User $user): int
+    {
+        if ($this->isAdmin($user)) {
+            return 0; // unlimited
+        }
+
+        return $this->resolveContactsLimit($user);
+    }
+
+    #[\Override]
     public function isOverQuota(User $user, string $quota): bool
     {
         if ($this->isAdmin($user)) {
@@ -197,6 +207,10 @@ final class EntitlementService implements EntitlementServiceInterface
         $envKey = 'APP_API_KEYS_LIMIT_' . strtoupper($planId);
         $envVal = getenv($envKey);
         if (false !== $envVal && '' !== $envVal) {
+            if (!is_numeric($envVal) || (int) $envVal < 0) {
+                throw new \LogicException("Environment variable $envKey must be a non-negative integer, got: '$envVal'");
+            }
+
             return (int) $envVal;
         }
 
@@ -216,6 +230,10 @@ final class EntitlementService implements EntitlementServiceInterface
         $envKey = 'APP_CONTACTS_LIMIT_' . strtoupper($planId);
         $envVal = getenv($envKey);
         if ($envVal !== false && $envVal !== '') {
+            if (!is_numeric($envVal) || (int) $envVal < 0) {
+                throw new \LogicException("Environment variable $envKey must be a non-negative integer, got: '$envVal'");
+            }
+
             return (int) $envVal;
         }
 
