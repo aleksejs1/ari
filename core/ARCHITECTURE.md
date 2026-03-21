@@ -203,7 +203,7 @@ The `Contact` entity carries a `cadenceDays` field (`int|null`) — the user's t
 `GET /api/contacts/needs-attention` returns contacts whose last interaction is overdue relative to their cadence. The endpoint is implemented as a custom API Platform State Provider (`NeedsAttentionProvider`) backed by `NeedsAttentionRepository`.
 
 Key design decisions:
-- **No pre-computed field**: Overdue status is calculated at query time using `MAX(timestamp)` per contact in a sub-query. A covering index `(contact_id, timestamp DESC)` on `contact_interaction` keeps the aggregation efficient even with thousands of interactions per tenant.
+- **Denormalized field**: `Contact::lastInteractionAt` stores the most recent interaction timestamp, maintained by `ContactInteractionListener`. `NeedsAttentionProvider` reads this field directly — no `GROUP BY` + `JOIN` on `contact_interaction`. See §17 for the maintenance strategy.
 - **Route priority**: The literal path segment `needs-attention` takes precedence over the `{id: \d+}` pattern — no route conflict with `GET /api/contacts/{id}`.
 - **Response shape**: Returns `NeedsAttentionContactDto` objects that extend the standard `Contact` serialization with two extra fields: `lastInteractionAt` (nullable ISO 8601 string) and `overdueDays` (integer). When `lastInteractionAt` is null (contact was never interacted with), `overdueDays` equals `cadenceDays` — a documented sentinel meaning "maximally overdue regardless of when the contact was added".
 - **Sorting**: Results are ordered by `overdueDays DESC` so the most neglected contacts appear first. Contacts never interacted with sort at the top within the same cadence bucket.
@@ -414,3 +414,117 @@ The `entityType` + `entityId` pattern (instead of FK) allows the suggestion tabl
 #### Caddy `/metrics` access restriction
 - Default `docker/Caddyfile` routes `/metrics` to PHP — accessible from any IP (safe for development).
 - When `compose.monitoring.yaml` is active, `monitoring/caddy/metrics-block.Caddyfile` replaces the image-baked Caddyfile and restricts `/metrics` to RFC-1918 IP ranges (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) — Prometheus reaches the app over Docker's internal `172.x.x.x` network, external requests get 403.
+
+### 15. Quota Enforcement — Pessimistic Write Lock
+
+Contact creation is guarded by a per-user quota using a pessimistic write lock to prevent concurrent requests from both passing the quota check and exceeding the limit.
+
+#### Pattern
+
+```php
+// MySQL/MariaDB — SELECT FOR UPDATE prevents phantom reads
+$connection->beginTransaction();
+$transactionStarted = true;
+try {
+    $limit = $entitlementService->getContactsLimit($user); // 0 = unlimited
+    if (0 !== $limit) {
+        $count = $contactRepository->countByTenantWithLock($user); // PESSIMISTIC_WRITE
+        if ($count >= $limit) {
+            throw new QuotaExceededException('quota_exceeded');
+        }
+    }
+    $result = $processor->process($data, ...);
+    $connection->commit();
+    return $result;
+} catch (\Throwable $e) {
+    if ($transactionStarted && $connection->isTransactionActive()) {
+        $connection->rollBack();
+    }
+    throw $e;
+}
+```
+
+#### SQLite fallback
+
+SQLite does not support `SELECT FOR UPDATE`. Detect via `instanceof SqlitePlatform` and wrap in a regular transaction (INSERT + compensating check + rollback if over quota). The quota check runs inside the transaction so it sees the just-inserted row.
+
+#### Exception mapping
+
+`QuotaExceededException` is mapped to HTTP 422 in `config/packages/api_platform.yaml`. The message key is `quota_exceeded`.
+
+#### Entitlement resolution
+
+`EntitlementService::getContactsLimit()` returns `0` for unlimited (admin or plans with no cap). Limit values from `%ari_plans%` config can be overridden per-plan via env vars (`APP_CONTACTS_LIMIT_{PLAN_ID_UPPER}`). Env vars are validated: must be non-negative integers or a `\LogicException` is thrown at startup.
+
+---
+
+### 16. Per-User JWT Rate Limiting
+
+Sensitive write endpoints are rate-limited per authenticated user via `JwtUserRateLimiterSubscriber` (priority -10 on `KernelEvents::REQUEST`, after auth). API-key requests have their own rate limiter and are skipped here.
+
+#### Protected routes
+
+| Route name | Limiter | Default limit |
+|---|---|---|
+| `contact_playbook_post` | `playbook_activation` | 20 / hour |
+| `contact_task_patch` | `task_completion` | 200 / hour |
+| `api_sms_backup_import` | `sms_import` | 5 / day |
+
+Limits are defined in `config/packages/rate_limiter.yaml` (token bucket). All limiters use `no_limit` policy in the `test` environment.
+
+#### Response on 429
+
+```
+HTTP/1.1 429 Too Many Requests
+X-RateLimit-Limit: 20
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1718123456      (Unix timestamp)
+Retry-After: 3542                  (seconds — RFC 7231 §7.1.3)
+```
+
+#### Adding a new rate-limited route
+
+1. Add a limiter entry in `rate_limiter.yaml` (and `no_limit` in `when@test:`).
+2. Add the route name to `JwtUserRateLimiterSubscriber::onRequest()`.
+3. If the route name comes from an API Platform operation, ensure the operation has an explicit `name:` attribute (e.g. `#[Patch(name: 'my_route')]`).
+
+---
+
+### 17. Denormalized `Contact::lastInteractionAt`
+
+`Contact` carries a `lastInteractionAt` (`DateTimeImmutable|null`) field that mirrors the maximum `ContactInteraction.timestamp` for that contact. This avoids a `GROUP BY` + `JOIN` on `contact_interaction` in hot read paths such as `NeedsAttentionProvider`.
+
+#### Maintenance — `ContactInteractionListener`
+
+- **`prePersist`**: Collects `(contactId → maxTimestamp)` for each `ContactInteraction` being persisted.
+- **`postFlush`**: Issues a DQL `UPDATE` per contact: `SET lastInteractionAt = :ts WHERE (lastInteractionAt IS NULL OR lastInteractionAt < :ts)`. The condition ensures the field only advances (out-of-order imports are safe).
+- The pending map is swapped out before iteration to prevent re-entrant loops.
+- Implements `ResetInterface` — Symfony Messenger resets the state between messages.
+
+#### Known limitation
+
+If a Messenger worker is killed between `prePersist` and `postFlush`, `lastInteractionAt` may be stale for the affected contacts. It can be repaired by re-running the backfill UPDATE from `Version20260321000000`.
+
+#### Backfill migration
+
+`Version20260321000000` adds the column and backfills it via a correlated subquery (SQLite-compatible). For tables > 100 k rows, use the JOIN form documented in the migration comment.
+
+---
+
+### 18. DQL-Only Repository Queries
+
+All data access uses DQL (Doctrine QueryBuilder or named DQL) rather than raw DBAL SQL. This ensures:
+
+- The Doctrine `TenantFilter` applies automatically to all queries (no accidental cross-tenant leaks).
+- Type safety via Doctrine type hydration.
+- Testability — queries work against both MySQL and SQLite test environments.
+
+**Exception**: `MetricsService` uses DBAL directly because it queries across all tenants (admin-scope aggregates) and deliberately bypasses the `TenantFilter`. This is documented and intentional.
+
+**Field name injection guard**: Methods that accept a field name as a parameter (e.g. `getDistinctValues(string $field)`) must validate the name before interpolation:
+
+```php
+if (1 !== preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+    throw new \InvalidArgumentException("Invalid field name: '$field'");
+}
+```
