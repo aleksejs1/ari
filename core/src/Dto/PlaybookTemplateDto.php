@@ -12,9 +12,12 @@ use Ari\State\PlaybookTemplateProvider;
     security: "is_granted('ROLE_USER')",
     provider: PlaybookTemplateProvider::class,
 )]
+// Templates are loaded from a static PHP config file; they change only on deploy.
+// Browser-level caching (private, 1 h) avoids redundant API calls during a session.
 #[GetCollection(
     uriTemplate: '/playbook_templates',
     name: 'playbook_templates_list',
+    cacheHeaders: ['max_age' => 3600, 'vary' => ['Accept', 'Authorization']],
 )]
 final class PlaybookTemplateDto
 {

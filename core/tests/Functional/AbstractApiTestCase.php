@@ -5,6 +5,7 @@ namespace Ari\Tests\Functional;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use Ari\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Middleware\Debug\DebugDataHolder;
 
 abstract class AbstractApiTestCase extends ApiTestCase
 {
@@ -60,6 +61,35 @@ abstract class AbstractApiTestCase extends ApiTestCase
         $em->flush();
 
         return $user;
+    }
+
+    /**
+     * Reset the Doctrine query log so a subsequent countQueries() call starts from zero.
+     * Requires kernel.debug=true (active in the test environment).
+     */
+    protected function resetQueryLog(): void
+    {
+        $holder = self::getContainer()->get('doctrine.debug_data_holder');
+        if ($holder instanceof DebugDataHolder) {
+            $holder->reset();
+        }
+    }
+
+    /**
+     * Returns the number of SQL queries executed since the last resetQueryLog() call.
+     */
+    protected function countQueries(): int
+    {
+        $holder = self::getContainer()->get('doctrine.debug_data_holder');
+        if (!$holder instanceof DebugDataHolder) {
+            return 0;
+        }
+        $count = 0;
+        foreach ($holder->getData() as $queries) {
+            $count += \count($queries);
+        }
+
+        return $count;
     }
 
     protected function getToken(string $username, string $password): string

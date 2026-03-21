@@ -130,8 +130,22 @@ final class ContactPlaybookService
     public function generateMissingTasksForAllActive(): int
     {
         $playbooks = $this->playbookRepository->findBy(['status' => ContactPlaybook::STATUS_ACTIVE]);
+
+        if ([] === $playbooks) {
+            return 0;
+        }
+
+        // Batch-load active and last tasks for all playbooks in 2 queries instead of N×K×2.
+        $activeByPlaybook = $this->taskRepository->findActiveTasksForPlaybooks($playbooks);
+        $lastByPlaybook = $this->taskRepository->findLastTasksForPlaybooks($playbooks);
+
         foreach ($playbooks as $playbook) {
-            $this->generator->generateMissingTasks($playbook);
+            $id = $playbook->getId() ?? 0;
+            $this->generator->generateMissingTasksBatch(
+                $playbook,
+                $activeByPlaybook[$id] ?? [],
+                $lastByPlaybook[$id] ?? [],
+            );
         }
         $this->em->flush();
 

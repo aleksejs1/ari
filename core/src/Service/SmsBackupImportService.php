@@ -119,8 +119,8 @@ class SmsBackupImportService
                 continue;
             }
 
-            $received = count(array_filter($groupRecords, static fn(array $r): bool => 'incoming' === $r['direction']));
-            $sent = count(array_filter($groupRecords, static fn(array $r): bool => 'outgoing' === $r['direction']));
+            $received = count(array_filter($groupRecords, static fn (array $r): bool => 'incoming' === $r['direction']));
+            $sent = count(array_filter($groupRecords, static fn (array $r): bool => 'outgoing' === $r['direction']));
             $total = count($groupRecords);
 
             $interaction = $this->newInteraction($contactId, $user);
@@ -214,7 +214,7 @@ class SmsBackupImportService
             'SELECT cpn.value, c.id FROM contact_phone_number cpn
              JOIN contact c ON cpn.contact_id = c.id
              WHERE c.tenant_id = :tenantId',
-            ['tenantId' => $tenantId]
+            ['tenantId' => $tenantId],
         );
 
         $map = [];
@@ -239,7 +239,7 @@ class SmsBackupImportService
      * and increments $contactsCreated for each successfully created contact.
      *
      * @param list<array{type: string, phoneNumber: string, normalizedPhone: string, contactName: string, date: string, direction: string, durationSeconds: int|null}> $records
-     * @param array<string, int> $phoneMap
+     * @param array<string, int>                                                                                                                                       $phoneMap
      *
      * @return array<string, int>
      */
@@ -268,6 +268,11 @@ class SmsBackupImportService
                 ];
             }
         }
+
+        // Collect Contact objects by normalizedPhone so we can populate the phoneMap
+        // after a single batch flush (instead of flushing per-contact to get the generated ID).
+        /** @var array<string, Contact> $pendingContacts */
+        $pendingContacts = [];
 
         foreach ($unknownPhones as $normalized => $info) {
             if (EntitlementState::Allowed !== $this->entitlementService->checkQuota($user, 'contacts')) {
@@ -298,13 +303,19 @@ class SmsBackupImportService
                 $this->entityManager->persist($name);
             }
 
-            // Flush each contact individually to get the ID.
+            $pendingContacts[$normalized] = $contact;
+        }
+
+        if ([] !== $pendingContacts) {
+            // Single flush for all new contacts; auto-increment IDs are now available.
             $this->entityManager->flush();
 
-            $newId = $contact->getId();
-            if (null !== $newId) {
-                $phoneMap[$normalized] = $newId;
-                ++$contactsCreated;
+            foreach ($pendingContacts as $normalized => $contact) {
+                $newId = $contact->getId();
+                if (null !== $newId) {
+                    $phoneMap[$normalized] = $newId;
+                    ++$contactsCreated;
+                }
             }
         }
 
@@ -422,7 +433,7 @@ class SmsBackupImportService
 
         /** @var ContactName[] $names */
         $names = $this->entityManager->createQuery(
-            'SELECT cn FROM ' . ContactName::class . ' cn WHERE cn.contact IN (:ids) ORDER BY cn.id ASC'
+            'SELECT cn FROM ' . ContactName::class . ' cn WHERE cn.contact IN (:ids) ORDER BY cn.id ASC',
         )
             ->setParameter('ids', $contactIds)
             ->getResult();

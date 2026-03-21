@@ -121,6 +121,57 @@ final class ContactTaskGeneratorService
         }
     }
 
+    /**
+     * Batch variant of generateMissingTasks: uses pre-loaded task data instead of issuing
+     * one query per series. Called by ContactPlaybookService::generateMissingTasksForAllActive.
+     *
+     * @param list<ContactTask>          $activeTasks Active tasks for this playbook (pre-loaded)
+     * @param array<string, ContactTask> $lastTasks   Last task per seriesKey (pre-loaded)
+     */
+    public function generateMissingTasksBatch(
+        ContactPlaybook $playbook,
+        array $activeTasks,
+        array $lastTasks,
+    ): void {
+        if (ContactPlaybook::STATUS_ACTIVE !== $playbook->getStatus()) {
+            return;
+        }
+
+        $config = $this->registry->findByPreset($playbook->getPreset());
+        $today = new \DateTimeImmutable('today');
+
+        // Index active tasks by seriesKey for O(1) lookup.
+        $activeBySeriesKey = [];
+        foreach ($activeTasks as $task) {
+            $key = $task->getSeriesKey();
+            if (null !== $key) {
+                $activeBySeriesKey[$key] = $task;
+            }
+        }
+
+        foreach ($config->tasks as $taskConfig) {
+            $seriesKey = $taskConfig->type;
+
+            if (isset($activeBySeriesKey[$seriesKey])) {
+                continue; // series is covered
+            }
+
+            $lastTask = $lastTasks[$seriesKey] ?? null;
+            $completedAt = $lastTask?->getCompletedAt();
+            if (null !== $lastTask && null !== $completedAt) {
+                $dueDate = $completedAt->modify('+' . $taskConfig->frequencyDays . ' days');
+                if ($dueDate < $today) {
+                    $dueDate = $today;
+                }
+            } else {
+                $dueDate = $today;
+            }
+
+            $task = $this->createTask($playbook, $taskConfig, $dueDate);
+            $this->em->persist($task);
+        }
+    }
+
     private function createTask(ContactPlaybook $playbook, PlaybookTaskConfig $taskConfig, \DateTimeImmutable $dueDate): ContactTask
     {
         $contact = $playbook->getContact();

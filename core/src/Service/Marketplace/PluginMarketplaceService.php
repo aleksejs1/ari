@@ -8,16 +8,22 @@ use Composer\Semver\Semver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PluginMarketplaceService
 {
     private Filesystem $filesystem;
 
+    private const REGISTRY_CACHE_KEY = 'plugin_marketplace_registry';
+    private const REGISTRY_CACHE_TTL = 900; // 15 minutes
+
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly PluginValidatorService $validator,
         private readonly SystemSettingRepository $systemSettingRepository,
+        private readonly CacheInterface $cache,
         #[Autowire('%plugin_registry_url%')]
         private readonly string $registryUrl,
         #[Autowire('%kernel.project_dir%')]
@@ -32,14 +38,21 @@ class PluginMarketplaceService
     }
 
     /**
-     * Fetch the plugin registry from GitHub Pages and enrich with local install info.
+     * Fetch the plugin registry from GitHub Pages, enriched with local install info.
+     * The raw registry response is cached for 15 minutes to avoid hammering the
+     * remote URL on every page load. The enrichment (local install state) is computed
+     * fresh on each call so install/uninstall state is always current.
      *
      * @return array{plugins: list<array<string, mixed>>}
      */
     public function fetchRegistry(): array
     {
-        $response = $this->httpClient->request('GET', $this->registryUrl);
-        $registry = $response->toArray();
+        /** @var array{plugins?: mixed} $registry */
+        $registry = $this->cache->get(self::REGISTRY_CACHE_KEY, function (ItemInterface $item): array {
+            $item->expiresAfter(self::REGISTRY_CACHE_TTL);
+
+            return $this->httpClient->request('GET', $this->registryUrl)->toArray();
+        });
 
         $plugins = $registry['plugins'] ?? [];
         if (!is_array($plugins)) {
@@ -398,13 +411,14 @@ class PluginMarketplaceService
         if (is_string($bundleClass) && '' !== $bundleClass) {
             $parts = explode('\\', $bundleClass);
             // Expecting Plugins\GiftPlugin\GiftPlugin -> GiftPlugin
-            if (count($parts) >= 2 && $parts[0] === 'Plugins') {
+            if (count($parts) >= 2 && 'Plugins' === $parts[0]) {
                 return $parts[1];
             }
         }
 
         // 2. Fallback: PascalCase of Plugin ID (gift-plugin -> GiftPlugin)
         $cleanId = preg_replace('/[^a-zA-Z0-9_-]/', '', $pluginId) ?? '';
+
         return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $cleanId)));
     }
 
@@ -421,7 +435,7 @@ class PluginMarketplaceService
         }
 
         $scanned = scandir($pluginsDir);
-        if ($scanned === false) {
+        if (false === $scanned) {
             return [];
         }
 
@@ -464,6 +478,7 @@ class PluginMarketplaceService
         if (is_string($minCoreVersion) && '' !== $minCoreVersion) {
             return Semver::satisfies(Kernel::VERSION, '>=' . $minCoreVersion);
         }
+
         return true;
     }
 
@@ -476,7 +491,7 @@ class PluginMarketplaceService
 
         // Scan all directories in /plugins to find the one matching the ID in plugin.json
         $scanned = scandir($pluginsDir);
-        if ($scanned === false) {
+        if (false === $scanned) {
             return null;
         }
 

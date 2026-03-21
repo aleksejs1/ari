@@ -108,6 +108,86 @@ class ContactTaskRepository extends ServiceEntityRepository
     }
 
     /**
+     * Returns all active (pending, snoozed, awaiting_reflection) tasks for a set of playbooks,
+     * grouped by playbook ID. Used by ContactPlaybookService::generateMissingTasksForAllActive
+     * to replace N×K findActiveTaskForSeries queries with a single query.
+     *
+     * @param list<ContactPlaybook> $playbooks
+     *
+     * @return array<int, list<ContactTask>>
+     */
+    public function findActiveTasksForPlaybooks(array $playbooks): array
+    {
+        if ([] === $playbooks) {
+            return [];
+        }
+
+        /** @var list<ContactTask> $tasks */
+        $tasks = $this->createQueryBuilder('ct')
+            ->addSelect('r')
+            ->leftJoin('ct.reflection', 'r')
+            ->where('ct.playbook IN (:playbooks)')
+            ->andWhere('ct.status IN (:statuses)')
+            ->setParameter('playbooks', $playbooks)
+            ->setParameter('statuses', [ContactTask::STATUS_PENDING, ContactTask::STATUS_SNOOZED, ContactTask::STATUS_AWAITING_REFLECTION])
+            ->getQuery()
+            ->getResult();
+
+        $grouped = [];
+        foreach ($tasks as $task) {
+            $playbookId = $task->getPlaybook()?->getId();
+            if (null !== $playbookId) {
+                $grouped[$playbookId][] = $task;
+            }
+        }
+
+        return $grouped;
+    }
+
+    /**
+     * Returns the most recently created task per (playbook, seriesKey) for all given playbooks.
+     * Used by ContactPlaybookService::generateMissingTasksForAllActive to replace N×K
+     * findLastTaskForSeries queries with two queries (subquery + result fetch).
+     *
+     * @param list<ContactPlaybook> $playbooks
+     *
+     * @return array<int, array<string, ContactTask>> [playbookId => [seriesKey => ContactTask]]
+     */
+    public function findLastTasksForPlaybooks(array $playbooks): array
+    {
+        if ([] === $playbooks) {
+            return [];
+        }
+
+        // Subquery: MAX(id) per (playbook, seriesKey) as a proxy for most recent createdAt.
+        // Auto-increment IDs are monotonically increasing, so MAX(id) == latest row.
+        $subQb = $this->createQueryBuilder('ct2')
+            ->select('MAX(ct2.id)')
+            ->where('ct2.playbook IN (:playbooks)')
+            ->groupBy('ct2.playbook, ct2.seriesKey');
+
+        /** @var list<ContactTask> $tasks */
+        $tasks = $this->createQueryBuilder('ct')
+            ->addSelect('r')
+            ->leftJoin('ct.reflection', 'r')
+            ->where('ct.id IN (' . $subQb->getDQL() . ')')
+            ->setParameter('playbooks', $playbooks)
+            ->getQuery()
+            ->getResult();
+
+        $grouped = [];
+        foreach ($tasks as $task) {
+            $playbookId = $task->getPlaybook()?->getId();
+            $seriesKey = $task->getSeriesKey();
+            if (null !== $playbookId && null !== $seriesKey) {
+                $grouped[$playbookId][$seriesKey] = $task;
+            }
+        }
+
+        return $grouped;
+    }
+
+    /**
      * Returns all tasks in awaiting_reflection status whose reflection window has expired.
      * Used by ReflectionFinalisationCommand to auto-complete stale reflections.
      *

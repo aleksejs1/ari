@@ -53,6 +53,11 @@ class ContactProcessor implements ProcessorInterface
             $existing = $this->entityManager->find(Contact::class, $uriVariables['id']);
 
             if (null !== $existing) {
+                // Pre-load all lazy OneToMany collections with explicit targeted queries.
+                // This makes the query pattern deterministic (visible in code, assertable in
+                // tests) instead of firing implicit lazy-loads inside handleClearAndReplace.
+                $this->preLoadCollections($existing);
+
                 $this->handleClearAndReplace(
                     $existing,
                     $data->getContactNames(),
@@ -219,6 +224,26 @@ class ContactProcessor implements ProcessorInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Initialises all lazy OneToMany collections on an existing Contact in explicit targeted
+     * queries. Call this once before the handleClearAndReplace loop so that every
+     * collection access inside that loop is served from the in-memory identity map.
+     */
+    private function preLoadCollections(Contact $existing): void
+    {
+        $existing->getContactNames()->toArray();
+        $existing->getContactDates()->toArray();
+        $existing->getPhoneNumbers()->toArray();
+        $existing->getContactEmailAdresses()->toArray();
+        $existing->getContactAddresses()->toArray();
+        $existing->getContactGroups()->toArray();
+        $existing->getContactOrganizations()->toArray();
+        $existing->getContactBiographies()->toArray();
+        $existing->getContactRelationsCollection()->toArray();
+        $existing->getReverseContactRelationsCollection()->toArray();
+        $existing->getContactInteractions()->toArray();
     }
 
     /**
