@@ -92,6 +92,14 @@ deptrac:
         - type: classNameRegex
           value: '#^Ari\\ValueObject\\.*#'
 
+    # ── Plugin bundles ───────────────────────────────────────
+    # Plugin classes live under the Plugins\ namespace (ari/core/plugins/).
+    # See ari-pm/docs/PluginSecurityContract.md for the isolation contract.
+    - name: Plugin
+      collectors:
+        - type: classNameRegex
+          value: '#^Plugins\\.*#'
+
     # ── External ────────────────────────────────────────────
     - name: Vendor
       collectors:
@@ -201,4 +209,17 @@ deptrac:
       - Security
       - Vendor
     Kernel:
+      - Vendor
+
+    # ── Plugin bundles ───────────────────────────────────────
+    # Plugins may use ORM (TenantFilter is active automatically) but NOT raw DBAL Connection
+    # (would bypass TenantFilter silently). See ari-pm/docs/PluginSecurityContract.md.
+    #
+    # Note: Deptrac cannot restrict specific classes within the Vendor layer. The DBAL
+    # Connection restriction is enforced via PluginSecurityContract.md documentation and
+    # code review checklist. A future PHPStan custom rule could automate this check.
+    Plugin:
+      - Entity
+      - Repository
+      - Service
       - Vendor

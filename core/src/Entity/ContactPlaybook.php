@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use Ari\Entity\Trait\TimestampableTrait;
 use Ari\Repository\ContactPlaybookRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
@@ -68,6 +69,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ContactPlaybook implements TenantAwareInterface
 {
     use TenantAwareTrait;
+    use TimestampableTrait;
 
     public const string STATUS_ACTIVE = 'active';
     public const string STATUS_PAUSED = 'paused';
@@ -125,20 +127,6 @@ class ContactPlaybook implements TenantAwareInterface
     #[Groups(['contact_playbook:read'])]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\PrePersist]
-    public function initTimestamps(): void
-    {
-        $now = new \DateTimeImmutable();
-        $this->createdAt ??= $now;
-        $this->updatedAt ??= $now;
-    }
-
-    #[ORM\PreUpdate]
-    public function touchUpdatedAt(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
@@ -237,13 +225,4 @@ class ContactPlaybook implements TenantAwareInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
 }

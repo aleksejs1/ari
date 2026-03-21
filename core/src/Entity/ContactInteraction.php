@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactInteractionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(columns: ['contact_id', 'timestamp'], name: 'idx_contact_interaction_contact_timestamp')]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['contact_interaction:read']],

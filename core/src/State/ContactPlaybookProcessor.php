@@ -54,14 +54,9 @@ final readonly class ContactPlaybookProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Contact not found.');
         }
 
-        $contact = $this->contactRepository->find((int) $contactId);
+        $contact = $this->contactRepository->findOneBy(['id' => (int) $contactId, 'tenant' => $user]);
         if (!$contact instanceof Contact) {
             throw new NotFoundHttpException('Contact not found.');
-        }
-
-        // Ensure the contact belongs to the requesting user (tenant check)
-        if ($contact->getTenant() !== $user) {
-            throw new AccessDeniedHttpException();
         }
 
         // Enforce API key scope: CONTACT_EDIT is required (not just CONTACT_VIEW)

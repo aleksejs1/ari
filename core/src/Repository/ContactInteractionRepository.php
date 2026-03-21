@@ -6,6 +6,7 @@ namespace Ari\Repository;
 
 use Ari\Entity\Contact;
 use Ari\Entity\ContactInteraction;
+use Ari\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,11 +27,15 @@ class ContactInteractionRepository extends ServiceEntityRepository
      * Uses DQL array hydration instead of object hydration to avoid instantiating
      * potentially thousands of ContactInteraction objects and their lazy-load proxies.
      *
+     * The $user parameter adds an explicit tenant guard in addition to the ORM TenantFilter
+     * that is active in the Messenger handler context. This makes the method safe to call
+     * from any context, even if TenantFilter is not enabled.
+     *
      * @param list<int> $contactIds
      *
      * @return array<string, true>
      */
-    public function findDeduplicationKeysByContactIds(array $contactIds): array
+    public function findDeduplicationKeysByContactIds(array $contactIds, User $user): array
     {
         if ([] === $contactIds) {
             return [];
@@ -39,8 +44,11 @@ class ContactInteractionRepository extends ServiceEntityRepository
         /** @var list<array{contactId: int|string, type: string, timestamp: \DateTimeImmutable|string}> $rows */
         $rows = $this->createQueryBuilder('ci')
             ->select('IDENTITY(ci.contact) AS contactId, ci.type AS type, ci.timestamp AS timestamp')
+            ->join('ci.contact', 'c')
             ->where('ci.contact IN (:contactIds)')
+            ->andWhere('c.tenant = :user')
             ->setParameter('contactIds', $contactIds)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getArrayResult();
 

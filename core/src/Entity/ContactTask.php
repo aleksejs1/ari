@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
+use Ari\Entity\Trait\TimestampableTrait;
 use Ari\Repository\ContactTaskRepository;
 use Ari\State\ContactTaskProcessor;
 use Ari\Security\TenantAwareInterface;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['tenant_id', 'status', 'due_date'], name: 'idx_contact_task_tenant_status_due')]
 #[ORM\Index(columns: ['contact_id'], name: 'idx_contact_task_contact')]
 #[ORM\Index(columns: ['playbook_id'], name: 'idx_contact_task_playbook')]
+#[ORM\Index(columns: ['playbook_id', 'series_key', 'status'], name: 'idx_contact_task_playbook_series_status')]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['contact_task:read']],
@@ -43,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ContactTask implements TenantAwareInterface
 {
     use TenantAwareTrait;
+    use TimestampableTrait;
 
     public const string STATUS_PENDING = 'pending';
     public const string STATUS_COMPLETED = 'completed';
@@ -166,20 +169,6 @@ class ContactTask implements TenantAwareInterface
 
     #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist'], orphanRemoval: true, fetch: 'EAGER')]
     private ?TaskReflection $reflection = null;
-
-    #[ORM\PrePersist]
-    public function initTimestamps(): void
-    {
-        $now = new \DateTimeImmutable();
-        $this->createdAt ??= $now;
-        $this->updatedAt ??= $now;
-    }
-
-    #[ORM\PreUpdate]
-    public function touchUpdatedAt(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
@@ -306,16 +295,6 @@ class ContactTask implements TenantAwareInterface
         $this->completedAt = $completedAt;
 
         return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
     }
 
     /** Embedded in contact_task:read for the ReflectionModal. */

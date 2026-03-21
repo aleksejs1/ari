@@ -53,7 +53,7 @@ class SmsBackupImportService
 
         // Step 3: Pre-load deduplication set from existing interactions.
         $contactIds = array_values(array_unique($phoneMap));
-        $existingKeys = $this->buildDeduplicationSet($contactIds);
+        $existingKeys = $this->buildDeduplicationSet($contactIds, $user);
 
         // Step 4: Process SMS and call records.
         $callsImported = 0;
@@ -318,9 +318,9 @@ class SmsBackupImportService
      *
      * @return array<string, true>
      */
-    private function buildDeduplicationSet(array $contactIds): array
+    private function buildDeduplicationSet(array $contactIds, User $user): array
     {
-        return $this->interactionRepository->findDeduplicationKeysByContactIds($contactIds);
+        return $this->interactionRepository->findDeduplicationKeysByContactIds($contactIds, $user);
     }
 
     /**
@@ -335,15 +335,29 @@ class SmsBackupImportService
     ): void {
         $contactIds = array_keys($contactXmlNames);
 
-        // For 'replace': pre-load all first ContactNames in one query instead of N separate queries.
-        $existingNames = 'replace' === $nameConflict
-            ? $this->loadFirstContactNamesMap($contactIds)
-            : [];
+        // Pre-load all ContactNames in one query; callers extract the slice they need.
+        $allNamesByContact = $this->loadAllContactNamesMap($contactIds);
 
-        // For 'add': build a fingerprint set to prevent creating duplicate names.
-        $existingNameKeys = 'add' === $nameConflict
-            ? $this->buildExistingNameKeySet($contactIds)
-            : [];
+        // For 'replace': first ContactName per contact.
+        $existingNames = [];
+        if ('replace' === $nameConflict) {
+            foreach ($allNamesByContact as $cid => $names) {
+                if ([] !== $names) {
+                    $existingNames[$cid] = $names[0];
+                }
+            }
+        }
+
+        // For 'add': fingerprint set of all existing names to prevent duplicates.
+        $existingNameKeys = [];
+        if ('add' === $nameConflict) {
+            foreach ($allNamesByContact as $cid => $names) {
+                foreach ($names as $name) {
+                    $key = $cid . '|' . ($name->getGiven() ?? '') . '|' . ($name->getFamily() ?? '');
+                    $existingNameKeys[$key] = true;
+                }
+            }
+        }
 
         foreach ($contactXmlNames as $contactId => $xmlContactName) {
             if ('' === $xmlContactName || '(Unknown)' === $xmlContactName) {
@@ -390,14 +404,17 @@ class SmsBackupImportService
     }
 
     /**
-     * Load the first (lowest id) ContactName per contact for the given contact IDs.
-     * Returns a map of contactId -> ContactName. Used by handleNameConflicts to avoid N DQL queries.
+     * Load all ContactNames for the given contact IDs in a single query, grouped by contactId.
+     * The list per contact is ordered by id ASC (lowest id = first/primary name).
+     *
+     * Replaces the former loadFirstContactNamesMap() and buildExistingNameKeySet() pair —
+     * both needed the same underlying query; callers now extract the slice they need.
      *
      * @param list<int> $contactIds
      *
-     * @return array<int, ContactName>
+     * @return array<int, list<ContactName>>
      */
-    private function loadFirstContactNamesMap(array $contactIds): array
+    private function loadAllContactNamesMap(array $contactIds): array
     {
         if ([] === $contactIds) {
             return [];
@@ -413,46 +430,12 @@ class SmsBackupImportService
         $map = [];
         foreach ($names as $name) {
             $contactId = $name->getContact()?->getId();
-            if (null !== $contactId && !isset($map[$contactId])) {
-                $map[$contactId] = $name; // first seen = lowest id (query ordered ASC)
+            if (null !== $contactId) {
+                $map[$contactId][] = $name;
             }
         }
 
         return $map;
-    }
-
-    /**
-     * Build a set of name fingerprint strings "{contactId}|{given}|{family}"
-     * for all existing ContactNames of the given contacts.
-     * Used by handleNameConflicts to prevent duplicate names when strategy is 'add'.
-     *
-     * @param list<int> $contactIds
-     *
-     * @return array<string, true>
-     */
-    private function buildExistingNameKeySet(array $contactIds): array
-    {
-        if ([] === $contactIds) {
-            return [];
-        }
-
-        /** @var ContactName[] $names */
-        $names = $this->entityManager->createQuery(
-            'SELECT cn FROM ' . ContactName::class . ' cn WHERE cn.contact IN (:ids)'
-        )
-            ->setParameter('ids', $contactIds)
-            ->getResult();
-
-        $keys = [];
-        foreach ($names as $name) {
-            $contactId = $name->getContact()?->getId();
-            if (null !== $contactId) {
-                $key = $contactId . '|' . ($name->getGiven() ?? '') . '|' . ($name->getFamily() ?? '');
-                $keys[$key] = true;
-            }
-        }
-
-        return $keys;
     }
 
     /**

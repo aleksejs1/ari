@@ -7,6 +7,7 @@ namespace Ari\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
+use Ari\Entity\Trait\TimestampableTrait;
 use Ari\Repository\TaskReflectionRepository;
 use Ari\Security\TenantAwareInterface;
 use Ari\Security\TenantAwareTrait;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TaskReflection implements TenantAwareInterface
 {
     use TenantAwareTrait;
+    use TimestampableTrait;
 
     #[Groups(['contact_task:read', 'task_reflection:read'])]
     #[ORM\Id]
@@ -64,20 +66,6 @@ class TaskReflection implements TenantAwareInterface
     #[Groups(['task_reflection:read'])]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\PrePersist]
-    public function initTimestamps(): void
-    {
-        $now = new \DateTimeImmutable();
-        $this->createdAt ??= $now;
-        $this->updatedAt ??= $now;
-    }
-
-    #[ORM\PreUpdate]
-    public function touchUpdatedAt(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
@@ -132,13 +120,4 @@ class TaskReflection implements TenantAwareInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
 }
