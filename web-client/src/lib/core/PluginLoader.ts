@@ -88,12 +88,43 @@ export class PluginLoader {
     }
   }
 
+  /**
+   * Validates that a remote plugin URL belongs to the same origin as the API server.
+   * Relative URLs (no http prefix) are always allowed — they are same-origin by construction.
+   * Absolute URLs from external origins are blocked to prevent supply-chain attacks.
+   *
+   * NOTE (security): even same-origin plugins receive the full authenticated `api` client
+   * in their PluginContext. This is an intentional trade-off for internal plugins; remote
+   * plugins from untrusted third-party origins must never be loaded.
+   */
+  private isPluginUrlAllowed(url: string): boolean {
+    if (!url.startsWith('http')) {
+      // Relative URL — will be resolved against API_ORIGIN, which is same-origin
+      return true
+    }
+    try {
+      const pluginOrigin = new URL(url).origin
+      const allowedOrigin = API_ORIGIN ? new URL(API_ORIGIN).origin : window.location.origin
+      return pluginOrigin === allowedOrigin
+    } catch {
+      return false
+    }
+  }
+
   private async loadPlugin(item: PluginConfig, context: PluginContext) {
     try {
       let PluginClass
 
       if (item.url) {
         const url = item.url.startsWith('http') ? item.url : `${API_ORIGIN}${item.url}`
+
+        if (!this.isPluginUrlAllowed(url)) {
+          console.error(
+            `[PluginLoader] Blocked remote plugin from untrusted origin: ${item.id} (${url})`,
+          )
+          return
+        }
+
         // eslint-disable-next-line no-console
         console.debug(`[PluginLoader] Loading remote plugin: ${item.id} from ${url}`)
         PluginClass = await loadRemotePlugin(url)

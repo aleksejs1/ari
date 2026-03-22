@@ -49,7 +49,7 @@ describe('NotificationList', () => {
     )
 
     // Loading spinner should be present
-    expect(document.querySelector('.animate-spin')).toBeInTheDocument()
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument()
   })
 
   it('renders error state', async () => {

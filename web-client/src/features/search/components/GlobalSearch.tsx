@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
@@ -20,82 +20,90 @@ interface SearchResult {
   url: string
 }
 
+const MIN_QUERY_LENGTH = 2
+const MAX_QUERY_LENGTH = 200
+
 export function GlobalSearch() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [debouncedQuery] = useDebounce(query, 300)
+  const [debouncedQuery] = useDebounce(query.slice(0, MAX_QUERY_LENGTH), 300)
   const [activeTab, setActiveTab] = useState<'contacts' | 'groups' | 'settings'>('contacts')
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Contacts Search
   const { data: contactsData } = useContacts(1, { search: debouncedQuery }, undefined, {
-    enabled: debouncedQuery.length > 0,
+    enabled: debouncedQuery.length >= MIN_QUERY_LENGTH,
   })
   const contacts = getHydraMember(contactsData)
 
   // Groups Search
-  const { data: groupsData } = useGroups(undefined, { enabled: debouncedQuery.length > 0 })
+  const { data: groupsData } = useGroups(undefined, {
+    enabled: debouncedQuery.length >= MIN_QUERY_LENGTH,
+  })
   const groups = groupsData || []
   const filteredGroups = groups.filter((group) =>
     group.name?.toLowerCase().includes(debouncedQuery.toLowerCase()),
   )
 
-  // Settings Search
-  const settingsRoutes = [
-    {
-      id: 'nav-audit-logs',
-      title: t('app.navigation.sidebar.auditLogs'),
-      url: '/settings/audit-logs',
-    },
-    {
-      id: 'nav-groups',
-      title: t('app.navigation.sidebar.groups'),
-      url: '/groups',
-    },
-    {
-      id: 'nav-notification-channels',
-      title: t('app.navigation.sidebar.notificationChannels'),
-      url: '/settings/notification-channels',
-    },
-    {
-      id: 'nav-notification-policies',
-      title: t('app.navigation.sidebar.notificationPolicies'),
-      url: '/settings/notification-policies',
-    },
-    {
-      id: 'nav-create-notification-policy',
-      title: t('notification_policies.create'),
-      url: '/settings/notification-policies/new',
-    },
-    {
-      id: 'nav-google-import',
-      title: t('app.navigation.sidebar.googleImport'),
-      url: '/settings/google-import',
-    },
-    {
-      id: 'nav-settings',
-      title: t('app.navigation.sidebar.settings'),
-      url: '/settings/general',
-    },
-    {
-      id: 'settings-export',
-      title: t('settings.exportData'),
-      url: '/settings/data',
-    },
-    {
-      id: 'settings-import',
-      title: t('settings.importData'),
-      url: '/settings/data',
-    },
-  ]
+  // Settings Search — memoized to avoid recreation on every render
+  const settingsRoutes = useMemo(
+    () => [
+      {
+        id: 'nav-audit-logs',
+        title: t('app.navigation.sidebar.auditLogs'),
+        url: '/settings/audit-logs',
+      },
+      {
+        id: 'nav-groups',
+        title: t('app.navigation.sidebar.groups'),
+        url: '/groups',
+      },
+      {
+        id: 'nav-notification-channels',
+        title: t('app.navigation.sidebar.notificationChannels'),
+        url: '/settings/notification-channels',
+      },
+      {
+        id: 'nav-notification-policies',
+        title: t('app.navigation.sidebar.notificationPolicies'),
+        url: '/settings/notification-policies',
+      },
+      {
+        id: 'nav-create-notification-policy',
+        title: t('notification_policies.create'),
+        url: '/settings/notification-policies/new',
+      },
+      {
+        id: 'nav-google-import',
+        title: t('app.navigation.sidebar.googleImport'),
+        url: '/settings/google-import',
+      },
+      {
+        id: 'nav-settings',
+        title: t('app.navigation.sidebar.settings'),
+        url: '/settings/general',
+      },
+      {
+        id: 'settings-export',
+        title: t('settings.exportData'),
+        url: '/settings/data',
+      },
+      {
+        id: 'settings-import',
+        title: t('settings.importData'),
+        url: '/settings/data',
+      },
+    ],
+    [t],
+  )
   const filteredSettings = settingsRoutes.filter((setting) =>
     setting.title.toLowerCase().includes(debouncedQuery.toLowerCase()),
   )
 
   const contactResults = contacts
-    .map((c) => mapContactToSearchResult(c, t('contacts.noName')))
+    .map((c, i) => mapContactToSearchResult(c, t('contacts.noName'), i))
     .slice(0, 5)
   const groupResults = filteredGroups
     .map((g) => ({
@@ -172,14 +180,14 @@ export function GlobalSearch() {
           className="w-full bg-gray-50 pl-9 dark:bg-gray-900"
           value={query}
           onChange={(e) => {
-            setQuery(e.target.value)
+            setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))
             setOpen(true)
           }}
           onFocus={() => setOpen(true)}
         />
       </div>
 
-      {open && query.length > 0 ? (
+      {open && query.length >= MIN_QUERY_LENGTH ? (
         <div className="fixed left-4 right-4 top-[3.5rem] z-[100] mt-2 overflow-hidden rounded-lg border bg-white shadow-lg dark:bg-gray-800 md:absolute md:left-0 md:right-0 md:top-full md:mt-2 md:w-full">
           <div className="flex border-b border-gray-200 dark:border-gray-700">
             {tabs.map((tab) => (
@@ -214,6 +222,7 @@ export function GlobalSearch() {
                   <div className="border-t border-gray-100 px-4 py-2 pt-2 dark:border-gray-700">
                     <button
                       onClick={() =>
+                        // encodeURIComponent prevents query string injection (e.g. '&page=2')
                         handleSelect(
                           `/contacts?page=1&search=${encodeURIComponent(debouncedQuery)}`,
                         )
@@ -235,9 +244,10 @@ export function GlobalSearch() {
   )
 }
 
-function mapContactToSearchResult(c: Contact, noName: string): SearchResult {
+function mapContactToSearchResult(c: Contact, noName: string, index: number): SearchResult {
   return {
-    id: c['@id'] || String(c.id) || crypto.randomUUID(),
+    // Prefer IRI or numeric id; fall back to index so the key is stable across renders
+    id: c['@id'] ?? (c.id !== undefined ? String(c.id) : String(index)),
     title: getContactTitle(c, noName),
     type: 'contact',
     url: `/contacts/${c.id || c.uuid || c['@id']?.split('/').pop()}`,

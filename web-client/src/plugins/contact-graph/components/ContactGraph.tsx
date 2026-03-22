@@ -47,8 +47,8 @@ export const ContactGraph = ({ data }: ContactGraphProps) => {
 
     const edges = new DataSet<Edge>(
       data.links.map((link) => ({
-        from: typeof link.source === 'object' ? (link.source as any).id : link.source,
-        to: typeof link.target === 'object' ? (link.target as any).id : link.target,
+        from: typeof link.source === 'object' ? link.source.id : link.source,
+        to: typeof link.target === 'object' ? link.target.id : link.target,
       })),
     )
 

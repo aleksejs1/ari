@@ -62,7 +62,7 @@ const EmailConfig = ({ channel }: { channel: NotificationChannel }) => {
       <span>{config.email}</span>
       {channel.verifiedAt ? (
         <span title={t('notificationChannels.verified')}>
-          <Check className="h-5 w-5 text-green-500" />
+          <Check className="h-5 w-5 text-green-500" data-testid="status-active" />
         </span>
       ) : (
         <VerifyButton id={channel.id} />
@@ -80,7 +80,7 @@ const TelegramConfig = ({ channel }: { channel: NotificationChannel }) => {
   }
 
   if (config.chatId) {
-    return <Check className="h-5 w-5 text-green-500" />
+    return <Check className="h-5 w-5 text-green-500" data-testid="status-active" />
   }
 
   if (config.mapping && !config.chatId) {
@@ -103,7 +103,7 @@ const TelegramConfig = ({ channel }: { channel: NotificationChannel }) => {
 
 const ChannelConfigCell = ({ channel }: { channel: NotificationChannel }) => {
   if (channel.type === 'web') {
-    return <Check className="h-5 w-5 text-green-500" />
+    return <Check className="h-5 w-5 text-green-500" data-testid="status-active" />
   }
 
   if (channel.type === 'email') {

@@ -62,14 +62,14 @@ describe('ContactFormNames', () => {
   it('renders nameType text input', () => {
     render(<Wrapper defaultValues={defaultContact} />)
 
-    const nameTypeInput = document.querySelector('input[name="contactNames.0.nameType"]')
+    const nameTypeInput = screen.getByTestId('contact-name-type')
     expect(nameTypeInput).toBeInTheDocument()
   })
 
   it('renders locale select with correct name attribute', () => {
     render(<Wrapper defaultValues={defaultContact} />)
 
-    const localeSelect = document.querySelector('select[name="contactNames.0.locale"]')
+    const localeSelect = screen.getByTestId('contact-locale-select')
     expect(localeSelect).toBeInTheDocument()
   })
 })

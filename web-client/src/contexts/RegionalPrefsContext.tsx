@@ -59,19 +59,35 @@ export function RegionalPrefsProvider({ children }: { children: ReactNode }) {
       return (response.data.member || []) as UserPref[]
     },
     enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
   })
 
   const saveMutation = usePreferencesStorage(prefs)
-  const getPref = (type: string, defaultVal: string) =>
-    prefs?.find((p) => p.type === type)?.value || defaultVal
+  const getPref = useCallback(
+    (type: string, defaultVal: string) => prefs?.find((p) => p.type === type)?.value || defaultVal,
+    [prefs],
+  )
 
   const language = getPref('language', 'en')
   const dateFormat = getPref('dateFormat', 'mm/dd/yyyy')
-  const timeFormat = getPref('timeFormat', '24h')
-  const timezone = getPref('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC')
+  const rawTimeFormat = getPref('timeFormat', '24h')
+  // Validate against allowlist to prevent unexpected format strings reaching formatTimeFn
+  const timeFormat = rawTimeFormat === '12h' || rawTimeFormat === '24h' ? rawTimeFormat : '24h'
+  const rawTimezone = getPref('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC')
+  // Validate timezone via Intl to guard against stale/invalid values stored in DB
+  const timezone = (() => {
+    try {
+      Intl.DateTimeFormat(undefined, { timeZone: rawTimezone })
+      return rawTimezone
+    } catch {
+      return 'UTC'
+    }
+  })()
 
   useEffect(() => {
-    void i18n.changeLanguage(language)
+    i18n.changeLanguage(language).catch((err: unknown) => {
+      console.error('[RegionalPrefs] Failed to change language:', err)
+    })
   }, [language, i18n])
 
   const setLanguage = useCallback(

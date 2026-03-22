@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\"",
     "typecheck": "tsc --noEmit",
+    "typecheck:strict": "tsc --project tsconfig.strict.json --noEmit",
     "test": "vitest run",
     "test:ui": "vitest",
     "test:coverage": "vitest run --coverage",

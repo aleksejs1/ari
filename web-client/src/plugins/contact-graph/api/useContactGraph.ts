@@ -10,8 +10,8 @@ export interface GraphNode {
 }
 
 export interface GraphLink {
-  source: string
-  target: string
+  source: string | { id: string }
+  target: string | { id: string }
 }
 
 export interface GraphData {

@@ -8,6 +8,7 @@ import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
 import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
+import type { Contact } from '@/types/models'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
@@ -23,6 +24,42 @@ const CatchUpWidget = lazy(() => import('./widgets/CatchUpWidget'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'))
 const ContactTimelinePage = lazy(() => import('./pages/ContactTimelinePage'))
+
+function ContactsSidebarItem({
+  onNavigate,
+  collapsed,
+}: {
+  onNavigate?: () => void
+  collapsed?: boolean
+}) {
+  const { t } = useTranslation('contacts')
+  return (
+    <SidebarNavItem
+      to="/contacts"
+      icon={Users}
+      label={t('title', 'Contacts')}
+      onClick={onNavigate}
+      collapsed={collapsed}
+    />
+  )
+}
+
+function ContactsHistoryCard({ contact }: { contact: Contact }) {
+  const { t } = useTranslation('contacts')
+  if (!contact.id) {
+    return null
+  }
+  return (
+    <Card className="md:col-span-2">
+      <CardHeader>
+        <CardTitle>{t('history.title')}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ContactTimeline contactId={contact.id.toString()} />
+      </CardContent>
+    </Card>
+  )
+}
 
 export class ContactsPlugin extends BasePlugin {
   name = 'contacts'
@@ -68,19 +105,7 @@ export class ContactsPlugin extends BasePlugin {
     // 2. Register Sidebar Section
     sidebarRegistry.register({
       id: 'contacts',
-      component: ({ onNavigate, collapsed }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation('contacts')
-        return (
-          <SidebarNavItem
-            to="/contacts"
-            icon={Users}
-            label={t('title', 'Contacts')}
-            onClick={onNavigate}
-            collapsed={collapsed}
-          />
-        )
-      },
+      component: ContactsSidebarItem,
       order: 10,
     })
 
@@ -88,24 +113,7 @@ export class ContactsPlugin extends BasePlugin {
     const contactDetailsRegistry = ContactDetailsRegistry.getInstance()
     contactDetailsRegistry.register({
       id: 'history',
-      component: ({ contact }) => {
-        if (!contact.id) {
-          return null
-        }
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { t } = useTranslation('contacts')
-
-        return (
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle>{t('history.title')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ContactTimeline contactId={contact.id.toString()} />
-            </CardContent>
-          </Card>
-        )
-      },
+      component: ContactsHistoryCard,
       order: 100,
       layout: 'full',
     })

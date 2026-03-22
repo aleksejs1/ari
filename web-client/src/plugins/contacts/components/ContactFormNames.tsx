@@ -94,6 +94,7 @@ export function ContactFormNames() {
                         placeholder={t('contactName.nameTypePlaceholder')}
                         {...field}
                         value={field.value ?? ''}
+                        data-testid="contact-name-type"
                       />
                     </FormControl>
                     <FormMessage />
@@ -110,6 +111,7 @@ export function ContactFormNames() {
                         {...field}
                         value={field.value ?? ''}
                         className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        data-testid="contact-locale-select"
                       >
                         <option value="">{t('contactName.localePlaceholder')}</option>
                         {LOCALE_OPTIONS.map((code) => (

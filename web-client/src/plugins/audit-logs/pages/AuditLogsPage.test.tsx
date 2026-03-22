@@ -70,7 +70,7 @@ describe('AuditLogsPage UI States', () => {
     } as unknown as UseQueryResult<unknown, unknown>)
 
     render(<AuditLogsPage />)
-    const spinner = document.querySelector('.animate-spin')
+    const spinner = screen.getByTestId('loading-spinner')
     expect(spinner).toBeInTheDocument()
   })
 

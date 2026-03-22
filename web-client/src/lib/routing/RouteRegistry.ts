@@ -21,9 +21,15 @@ export class RouteRegistry {
     return RouteRegistry.instance
   }
 
+  // Note: 'dashboard' and 'sidebar-less' slot names are legacy aliases for 'main'.
+  // New plugins should pass 'main' directly.
   public register(slot: RouteSlot | 'dashboard' | 'sidebar-less', route: RouteObject): void {
     // Backward compatibility: both 'dashboard' and 'sidebar-less' map to 'main'
     const resolvedSlot: RouteSlot = slot === 'dashboard' || slot === 'sidebar-less' ? 'main' : slot
+    // Deduplicate: skip if a route with the same path is already registered
+    if (route.path && this.routes[resolvedSlot].some((r) => r.path === route.path)) {
+      return
+    }
     this.routes[resolvedSlot].push(route)
   }
 

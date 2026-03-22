@@ -104,9 +104,8 @@ describe('NotificationChannelsTable', () => {
     render(
       <NotificationChannelsTable data={mockData} onEdit={mockOnEdit} onDelete={mockOnDelete} />,
     )
-    // We expect 2 green checkmarks (one for web, one for fully configured telegram)
-    // The simplified check is to look for the class or element.
-    const checkmarks = document.querySelectorAll('.text-green-500')
+    // We expect 3 green checkmarks (one for web, one for fully configured telegram, one for telegram with chatId only)
+    const checkmarks = screen.getAllByTestId('status-active')
     expect(checkmarks).toHaveLength(3)
   })
   it('renders email channel with verify button', () => {

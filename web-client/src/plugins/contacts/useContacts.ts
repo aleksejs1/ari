@@ -56,7 +56,7 @@ export function useContacts(
       const response = await api.get<HydraCollection<Contact>>(`/contacts?${params.toString()}`)
       return response.data
     },
-    placeholderData: (previousData: any) => previousData,
+    placeholderData: (previousData: HydraCollection<Contact> | undefined) => previousData,
     ...(options?.enabled !== undefined ? { enabled: options.enabled } : {}),
   })
 }

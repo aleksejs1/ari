@@ -90,6 +90,8 @@ export const queryKeys = {
 
   // ── API keys ──────────────────────────────────────────────────────────────
   apiKeys: {
+    // `all` is a prefix key used for bulk invalidation after any mutation.
+    // Any key starting with 'api-keys' (including list pages) will be invalidated.
     all: ['api-keys'] as const,
     list: (page: number) => ['api-keys', page] as const,
   },

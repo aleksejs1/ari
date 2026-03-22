@@ -44,7 +44,7 @@ describe('AiSettings', () => {
     renderWithQuery(<AiSettings />)
 
     // Loader spinner should be present during loading
-    const spinner = document.querySelector('.animate-spin')
+    const spinner = screen.getByTestId('loading-spinner')
     expect(spinner).toBeInTheDocument()
   })
 
