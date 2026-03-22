@@ -4,18 +4,12 @@ import { Check, Pencil, Plus, X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import type { Contact, ContactInteraction } from '@/types/models'
 
 import { InteractionEditDrawer } from '../../components/InteractionEditDrawer'
-import { InteractionTimeline } from '../../components/InteractionTimeline'
-import {
-  useCreateInteraction,
-  useDeleteInteraction,
-  useUpdateContactCadence,
-  useUpdateInteraction,
-} from '../../hooks/useInteractions'
+import { useCreateInteraction, useUpdateContactCadence } from '../../hooks/useInteractions'
 
 function computeOverdueDays(
   interactions: ContactInteraction[],
@@ -108,47 +102,18 @@ function CadenceEditor({ contactIri, cadenceDays }: CadenceEditorProps) {
 export function KeepInTouchSection({ contact }: { contact: Contact }) {
   const { t } = useTranslation('contacts')
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [editingInteraction, setEditingInteraction] = useState<ContactInteraction | null>(null)
 
   const createMutation = useCreateInteraction()
-  const updateMutation = useUpdateInteraction()
-  const deleteMutation = useDeleteInteraction()
 
   if (!contact['@id']) {
     return null
   }
 
   const interactions = contact.contactInteractions ?? []
-  const sorted = [...interactions].sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  )
-  const recent = sorted.slice(0, 10)
-
   const overdueDays =
     contact.cadenceDays !== null && contact.cadenceDays !== undefined
       ? computeOverdueDays(interactions, contact.cadenceDays)
       : null
-
-  const handleEdit = (interaction: ContactInteraction) => {
-    setEditingInteraction(interaction)
-    setDrawerOpen(true)
-  }
-
-  const handleAddNew = () => {
-    setEditingInteraction(null)
-    setDrawerOpen(true)
-  }
-
-  const handleDelete = async (interaction: ContactInteraction) => {
-    if (!interaction['@id']) {
-      return
-    }
-    try {
-      await deleteMutation.mutateAsync(interaction['@id'])
-    } catch (error) {
-      console.error('Failed to delete interaction', error)
-    }
-  }
 
   return (
     <>
@@ -163,7 +128,12 @@ export function KeepInTouchSection({ contact }: { contact: Contact }) {
                 </Badge>
               )}
             </CardTitle>
-            <Button variant="outline" size="sm" className="gap-1.5" onClick={handleAddNew}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setDrawerOpen(true)}
+            >
               <Plus className="h-3.5 w-3.5" />
               {t('interactions.log')}
             </Button>
@@ -172,28 +142,20 @@ export function KeepInTouchSection({ contact }: { contact: Contact }) {
             <CadenceEditor contactIri={contact['@id']} cadenceDays={contact.cadenceDays} />
           </div>
         </CardHeader>
-        <CardContent>
-          <InteractionTimeline
-            interactions={recent}
-            onEdit={handleEdit}
-            onDelete={(i) => void handleDelete(i)}
-            isDeleting={deleteMutation.isPending}
-          />
-        </CardContent>
       </Card>
 
       <InteractionEditDrawer
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         contactIri={contact['@id']}
-        interaction={editingInteraction}
+        interaction={null}
         onSave={async (data) => {
           await createMutation.mutateAsync(data)
         }}
-        onUpdate={async (id, data) => {
-          await updateMutation.mutateAsync({ id, data })
+        onUpdate={async () => {
+          // create-only drawer
         }}
-        isSaving={createMutation.isPending || updateMutation.isPending}
+        isSaving={createMutation.isPending}
       />
     </>
   )

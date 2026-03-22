@@ -18,7 +18,11 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
   const exportVcardMutation = useExportContactVcard()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-  const sections = ContactDetailsRegistry.getInstance().getAll()
+  const allSections = ContactDetailsRegistry.getInstance().getAll()
+  const topSections = allSections.filter((s) => s.layout === 'full')
+  const leftSections = allSections.filter((s) => s.layout === 'left')
+  const rightSections = allSections.filter((s) => s.layout === 'right')
+  const bottomSections = allSections.filter((s) => s.layout === 'full-bottom')
 
   const handleExportVcard = async () => {
     try {
@@ -89,19 +93,30 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {sections.map((section) => {
-          const Component = section.component
-          return (
-            <div
-              key={section.id}
-              className={section.layout === 'full' ? 'lg:col-span-2' : 'lg:col-span-1'}
-            >
-              <Component contact={contact} />
-            </div>
-          )
-        })}
+      {topSections.map((section) => {
+        const Component = section.component
+        return <Component key={section.id} contact={contact} />
+      })}
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="flex flex-col gap-6 lg:col-span-1">
+          {rightSections.map((section) => {
+            const Component = section.component
+            return <Component key={section.id} contact={contact} />
+          })}
+        </div>
+        <div className="flex flex-col gap-6 lg:col-span-2">
+          {leftSections.map((section) => {
+            const Component = section.component
+            return <Component key={section.id} contact={contact} />
+          })}
+        </div>
       </div>
+
+      {bottomSections.map((section) => {
+        const Component = section.component
+        return <Component key={section.id} contact={contact} />
+      })}
 
       {!!contact['@id'] && (
         <SimilarContactsWidget

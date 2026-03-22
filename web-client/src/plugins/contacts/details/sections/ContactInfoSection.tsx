@@ -94,6 +94,16 @@ export const ContactInfoSection = ({ contact }: { contact: Contact }) => {
     }
   }
 
+  const hasPhones = Array.isArray(contact.phoneNumbers) && contact.phoneNumbers.length > 0
+  const hasEmails =
+    Array.isArray(contact.contactEmailAdresses) && contact.contactEmailAdresses.length > 0
+  const hasAddresses =
+    Array.isArray(contact.contactAddresses) && contact.contactAddresses.length > 0
+
+  if (!hasPhones && !hasEmails && !hasAddresses) {
+    return null
+  }
+
   return (
     <Card>
       <CardHeader>

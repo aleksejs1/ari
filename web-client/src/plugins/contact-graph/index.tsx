@@ -12,6 +12,7 @@ import type { Contact } from '@/types/models'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
+import { useContactGraph } from './api/useContactGraph'
 import { ContactGraphWidget } from './components/ContactGraphWidget'
 import { PageLoader } from './components/PageLoader'
 
@@ -64,16 +65,25 @@ function ContactGraphSidebarItem({
 
 function GraphConnectionsCard({ contact }: { contact: Contact }) {
   const { t } = useTranslation()
+  const contactId = contact.id?.toString() ?? ''
+  // Same query key as ContactGraphWidget — TanStack Query returns cached data, no extra request.
+  const { data, isLoading } = useContactGraph(contactId ? { contactId, level: 2 } : {})
+
   if (!contact.id) {
     return null
   }
+
+  if (!isLoading && data && data.nodes.length <= 1) {
+    return null
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t('contactGraph.widgetTitle', 'Graph Connections')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ContactGraphWidget contactId={contact.id.toString()} />
+        <ContactGraphWidget contactId={contactId} />
       </CardContent>
     </Card>
   )
@@ -109,7 +119,7 @@ export class ContactGraphPlugin extends BasePlugin {
     contactDetailsRegistry.register({
       id: 'graph-connections',
       order: 90,
-      layout: 'half',
+      layout: 'right',
       component: GraphConnectionsCard,
     })
   }

@@ -2,7 +2,7 @@ import type React from 'react'
 
 import type { Contact } from '@/types/models'
 
-export type SectionLayout = 'full' | 'half'
+export type SectionLayout = 'full' | 'full-bottom' | 'left' | 'right'
 
 export interface ContactDetailSectionDef {
   id: string

@@ -5,6 +5,7 @@ import type { Contact, ContactName } from '@/types/models'
 
 import { AiSuggestionBadge } from '../../components/AiSuggestionBadge'
 import { ContactNameInlineEdit } from '../../components/ContactNameInlineEdit'
+import { useAiSuggestions } from '../../hooks/useAiSuggestions'
 import { useCreateContactName, useDeleteContactName, useUpdateContactName } from '../../useContacts'
 
 export function ContactNamesSection({ contact }: { contact: Contact }) {
@@ -15,7 +16,17 @@ export function ContactNamesSection({ contact }: { contact: Contact }) {
 
   const names = contact.contactNames ?? []
 
+  // When there is exactly one name, check if it has pending AI suggestions.
+  // TanStack Query caches this — no extra network request when AiSuggestionBadge also calls it.
+  const singleNameId = names.length === 1 ? (names[0].id ?? null) : null
+  const { data: singleNameSuggestions = [] } = useAiSuggestions('contact_name', singleNameId)
+  const singleNameHasPendingSuggestion = singleNameSuggestions.some((s) => s.status === 'pending')
+
   if (names.length === 0) {
+    return null
+  }
+
+  if (names.length === 1 && !singleNameHasPendingSuggestion) {
     return null
   }
 

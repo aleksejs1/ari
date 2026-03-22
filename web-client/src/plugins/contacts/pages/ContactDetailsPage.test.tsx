@@ -35,7 +35,7 @@ vi.mock('@/lib/contacts/details/ContactDetailsRegistry', () => ({
   ContactDetailsRegistry: {
     getInstance: () => ({
       getAll: () => [
-        { id: 'section1', component: () => <div>Section 1</div>, layout: 'half' },
+        { id: 'section1', component: () => <div>Section 1</div>, layout: 'left' },
         { id: 'section2', component: () => <div>Section 2</div>, layout: 'full' },
       ],
     }),

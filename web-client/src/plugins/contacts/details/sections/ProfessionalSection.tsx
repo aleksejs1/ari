@@ -37,6 +37,10 @@ export const ProfessionalSection = ({ contact }: { contact: Contact }) => {
     }
   }
 
+  if (!Array.isArray(contact.contactOrganizations) || contact.contactOrganizations.length === 0) {
+    return null
+  }
+
   return (
     <Card>
       <CardHeader>

@@ -115,7 +115,7 @@ export class ContactsPlugin extends BasePlugin {
       id: 'history',
       component: ContactsHistoryCard,
       order: 100,
-      layout: 'full',
+      layout: 'full-bottom',
     })
 
     // 4. Register Registry Sections

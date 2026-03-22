@@ -26,8 +26,9 @@ export function useContactPlaybook(contactId: string | number) {
   return useQuery<ContactPlaybook | null>({
     queryKey: queryKeys.contacts.playbook(contactId),
     queryFn: async () => {
-      // validateStatus: treat 404 as a successful response so the browser
-      // does not log a console error for contacts without an active playbook.
+      // validateStatus treats 404 as a successful response so Axios does not
+      // throw. The browser may still log the 404 at the network level — that
+      // is a cosmetic issue and cannot be suppressed from JavaScript.
       const response = await api.get<ContactPlaybook>(`/contacts/${contactId}/playbook`, {
         validateStatus: (status) => status === 200 || status === 404,
       })

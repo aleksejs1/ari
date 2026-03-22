@@ -78,6 +78,14 @@
   "organizationStartDate": "Start Date",
   "organizationEndDate": "End Date",
   "biography": "Biographies",
+  "identityNote": {
+    "title": "Identity note",
+    "question": "What makes {{name}} unique?",
+    "hint": "Consider capturing a favorite coffee roast, a shared interest in classical history, or their preferred way to spend a quiet Sunday.",
+    "addNote": "Add private note",
+    "placeholder": "Write something unique about this person...",
+    "thisContact": "this contact"
+  },
   "addBiography": "Add Biography",
   "biographyPlaceholder": "Enter biography text...",
   "addCompany": "Add Company",
@@ -221,6 +229,7 @@
   },
   "interactions": {
     "sectionTitle": "Keep in Touch",
+    "historyTitle": "History",
     "log": "Log Interaction",
     "addTitle": "Log Interaction",
     "editTitle": "Edit Interaction",

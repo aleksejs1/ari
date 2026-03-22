@@ -92,9 +92,9 @@ describe('KeepInTouchSection', () => {
     expect(screen.getByText(/interactions\.overdueByDays/)).toBeInTheDocument()
   })
 
-  it('renders the interaction timeline', () => {
+  it('does not render the interaction timeline (moved to InteractionHistorySection)', () => {
     renderWithProviders(<KeepInTouchSection contact={BASE_CONTACT} />)
-    expect(screen.getByTestId('timeline')).toBeInTheDocument()
+    expect(screen.queryByTestId('timeline')).not.toBeInTheDocument()
   })
 
   it('opens drawer when "Log Interaction" button is clicked', () => {
