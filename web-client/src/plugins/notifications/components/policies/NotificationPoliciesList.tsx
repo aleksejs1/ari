@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import { getHydraMember } from '@/lib/api/hydra'
 import { type Contact, type Group, type NotificationPolicy } from '@/types/models'
 
@@ -90,7 +90,7 @@ const TargetDisplay = ({
 
 export default function NotificationPoliciesList() {
   const { t } = useTranslation()
-  const { formatTime } = useUserPrefs()
+  const { formatTime } = useRegionalPrefs()
   const { data: policies, isLoading: policiesLoading } = useNotificationPolicies()
   const { data: contactsData, isLoading: contactsLoading } = useContacts()
   const { data: groupsData, isLoading: groupsLoading } = useGroups()

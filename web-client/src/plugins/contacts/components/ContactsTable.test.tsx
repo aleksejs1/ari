@@ -77,18 +77,18 @@ vi.mock('@/plugins/contacts/cells/ContactActionsCell', () => ({
   ),
 }))
 
-// Mock useUserPrefs to ensure deterministic table settings
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: () => ({
+// Mock focused prefs hooks to ensure deterministic table settings
+vi.mock('@/contexts/UIPrefsContext', () => ({
+  useUIPrefs: () => ({
     contactTableSettings: '{}',
     setContactTableSettings: vi.fn(),
   }),
 }))
-// Mock useUserPrefs to ensure deterministic table settings
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: () => ({
-    contactTableSettings: '{}',
-    setContactTableSettings: vi.fn(),
+
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: () => ({
+    formatDate: (date: Date | string) => String(date),
+    isLoading: false,
   }),
 }))
 

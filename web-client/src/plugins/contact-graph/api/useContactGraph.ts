@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 export interface GraphNode {
   id: string
@@ -30,7 +31,7 @@ const fetchContactGraph = async (params: FetchGraphParams = {}): Promise<GraphDa
 
 export const useContactGraph = (params: FetchGraphParams = {}) => {
   return useQuery({
-    queryKey: ['contact-graph', params],
+    queryKey: queryKeys.contactGraph(params),
     queryFn: () => fetchContactGraph(params),
   })
 }

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 export interface ContactReciprocity {
   id: number
@@ -11,7 +12,7 @@ export interface ContactReciprocity {
 
 export function useContactReciprocity(contactId: string | number) {
   return useQuery<ContactReciprocity>({
-    queryKey: ['contacts', String(contactId), 'reciprocity'],
+    queryKey: queryKeys.contacts.reciprocity(contactId),
     queryFn: async () => {
       const response = await api.get<ContactReciprocity>(`/contacts/${contactId}/reciprocity`)
       return response.data

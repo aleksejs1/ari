@@ -28,7 +28,7 @@ module.exports = {
           '[.]d[.]ts$', // TypeScript declaration files
           '(^|/)tsconfig[.]json$', // TypeScript config
           '(^|/)(?:babel|webpack)[.]config[.](?:js|cjs|mjs|ts|cts|mts|json)$', // other configs
-          'src/lib/queryKeys[.]ts$', // planned Phase 2: wire up centralized query key factory
+          'src/lib/QueryKeyRegistry[.]ts$', // Phase 2: used by remote plugins at runtime; no static import needed
           'src/lib/events/PluginEventBus[.]ts$', // planned Phase 2: inter-plugin communication
         ],
       },

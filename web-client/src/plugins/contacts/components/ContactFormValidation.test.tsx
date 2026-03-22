@@ -18,8 +18,8 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: () => ({
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: () => ({
     dateFormat: 'yyyy-MM-dd',
     formatDate: (date: Date | string) => String(date),
   }),

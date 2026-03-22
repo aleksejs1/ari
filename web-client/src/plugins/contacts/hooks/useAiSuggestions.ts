@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { normalizeIri } from '@/lib/api/createMutation'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 export interface AiSuggestion {
   '@id'?: string
@@ -31,7 +33,7 @@ export interface AiSuggestionStats {
 
 export function useAiSuggestions(entityType: string, entityId: number | null | undefined) {
   return useQuery({
-    queryKey: ['ai_suggestions', entityType, entityId],
+    queryKey: queryKeys.aiSuggestions.byEntity(entityType, entityId ?? ''),
     queryFn: async () => {
       const response = await api.get<{ member: AiSuggestion[] }>('/ai_suggestions', {
         params: { entityType, entityId },
@@ -47,9 +49,8 @@ export function useResolveAiSuggestion() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: 'accepted' | 'dismissed' }) => {
-      const url = id.startsWith('/api') ? id.substring(4) : id
       const response = await api.patch(
-        url,
+        normalizeIri(id),
         { status },
         {
           headers: { 'Content-Type': 'application/merge-patch+json' },
@@ -58,8 +59,8 @@ export function useResolveAiSuggestion() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['ai_suggestions'] })
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.aiSuggestions.all })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -67,7 +68,7 @@ export function useResolveAiSuggestion() {
 
 export function useAiSuggestionStats() {
   return useQuery({
-    queryKey: ['ai_suggestion_stats'],
+    queryKey: queryKeys.aiSuggestions.stats,
     queryFn: async () => {
       const response = await api.get<AiSuggestionStats>('/ai_suggestions/stats')
       return response.data
@@ -83,7 +84,7 @@ export function useTriggerBatchAiAnalysis() {
       await api.post('/ai_suggestions/batch')
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['ai_suggestion_stats'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.aiSuggestions.stats })
     },
     onError: () => toast.error('Failed to start AI analysis.'),
   })

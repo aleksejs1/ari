@@ -2,13 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { Group } from '@/types/models'
 
 import { getHydraMember, type HydraCollection } from '../utils'
 
 export function useGroups() {
   return useQuery({
-    queryKey: ['groups'],
+    queryKey: queryKeys.groups.all,
     queryFn: async () => {
       const response = await api.get<HydraCollection<Group>>('/groups')
       return getHydraMember(response.data)
@@ -24,7 +25,7 @@ export function useCreateGroup() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['groups'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groups.all })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -51,9 +52,9 @@ export function useUpdateContactGroups() {
     },
     onSuccess: (_, variables) => {
       const id = variables.contactId.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       if (id) {
-        void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
+        void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.detail(id) })
       }
     },
     onError: () => toast.error('Failed to save changes.'),

@@ -19,7 +19,6 @@ import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import { AuthProvider } from './contexts/AuthContext'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
-import { useUserPrefs } from './hooks/useUserPrefs.hook'
 import { ContactsPlugin } from './plugins/contacts'
 import { DashboardPlugin } from './plugins/dashboard'
 import App from './App'
@@ -39,9 +38,29 @@ const context = {
 new DashboardPlugin().register(context)
 new ContactsPlugin().register(context)
 
-// Mock useUserPrefs hook but keep UserPrefsProvider
-vi.mock('./hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(),
+// Mock focused prefs hooks
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: vi.fn(() => ({
+    formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
+    language: 'en',
+    dateFormat: 'mm/dd/yyyy',
+    setLanguage: vi.fn(),
+    setDateFormat: vi.fn(),
+  })),
+  RegionalPrefsProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
+vi.mock('@/contexts/UIPrefsContext', () => ({
+  useUIPrefs: vi.fn(() => ({
+    showLogo: '1',
+    setShowLogo: vi.fn(),
+  })),
+  UIPrefsProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
+vi.mock('@/contexts/FeaturePrefsContext', () => ({
+  useFeaturePrefs: vi.fn(() => ({})),
+  FeaturePrefsProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
 // Import UserPrefsProvider from the actual module (not mocked)
@@ -54,16 +73,6 @@ vi.mock('./hooks/useUserPrefs', async (importOriginal) => {
 
 describe('App Smoke Test', () => {
   it('renders login page by default', async () => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
-      language: 'en',
-      dateFormat: 'mm/dd/yyyy',
-      showLogo: '1',
-      setLanguage: vi.fn(),
-      setDateFormat: vi.fn(),
-      setShowLogo: vi.fn(),
-    })
-
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {

@@ -5,6 +5,7 @@ import { LogIn, Monitor, Smartphone } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { formatLocalizedDateTime } from '@/lib/utils'
 
 interface LoginHistoryEntry {
@@ -24,7 +25,7 @@ export default function RecentLoginsWidget() {
   const language = i18n.language
 
   const { data, isLoading } = useQuery({
-    queryKey: ['login-history', 'widget'],
+    queryKey: queryKeys.loginHistory.widget,
     queryFn: async () => {
       const res = await api.get<LoginHistoryCollection>('/auth_history?page=1&itemsPerPage=5')
       return res.data

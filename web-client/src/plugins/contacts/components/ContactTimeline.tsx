@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { type ContactTimeline as ContactTimelineType, type TimelineEvent } from '@/types/models'
 
 import { ContactTimelineItem } from './ContactTimelineItem'
@@ -20,7 +21,7 @@ export function ContactTimeline({ contactId, fullHeight }: ContactTimelineProps)
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['contacts', contactId, 'timeline'],
+    queryKey: queryKeys.contacts.timeline(contactId),
     queryFn: async () => {
       const res = await api.get<ContactTimelineType>(`/contacts/${contactId}/timeline`)
       return res.data

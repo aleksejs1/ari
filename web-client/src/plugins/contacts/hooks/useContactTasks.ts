@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import type { HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 export interface TaskReflection {
   id: number
@@ -46,7 +47,7 @@ export function useContactTasks(
   }
 
   return useQuery<ContactTask[]>({
-    queryKey: ['contacts', String(contactId), 'tasks', options],
+    queryKey: [...queryKeys.contacts.tasks(contactId), options],
     queryFn: async () => {
       const response = await api.get<HydraCollection<ContactTask>>(
         `/contact_tasks?${params.toString()}`,
@@ -73,9 +74,9 @@ export function useUpdateTask(contactId: string | number) {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId)] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.tasks(contactId) })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.playbook(contactId) })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.detail(String(contactId)) })
     },
     onError: () => toast.error('Failed to update task.'),
   })

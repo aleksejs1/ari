@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { createMutation, normalizeIri } from '@/lib/api/createMutation'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { ContactDate } from '@/types/models'
 
 export function useCreateContactDate() {
@@ -13,40 +15,32 @@ export function useCreateContactDate() {
     },
     onSuccess: (_, variables) => {
       const contactId = variables.contact.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       if (contactId) {
-        void queryClient.invalidateQueries({ queryKey: ['contacts', contactId, 'timeline'] })
+        void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.timeline(contactId) })
       }
     },
     onError: () => toast.error('Failed to save changes.'),
   })
 }
 
-export function useUpdateContactDate() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<ContactDate> }) => {
-      const url = id.startsWith('/api') ? id.substring(4) : id
-      const response = await api.put(url, data)
-      return response.data
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
-    },
-    onError: () => toast.error('Failed to save changes.'),
-  })
-}
+export const useUpdateContactDate = createMutation(
+  async ({ id, data }: { id: string; data: Partial<ContactDate> }) => {
+    // Backend requires PUT (full replace) for contact_dates — PATCH is not supported on this resource.
+    const response = await api.put(normalizeIri(id), data)
+    return response.data
+  },
+  {
+    invalidateKeys: [queryKeys.contacts.all],
+  },
+)
 
-export function useDeleteContactDate() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const url = id.startsWith('/api') ? id.substring(4) : id
-      await api.delete(url)
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
-    },
+export const useDeleteContactDate = createMutation(
+  async (id: string) => {
+    await api.delete(normalizeIri(id))
+  },
+  {
+    invalidateKeys: [queryKeys.contacts.all],
     onError: () => toast.error('Failed to delete.'),
-  })
-}
+  },
+)

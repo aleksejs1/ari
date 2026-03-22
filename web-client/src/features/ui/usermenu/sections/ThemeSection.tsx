@@ -6,11 +6,11 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useUIPrefs } from '@/contexts/UIPrefsContext'
 
 export function ThemeSection() {
   const { t } = useTranslation()
-  const { theme, setTheme } = useUserPrefs()
+  const { theme, setTheme } = useUIPrefs()
 
   return (
     <>

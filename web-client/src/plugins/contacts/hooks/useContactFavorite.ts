@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useFeaturePrefs } from '@/contexts/FeaturePrefsContext'
 import type { Contact } from '@/types/models'
 
 import { useCreateGroup, useGroups, usePatchContact } from '../useContacts'
@@ -11,7 +11,7 @@ const getGroupIri = (cg: Contact['contactGroups'] extends (infer U)[] | undefine
     : (cg.groupResource as { '@id'?: string })?.['@id']
 
 export function useContactFavorite() {
-  const { favouriteGroupName } = useUserPrefs()
+  const { favouriteGroupName } = useFeaturePrefs()
   const { data: groups } = useGroups()
   const { mutate: patchContact } = usePatchContact()
   const { mutateAsync: createGroup } = useCreateGroup()

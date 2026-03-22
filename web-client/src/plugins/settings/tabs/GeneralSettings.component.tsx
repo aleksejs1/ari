@@ -2,7 +2,9 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Badge } from '@/components/ui/badge'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useFeaturePrefs } from '@/contexts/FeaturePrefsContext'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
+import { useUIPrefs } from '@/contexts/UIPrefsContext'
 import { useEntitlements } from '@/lib/entitlements'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
@@ -13,22 +15,16 @@ import { useNotificationPolicies } from '@/plugins/notifications/hooks/useNotifi
 export function GeneralSettings() {
   const { t } = useTranslation()
   const { data: entitlements } = useEntitlements()
+  const { language, setLanguage } = useRegionalPrefs()
   const {
-    language,
     favouriteGroupName,
     googleSyncOnUpdate,
-    setLanguage,
+    dashboardNotificationPolicy,
     setFavouriteGroupName,
     setGoogleSyncOnUpdate,
-
-    dashboardNotificationPolicy,
     setDashboardNotificationPolicy,
-    showLogo,
-    setShowLogo,
-    theme,
-    setTheme,
-    isLoading,
-  } = useUserPrefs()
+  } = useFeaturePrefs()
+  const { showLogo, theme, isLoading, setShowLogo, setTheme } = useUIPrefs()
   const { data: notificationPolicies } = useNotificationPolicies()
 
   const settings = useMemo(() => {

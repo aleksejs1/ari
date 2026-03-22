@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import { ENTITLEMENTS_QUERY_KEY } from '@/lib/entitlements/useEntitlements'
+import { queryKeys } from '@/lib/queryKeys'
 import { storage, STORAGE_KEYS } from '@/lib/storage'
 import type { Contact, ContactFormValues } from '@/types/models'
 
@@ -35,7 +36,7 @@ export function useContacts(
   options?: { enabled?: boolean },
 ) {
   return useQuery({
-    queryKey: ['contacts', page, filters, sort],
+    queryKey: queryKeys.contacts.list(page, filters, sort),
     queryFn: async () => {
       const params = new URLSearchParams()
       params.append('page', page.toString())
@@ -62,7 +63,7 @@ export function useContacts(
 
 export function useContact(id: string) {
   return useQuery({
-    queryKey: ['contacts', id],
+    queryKey: queryKeys.contacts.detail(id),
     queryFn: async () => {
       const url = id.startsWith('/api') ? id.substring(4) : `/contacts/${id}`
       const response = await api.get<Contact>(url)
@@ -81,10 +82,10 @@ export function useCreateContact() {
       return response.data
     },
     onSuccess: (newContact) => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
       if (newContact.id) {
-        queryClient.setQueryData(['contacts', newContact.id.toString()], newContact)
+        queryClient.setQueryData(queryKeys.contacts.detail(newContact.id.toString()), newContact)
       }
     },
     onError: () => toast.error('Failed to save changes.'),
@@ -101,10 +102,10 @@ export function useUpdateContact() {
     },
     onSuccess: (updatedContact, variables) => {
       const id = variables.id.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       if (id) {
-        queryClient.setQueryData(['contacts', id], updatedContact)
-        void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
+        queryClient.setQueryData(queryKeys.contacts.detail(id), updatedContact)
+        void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.timeline(id) })
       }
     },
     onError: () => toast.error('Failed to save changes.'),
@@ -125,10 +126,10 @@ export function usePatchContact() {
     },
     onSuccess: (updatedContact, variables) => {
       const id = variables.id.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       if (id) {
-        queryClient.setQueryData(['contacts', id], updatedContact)
-        void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
+        queryClient.setQueryData(queryKeys.contacts.detail(id), updatedContact)
+        void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.timeline(id) })
       }
     },
     onError: () => toast.error('Failed to save changes.'),
@@ -144,7 +145,7 @@ export function useDeleteContact() {
       await api.delete(url)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
     },
     onError: () => toast.error('Failed to delete contact.'),
@@ -153,7 +154,7 @@ export function useDeleteContact() {
 
 export function useSimilarContacts(id: string) {
   return useQuery({
-    queryKey: ['contacts', id, 'similar'],
+    queryKey: queryKeys.contacts.similar(id),
     queryFn: async () => {
       const url = id.startsWith('/api') ? id.substring(4) : id
       const fullUrl = `${url}/similar`
@@ -249,7 +250,7 @@ export function useImportContacts() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
     },
     onError: () => toast.error('Failed to import contacts.'),
@@ -278,12 +279,12 @@ export function useUploadContactAvatar() {
     },
     onSuccess: (_data, variables) => {
       const id = variables.id.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       if (id) {
         // Optimistically update or re-fetch would happen via invalidate
         // We can also try to update the specific contact cache if we want instant feedback without refetch
         // But invalidation is safer for ensuring full object consistency
-        void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
+        void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.detail(id) })
       }
     },
     onError: () => toast.error('Failed to upload avatar.'),

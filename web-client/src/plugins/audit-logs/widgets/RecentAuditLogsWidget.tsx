@@ -6,6 +6,7 @@ import { History, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { formatLocalizedDateTime } from '@/lib/utils'
 import { type TimelineEvent } from '@/types/models'
 
@@ -22,7 +23,7 @@ export default function RecentAuditLogsWidget() {
   const navigate = useNavigate()
 
   const { data: logsData, isLoading } = useQuery({
-    queryKey: ['audit-logs', 1],
+    queryKey: queryKeys.auditLogs.list(1),
     queryFn: async () => {
       const res = await api.get<AuditLogCollection>(
         `/audit_logs?page=1&order%5BcreatedAt%5D=desc&itemsPerPage=10`,

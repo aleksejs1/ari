@@ -12,8 +12,8 @@ const config: KnipConfig = {
     'src/components/ui/sheet.tsx',
     'src/components/ui/dropdown-menu.tsx',
     'src/components/ui/popover.tsx',
-    // Infrastructure files — no consumers yet; will be adopted incrementally
-    'src/lib/queryKeys.ts',
+    // Infrastructure files — no static consumers; used by remote plugins at runtime
+    'src/lib/QueryKeyRegistry.ts',
     'src/lib/events/PluginEventBus.ts',
   ],
   ignoreBinaries: ['dot'],

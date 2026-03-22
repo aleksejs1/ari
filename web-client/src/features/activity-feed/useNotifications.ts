@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { ActivityFeed } from '@/types/models'
 
 export function useNotifications(page = 1) {
   return useQuery({
-    queryKey: ['notifications', page],
+    queryKey: queryKeys.notifications.list(page),
     queryFn: async () => {
       const response = await api.get<HydraCollection<ActivityFeed> | ActivityFeed[]>(
         `/activity-feed?page=${page}`,
@@ -24,7 +26,7 @@ export function useNotifications(page = 1) {
 
 export function usePendingSeasonalCheckin() {
   return useQuery({
-    queryKey: ['notifications', 'seasonal-checkin'],
+    queryKey: queryKeys.notifications.seasonalCheckin,
     queryFn: async () => {
       const response = await api.get<HydraCollection<ActivityFeed>>(
         '/activity-feed?eventType=seasonal_checkin&isRead=false&itemsPerPage=1',
@@ -37,7 +39,7 @@ export function usePendingSeasonalCheckin() {
 
 export function useUnreadCount() {
   return useQuery({
-    queryKey: ['notifications', 'unread-count'],
+    queryKey: queryKeys.notifications.unreadCount,
     queryFn: async () => {
       const response = await api.get<HydraCollection<ActivityFeed> | number | unknown>(
         '/activity-feed/unread-count',
@@ -110,8 +112,9 @@ export function useMarkAsRead() {
       )
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notifications'] })
-      void queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }

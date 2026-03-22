@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { Loader2, LogIn, Monitor, Smartphone } from 'lucide-react'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 interface LoginHistoryEntry {
   id: number
@@ -99,7 +100,7 @@ export default function LoginHistoryPage() {
     isLoading,
     isPlaceholderData,
   } = useQuery({
-    queryKey: ['login-history', page],
+    queryKey: queryKeys.loginHistory.list(page),
     queryFn: async () => {
       const res = await api.get<LoginHistoryCollection>(
         `/auth_history?page=${page}&itemsPerPage=${ITEMS_PER_PAGE}`,

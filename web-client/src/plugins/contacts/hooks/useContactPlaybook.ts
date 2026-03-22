@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 export interface ContactPlaybook {
   id: number
@@ -23,7 +24,7 @@ export interface PlaybookTemplate {
 
 export function useContactPlaybook(contactId: string | number) {
   return useQuery<ContactPlaybook | null>({
-    queryKey: ['contacts', String(contactId), 'playbook'],
+    queryKey: queryKeys.contacts.playbook(contactId),
     queryFn: async () => {
       try {
         const response = await api.get<ContactPlaybook>(`/contacts/${contactId}/playbook`)
@@ -54,7 +55,7 @@ interface HydraCollection<T> {
 
 export function usePlaybookTemplates() {
   return useQuery<PlaybookTemplate[]>({
-    queryKey: ['playbook_templates'],
+    queryKey: queryKeys.playbookTemplates,
     queryFn: async () => {
       const response = await api.get<HydraCollection<PlaybookTemplate>>('/playbook_templates')
       return response.data['hydra:member'] ?? response.data.member ?? []
@@ -71,8 +72,8 @@ export function useActivatePlaybook(contactId: string | number) {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.playbook(contactId) })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.tasks(contactId) })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -95,7 +96,7 @@ export function useUpdatePlaybook(contactId: string | number) {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.playbook(contactId) })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -117,7 +118,7 @@ export function useSaveReflection(contactId: string | number) {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.tasks(contactId) })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -130,8 +131,8 @@ export function useDeletePlaybook(contactId: string | number) {
       await api.delete(`/contacts/${contactId}/playbook`)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
-      void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.playbook(contactId) })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.tasks(contactId) })
     },
     onError: () => toast.error('Failed to delete.'),
   })

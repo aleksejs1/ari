@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const TEST_PASSWORD = crypto.randomUUID()
 const TEST_DIFFERENT_PASSWORD = crypto.randomUUID()
 
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import { useAuth } from '@/hooks/useAuth'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { api } from '@/lib/axios'
 
 import RegisterPage from './RegisterPage'
@@ -15,8 +15,8 @@ vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),
 }))
 
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(),
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: vi.fn(),
 }))
 
 vi.mock('@/lib/axios', () => ({
@@ -38,7 +38,7 @@ describe('RegisterPage', () => {
   const login = vi.fn()
 
   beforeEach(() => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    ;(useRegionalPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
       dateFormat: 'mm/dd/yyyy',

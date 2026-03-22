@@ -45,35 +45,49 @@ const formatDate = (date: Date | string | null | undefined) => {
   return `${month}/${day}/${year}`
 }
 
-const defaultPrefs = {
-  language: 'en',
-  dateFormat: 'mm/dd/yyyy',
-  dashboardNotificationPolicy: '',
-  setLanguage: vi.fn(),
-  setDateFormat: vi.fn(),
-  setTimeFormat: vi.fn(),
-  setFavouriteGroupName: vi.fn(),
-  setGoogleSyncOnUpdate: vi.fn(),
-  setDashboardNotificationPolicy: vi.fn(),
-  setContactTableSettings: vi.fn(),
-  dashboardSettings: '{}',
-  setDashboardSettings: vi.fn(),
-  showLogo: '1',
-  setShowLogo: vi.fn(),
-  theme: 'system',
-  setTheme: vi.fn(),
-  formatDate,
-  formatTime: vi.fn().mockReturnValue(''),
-  isLoading: false,
-}
-
-// Global mock for useUserPrefs
-vi.mock('@/hooks/useUserPrefs', () => ({
-  useUserPrefs: () => defaultPrefs,
+// Global mocks for preference contexts
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: () => ({
+    language: 'en',
+    dateFormat: 'mm/dd/yyyy',
+    timeFormat: '24h',
+    timezone: 'UTC',
+    formatDate,
+    formatTime: vi.fn().mockReturnValue(''),
+    setLanguage: vi.fn(),
+    setDateFormat: vi.fn(),
+    setTimeFormat: vi.fn(),
+    setTimezone: vi.fn(),
+    isLoading: false,
+  }),
 }))
 
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: () => defaultPrefs,
+vi.mock('@/contexts/UIPrefsContext', () => ({
+  useUIPrefs: () => ({
+    theme: 'system',
+    showLogo: '1',
+    dashboardSettings: '{}',
+    contactTableSettings: '{}',
+    setTheme: vi.fn(),
+    setShowLogo: vi.fn(),
+    setDashboardSettings: vi.fn(),
+    setContactTableSettings: vi.fn(),
+    isLoading: false,
+  }),
+}))
+
+vi.mock('@/contexts/FeaturePrefsContext', () => ({
+  useFeaturePrefs: () => ({
+    aiContextLocale: '',
+    favouriteGroupName: 'favourites',
+    googleSyncOnUpdate: '0',
+    dashboardNotificationPolicy: '',
+    setAiContextLocale: vi.fn(),
+    setFavouriteGroupName: vi.fn(),
+    setGoogleSyncOnUpdate: vi.fn(),
+    setDashboardNotificationPolicy: vi.fn(),
+    isLoading: false,
+  }),
 }))
 
 // Global mock for useAutocomplete

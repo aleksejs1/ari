@@ -34,6 +34,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { api } from '@/lib/axios'
 import { FeatureGate } from '@/lib/entitlements'
+import { queryKeys } from '@/lib/queryKeys'
 
 interface ApiKey {
   id: string
@@ -671,7 +672,7 @@ export default function IntegrationsPage() {
   const [deletingKey, setDeletingKey] = useState<ApiKey | null>(null)
 
   const { data, isLoading, isPlaceholderData } = useQuery({
-    queryKey: ['api-keys', page],
+    queryKey: queryKeys.apiKeys.list(page),
     queryFn: async () => {
       const res = await api.get<ApiKeyCollection>(
         `/api_keys?page=${page}&itemsPerPage=${ITEMS_PER_PAGE}`,
@@ -686,7 +687,7 @@ export default function IntegrationsPage() {
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
   const invalidateKeys = () => {
-    void queryClient.invalidateQueries({ queryKey: ['api-keys'] })
+    void queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all })
   }
 
   const createMutation = useMutation({

@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { NotificationPolicy, NotificationPolicyFormValues } from '@/types/models'
 
 export const useNotificationPolicies = () => {
   return useQuery({
-    queryKey: ['notification-policies'],
+    queryKey: queryKeys.notificationPolicies.all,
     queryFn: async () => {
       const response = await api.get<{ member: NotificationPolicy[] }>('/notification-policies')
       return response.data.member || []
@@ -16,7 +18,7 @@ export const useNotificationPolicies = () => {
 
 export const useNotificationPolicy = (id: string | undefined) => {
   return useQuery({
-    queryKey: ['notification-policies', id],
+    queryKey: queryKeys.notificationPolicies.detail(id ?? ''),
     queryFn: async () => {
       if (!id) {
         return null
@@ -36,8 +38,9 @@ export const useCreateNotificationPolicy = () => {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-policies'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicies.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -55,8 +58,9 @@ export const useUpdateNotificationPolicy = () => {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-policies'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicies.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -67,14 +71,15 @@ export const useDeleteNotificationPolicy = () => {
       await api.delete(`/notification-policies/${id}`)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-policies'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicies.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
 export const useNotificationPolicyEventTypes = () => {
   return useQuery({
-    queryKey: ['notification-policy-event-types'],
+    queryKey: queryKeys.notificationPolicies.eventTypes,
     queryFn: async () => {
       const response = await api.get<HydraCollection<{ text: string }>>(
         '/notification-policy/event-types',

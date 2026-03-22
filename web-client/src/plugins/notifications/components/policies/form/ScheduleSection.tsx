@@ -9,14 +9,14 @@ import { Card, CardContent } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { TimeInput } from '@/components/ui/TimeInput'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import type { NotificationChannel, NotificationPolicyFormValues } from '@/types/models'
 
 import { ChannelItem } from './ChannelItem'
 
 const SchedulePreview = () => {
   const { t } = useTranslation()
-  const { formatDate, formatTime } = useUserPrefs()
+  const { formatDate, formatTime } = useRegionalPrefs()
   const form = useFormContext<NotificationPolicyFormValues>()
   const schedules = form.watch('schedule') || []
 
@@ -52,7 +52,7 @@ interface ScheduleSectionProps {
 
 export const ScheduleSection = ({ channels }: ScheduleSectionProps) => {
   const { t } = useTranslation()
-  const { timeFormat } = useUserPrefs()
+  const { timeFormat } = useRegionalPrefs()
   const form = useFormContext<NotificationPolicyFormValues>()
   const { fields, append, remove } = useFieldArray({
     control: form.control,

@@ -2,14 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { Calendar } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import type { Contact } from '@/types/models'
 
 import { DisplayItem } from '../../components/DisplayItem'
 
 export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation('contacts')
-  const { formatDate } = useUserPrefs()
+  const { formatDate } = useRegionalPrefs()
   const upcomingDates = (Array.isArray(contact.contactDates) ? contact.contactDates : [])?.filter(
     (d) => d.nextAnniversaryDate,
   )

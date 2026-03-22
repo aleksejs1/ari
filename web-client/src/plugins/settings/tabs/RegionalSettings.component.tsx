@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useFeaturePrefs } from '@/contexts/FeaturePrefsContext'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import { useSystemSetting } from '@/hooks/useSystemSettings'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { SettingItem } from '@/lib/settings/components/SettingItem'
 import { Setting } from '@/lib/settings/Setting'
 import type { SettingConfig } from '@/lib/settings/types'
@@ -44,13 +45,12 @@ export function RegionalSettings() {
     dateFormat,
     timeFormat,
     timezone,
-    aiContextLocale,
+    isLoading: isPrefsLoading,
     setDateFormat,
     setTimeFormat,
     setTimezone,
-    setAiContextLocale,
-    isLoading: isPrefsLoading,
-  } = useUserPrefs()
+  } = useRegionalPrefs()
+  const { aiContextLocale, setAiContextLocale } = useFeaturePrefs()
 
   const { data: aiContextLocalesString, isLoading: isSettingsLoading } =
     useSystemSetting('ai_context_locales')

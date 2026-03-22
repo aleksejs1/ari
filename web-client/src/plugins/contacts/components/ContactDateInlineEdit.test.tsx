@@ -2,14 +2,14 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import { type ContactDate } from '@/types/models'
 
 import { ContactDateInlineEdit } from './ContactDateInlineEdit'
 
-// Mock useUserPrefs hook
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(),
+// Mock useRegionalPrefs hook
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: vi.fn(),
 }))
 
 describe('ContactDateInlineEdit', () => {
@@ -25,7 +25,7 @@ describe('ContactDateInlineEdit', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    ;(useRegionalPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => {
         const d = new Date(date)
         const month = String(d.getMonth() + 1).padStart(2, '0')

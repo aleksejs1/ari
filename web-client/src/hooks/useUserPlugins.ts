@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 interface AvailablePlugin {
   pluginId: string
@@ -13,7 +14,7 @@ interface AvailablePlugin {
 
 export const useUserPlugins = () => {
   return useQuery({
-    queryKey: ['user-plugins'],
+    queryKey: queryKeys.userPlugins,
     queryFn: async () => {
       const response = await api.get<AvailablePlugin[]>('/user-plugins/available')
       return response.data
@@ -34,8 +35,8 @@ export const useActivatePlugin = () => {
       await api.post('/user-plugins/activate', { pluginId })
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['user-plugins'] })
-      await queryClient.invalidateQueries({ queryKey: ['plugins'] }) // Refresh global plugin list
+      await queryClient.invalidateQueries({ queryKey: queryKeys.userPlugins })
+      await queryClient.invalidateQueries({ queryKey: queryKeys.plugins }) // Refresh global plugin list
       setReloadNeeded(true)
     },
   })
@@ -50,8 +51,8 @@ export const useDeactivatePlugin = () => {
       await api.post('/user-plugins/deactivate', { pluginId })
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['user-plugins'] })
-      await queryClient.invalidateQueries({ queryKey: ['plugins'] }) // Refresh global plugin list
+      await queryClient.invalidateQueries({ queryKey: queryKeys.userPlugins })
+      await queryClient.invalidateQueries({ queryKey: queryKeys.plugins }) // Refresh global plugin list
       setReloadNeeded(true)
     },
   })

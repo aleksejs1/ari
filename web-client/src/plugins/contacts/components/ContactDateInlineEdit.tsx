@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import { formatApiDate } from '@/lib/utils'
 import { type ContactDate } from '@/types/models'
 
@@ -37,7 +37,7 @@ export function ContactDateInlineEdit({
   className,
 }: ContactDateInlineEditProps) {
   const { t } = useTranslation('contacts')
-  const { formatDate } = useUserPrefs()
+  const { formatDate } = useRegionalPrefs()
   const [open, setOpen] = useState(false)
 
   const initialDate = date.date ? new Date(date.date).toISOString().split('T')[0] : ''

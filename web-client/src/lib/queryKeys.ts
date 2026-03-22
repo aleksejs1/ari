@@ -20,8 +20,13 @@ export const queryKeys = {
     timeline: (id: string | number) => ['contacts', String(id), 'timeline'] as const,
     snapshot: (contactId: string | number, logId: string | number) =>
       ['contacts', String(contactId), 'snapshot', String(logId)] as const,
+    playbook: (id: string | number) => ['contacts', String(id), 'playbook'] as const,
+    reciprocity: (id: string | number) => ['contacts', String(id), 'reciprocity'] as const,
+    tasks: (id: string | number) => ['contacts', String(id), 'tasks'] as const,
+    needsAttention: (limit: number) => ['contacts', 'needsAttention', limit] as const,
+    needsAttentionPaged: (page: number) => ['contacts', 'needsAttention', 'paged', page] as const,
     displayOptions: ['contacts', 'display-options'] as const,
-    autocomplete: ['autocomplete'] as const,
+    autocomplete: ['contacts', 'autocomplete'] as const,
   },
 
   // ── Groups ───────────────────────────────────────────────────────────────
@@ -43,6 +48,7 @@ export const queryKeys = {
     all: ['notifications'] as const,
     list: (page: number) => ['notifications', page] as const,
     unreadCount: ['notifications', 'unread-count'] as const,
+    seasonalCheckin: ['notifications', 'seasonal-checkin'] as const,
   },
   notificationChannels: {
     all: ['notification-channels'] as const,
@@ -68,6 +74,9 @@ export const queryKeys = {
 
   // ── Contact graph ─────────────────────────────────────────────────────────
   contactGraph: (params: unknown) => ['contact-graph', params] as const,
+
+  // ── Playbook templates ────────────────────────────────────────────────────
+  playbookTemplates: ['playbook_templates'] as const,
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
   stats: ['stats'] as const,

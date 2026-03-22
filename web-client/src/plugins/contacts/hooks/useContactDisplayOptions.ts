@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 export interface ContactDisplayOptions {
   nameLocales: string[]
@@ -11,7 +12,7 @@ export interface ContactDisplayOptions {
 
 export function useContactDisplayOptions() {
   return useQuery({
-    queryKey: ['contacts', 'display-options'],
+    queryKey: queryKeys.contacts.displayOptions,
     queryFn: async () => {
       const response = await api.get<ContactDisplayOptions>('/contacts/display-options')
       return response.data

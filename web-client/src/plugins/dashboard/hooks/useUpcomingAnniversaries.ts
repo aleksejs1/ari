@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { type Contact, type ContactDate } from '@/types/models'
 
 // Helper to get displayName from the contact embedded in ContactDate
@@ -15,7 +16,7 @@ import { type Contact, type ContactDate } from '@/types/models'
 
 export function useUpcomingAnniversaries() {
   return useQuery({
-    queryKey: ['upcoming-anniversaries'],
+    queryKey: queryKeys.upcomingAnniversaries,
     queryFn: async () => {
       // The user specified: "теперь при получении коллекции есть возможность сортировать по upcomingAnniversary"
       // And "теперь в ответе объект contact имеет displayName"

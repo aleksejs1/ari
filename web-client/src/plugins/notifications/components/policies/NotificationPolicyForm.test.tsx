@@ -67,8 +67,8 @@ vi.mock('@/plugins/contacts/useContacts', async () => {
   }
 })
 
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(() => ({
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: vi.fn(() => ({
     formatDate: (date: Date | string) => {
       if (!date) {
         return ''

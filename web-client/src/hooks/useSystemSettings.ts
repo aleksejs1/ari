@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 interface SystemSetting {
   id: string
@@ -9,7 +10,7 @@ interface SystemSetting {
 
 export const useSystemSetting = (key: string) => {
   return useQuery({
-    queryKey: ['system-settings', key],
+    queryKey: queryKeys.systemSettings(key),
     queryFn: async () => {
       try {
         const response = await api.get<SystemSetting>(`/system_settings/${key}`)
@@ -31,7 +32,7 @@ export const useUpdateSystemSetting = () => {
       await api.put<SystemSetting>(`/system_settings/${key}`, { value })
     },
     onSuccess: async (_, { key }) => {
-      await queryClient.invalidateQueries({ queryKey: ['system-settings', key] })
+      await queryClient.invalidateQueries({ queryKey: queryKeys.systemSettings(key) })
     },
   })
 }

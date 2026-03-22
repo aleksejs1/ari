@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useUIPrefs } from '@/contexts/UIPrefsContext'
 import { type LayoutPreset, layoutPresetRegistry } from '@/lib/widgets/LayoutPresets'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
@@ -158,7 +158,7 @@ function pickColumnZone(
 }
 
 export function useDashboardSettings() {
-  const { dashboardSettings, setDashboardSettings } = useUserPrefs()
+  const { dashboardSettings, setDashboardSettings } = useUIPrefs()
 
   const settings = useMemo(() => parseSettings(dashboardSettings), [dashboardSettings])
 

@@ -4,7 +4,7 @@ import { Check, Clock, SkipForward } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 
 import type { ContactTask } from '../hooks/useContactTasks'
 import { useUpdateTask } from '../hooks/useContactTasks'
@@ -24,7 +24,7 @@ export function TaskCard({ task, contactId }: Props) {
   const [reflecting, setReflecting] = useState(false)
 
   const updateTask = useUpdateTask(contactId)
-  const { formatDate } = useUserPrefs()
+  const { formatDate } = useRegionalPrefs()
 
   const handleComplete = async () => {
     setError(null)

@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { ActiveSession } from '@/types/auth'
 
 export default function SessionsPage() {
@@ -25,7 +26,7 @@ export default function SessionsPage() {
   const [sessionToDelete, setSessionToDelete] = useState<ActiveSession | null>(null)
 
   const { data: sessions = [], isLoading } = useQuery({
-    queryKey: ['active-sessions'],
+    queryKey: queryKeys.activeSessions,
     queryFn: async () => {
       const { data } = await api.get<HydraCollection<ActiveSession>>('/active_sessions')
       return getHydraMember(data)
@@ -37,7 +38,7 @@ export default function SessionsPage() {
       await api.delete(`/active_sessions/${id}`)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['active-sessions'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.activeSessions })
       setSessionToDelete(null)
     },
   })

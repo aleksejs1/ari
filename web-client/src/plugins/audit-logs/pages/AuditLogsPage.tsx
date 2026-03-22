@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { History, Loader2 } from 'lucide-react'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { type TimelineEvent } from '@/types/models'
 
 import { LogList } from '../components/LogList'
@@ -24,7 +25,7 @@ export default function AuditLogsPage() {
     isPlaceholderData,
     error,
   } = useQuery({
-    queryKey: ['audit-logs', page],
+    queryKey: queryKeys.auditLogs.list(page),
     queryFn: async () => {
       const res = await api.get<AuditLogCollection>(
         `/audit_logs?page=${page}&order%5BcreatedAt%5D=desc`,

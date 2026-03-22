@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 
 import type {
   MarketplaceActionResponse,
@@ -15,7 +17,7 @@ const jsonHeaders = {
 
 export function useMarketplaceRegistry() {
   return useQuery({
-    queryKey: ['marketplace', 'registry'],
+    queryKey: queryKeys.marketplace.registry,
     queryFn: async () => {
       const response = await api.get<MarketplaceRegistry>('/marketplace/registry', {
         headers: jsonHeaders,
@@ -27,7 +29,7 @@ export function useMarketplaceRegistry() {
 
 export function usePluginReadme(pluginId: string | null) {
   return useQuery({
-    queryKey: ['marketplace', 'readme', pluginId],
+    queryKey: queryKeys.marketplace.readme(pluginId ?? ''),
     queryFn: async () => {
       const response = await api.get<PluginReadmeResponse>(`/marketplace/readme/${pluginId}`, {
         headers: jsonHeaders,
@@ -50,8 +52,9 @@ export function useInstallPlugin() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['marketplace', 'registry'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.registry })
     },
+    onError: () => toast.error('Failed to install plugin.'),
   })
 }
 
@@ -67,8 +70,9 @@ export function useUpdatePlugin() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['marketplace', 'registry'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.registry })
     },
+    onError: () => toast.error('Failed to update plugin.'),
   })
 }
 
@@ -84,7 +88,8 @@ export function useUninstallPlugin() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['marketplace', 'registry'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.registry })
     },
+    onError: () => toast.error('Failed to uninstall plugin.'),
   })
 }

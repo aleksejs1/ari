@@ -2,13 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { ContactInteraction, NeedsAttentionContact } from '@/types/models'
 
 import type { HydraCollection } from '../utils'
 
 export function useNeedsAttention(limit = 7) {
   return useQuery({
-    queryKey: ['contacts', 'needsAttention', limit],
+    queryKey: queryKeys.contacts.needsAttention(limit),
     queryFn: async () => {
       const response = await api.get<HydraCollection<NeedsAttentionContact>>(
         `/contacts/needs-attention?limit=${limit}`,
@@ -21,7 +22,7 @@ export function useNeedsAttention(limit = 7) {
 
 export function useNeedsAttentionPaged(page = 1, options?: { enabled?: boolean }) {
   return useQuery({
-    queryKey: ['contacts', 'needsAttention', 'paged', page],
+    queryKey: queryKeys.contacts.needsAttentionPaged(page),
     queryFn: async () => {
       const response = await api.get<HydraCollection<NeedsAttentionContact>>(
         `/contacts/needs-attention?page=${page}`,
@@ -44,7 +45,7 @@ export function useCreateInteraction() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -61,7 +62,7 @@ export function useUpdateInteraction() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
     },
     onError: () => toast.error('Failed to save changes.'),
   })
@@ -75,7 +76,7 @@ export function useDeleteInteraction() {
       await api.delete(url)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
     },
     onError: () => toast.error('Failed to delete.'),
   })
@@ -96,7 +97,7 @@ export function useUpdateContactCadence() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
     },
     onError: () => toast.error('Failed to save changes.'),
   })

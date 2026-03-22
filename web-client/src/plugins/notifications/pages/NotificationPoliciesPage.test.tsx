@@ -2,7 +2,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import * as useUserPrefsHook from '@/hooks/useUserPrefs.hook'
+import * as useRegionalPrefsContext from '@/contexts/RegionalPrefsContext'
 
 import * as useContactsHook from '@/plugins/contacts/useContacts'
 import * as useGroupsHook from '@/plugins/groups/hooks/useGroups'
@@ -26,8 +26,8 @@ vi.mock('@/plugins/groups/hooks/useGroups', () => ({
   useGroups: vi.fn(),
 }))
 
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(),
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: vi.fn(),
 }))
 
 describe('NotificationPoliciesPage', () => {
@@ -35,7 +35,7 @@ describe('NotificationPoliciesPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useUserPrefsHook.useUserPrefs).mockReturnValue({
+    vi.mocked(useRegionalPrefsContext.useRegionalPrefs).mockReturnValue({
       formatTime: mockFormatTime,
     } as any)
     vi.mocked(useContactsHook.useContacts).mockReturnValue({

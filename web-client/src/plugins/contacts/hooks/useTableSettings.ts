@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ColumnOrderState, VisibilityState } from '@tanstack/react-table'
 
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
+import { useUIPrefs } from '@/contexts/UIPrefsContext'
 
 import type { TypedColumnSpec } from '../utils'
 
@@ -49,7 +50,8 @@ export function parseTableSettings(raw: string): TableSettings {
 }
 
 export function useTableSettings() {
-  const { contactTableSettings, setContactTableSettings, formatDate, isLoading } = useUserPrefs()
+  const { formatDate, isLoading } = useRegionalPrefs()
+  const { contactTableSettings, setContactTableSettings } = useUIPrefs()
 
   const [settings, setSettings] = useState<TableSettings>(() =>
     parseTableSettings(contactTableSettings),

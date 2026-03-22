@@ -4,7 +4,6 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { useAuth } from '@/hooks/useAuth'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
 import { RouteRegistry } from '@/lib/routing/RouteRegistry'
 import { SidebarRegistry } from '@/lib/ui/sidebar/SidebarRegistry'
 import { UserMenuRegistry } from '@/lib/ui/usermenu/UserMenuRegistry'
@@ -28,10 +27,6 @@ vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(),
 }))
 
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(),
-}))
-
 vi.mock('@/features/activity-feed/useNotifications', () => ({
   useNotifications: vi.fn(),
   useUnreadCount: vi.fn().mockReturnValue({ data: 0 }),
@@ -44,16 +39,6 @@ vi.mock('@/features/search/components/GlobalSearch', () => ({
 
 describe('AppLayout', () => {
   beforeAll(() => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
-      language: 'en',
-      dateFormat: 'mm/dd/yyyy',
-      showLogo: '1',
-      setLanguage: vi.fn(),
-      setDateFormat: vi.fn(),
-      setShowLogo: vi.fn(),
-    })
-
     const context = {
       routeRegistry: RouteRegistry.getInstance(),
       sidebarRegistry: SidebarRegistry.getInstance(),

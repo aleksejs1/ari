@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getHydraMember, type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { type Group } from '@/types/models'
 
 export function useGroups(
@@ -9,7 +10,7 @@ export function useGroups(
   options?: { enabled?: boolean },
 ) {
   return useQuery({
-    queryKey: ['groups', params],
+    queryKey: queryKeys.groups.list(params),
     queryFn: async () => {
       const response = await api.get<HydraCollection<Group>>('/groups', { params })
       return getHydraMember(response.data)
@@ -26,7 +27,7 @@ export function useCreateGroup() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['groups'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groups.all })
     },
   })
 }
@@ -41,7 +42,7 @@ export function useUpdateGroup() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['groups'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groups.all })
     },
   })
 }
@@ -55,7 +56,7 @@ export function useDeleteGroup() {
       await api.delete(url)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['groups'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groups.all })
     },
   })
 }

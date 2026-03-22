@@ -75,7 +75,13 @@ export function ContactFormPhone() {
                 </FormItem>
               )}
             />
-            <Button type="button" variant="ghost" size="icon" onClick={() => removePhone(index)}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              data-testid="contact-phone-remove"
+              onClick={() => removePhone(index)}
+            >
               <Trash2 className="h-4 w-4 text-red-500" />
             </Button>
           </div>

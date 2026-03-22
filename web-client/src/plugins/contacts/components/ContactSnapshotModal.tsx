@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { formatLocalizedDateTime } from '@/lib/utils'
 
 interface ContactSnapshotModalProps {
@@ -70,7 +71,7 @@ export function ContactSnapshotModal({
   const { t, i18n } = useTranslation('contacts')
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['contacts', contactId, 'snapshot', logId],
+    queryKey: queryKeys.contacts.snapshot(contactId, logId),
     queryFn: async () => {
       const res = await api.get<SnapshotResponse>(`/contacts/${contactId}/snapshot/${logId}`)
       return res.data

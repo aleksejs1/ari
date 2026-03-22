@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Calendar } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 import type { Contact, ContactDate } from '@/types/models'
 
 import { ContactDateInlineEdit } from '../../components/ContactDateInlineEdit'
@@ -11,7 +11,7 @@ import { useCreateContactDate, useDeleteContactDate, useUpdateContactDate } from
 
 export const DatesSection = ({ contact }: { contact: Contact }) => {
   const { t } = useTranslation('contacts')
-  const { formatDate } = useUserPrefs()
+  const { formatDate } = useRegionalPrefs()
 
   // Date Mutations
   const handleCreateDateMutation = useCreateContactDate()

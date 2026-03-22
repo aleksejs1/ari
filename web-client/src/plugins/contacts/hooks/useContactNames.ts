@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { createMutation, normalizeIri } from '@/lib/api/createMutation'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import type { ContactName } from '@/types/models'
 
 export function useCreateContactName() {
@@ -13,44 +15,35 @@ export function useCreateContactName() {
     },
     onSuccess: (_, variables) => {
       const contactId = variables.contact.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.all })
       if (contactId) {
-        void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
+        void queryClient.invalidateQueries({ queryKey: queryKeys.contacts.detail(contactId) })
       }
     },
     onError: () => toast.error('Failed to save changes.'),
   })
 }
 
-export function useUpdateContactName() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<ContactName> }) => {
-      const url = id.startsWith('/api') ? id.substring(4) : id
-      const response = await api.patch(url, data, {
-        headers: {
-          'Content-Type': 'application/merge-patch+json',
-        },
-      })
-      return response.data
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
-    },
-    onError: () => toast.error('Failed to save changes.'),
-  })
-}
+export const useUpdateContactName = createMutation(
+  async ({ id, data }: { id: string; data: Partial<ContactName> }) => {
+    const response = await api.patch(normalizeIri(id), data, {
+      headers: {
+        'Content-Type': 'application/merge-patch+json',
+      },
+    })
+    return response.data
+  },
+  {
+    invalidateKeys: [queryKeys.contacts.all],
+  },
+)
 
-export function useDeleteContactName() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const url = id.startsWith('/api') ? id.substring(4) : id
-      await api.delete(url)
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
-    },
+export const useDeleteContactName = createMutation(
+  async (id: string) => {
+    await api.delete(normalizeIri(id))
+  },
+  {
+    invalidateKeys: [queryKeys.contacts.all],
     onError: () => toast.error('Failed to delete.'),
-  })
-}
+  },
+)

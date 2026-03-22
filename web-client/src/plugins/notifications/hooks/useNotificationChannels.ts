@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { type HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
+import { queryKeys } from '@/lib/queryKeys'
 import { type NotificationChannel, type NotificationChannelFormValues } from '@/types/models'
 
 export function useNotificationChannels(page = 1) {
   return useQuery({
-    queryKey: ['notification-channels', page],
+    queryKey: queryKeys.notificationChannels.list(page),
     queryFn: async () => {
       const response = await api.get<HydraCollection<NotificationChannel>>(
         `/notification_channels?page=${page}`,
@@ -24,8 +26,9 @@ export function useCreateNotificationChannel() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationChannels.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -38,8 +41,9 @@ export function useUpdateNotificationChannel() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationChannels.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -51,8 +55,9 @@ export function useDeleteNotificationChannel() {
       await api.delete(url)
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationChannels.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -68,7 +73,8 @@ export function useVerifyNotificationChannel() {
       return response.data
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['notification-channels'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notificationChannels.all })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }

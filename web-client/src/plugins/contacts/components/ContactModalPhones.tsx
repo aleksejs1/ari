@@ -62,6 +62,7 @@ export function ContactModalPhones() {
             variant="ghost"
             size="icon"
             className="w-8 opacity-0 transition-opacity group-hover:opacity-100"
+            data-testid="contact-phone-remove"
             onClick={() => remove(index)}
           >
             <X className="h-4 w-4 text-muted-foreground" />

@@ -1,15 +1,15 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useUserPrefs } from '@/hooks/useUserPrefs.hook'
+import { useRegionalPrefs } from '@/contexts/RegionalPrefsContext'
 
 import { useCreateGroup, useGroups } from '../useContacts'
 
 import { ContactForm } from './ContactForm'
 
-// Mock useUserPrefs hook
-vi.mock('@/hooks/useUserPrefs.hook', () => ({
-  useUserPrefs: vi.fn(),
+// Mock useRegionalPrefs hook
+vi.mock('@/contexts/RegionalPrefsContext', () => ({
+  useRegionalPrefs: vi.fn(),
 }))
 
 // Mock useContacts
@@ -28,7 +28,7 @@ vi.mock('./NotificationSubscriptions', () => ({
 
 describe('ContactForm Synchronization', () => {
   beforeEach(() => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    ;(useRegionalPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
       dateFormat: 'mm/dd/yyyy',
@@ -113,7 +113,7 @@ describe('ContactForm Synchronization', () => {
 
 describe('<ContactFormSync />', () => {
   beforeAll(() => {
-    ;(useUserPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    ;(useRegionalPrefs as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       formatDate: (date: string) => new Date(date).toLocaleDateString('en-US'),
       language: 'en',
       dateFormat: 'mm/dd/yyyy',
