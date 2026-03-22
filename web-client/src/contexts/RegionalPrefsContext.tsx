@@ -63,10 +63,8 @@ export function RegionalPrefsProvider({ children }: { children: ReactNode }) {
   })
 
   const saveMutation = usePreferencesStorage(prefs)
-  const getPref = useCallback(
-    (type: string, defaultVal: string) => prefs?.find((p) => p.type === type)?.value || defaultVal,
-    [prefs],
-  )
+  const getPref = (type: string, defaultVal: string) =>
+    prefs?.find((p) => p.type === type)?.value || defaultVal
 
   const language = getPref('language', 'en')
   const dateFormat = getPref('dateFormat', 'mm/dd/yyyy')
@@ -105,12 +103,20 @@ export function RegionalPrefsProvider({ children }: { children: ReactNode }) {
   )
   const setTimeFormat = useCallback(
     async (format: string) => {
+      if (format !== '12h' && format !== '24h') {
+        return
+      }
       await saveMutation.mutateAsync({ type: 'timeFormat', value: format })
     },
     [saveMutation],
   )
   const setTimezone = useCallback(
     async (tz: string) => {
+      try {
+        Intl.DateTimeFormat(undefined, { timeZone: tz })
+      } catch {
+        return // invalid timezone — reject silently
+      }
       await saveMutation.mutateAsync({ type: 'timezone', value: tz })
     },
     [saveMutation],

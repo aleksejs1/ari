@@ -20,6 +20,7 @@ export interface PluginConfig {
 
 export class PluginLoader {
   private static instance: PluginLoader
+  private initialized = false
 
   private constructor() {
     // Singleton
@@ -60,6 +61,14 @@ export class PluginLoader {
   }
 
   public async init(): Promise<void> {
+    if (this.initialized) {
+      console.warn(
+        '[PluginLoader] init() called more than once — skipping duplicate initialization',
+      )
+      return
+    }
+    this.initialized = true
+
     try {
       const config = await this.fetchConfig()
 

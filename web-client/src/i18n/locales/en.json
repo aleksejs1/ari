@@ -245,7 +245,9 @@
     "error": "Error",
     "columns": "Columns",
     "toggleColumns": "Toggle Columns",
-    "none": "None"
+    "none": "None",
+    "nextPage": "Next page",
+    "previousPage": "Previous page"
   },
   "globalSearch": {
     "placeholder": "Search contacts, groups, settings...",

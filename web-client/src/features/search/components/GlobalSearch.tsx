@@ -28,7 +28,7 @@ export function GlobalSearch() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [debouncedQuery] = useDebounce(query.slice(0, MAX_QUERY_LENGTH), 300)
+  const [debouncedQuery] = useDebounce(query, 300)
   const [activeTab, setActiveTab] = useState<'contacts' | 'groups' | 'settings'>('contacts')
   const containerRef = useRef<HTMLDivElement>(null)
 

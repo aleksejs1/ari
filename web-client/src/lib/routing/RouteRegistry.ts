@@ -34,7 +34,7 @@ export class RouteRegistry {
   }
 
   public getRoutes(slot: RouteSlot): RouteObject[] {
-    return this.routes[slot]
+    return [...this.routes[slot]]
   }
 
   public unregister(slot: RouteSlot, path: string): void {

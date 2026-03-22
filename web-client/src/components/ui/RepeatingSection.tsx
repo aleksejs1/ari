@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import type { ArrayPath, Control, FieldArray, FieldArrayWithId, FieldValues } from 'react-hook-form'
 import { useFieldArray } from 'react-hook-form'
 import { Plus } from 'lucide-react'
@@ -28,7 +28,9 @@ export function RepeatingSection<T extends FieldValues>({
 
   return (
     <div className="flex flex-col gap-2">
-      {fields.map((field, index) => renderRow(field, index, () => remove(index)))}
+      {fields.map((field, index) => (
+        <Fragment key={field.id}>{renderRow(field, index, () => remove(index))}</Fragment>
+      ))}
       <Button
         type="button"
         variant="ghost"

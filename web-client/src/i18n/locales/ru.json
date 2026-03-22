@@ -245,7 +245,9 @@
     "error": "Ошибка",
     "columns": "Колонки",
     "toggleColumns": "Переключить колонки",
-    "none": "Нет"
+    "none": "Нет",
+    "nextPage": "Следующая страница",
+    "previousPage": "Предыдущая страница"
   },
   "globalSearch": {
     "placeholder": "Поиск контактов, групп, настроек...",
