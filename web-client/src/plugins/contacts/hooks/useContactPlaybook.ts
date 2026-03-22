@@ -26,23 +26,15 @@ export function useContactPlaybook(contactId: string | number) {
   return useQuery<ContactPlaybook | null>({
     queryKey: queryKeys.contacts.playbook(contactId),
     queryFn: async () => {
-      try {
-        const response = await api.get<ContactPlaybook>(`/contacts/${contactId}/playbook`)
-        return response.data
-      } catch (error: unknown) {
-        if (
-          error !== null &&
-          typeof error === 'object' &&
-          'response' in error &&
-          error.response !== null &&
-          typeof error.response === 'object' &&
-          'status' in error.response &&
-          error.response.status === 404
-        ) {
-          return null
-        }
-        throw error
+      // validateStatus: treat 404 as a successful response so the browser
+      // does not log a console error for contacts without an active playbook.
+      const response = await api.get<ContactPlaybook>(`/contacts/${contactId}/playbook`, {
+        validateStatus: (status) => status === 200 || status === 404,
+      })
+      if (response.status === 404) {
+        return null
       }
+      return response.data
     },
     staleTime: 30_000,
   })
