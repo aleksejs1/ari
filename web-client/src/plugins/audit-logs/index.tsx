@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -18,9 +19,11 @@ export class AuditLogsPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'audit-logs',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <AuditLogsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="audit-logs">
+          <Suspense fallback={<PageLoader />}>
+            <AuditLogsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
@@ -39,9 +42,11 @@ export class AuditLogsPlugin extends BasePlugin {
       title: 'Recent Audit Logs',
       description: 'dashboard.widget.recentAuditLogs.description',
       component: () => (
-        <Suspense fallback={null}>
-          <RecentAuditLogsWidget />
-        </Suspense>
+        <PluginErrorBoundary pluginId="audit-logs">
+          <Suspense fallback={null}>
+            <RecentAuditLogsWidget />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
       defaultDimensions: { w: 7, h: 4 },
     })

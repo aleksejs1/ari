@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
@@ -34,27 +35,33 @@ export class ContactsPlugin extends BasePlugin {
     routeRegistry.register('main', {
       path: '/contacts',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <ContactsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="contacts">
+          <Suspense fallback={<PageLoader />}>
+            <ContactsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('main', {
       path: '/contacts/:id',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <ContactDetailsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="contacts">
+          <Suspense fallback={<PageLoader />}>
+            <ContactDetailsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('main', {
       path: '/contacts/:id/timeline',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <ContactTimelinePage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="contacts">
+          <Suspense fallback={<PageLoader />}>
+            <ContactTimelinePage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
@@ -112,9 +119,11 @@ export class ContactsPlugin extends BasePlugin {
       id: 'catchUp',
       title: 'Catch Up',
       component: () => (
-        <Suspense fallback={null}>
-          <CatchUpWidget />
-        </Suspense>
+        <PluginErrorBoundary pluginId="contacts">
+          <Suspense fallback={null}>
+            <CatchUpWidget />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
       defaultDimensions: { w: 4, h: 6 },
     })

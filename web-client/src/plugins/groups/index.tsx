@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 import { GroupsSidebarSection } from './extensions/GroupsSidebarSection'
@@ -18,9 +19,11 @@ export class GroupsPlugin extends BasePlugin {
     routeRegistry.register('main', {
       path: '/groups',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <GroupsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="groups">
+          <Suspense fallback={<PageLoader />}>
+            <GroupsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 

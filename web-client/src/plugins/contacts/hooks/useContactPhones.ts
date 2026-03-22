@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import type { ContactPhoneNumber } from '@/types/models'
@@ -19,6 +20,7 @@ export function useCreateContactPhone() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -37,6 +39,7 @@ export function useUpdateContactPhone() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -50,5 +53,6 @@ export function useDeleteContactPhone() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to delete.'),
   })
 }

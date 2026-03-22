@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react'
 import { PageLoader } from '@/components/PageLoader'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { DashboardSidebarSection } from './extensions/DashboardSidebarSection'
 import { registerDashboardWidgets } from './hooks/registerWidgets'
@@ -19,9 +20,11 @@ export class DashboardPlugin extends BasePlugin {
     routeRegistry.register('main', {
       path: '/',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <HomePage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="dashboard">
+          <Suspense fallback={<PageLoader />}>
+            <HomePage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 

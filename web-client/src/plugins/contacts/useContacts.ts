@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import { ENTITLEMENTS_QUERY_KEY } from '@/lib/entitlements/useEntitlements'
@@ -9,6 +10,7 @@ import type { Contact, ContactFormValues } from '@/types/models'
 import { getHydraMember, type HydraCollection } from './utils'
 
 // Re-export hooks to maintain backward compatibility (or just for convenience)
+export * from './hooks/useAiSuggestions'
 export * from './hooks/useAutocomplete'
 export * from './hooks/useContactAddresses'
 export * from './hooks/useContactBios'
@@ -19,7 +21,10 @@ export * from './hooks/useContactGroups'
 export * from './hooks/useContactNames'
 export * from './hooks/useContactOrganizations'
 export * from './hooks/useContactPhones'
+export * from './hooks/useContactPlaybook'
+export * from './hooks/useContactReciprocity'
 export * from './hooks/useContactRelations'
+export * from './hooks/useContactTasks'
 export * from './hooks/useInteractions'
 export * from './utils'
 
@@ -82,6 +87,7 @@ export function useCreateContact() {
         queryClient.setQueryData(['contacts', newContact.id.toString()], newContact)
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -101,6 +107,7 @@ export function useUpdateContact() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -124,6 +131,7 @@ export function usePatchContact() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', id, 'timeline'] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -139,6 +147,7 @@ export function useDeleteContact() {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
       void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
     },
+    onError: () => toast.error('Failed to delete contact.'),
   })
 }
 
@@ -172,38 +181,32 @@ export function useExportContactVcard() {
       if (typeof response.data === 'string') {
         vCardContent = response.data
       } else if (typeof response.data === 'object') {
-        // Try to find a likely key
-        // User said: "in reality keys don't have hydra: prefix"
-        // Let's look for 'vCard', 'vcard', 'content', or just grab the first string value if uncertain?
-        // Safest bet for now: check for 'vCard' property.
         if ('vCard' in response.data) {
           vCardContent = response.data.vCard
         } else if ('vcard' in response.data) {
           vCardContent = response.data.vcard
         } else {
-          // If we can't find a specific key, and it's an object, maybe the whole body is the vCard?
-          // Unlikely if it's JSON. Let's dump the whole JSON if specific keys fail, or maybe it returns the object itself as vCard fields?
-          // Actually, vCard is a text format. If it returns JSON, it must be wrapped.
-          // Let's assume it might be in a property named 'vCard' as per common convention or just the body text.
-          console.warn(
-            'Could not find vCard property in response, using full JSON stringify',
-            response.data,
-          )
+          console.warn('Could not find vCard property in response')
           vCardContent = JSON.stringify(response.data)
         }
       }
 
+      const safeFilename = filename.replace(/[^a-zA-Z0-9_-]/g, '_')
       const blobUrl = window.URL.createObjectURL(new Blob([vCardContent], { type: 'text/vcard' }))
-      const link = document.createElement('a')
-      link.href = blobUrl
-      link.setAttribute('download', `${filename}.vcf`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(blobUrl)
+      try {
+        const link = document.createElement('a')
+        link.href = blobUrl
+        link.setAttribute('download', `${safeFilename}.vcf`)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      } finally {
+        window.URL.revokeObjectURL(blobUrl)
+      }
 
       return response.data
     },
+    onError: () => toast.error('Failed to export contact.'),
   })
 }
 
@@ -215,19 +218,23 @@ export function useExportContacts() {
       })
 
       const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        `ari_contacts_export_${new Date().toISOString().split('T')[0]}.xml`,
-      )
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
+      try {
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute(
+          'download',
+          `ari_contacts_export_${new Date().toISOString().split('T')[0]}.xml`,
+        )
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      } finally {
+        window.URL.revokeObjectURL(url)
+      }
 
       return response.data
     },
+    onError: () => toast.error('Failed to export contacts.'),
   })
 }
 
@@ -245,6 +252,7 @@ export function useImportContacts() {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
       void queryClient.invalidateQueries({ queryKey: ENTITLEMENTS_QUERY_KEY })
     },
+    onError: () => toast.error('Failed to import contacts.'),
   })
 }
 export function useUploadContactAvatar() {
@@ -278,5 +286,6 @@ export function useUploadContactAvatar() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
       }
     },
+    onError: () => toast.error('Failed to upload avatar.'),
   })
 }

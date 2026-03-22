@@ -1,6 +1,10 @@
 {
   "app": {
     "title": "ari CRM",
+    "errorBoundary": {
+      "message": "Что-то пошло не так.",
+      "reload": "Перезагрузить страницу"
+    },
     "reloadRequired": "Требуется перезагрузка",
     "reloadDescription": "Изменения вступят в силу после перезагрузки",
     "reload": "Перезагрузить",
@@ -237,7 +241,6 @@
     "unknown": "Неизвестно",
     "loading": "Загрузка...",
     "noName": "Без имени",
-    "success": "Успех",
     "success": "Успех",
     "error": "Ошибка",
     "columns": "Колонки",

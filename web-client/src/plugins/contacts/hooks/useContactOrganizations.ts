@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import type { ContactOrganization } from '@/types/models'
@@ -19,6 +20,7 @@ export function useCreateContactOrganization() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -37,6 +39,7 @@ export function useUpdateContactOrganization() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -50,5 +53,6 @@ export function useDeleteContactOrganization() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to delete.'),
   })
 }

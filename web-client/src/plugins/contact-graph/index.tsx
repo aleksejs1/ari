@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 import { FeatureGate, useUpgradeModal } from '@/lib/entitlements'
 
 import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
@@ -26,9 +27,11 @@ export class ContactGraphPlugin extends BasePlugin {
     routeRegistry.register('main', {
       path: '/contact-graph',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <ContactGraphPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="contact-graph">
+          <Suspense fallback={<PageLoader />}>
+            <ContactGraphPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 

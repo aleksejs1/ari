@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 import { SettingsSidebarSection } from './extensions/SettingsSidebarSection'
@@ -39,45 +40,55 @@ export class SettingsPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'general',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <GeneralSettings />
-        </Suspense>
+        <PluginErrorBoundary pluginId="settings">
+          <Suspense fallback={<PageLoader />}>
+            <GeneralSettings />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'regional',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <RegionalSettings />
-        </Suspense>
+        <PluginErrorBoundary pluginId="settings">
+          <Suspense fallback={<PageLoader />}>
+            <RegionalSettings />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'data',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <DataSettings />
-        </Suspense>
+        <PluginErrorBoundary pluginId="settings">
+          <Suspense fallback={<PageLoader />}>
+            <DataSettings />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'plugins',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <CommunityPlugins />
-        </Suspense>
+        <PluginErrorBoundary pluginId="settings">
+          <Suspense fallback={<PageLoader />}>
+            <CommunityPlugins />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'ai',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <AiSettings />
-        </Suspense>
+        <PluginErrorBoundary pluginId="settings">
+          <Suspense fallback={<PageLoader />}>
+            <AiSettings />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 

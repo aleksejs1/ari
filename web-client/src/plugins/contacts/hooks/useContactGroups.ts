@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import type { Group } from '@/types/models'
@@ -25,6 +26,7 @@ export function useCreateGroup() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['groups'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -54,5 +56,6 @@ export function useUpdateContactGroups() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', id] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }

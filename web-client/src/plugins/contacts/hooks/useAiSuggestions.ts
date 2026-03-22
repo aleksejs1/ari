@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 
@@ -60,6 +61,7 @@ export function useResolveAiSuggestion() {
       void queryClient.invalidateQueries({ queryKey: ['ai_suggestions'] })
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -83,5 +85,6 @@ export function useTriggerBatchAiAnalysis() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['ai_suggestion_stats'] })
     },
+    onError: () => toast.error('Failed to start AI analysis.'),
   })
 }

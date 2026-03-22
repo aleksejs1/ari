@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ReloadPrompt } from '@/components/ReloadPrompt'
 import { ReloadProvider } from '@/contexts/ReloadContext'
 import { useAuth } from '@/hooks/useAuth'
@@ -105,5 +106,9 @@ export default function App() {
     },
   ])
 
-  return <RouterProvider router={router} />
+  return (
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
+  )
 }

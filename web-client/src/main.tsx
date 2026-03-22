@@ -10,14 +10,7 @@ import * as ReactRouterDOM from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as ReactQuery from '@tanstack/react-query'
 import i18n from 'i18next'
-
-window.React = React
-window.ReactDOM = { ...ReactDOM, ...ReactDOMClient }
-window.ReactQuery = ReactQuery
-window.i18n = i18n
-window.ReactI18next = ReactI18next
-window.ReactRouterDOM = ReactRouterDOM
-window.ReactJSX = ReactJSX
+import { Toaster } from 'sonner'
 
 import { AuthProvider } from './contexts/AuthContext'
 import { UserPrefsProvider } from './hooks/useUserPrefs'
@@ -26,7 +19,18 @@ import App from './App.tsx'
 
 import './index.css'
 
-// ... existing imports ...
+// Expose shared libraries on window so community plugins can import them
+// without bundling their own copies. Only enabled in development or when
+// explicitly opted in (set VITE_EXPOSE_GLOBALS=true in your .env).
+if (import.meta.env.VITE_EXPOSE_GLOBALS === 'true') {
+  window.React = React
+  window.ReactDOM = { ...ReactDOM, ...ReactDOMClient }
+  window.ReactQuery = ReactQuery
+  window.i18n = i18n
+  window.ReactI18next = ReactI18next
+  window.ReactRouterDOM = ReactRouterDOM
+  window.ReactJSX = ReactJSX
+}
 
 // registerDashboardWidgets() is now called inside DashboardPlugin.register()
 
@@ -46,6 +50,7 @@ const initApp = async () => {
             <UserPrefsProvider>
               <UpgradeModalProvider>
                 <App />
+                <Toaster richColors position="bottom-right" />
               </UpgradeModalProvider>
             </UserPrefsProvider>
           </AuthProvider>

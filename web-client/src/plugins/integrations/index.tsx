@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -16,9 +17,11 @@ export class IntegrationsPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'integrations',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <IntegrationsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="integrations">
+          <Suspense fallback={<PageLoader />}>
+            <IntegrationsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
   }

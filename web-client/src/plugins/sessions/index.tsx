@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -19,18 +20,22 @@ export class SessionsPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'sessions',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <SessionsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="sessions">
+          <Suspense fallback={<PageLoader />}>
+            <SessionsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'login-history',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <LoginHistoryPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="sessions">
+          <Suspense fallback={<PageLoader />}>
+            <LoginHistoryPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
@@ -57,9 +62,11 @@ export class SessionsPlugin extends BasePlugin {
       title: 'Recent Logins',
       description: 'dashboard.widget.recentLogins.description',
       component: () => (
-        <Suspense fallback={null}>
-          <RecentLoginsWidget />
-        </Suspense>
+        <PluginErrorBoundary pluginId="sessions">
+          <Suspense fallback={null}>
+            <RecentLoginsWidget />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
       defaultDimensions: { w: 7, h: 4 },
     })

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import type { ContactInteraction, NeedsAttentionContact } from '@/types/models'
@@ -45,6 +46,7 @@ export function useCreateInteraction() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -61,6 +63,7 @@ export function useUpdateInteraction() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -74,6 +77,7 @@ export function useDeleteInteraction() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to delete.'),
   })
 }
 
@@ -94,5 +98,6 @@ export function useUpdateContactCadence() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }

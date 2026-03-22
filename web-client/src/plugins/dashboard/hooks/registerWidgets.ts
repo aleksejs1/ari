@@ -1,3 +1,4 @@
+import { withPluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
 
 import ContactsQuotaWidget from '../widgets/ContactsQuotaWidget'
@@ -10,14 +11,14 @@ export function registerDashboardWidgets() {
     id: 'contacts-quota',
     title: 'Contact Usage',
     description: 'dashboard.widget.contactsQuota.description',
-    component: ContactsQuotaWidget,
+    component: withPluginErrorBoundary(ContactsQuotaWidget, 'dashboard'),
     defaultDimensions: { w: 6, h: 2 },
   })
   widgetRegistry.register({
     id: 'stats',
     title: 'Stats',
     description: 'dashboard.widget.stats.description',
-    component: StatsWidget,
+    component: withPluginErrorBoundary(StatsWidget, 'dashboard'),
     defaultDimensions: { w: 12, h: 2 },
   })
 
@@ -25,7 +26,7 @@ export function registerDashboardWidgets() {
     id: 'groups',
     title: 'Groups',
     description: 'dashboard.widget.groups.description',
-    component: GroupsWidget,
+    component: withPluginErrorBoundary(GroupsWidget, 'dashboard'),
     defaultDimensions: { w: 5, h: 4 },
   })
 
@@ -33,7 +34,7 @@ export function registerDashboardWidgets() {
     id: 'upcoming-anniversaries',
     title: 'Upcoming Anniversaries',
     description: 'dashboard.widget.upcomingAnniversaries.description',
-    component: UpcomingAnniversariesWidget,
+    component: withPluginErrorBoundary(UpcomingAnniversariesWidget, 'dashboard'),
     defaultDimensions: { w: 5, h: 4 },
   })
 }

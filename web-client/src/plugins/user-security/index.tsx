@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -18,17 +19,21 @@ export class UserSecurityPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'change-password',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <ChangePasswordPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="user-security">
+          <Suspense fallback={<PageLoader />}>
+            <ChangePasswordPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
     routeRegistry.register('settings', {
       path: 'delete-account',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <DeleteAccountPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="user-security">
+          <Suspense fallback={<PageLoader />}>
+            <DeleteAccountPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 

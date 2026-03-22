@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 import type { ContactBiography } from '@/types/models'
@@ -17,6 +18,7 @@ export function useCreateContactBiography() {
         void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -35,6 +37,7 @@ export function useUpdateContactBiography() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -48,5 +51,6 @@ export function useDeleteContactBiography() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts'] })
     },
+    onError: () => toast.error('Failed to delete.'),
   })
 }

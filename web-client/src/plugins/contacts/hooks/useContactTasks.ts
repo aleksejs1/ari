@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import type { HydraCollection } from '@/lib/api/hydra'
 import { api } from '@/lib/axios'
@@ -76,5 +77,6 @@ export function useUpdateTask(contactId: string | number) {
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId)] })
     },
+    onError: () => toast.error('Failed to update task.'),
   })
 }

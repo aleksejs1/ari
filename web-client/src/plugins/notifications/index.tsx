@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -19,36 +20,44 @@ export class NotificationsPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'notification-channels',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <NotificationChannelsPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="notifications">
+          <Suspense fallback={<PageLoader />}>
+            <NotificationChannelsPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'notification-policies',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <NotificationPoliciesPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="notifications">
+          <Suspense fallback={<PageLoader />}>
+            <NotificationPoliciesPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'notification-policies/new',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <NotificationPolicyFormPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="notifications">
+          <Suspense fallback={<PageLoader />}>
+            <NotificationPolicyFormPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
     routeRegistry.register('settings', {
       path: 'notification-policies/:id',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <NotificationPolicyFormPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="notifications">
+          <Suspense fallback={<PageLoader />}>
+            <NotificationPolicyFormPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 

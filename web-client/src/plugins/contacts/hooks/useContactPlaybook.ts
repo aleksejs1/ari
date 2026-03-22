@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 
@@ -73,6 +74,7 @@ export function useActivatePlaybook(contactId: string | number) {
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -95,6 +97,7 @@ export function useUpdatePlaybook(contactId: string | number) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -116,6 +119,7 @@ export function useSaveReflection(contactId: string | number) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }
 
@@ -129,5 +133,6 @@ export function useDeletePlaybook(contactId: string | number) {
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'playbook'] })
       void queryClient.invalidateQueries({ queryKey: ['contacts', String(contactId), 'tasks'] })
     },
+    onError: () => toast.error('Failed to delete.'),
   })
 }

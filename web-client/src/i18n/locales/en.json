@@ -1,6 +1,10 @@
 {
   "app": {
     "title": "ari CRM",
+    "errorBoundary": {
+      "message": "Something went wrong.",
+      "reload": "Reload page"
+    },
     "reloadRequired": "Reload Required",
     "reloadDescription": "Changes will take effect after reload",
     "reload": "Reload",
@@ -236,9 +240,7 @@
     "search": "Search",
     "unknown": "Unknown",
     "loading": "Loading...",
-    "loading": "Loading...",
     "noName": "No Name",
-    "success": "Success",
     "success": "Success",
     "error": "Error",
     "columns": "Columns",

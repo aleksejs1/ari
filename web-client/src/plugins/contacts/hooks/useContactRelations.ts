@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { api } from '@/lib/axios'
 
@@ -12,10 +13,14 @@ export function useCreateContactRelation() {
     onSuccess: (_, variables) => {
       const contactId = variables.contact.split('/').pop()
       const relatedId = variables.relatedContact.split('/').pop()
-      void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
+      void queryClient.invalidateQueries({ queryKey: ['contacts'] })
+      if (contactId) {
+        void queryClient.invalidateQueries({ queryKey: ['contacts', contactId] })
+      }
       if (relatedId) {
         void queryClient.invalidateQueries({ queryKey: ['contacts', relatedId] })
       }
     },
+    onError: () => toast.error('Failed to save changes.'),
   })
 }

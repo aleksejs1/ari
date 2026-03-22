@@ -3,12 +3,19 @@ import i18next from 'i18next'
 import { RefreshCw } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { monitoringService } from '@/lib/monitoring'
+
+interface Props {
+  children: ReactNode
+  /** Plugin ID used as a tag in monitoring reports. Defaults to 'core'. */
+  pluginId?: string
+}
 
 interface State {
   error: Error | null
 }
 
-export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
+export class ErrorBoundary extends Component<Props, State> {
   override state: State = { error: null }
 
   static getDerivedStateFromError(error: Error): State {
@@ -16,7 +23,10 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
   }
 
   override componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, info.componentStack)
+    monitoringService.captureException(error, {
+      tags: { pluginId: this.props.pluginId ?? 'core' },
+      extra: { componentStack: info.componentStack ?? '' },
+    })
   }
 
   override render(): ReactElement {

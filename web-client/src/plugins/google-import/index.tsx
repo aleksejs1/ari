@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
+import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 
 import { PageLoader } from './components/PageLoader'
 
@@ -17,9 +18,11 @@ export class GoogleImportPlugin extends BasePlugin {
     routeRegistry.register('settings', {
       path: 'google-import',
       element: (
-        <Suspense fallback={<PageLoader />}>
-          <GoogleImportPage />
-        </Suspense>
+        <PluginErrorBoundary pluginId="google-import">
+          <Suspense fallback={<PageLoader />}>
+            <GoogleImportPage />
+          </Suspense>
+        </PluginErrorBoundary>
       ),
     })
 
