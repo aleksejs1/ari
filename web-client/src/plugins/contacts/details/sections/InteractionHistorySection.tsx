@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { Contact, ContactInteraction } from '@/types/models'
@@ -10,6 +11,7 @@ import { useDeleteInteraction, useUpdateInteraction } from '../../hooks/useInter
 
 export function InteractionHistorySection({ contact }: { contact: Contact }) {
   const { t } = useTranslation('contacts')
+  const [isOpen, setIsOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [editingInteraction, setEditingInteraction] = useState<ContactInteraction | null>(null)
 
@@ -48,17 +50,26 @@ export function InteractionHistorySection({ contact }: { contact: Contact }) {
   return (
     <>
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">{t('interactions.historyTitle')}</CardTitle>
+        <CardHeader
+          className="cursor-pointer select-none pb-3"
+          onClick={() => setIsOpen((v) => !v)}
+          data-testid="interaction-history-toggle"
+        >
+          <CardTitle className="flex items-center justify-between text-base">
+            {t('interactions.historyTitle')}
+            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <InteractionTimeline
-            interactions={sorted}
-            onEdit={handleEdit}
-            onDelete={(i) => void handleDelete(i)}
-            isDeleting={deleteMutation.isPending}
-          />
-        </CardContent>
+        {isOpen ? (
+          <CardContent>
+            <InteractionTimeline
+              interactions={sorted}
+              onEdit={handleEdit}
+              onDelete={(i) => void handleDelete(i)}
+              isDeleting={deleteMutation.isPending}
+            />
+          </CardContent>
+        ) : null}
       </Card>
 
       <InteractionEditDrawer
