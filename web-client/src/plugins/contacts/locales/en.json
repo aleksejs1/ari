@@ -120,6 +120,7 @@
     "parent": "Parent"
   },
   "details": "Contact Details",
+  "backToContacts": "back to contacts",
   "createDescription": "Add a new contact to your list.",
   "editDescription": "Make changes to your contact here.",
   "history": {

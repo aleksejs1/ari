@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Download, Loader2, Trash2 } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
@@ -9,6 +9,7 @@ import { type Contact } from '@/types/models'
 
 import { DeleteContactDialog } from '../components/DeleteContactDialog'
 import { SimilarContactsWidget } from '../components/SimilarContactsWidget'
+import { GeneralInfoSection } from '../details/sections/GeneralInfoSection'
 import { useContact, useDeleteContact, useExportContactVcard } from '../useContacts'
 
 function ContactDetailsContent({ contact }: { contact: Contact }) {
@@ -17,9 +18,10 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
   const deleteMutation = useDeleteContact()
   const exportVcardMutation = useExportContactVcard()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   const allSections = ContactDetailsRegistry.getInstance().getAll()
-  const topSections = allSections.filter((s) => s.layout === 'full')
+  const topSections = allSections.filter((s) => s.layout === 'full' && s.id !== 'general_info')
   const leftSections = allSections.filter((s) => s.layout === 'left')
   const rightSections = allSections.filter((s) => s.layout === 'right')
   const bottomSections = allSections.filter((s) => s.layout === 'full-bottom')
@@ -50,48 +52,27 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
 
   return (
     <div className="container mx-auto max-w-5xl space-y-6 py-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="flex w-full items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={async () => {
-              await navigate(-1)
-            }}
-            data-testid="contact-details-back"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <h1 className="flex-1 truncate text-2xl font-bold">{t('details')}</h1>
-        </div>
-        <div className="flex w-full items-center gap-2 md:w-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => void handleExportVcard()}
-            disabled={exportVcardMutation.isPending}
-            className="flex-1 gap-2 md:flex-none"
-            data-testid="contact-export-vcard"
-          >
-            {exportVcardMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            {t('exportVcard')}
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            className="flex-1 gap-2 md:flex-none"
-            data-testid="contact-delete-button"
-          >
-            <Trash2 className="h-4 w-4" />
-            {t('common.delete')}
-          </Button>
-        </div>
-      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={async () => {
+          await navigate(-1)
+        }}
+        data-testid="contact-details-back"
+        className="gap-1 text-muted-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        <span className="text-xs">{t('backToContacts')}</span>
+      </Button>
+
+      <GeneralInfoSection
+        contact={contact}
+        isEditing={isEditing}
+        onEditingChange={setIsEditing}
+        onExport={() => void handleExportVcard()}
+        isExportPending={exportVcardMutation.isPending}
+        onDelete={() => setIsDeleteDialogOpen(true)}
+      />
 
       {topSections.map((section) => {
         const Component = section.component

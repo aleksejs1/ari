@@ -169,6 +169,7 @@ export function UIPrefsProvider({ children }: { children: ReactNode }) {
   return <UIPrefsContext.Provider value={value}>{children}</UIPrefsContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useUIPrefs(): UIPrefsContextType {
   const ctx = useContext(UIPrefsContext)
   if (!ctx) {

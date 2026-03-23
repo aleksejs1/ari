@@ -16,6 +16,19 @@ vi.mock('../useContacts', () => ({
   useSimilarContacts: vi.fn(),
 }))
 
+// Mock sections
+vi.mock('../details/sections/GeneralInfoSection', () => ({
+  GeneralInfoSection: ({ onExport, onDelete, onEditingChange }: any) => (
+    <div data-testid="general-info-section">
+      {onEditingChange ? (
+        <button data-testid="contact-edit-button" onClick={() => onEditingChange(true)} />
+      ) : null}
+      {onExport ? <button data-testid="contact-export-vcard" onClick={onExport} /> : null}
+      {onDelete ? <button data-testid="contact-delete-button" onClick={onDelete} /> : null}
+    </div>
+  ),
+}))
+
 // Mock components
 vi.mock('../components/DeleteContactDialog', () => ({
   DeleteContactDialog: ({ open, onConfirm }: any) =>
@@ -102,7 +115,7 @@ describe('ContactDetailsPage', () => {
     } as any)
 
     renderWithRouter()
-    expect(screen.getByText('details')).toBeInTheDocument()
+    expect(screen.getByTestId('contact-details-back')).toBeInTheDocument()
     expect(screen.getByText('Section 1')).toBeInTheDocument()
     expect(screen.getByText('Section 2')).toBeInTheDocument()
     expect(screen.getByTestId('similar-contacts')).toBeInTheDocument()
@@ -123,7 +136,7 @@ describe('ContactDetailsPage', () => {
 
     renderWithRouter()
 
-    fireEvent.click(screen.getByText('common.delete'))
+    fireEvent.click(screen.getByTestId('contact-delete-button'))
     expect(screen.getByTestId('delete-dialog')).toBeInTheDocument()
 
     fireEvent.click(screen.getByText('Confirm Delete'))
@@ -147,7 +160,7 @@ describe('ContactDetailsPage', () => {
 
     renderWithRouter()
 
-    fireEvent.click(screen.getByText('exportVcard'))
+    fireEvent.click(screen.getByTestId('contact-export-vcard'))
     await waitFor(() => {
       expect(mockExportMutation).toHaveBeenCalledWith({
         id: '/api/contacts/1',

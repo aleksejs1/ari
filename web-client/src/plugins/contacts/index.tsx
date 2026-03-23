@@ -1,20 +1,15 @@
 import { lazy, Suspense } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Users } from 'lucide-react'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactDetailsRegistry } from '@/lib/contacts/details/ContactDetailsRegistry'
 import { BasePlugin } from '@/lib/core/Plugin'
 import type { PluginContext } from '@/lib/core/PluginContext'
 import { PluginErrorBoundary } from '@/lib/core/PluginErrorBoundary'
 import { widgetRegistry } from '@/lib/widgets/WidgetRegistry'
-import type { Contact } from '@/types/models'
-
-import { SidebarNavItem } from '@/features/ui/sidebar/SidebarNavItem'
 
 import { PageLoader } from '../settings/components/PageLoader'
 
-import { ContactTimeline } from './components/ContactTimeline'
+import { ContactsHistoryCard } from './components/ContactsHistoryCard'
+import { ContactsSidebarItem } from './components/ContactsSidebarItem'
 import { registerDefaultContactDetailsSections } from './details/defaults_details'
 import en from './locales/en.json'
 import ru from './locales/ru.json'
@@ -24,42 +19,6 @@ const CatchUpWidget = lazy(() => import('./widgets/CatchUpWidget'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'))
 const ContactTimelinePage = lazy(() => import('./pages/ContactTimelinePage'))
-
-function ContactsSidebarItem({
-  onNavigate,
-  collapsed,
-}: {
-  onNavigate?: () => void
-  collapsed?: boolean
-}) {
-  const { t } = useTranslation('contacts')
-  return (
-    <SidebarNavItem
-      to="/contacts"
-      icon={Users}
-      label={t('title', 'Contacts')}
-      onClick={onNavigate}
-      collapsed={collapsed}
-    />
-  )
-}
-
-function ContactsHistoryCard({ contact }: { contact: Contact }) {
-  const { t } = useTranslation('contacts')
-  if (!contact.id) {
-    return null
-  }
-  return (
-    <Card className="md:col-span-2">
-      <CardHeader>
-        <CardTitle>{t('history.title')}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ContactTimeline contactId={contact.id.toString()} />
-      </CardContent>
-    </Card>
-  )
-}
 
 export class ContactsPlugin extends BasePlugin {
   name = 'contacts'

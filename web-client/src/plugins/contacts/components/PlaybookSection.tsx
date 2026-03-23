@@ -131,19 +131,72 @@ function useCelebration(celebrationPending: boolean | undefined, acknowledge: ()
   return { showCelebration, dismissCelebration: () => setShowCelebration(false) }
 }
 
+function usePlaybookActions(
+  contactId: number,
+  playbook: ContactPlaybook | null | undefined,
+  t: (key: string) => string,
+) {
+  const deletePlaybook = useDeletePlaybook(contactId)
+  const updatePlaybook = useUpdatePlaybook(contactId)
+
+  const handlePause = useCallback(() => {
+    const nextStatus = playbook?.status === 'active' ? 'paused' : 'active'
+    void updatePlaybook.mutateAsync({ status: nextStatus })
+  }, [playbook?.status, updatePlaybook])
+
+  const handleDelete = useCallback(() => {
+    if (!window.confirm(t('playbook.removeConfirm'))) {
+      return
+    }
+    void deletePlaybook.mutateAsync()
+  }, [deletePlaybook, t])
+
+  return { deletePlaybook, updatePlaybook, handlePause, handleDelete }
+}
+
+interface NoPlaybookCardProps {
+  contactId: number
+  wizardOpen: boolean
+  setWizardOpen: (open: boolean) => void
+}
+
+function NoPlaybookCard({ contactId, wizardOpen, setWizardOpen }: NoPlaybookCardProps) {
+  const { t } = useTranslation('contacts')
+  return (
+    <Card data-testid="playbook-section">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <BookOpen className="h-4 w-4" />
+          {t('playbook.addPlaybook')}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="mb-4 text-sm text-muted-foreground">{t('playbook.noPlaybookCta')}</p>
+        <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
+          <Plus className="mr-1.5 h-4 w-4" />
+          {t('playbook.addPlaybook')}
+        </Button>
+      </CardContent>
+      <PlaybookWizard open={wizardOpen} onOpenChange={setWizardOpen} contactId={contactId} />
+    </Card>
+  )
+}
+
 export function PlaybookSection({ contact }: { contact: Contact }) {
   const { t } = useTranslation('contacts')
   const [wizardOpen, setWizardOpen] = useState(false)
 
-  const contactId = contact.id
-
-  const { data: playbook, isLoading: playbookLoading } = useContactPlaybook(contactId ?? 0)
-  const { data: tasks = [] } = useContactTasks(contactId ?? 0, {
+  const contactId = contact.id ?? 0
+  const { data: playbook, isLoading: playbookLoading } = useContactPlaybook(contactId)
+  const { data: tasks = [] } = useContactTasks(contactId, {
     status: [...ACTIVE_STATUSES],
     dueBefore: todayIso(),
   })
-  const deletePlaybook = useDeletePlaybook(contactId ?? 0)
-  const updatePlaybook = useUpdatePlaybook(contactId ?? 0)
+  const { deletePlaybook, updatePlaybook, handlePause, handleDelete } = usePlaybookActions(
+    contactId,
+    playbook,
+    t,
+  )
 
   const { mutate: acknowledgeCelebration } = updatePlaybook
   const acknowledge = useCallback(
@@ -155,7 +208,7 @@ export function PlaybookSection({ contact }: { contact: Contact }) {
     acknowledge,
   )
 
-  if (!contactId) {
+  if (!contact.id) {
     return null
   }
 
@@ -171,34 +224,8 @@ export function PlaybookSection({ contact }: { contact: Contact }) {
 
   if (!playbook) {
     return (
-      <Card data-testid="playbook-section">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <BookOpen className="h-4 w-4" />
-            {t('playbook.addPlaybook')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 text-sm text-muted-foreground">{t('playbook.noPlaybookCta')}</p>
-          <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
-            <Plus className="mr-1.5 h-4 w-4" />
-            {t('playbook.addPlaybook')}
-          </Button>
-        </CardContent>
-        <PlaybookWizard open={wizardOpen} onOpenChange={setWizardOpen} contactId={contactId} />
-      </Card>
+      <NoPlaybookCard contactId={contactId} wizardOpen={wizardOpen} setWizardOpen={setWizardOpen} />
     )
-  }
-
-  const handlePause = () => {
-    void updatePlaybook.mutateAsync({ status: playbook.status === 'active' ? 'paused' : 'active' })
-  }
-
-  const handleDelete = () => {
-    if (!window.confirm(t('playbook.removeConfirm'))) {
-      return
-    }
-    void deletePlaybook.mutateAsync()
   }
 
   return (

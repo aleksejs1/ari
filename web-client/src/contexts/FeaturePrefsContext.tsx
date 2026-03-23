@@ -115,6 +115,7 @@ export function FeaturePrefsProvider({ children }: { children: ReactNode }) {
   return <FeaturePrefsContext.Provider value={value}>{children}</FeaturePrefsContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useFeaturePrefs(): FeaturePrefsContextType {
   const ctx = useContext(FeaturePrefsContext)
   if (!ctx) {

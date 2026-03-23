@@ -120,6 +120,7 @@
     "parent": "Родитель"
   },
   "details": "Детали контакта",
+  "backToContacts": "назад к контактам",
   "createDescription": "Добавьте новый контакт в свой список.",
   "editDescription": "Внесите изменения в контакт здесь.",
   "history": {

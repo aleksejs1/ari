@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Pencil, Star } from 'lucide-react'
+import { Download, Loader2, Pencil, Star, Trash2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { getContrastingTextColor } from '@/lib/colors'
 import type { Contact } from '@/types/models'
 
@@ -38,6 +39,85 @@ const getGroupName = (groupResource: any): string => {
     return groupResource.name
   }
   return ''
+}
+
+interface ContactActionButtonsProps {
+  onEditingChange?: (val: boolean) => void
+  onExport?: () => void
+  isExportPending?: boolean
+  onDelete?: () => void
+  setEffectiveIsEditing: (val: boolean) => void
+}
+
+function ContactActionButtons({
+  onEditingChange,
+  onExport,
+  isExportPending,
+  onDelete,
+  setEffectiveIsEditing,
+}: ContactActionButtonsProps) {
+  const { t } = useTranslation('contacts')
+
+  if (!onExport && !onDelete && !onEditingChange) {
+    return null
+  }
+
+  return (
+    <TooltipProvider>
+      <div className="flex shrink-0 items-center gap-1">
+        {onEditingChange ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEffectiveIsEditing(true)}
+                data-testid="contact-edit-button"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('edit')}</TooltipContent>
+          </Tooltip>
+        ) : null}
+        {onExport ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onExport}
+                disabled={isExportPending}
+                data-testid="contact-export-vcard"
+              >
+                {isExportPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('exportVcard')}</TooltipContent>
+          </Tooltip>
+        ) : null}
+        {onDelete ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onDelete}
+                data-testid="contact-delete-button"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('common.delete')}</TooltipContent>
+          </Tooltip>
+        ) : null}
+      </div>
+    </TooltipProvider>
+  )
 }
 
 function ContactFavoriteButton({ contact, isFavorite }: { contact: Contact; isFavorite: boolean }) {
@@ -105,11 +185,14 @@ function ContactGroupsBadgeList({ contactGroups }: { contactGroups: Contact['con
   )
 }
 
-export function GeneralInfoSection({ contact }: { contact: Contact }) {
-  const { t } = useTranslation('contacts')
-  const { isContactFavorite } = useContactFavorite()
-  const isFavorite = isContactFavorite(contact)
-  const [isEditing, setIsEditing] = useState(false)
+function useGeneralInfoEditing(
+  contact: Contact,
+  onEditingChange: ((val: boolean) => void) | undefined,
+  isEditing: boolean,
+) {
+  const [localIsEditing, setLocalIsEditing] = useState(false)
+  const effectiveIsEditing = onEditingChange !== undefined ? isEditing : localIsEditing
+  const setEffectiveIsEditing = onEditingChange ?? setLocalIsEditing
   const updateMutation = useUpdateContact()
   const uploadAvatarMutation = useUploadContactAvatar()
   const defaultValues = mapContactToFormValues(contact)
@@ -124,12 +207,52 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
     if (contact['@id']) {
       try {
         await updateMutation.mutateAsync({ id: contact['@id'], data })
-        setIsEditing(false)
+        setEffectiveIsEditing(false)
       } catch (error) {
         console.error('Failed to update contact', error)
       }
     }
   }
+
+  return {
+    effectiveIsEditing,
+    setEffectiveIsEditing,
+    updateMutation,
+    defaultValues,
+    handleAvatarUpload,
+    handleSubmit,
+  }
+}
+
+export function GeneralInfoSection({
+  contact,
+  isEditing = false,
+  onEditingChange,
+  onExport,
+  isExportPending,
+  onDelete,
+}: {
+  contact: Contact
+  isEditing?: boolean
+  onEditingChange?: (val: boolean) => void
+  onExport?: () => void
+  isExportPending?: boolean
+  onDelete?: () => void
+}) {
+  const { t } = useTranslation('contacts')
+  const { isContactFavorite } = useContactFavorite()
+  const isFavorite = isContactFavorite(contact)
+  const primaryName = contact.contactNames?.[0]
+  const givenName = primaryName?.given
+  const familyName = primaryName?.family
+  const {
+    effectiveIsEditing,
+    setEffectiveIsEditing,
+    updateMutation,
+    defaultValues,
+    handleAvatarUpload,
+    handleSubmit,
+  } = useGeneralInfoEditing(contact, onEditingChange, isEditing)
 
   // NOTE: The previous design had the "Edit" button in the Header trigger the FULL PAGE edit mode.
   // The User Request says: "GeneralInfoSection.tsx (Former ContactViewHeader)".
@@ -161,12 +284,12 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
   // When "Edit" is clicked IN THIS SECTION, show the `ContactForm` form logic IN THIS SECTION?
   // Or maybe we treat `GeneralInfoSection` as the place where you edit the core details.
 
-  if (isEditing) {
+  if (effectiveIsEditing) {
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t('editContact')}</CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => setIsEditing(false)}>
+          <Button variant="ghost" size="sm" onClick={() => setEffectiveIsEditing(false)}>
             {t('common.cancel')}
           </Button>
         </CardHeader>
@@ -182,26 +305,30 @@ export function GeneralInfoSection({ contact }: { contact: Contact }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <div className="flex items-start justify-between gap-4">
       <div className="flex items-start gap-4">
         <AvatarUpload
           currentAvatar={contact.avatar}
-          displayName={`${contact.contactNames?.[0]?.given} ${contact.contactNames?.[0]?.family}`}
+          displayName={`${givenName} ${familyName}`}
           className="mt-1"
           onUpload={handleAvatarUpload}
         />
         <div className="space-y-2">
           <h1 className="flex items-center gap-2 text-2xl font-bold">
-            {contact.contactNames?.[0]?.given} {contact.contactNames?.[0]?.family}
+            {givenName} {familyName}
             <ContactFavoriteButton contact={contact} isFavorite={isFavorite} />
           </h1>
           <ContactGroupsBadgeList contactGroups={contact.contactGroups} />
         </div>
       </div>
-      <Button onClick={() => setIsEditing(true)} className="w-full gap-2 md:w-auto">
-        <Pencil className="h-4 w-4" />
-        {t('edit')}
-      </Button>
+
+      <ContactActionButtons
+        onEditingChange={onEditingChange}
+        onExport={onExport}
+        isExportPending={isExportPending}
+        onDelete={onDelete}
+        setEffectiveIsEditing={setEffectiveIsEditing}
+      />
     </div>
   )
 }

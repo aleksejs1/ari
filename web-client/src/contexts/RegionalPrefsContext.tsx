@@ -156,6 +156,7 @@ export function RegionalPrefsProvider({ children }: { children: ReactNode }) {
   return <RegionalPrefsContext.Provider value={value}>{children}</RegionalPrefsContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useRegionalPrefs(): RegionalPrefsContextType {
   const ctx = useContext(RegionalPrefsContext)
   if (!ctx) {

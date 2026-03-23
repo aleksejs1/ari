@@ -8,22 +8,27 @@ import type { Contact } from '@/types/models'
 
 import { useCreateContactBiography } from '../../useContacts'
 
+function hasItems(arr: unknown[] | null | undefined): boolean {
+  return (arr?.length ?? 0) > 0
+}
+
 /**
  * Returns true if the right column already has at least one visible section.
  * Mirrors the hide-when-empty logic of each right-column section component.
  * Graph Connections is async and omitted intentionally (rare enough to ignore).
  */
 function hasRightColumnContent(contact: Contact): boolean {
-  return [
-    (contact.contactNames?.length ?? 0) > 1,
-    (contact.phoneNumbers?.length ?? 0) > 0,
-    (contact.contactEmailAdresses?.length ?? 0) > 0,
-    (contact.contactAddresses?.length ?? 0) > 0,
-    (contact.contactOrganizations?.length ?? 0) > 0,
-    (contact.contactDates?.length ?? 0) > 0,
-    (contact.contactBiographies?.length ?? 0) > 0,
-    (contact.contactRelations?.length ?? 0) > 0,
-  ].some(Boolean)
+  const hasMultipleNames = (contact.contactNames?.length ?? 0) > 1
+  return (
+    hasMultipleNames ||
+    hasItems(contact.phoneNumbers) ||
+    hasItems(contact.contactEmailAdresses) ||
+    hasItems(contact.contactAddresses) ||
+    hasItems(contact.contactOrganizations) ||
+    hasItems(contact.contactDates) ||
+    hasItems(contact.contactBiographies) ||
+    hasItems(contact.contactRelations)
+  )
 }
 
 export function IdentityNoteSection({ contact }: { contact: Contact }) {
