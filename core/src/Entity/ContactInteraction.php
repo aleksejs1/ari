@@ -38,14 +38,14 @@ class ContactInteraction implements TenantAwareInterface
     public const INTERACTION_TYPES = ['call', 'meeting', 'message', 'email', 'social'];
     public const INITIATORS = ['me', 'them'];
 
-    #[Groups(['contact:read', 'contact_interaction:read'])]
+    #[Groups(['contact:detail', 'contact_interaction:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
+        'contact:detail', 'contact:create', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
     ])]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: self::INTERACTION_TYPES)]
@@ -53,20 +53,20 @@ class ContactInteraction implements TenantAwareInterface
     private ?string $type = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
+        'contact:detail', 'contact:create', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
     ])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[Groups([
-        'contact:read', 'contact:create', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
+        'contact:detail', 'contact:create', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
     ])]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $timestamp = null;
 
     /** Who initiated the interaction: 'me' or 'them'. Null means not recorded. */
     #[Groups([
-        'contact:read', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
+        'contact:detail', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
     ])]
     #[Assert\Choice(choices: self::INITIATORS)]
     #[ORM\Column(length: 10, nullable: true)]
@@ -78,7 +78,7 @@ class ContactInteraction implements TenantAwareInterface
      * @var list<string>|null
      */
     #[Groups([
-        'contact:read', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
+        'contact:detail', 'contact_interaction:read', 'contact_interaction:create', 'contact_interaction:update', 'export',
     ])]
     #[Assert\All([
         new Assert\Type('string'),
@@ -88,7 +88,7 @@ class ContactInteraction implements TenantAwareInterface
     private ?array $tags = null;
 
     /** Set automatically on first persist; not writable via API. */
-    #[Groups(['contact:read', 'contact_interaction:read'])]
+    #[Groups(['contact:detail', 'contact_interaction:read'])]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 

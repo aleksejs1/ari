@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'unique_contact_uuid_per_user', columns: ['uuid', 'user_id'])]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
-    normalizationContext: ['groups' => ['contact:read']],
+    normalizationContext: ['groups' => ['contact:read', 'contact:detail']],
     denormalizationContext: ['groups' => ['contact:create']],
 )]
 #[Get(
@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationEnabled: true,
     paginationItemsPerPage: 20,
 )]
-#[GetCollection]
+#[GetCollection(normalizationContext: ['groups' => ['contact:read']])]
 #[Put(
     security: "is_granted('CONTACT_EDIT', object)",
     processor: 'Ari\State\ContactProcessor',
