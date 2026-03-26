@@ -34,7 +34,7 @@ export function todayIso(): string {
 
 export function useContactTasks(
   contactId: string | number,
-  options?: { status?: string | string[]; dueBefore?: string },
+  options?: { status?: string | string[]; dueBefore?: string; enabled?: boolean },
 ) {
   const params = new URLSearchParams()
   params.set('contact', String(contactId))
@@ -55,6 +55,7 @@ export function useContactTasks(
       return response.data['member'] ?? []
     },
     staleTime: 30_000,
+    enabled: options?.enabled !== false,
   })
 }
 

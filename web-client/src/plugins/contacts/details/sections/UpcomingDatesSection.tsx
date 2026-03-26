@@ -12,7 +12,7 @@ function daysUntil(dateStr: string): number {
   today.setHours(0, 0, 0, 0)
   const target = new Date(dateStr)
   target.setHours(0, 0, 0, 0)
-  return Math.round((target.getTime() - today.getTime()) / 86_400_000)
+  return Math.max(0, Math.round((target.getTime() - today.getTime()) / 86_400_000))
 }
 
 export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
@@ -33,7 +33,7 @@ export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
       </CardHeader>
       <CardContent className="grid gap-4">
         {upcomingDates.map((date, i) => {
-          const days = daysUntil(date.nextAnniversaryDate ?? '')
+          const days = daysUntil(date.nextAnniversaryDate!)
           const years = date.yearsAtNextAnniversary
           const hint =
             years !== null && years !== undefined
@@ -44,7 +44,7 @@ export const UpcomingDatesSection = ({ contact }: { contact: Contact }) => {
               key={i}
               icon={Calendar}
               label={date.text ?? undefined}
-              value={`${formatDate(date.nextAnniversaryDate ?? '')} (${hint})`}
+              value={`${formatDate(date.nextAnniversaryDate!)} (${hint})`}
             />
           )
         })}

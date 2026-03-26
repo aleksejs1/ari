@@ -116,14 +116,10 @@ export function registerDefaultColumns() {
       id: 'lastInteraction',
       header: () => <LocalizedHeader name="columns.lastInteraction" />,
       cell: ({ row }) => {
-        const interactions = row.original.contactInteractions
-        if (!interactions || interactions.length === 0) {
+        const lastTs = row.original.lastInteractionAt
+        if (!lastTs) {
           return <span className="text-sm text-muted-foreground">—</span>
         }
-        const sorted = [...interactions].sort(
-          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-        )
-        const lastTs = sorted[0].timestamp
         const cadence = row.original.cadenceDays
         let colorClass = ''
         if (cadence !== null && cadence !== undefined) {

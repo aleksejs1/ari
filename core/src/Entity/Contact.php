@@ -40,6 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'unique_contact_uuid_per_user', columns: ['uuid', 'user_id'])]
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
+    // Default includes contact:detail so POST/PUT/PATCH responses include interactions.
+    // The main GetCollection overrides this to contact:read only (no interactions in list).
     normalizationContext: ['groups' => ['contact:read', 'contact:detail']],
     denormalizationContext: ['groups' => ['contact:create']],
 )]
@@ -50,6 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Get(
     uriTemplate: '/contacts/{id}/similar',
     name: 'contact_similar',
+    normalizationContext: ['groups' => ['contact:read']],
     provider: 'Ari\State\ContactSimilarProvider',
     requirements: ['id' => '\d+'],
 )]
@@ -142,8 +145,9 @@ class Contact implements TenantAwareInterface
      * Denormalized timestamp of the most recent ContactInteraction for this contact.
      * Updated by ContactInteractionListener after every flush.
      * Used by NeedsAttentionProvider to avoid a GROUP BY query on contact_interaction.
-     * Not exposed in API responses — internal performance field.
+     * Exposed in contact:read responses for display in the contacts list (last interaction column).
      */
+    #[Groups(['contact:read'])]
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $lastInteractionAt = null;
 

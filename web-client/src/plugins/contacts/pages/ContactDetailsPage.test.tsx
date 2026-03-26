@@ -49,7 +49,7 @@ vi.mock('@/lib/contacts/details/ContactDetailsRegistry', () => ({
     getInstance: () => ({
       getAll: () => [
         { id: 'section1', component: () => <div>Section 1</div>, layout: 'left' },
-        { id: 'section2', component: () => <div>Section 2</div>, layout: 'full' },
+        { id: 'section2', component: () => <div>Section 2</div>, layout: 'full-bottom' },
       ],
     }),
   },

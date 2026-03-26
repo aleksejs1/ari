@@ -15,6 +15,7 @@ function hasItems(arr: unknown[] | null | undefined): boolean {
 /**
  * Returns true if the right column already has at least one visible section.
  * Mirrors the hide-when-empty logic of each right-column section component.
+ * NOTE: Must be kept in sync with defaults_details.ts right-column section registrations.
  * Graph Connections is async and omitted intentionally (rare enough to ignore).
  */
 function hasRightColumnContent(contact: Contact): boolean {
@@ -59,9 +60,13 @@ export function IdentityNoteSection({ contact }: { contact: Contact }) {
     if (!contact['@id'] || !value.trim()) {
       return
     }
-    await createBio.mutateAsync({ value: value.trim(), type: 'private', contact: contact['@id'] })
-    setIsAdding(false)
-    setValue('')
+    try {
+      await createBio.mutateAsync({ value: value.trim(), type: 'private', contact: contact['@id'] })
+      setIsAdding(false)
+      setValue('')
+    } catch (error) {
+      console.error('Failed to save note', error)
+    }
   }
 
   const handleCancel = () => {

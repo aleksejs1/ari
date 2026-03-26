@@ -38,6 +38,7 @@ export function useContactPlaybook(contactId: string | number) {
       return response.data
     },
     staleTime: 30_000,
+    enabled: !!contactId && contactId !== 0,
   })
 }
 

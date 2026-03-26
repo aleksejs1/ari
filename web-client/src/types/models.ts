@@ -24,6 +24,7 @@ export type Contact = components['schemas']['Contact.jsonld-contact.read'] & {
   contactRelations?: ContactRelation[]
   avatar?: ContactAvatar | null
   cadenceDays?: number | null
+  lastInteractionAt?: string | null
   contactInteractions?: ContactInteraction[]
 }
 

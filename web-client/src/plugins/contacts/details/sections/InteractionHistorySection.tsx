@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
@@ -18,14 +18,17 @@ export function InteractionHistorySection({ contact }: { contact: Contact }) {
   const updateMutation = useUpdateInteraction()
   const deleteMutation = useDeleteInteraction()
 
+  const sorted = useMemo(
+    () =>
+      [...(contact.contactInteractions ?? [])].sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      ),
+    [contact.contactInteractions],
+  )
+
   if (!contact['@id']) {
     return null
   }
-
-  const interactions = contact.contactInteractions ?? []
-  const sorted = [...interactions].sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  )
 
   if (sorted.length === 0) {
     return null
@@ -56,7 +59,14 @@ export function InteractionHistorySection({ contact }: { contact: Contact }) {
           data-testid="interaction-history-toggle"
         >
           <CardTitle className="flex items-center justify-between text-base">
-            {t('interactions.historyTitle')}
+            <span className="flex items-center gap-2">
+              {t('interactions.historyTitle')}
+              {!isOpen && (
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-normal text-muted-foreground">
+                  {sorted.length}
+                </span>
+              )}
+            </span>
             {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </CardTitle>
         </CardHeader>

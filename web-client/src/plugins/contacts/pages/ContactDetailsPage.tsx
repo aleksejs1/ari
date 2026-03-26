@@ -55,9 +55,7 @@ function ContactDetailsContent({ contact }: { contact: Contact }) {
       <Button
         variant="ghost"
         size="sm"
-        onClick={async () => {
-          await navigate(-1)
-        }}
+        onClick={() => navigate(-1)}
         data-testid="contact-details-back"
         className="gap-1 text-muted-foreground"
       >

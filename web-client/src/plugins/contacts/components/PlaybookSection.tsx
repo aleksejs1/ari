@@ -191,6 +191,7 @@ export function PlaybookSection({ contact }: { contact: Contact }) {
   const { data: tasks = [] } = useContactTasks(contactId, {
     status: [...ACTIVE_STATUSES],
     dueBefore: todayIso(),
+    enabled: contactId > 0,
   })
   const { deletePlaybook, updatePlaybook, handlePause, handleDelete } = usePlaybookActions(
     contactId,
