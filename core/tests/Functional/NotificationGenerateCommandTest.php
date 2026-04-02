@@ -94,6 +94,7 @@ class NotificationGenerateCommandTest extends AbstractApiTestCase
 
         // Ensure count is not 0
         preg_match('/Generated (\d+) notification queue items/', $output, $matches);
+        self::assertArrayHasKey(1, $matches, 'Expected match group not found in output');
         self::assertGreaterThan(0, (int) $matches[1]);
 
         // 5. Verify Queue Item in DB

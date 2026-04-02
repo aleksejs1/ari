@@ -7,8 +7,8 @@
         "php": ">=8.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/doctrine-orm": "^4.2.20",
-        "api-platform/symfony": "^4.2.20",
+        "api-platform/doctrine-orm": "^4.3.1",
+        "api-platform/symfony": "^4.2.24",
         "composer/semver": "^3.4.4",
         "doctrine/dbal": "^3.10.4",
         "doctrine/doctrine-bundle": "^2.18.2",
@@ -48,17 +48,17 @@
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
         "symfony/serializer": "7.4.*",
-        "symfony/stimulus-bundle": "^2.32",
+        "symfony/stimulus-bundle": "^2.34",
         "symfony/string": "7.4.*",
         "symfony/translation": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
         "symfony/uid": "7.4.*",
-        "symfony/ux-turbo": "^2.32",
+        "symfony/ux-turbo": "^2.34",
         "symfony/validator": "7.4.*",
         "symfony/web-link": "7.4.*",
         "symfony/yaml": "7.4.*",
-        "twig/extra-bundle": "^2.12|^3.23.0",
-        "twig/twig": "^2.12|^3.23.0"
+        "twig/extra-bundle": "^2.12|^3.24.0",
+        "twig/twig": "^2.12|^3.24.0"
     },
     "config": {
         "allow-plugins": {
@@ -134,9 +134,9 @@
         "deptrac/deptrac": "^4.6",
         "friendsofphp/php-cs-fixer": "^3.94.2",
         "infection/infection": "^0.31.9",
-        "phpstan/phpstan": "^2.1.40",
+        "phpstan/phpstan": "^2.1.46",
         "phpstan/phpstan-deprecation-rules": "^2.0.4",
-        "phpstan/phpstan-doctrine": "^2.0.18",
+        "phpstan/phpstan-doctrine": "^2.0.20",
         "phpstan/phpstan-phpunit": "^2.0.16",
         "phpstan/phpstan-strict-rules": "^2.0.10",
         "phpstan/phpstan-symfony": "^2.0.15",
@@ -145,9 +145,9 @@
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*",
         "symfony/debug-bundle": "7.4.*",
-        "symfony/maker-bundle": "^1.66.0",
+        "symfony/maker-bundle": "^1.67.0",
         "symfony/stopwatch": "7.4.*",
         "symfony/web-profiler-bundle": "7.4.*",
-        "vimeo/psalm": "^6.15.1"
+        "vimeo/psalm": "^6.16.1"
     }
 }

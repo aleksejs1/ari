@@ -268,7 +268,7 @@ final class ImportGoogleContactHandler
         if (isset($data['photos'])) {
             foreach ($data['photos'] as $photo) {
                 // We prefer primary photo and ensure it's not the default placeholder
-                if (($photo['metadata']['primary'] ?? false) && !($photo['default'] ?? false)) {
+                if (true === ($photo['metadata']['primary'] ?? false) && true !== ($photo['default'] ?? false)) {
                     $url = $photo['url'] ?? null;
                     if (null !== $url) {
                         try {
